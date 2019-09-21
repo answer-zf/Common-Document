@@ -162,12 +162,48 @@ $ git merge dev
 
 
 
-## GitHub上传
+## GitHub
+
+### GitHub上传
+
+#### Https上传
 
 ```shell
 
 ## 格式 git push + url地址 + master    master指的是 将本地master分支提交到服务器master分支
 $ git push https://github.com/answerooo3/Common-Document.git master
+
+```
+
+#### SSH上传（ 优势：不需要输入用户名密码，依旧可以进行身份验证 ）
+
+```shell
+
+## 公钥（GitHub存放），私钥（个人存放）
+```
+
+
+
+### GitHub下载
+
+#### Pull（ 开发优先推荐 ）
+
+```shell
+
+## 新建文件并初始化 git仓储
+
+## 从服务器下载 git
+$ git pull https://github.com/asnwer-zf/Common-Document.git master
+
+```
+
+#### Clone
+
+```shell
+
+## 不用初始化git仓储，会在本地新建根文件夹
+## 如果多次执行会覆盖本地内容
+$ git clone https://github.com/asnwer-zf/Common-Document.git
 
 ```
 
