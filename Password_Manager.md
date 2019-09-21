@@ -1,8 +1,8 @@
 ## GitHub
 
-> 账号 ： 657829956@qq.com
+> 账号 ： feng18255163789@gmail.com
 >
-> 密码 ： feng18255163789
+> 密码 ： Qing15955417954
 >
 > 网址 ： [GitHub][http://github.com]
 

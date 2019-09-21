@@ -160,3 +160,14 @@ $ git merge dev
 
 ```
 
+
+
+## GitHub上传
+
+```shell
+
+## 格式 git push + url地址 + master    master指的是 将本地master分支提交到服务器master分支
+$ git push https://github.com/answerooo3/Common-Document.git master
+
+```
+
