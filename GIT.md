@@ -44,7 +44,9 @@ $ git add ./readme.md
 $ git commit -m "complete the first function！"    ## -m : 说明信息（便于查看）
  
 ----------------------
- 	## 不输入 -m 会进去vim编辑器环境输说明信息。强制退出：Esc键 + :p
+ 	## 不输入 -m 会进去vim编辑器环境输说明信息。
+ 	## 在vim里输入说明信息后 Esc键 + :Wp 即可    ## w：保存 p：退出
+ 	## 强制退出：Esc键 + :p
  	
 ##**************************************************************************
  	
@@ -180,6 +182,18 @@ $ git push https://github.com/answerooo3/Common-Document.git master
 ```shell
 
 ## 公钥（GitHub存放），私钥（个人存放）
+## 生成公钥，私钥
+$ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
+
+## 找到C:\Users\answer_zf\.ssh内的
+## id_rsa	    私钥
+## id_rsa.pub   公钥
+
+## 复制 id_rsa.pub 内代码
+## 进去GitHub => 点击我的头像 => Settings => SSh and GPG keys => NEW SSH key
+## 添加已复制的代码 起个名字（Title内填写） => Add SSH key
+
+## 再用push上传即可
 ```
 
 
@@ -205,5 +219,40 @@ $ git pull https://github.com/asnwer-zf/Common-Document.git master
 ## 如果多次执行会覆盖本地内容
 $ git clone https://github.com/asnwer-zf/Common-Document.git
 
+```
+
+### GitHub多人开发的冲突问题
+
+```shell
+
+## 修改同一个文件的冲突
+## 先pull到本地手动修改冲突后 ，再push到GitHub
+
+## 修改不同文件的冲突
+## 先pull到本地进入vim填写说明系统自行合并 ，再push到GitHub
+
+```
+
+### Push 与 Pull简化操作
+
+```shell
+
+## 对于经常输入的url地址，可以做类似变量命名的操作简化，但是作用只在本地当前目录
+## 不是全局
+$ git remote add origin git@github.com:asnwer-zf/Common-Document.git
+$ git push origin master
+
+## origin 类似变量命名的操作
+
+##*********************************
+## -u 参数关联
+$ git push origin -u master
+## 后面的提交简化：
+$ git push
+## 仍然提交上去了
+## -u：把当前分支与远程的指定分支进行关联，即：记住操作
+## 关联以后 git pull 同样可以
+
+## -u 关联在push中进行
 ```
 
