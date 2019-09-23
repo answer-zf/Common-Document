@@ -164,11 +164,13 @@ $ git merge dev
 
 
 
-## GitHub
+# GitHub
 
-### GitHub上传
 
-#### Https上传
+
+## GitHub上传
+
+### Https上传
 
 ```shell
 
@@ -177,9 +179,11 @@ $ git push https://github.com/answerooo3/Common-Document.git master
 
 ```
 
-#### SSH上传（ 优势：不需要输入用户名密码，依旧可以进行身份验证 ）
+### SSH上传
 
 ```shell
+
+## 优势：不需要输入用户名密码，依旧可以进行身份验证 
 
 ## 公钥（GitHub存放），私钥（个人存放）
 ## 生成公钥，私钥
@@ -198,11 +202,13 @@ $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 
 
 
-### GitHub下载
+## GitHub下载
 
-#### Pull（ 开发优先推荐 ）
+### Pull
 
 ```shell
+
+## 开发优先推荐
 
 ## 新建文件并初始化 git仓储
 
@@ -211,7 +217,7 @@ $ git pull https://github.com/asnwer-zf/Common-Document.git master
 
 ```
 
-#### Clone
+### Clone
 
 ```shell
 
@@ -221,7 +227,9 @@ $ git clone https://github.com/asnwer-zf/Common-Document.git
 
 ```
 
-### GitHub多人开发的冲突问题
+
+
+## GitHub多人开发的冲突问题
 
 ```shell
 
@@ -233,7 +241,9 @@ $ git clone https://github.com/asnwer-zf/Common-Document.git
 
 ```
 
-### Push 与 Pull简化操作
+
+
+## Push 与 Pull简化操作
 
 ```shell
 
@@ -254,6 +264,39 @@ $ git push
 ## 关联以后 git pull 同样可以
 
 ## -u 关联在push中进行
+
+```
+
+
+
+## GitHub 创建个人站点
+
+```shell
+
+## 访问
+https://answer-zf.github.io
+
+## 创建
+## 1. 新建仓库   注：用户名必须为  answer-zf.github.io
+## 2. 仓库内必须有.html文件
+
+```
+
+
+
+## GitHub 创建项目站点
+
+```shell
+
+## 访问
+https://answer-zf.github.io
+
+## 创建
+## 1. 进入项目主页，点击 settings
+## 2. 在settings页面，点击 Launch automatic page generator 来自动生成主题页面
+## 3. 新建站点基础信息设置
+## 4. 选择主题
+## 5. 生成网页
 
 ```
 
