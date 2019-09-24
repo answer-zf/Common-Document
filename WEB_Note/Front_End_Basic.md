@@ -60,6 +60,10 @@ rec.exec('str')					// 提取组
 
 ## JQuery
 
+
+
+### 入口函数
+
 ```js
 
 // 入口函数 （jq ready()的简写）
@@ -79,6 +83,26 @@ $().ready(function(){
 
 // 一个页面响应加载的顺序是：域名解析-加载html-加载js和css-加载图片等其他信息。
 // onload    : 页面包含图片等文件在内的所有元素都加载完成。
+
+```
+
+
+
+### 动画相关
+
+```js
+
+// fadeIn() / fadeOut()有function（）参数
+// 指的是在动画完成时执行的函数。
+
+// Example:
+$('.avatar').fadeOut(function() {
+  $(this).on('load', function () {
+    $(this).fadeIn()
+  }).attr('src', res)
+})
+
+// img的onload事件指的是图片完全加载完以后执行 （异步操作）先注册后设置 src
 
 ```
 

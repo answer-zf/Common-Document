@@ -18,6 +18,8 @@ PHP  -  API   			// 如需要传地址参数，必须是绝对路径 or 物理�
 ## 随笔
 
 ```php
+ 
+function_exists('count')// 判断函数知否被定义 typeof fn === 'function'
     
 0     					// UPLOAD_ERR_OK
 
@@ -27,6 +29,8 @@ PHP  -  API   			// 如需要传地址参数，必须是绝对路径 or 物理�
 
 implode(",", $array)	// 数组转字符串
 
+dirname(__FILE__)		// 获取文件路径
+    
 ```
 
 
