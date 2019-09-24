@@ -37,4 +37,17 @@ document.cookie = "app-installed=1; expire =" + a.toGMTString();
 
 
 
-## 打开浏览器 到关闭浏览器之间的过程叫一次会话（session）
+> 打开浏览器 到关闭浏览器之间的过程叫一次会话（session）
+
+
+
+# SESSION
+
+```php
+
+// 启动session（给用户找一个箱子，如果之前有用之前的，没有给新的，并且把钥匙给你）
+session_start();
+$_SESSION['key'] = value;
+
+```
+

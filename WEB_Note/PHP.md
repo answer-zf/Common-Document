@@ -4,20 +4,6 @@
 
 
 
-## SESSION 用法
-
-```php
-
-// 启动session（给用户找一个箱子，如果之前有用之前的，没有给新的，并且把钥匙给你）
-
-session_start();
-
-$_SESSION['key'] = value;
-
-```
-
-
-
 ## PHP 传参区别
 
 ```php
