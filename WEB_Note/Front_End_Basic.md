@@ -64,12 +64,14 @@ rec.exec('str')					// 提取组
 
 // 入口函数 （jq ready()的简写）
 $(function($){
-    
+	// 作用
+	// 1. 单独作用域
+	// 2. 确保页面加载过后执行   
 })
 
 // 即等价于（ jQuery的默认参数是：“document” ）
 $().ready(function(){
-//do something
+	//do something
 })
 
 // 文档结构加载完成（不包含图片等非文字媒体文件）后，对DOM进行操作 
