@@ -58,6 +58,30 @@ rec.exec('str')					// 提取组
 
 
 
+## JQuery
+
+```js
+
+// 入口函数 （jq ready()的简写）
+$(function($){
+    
+})
+
+// 即等价于（ jQuery的默认参数是：“document” ）
+$().ready(function(){
+//do something
+})
+
+// 文档结构加载完成（不包含图片等非文字媒体文件）后，对DOM进行操作 
+// 即 ：在“加载js和css”和“加载图片等其他信息”之间，就可以操作Dom
+
+// 一个页面响应加载的顺序是：域名解析-加载html-加载js和css-加载图片等其他信息。
+// onload    : 页面包含图片等文件在内的所有元素都加载完成。
+
+```
+
+
+
 ## JSON
 
 ```js
