@@ -1,5 +1,60 @@
 
 
+# PHP操作数据库
+
+## curd
+
+```php
+
+// 查询（读取[r]）
+
+function zf_fetch_all($sql){
+
+	$connect = mysqli_connect('host','username','password','DB_name');
+
+	if (!$connect) exit('<h1>数据库连接失败</h1>');
+
+	$query = mysqli_query($connect, $sql); // 结果集
+	if (!$query){		
+		return false;
+	}
+
+	while ($row = mysqli_fetch_assoc($query)) {
+		$data[] = $row;
+	}
+
+	mysqli_free_result($query);
+	mysqli_close($connect);
+
+	return $data;
+}
+
+// 增 删 改 (create delete update)
+	mysqli_affected_rows()     // 查询 XX链接最后一次的受影响行数
+        
+        
+
+```
+
+## SQL 注入
+
+```php
+
+## 在浏览器输入框输入http://../../xxx.php?id=1or1=1;
+## 执行的是删除php页面 被用户恶意传参即执行
+delete from categories where id = 1 or 1 = 1
+## 清空数据库
+
+## 解决方法
+## 对传参进行强转   
+$id = (int)$_GET['id'];
+
+```
+
+
+
+
+
 # 重点笔记
 
 

@@ -63,9 +63,8 @@ $ select * from `user`;
 $ select 1 from `user`;
 $ insert into user values (null, 'CEO', 'sdf', 18, 0);
 $ insert into user (name, title, age, gender) value ('CEO', 'sdf', 18, 0);
-$ delete from user where id = '4' and ;
+$ delete from user where id = '4' ;
 $ select * from `user` where id > 3;
 
 ```
 
- 
