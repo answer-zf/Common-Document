@@ -122,6 +122,22 @@ es5中有JSON对象（内置对象）
 
 
 
+## DOM
+
+> DOM 会将html元素进行封装，而且会抽象出来做一些额外属性
+
+### attr   or   prop
+
+```js
+
+attr 获取的是html元素上写的属性
+
+prop 获取的是DOM属性
+
+```
+
+
+
 # HTML
 
 
