@@ -196,8 +196,12 @@ $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 ## 复制 id_rsa.pub 内代码
 ## 进去GitHub => 点击我的头像 => Settings => SSh and GPG keys => NEW SSH key
 ## 添加已复制的代码 起个名字（Title内填写） => Add SSH key
+## 再用push上传即可 （传参为SSH地址）
 
-## 再用push上传即可
+## 换主机：
+## 在路径  C:\Users\ + 主机用户名  的目录下找到 .ssh文件
+## 在目标主机更换.ssh 文件
+
 ```
 
 
