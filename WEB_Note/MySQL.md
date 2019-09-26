@@ -65,6 +65,6 @@ $ insert into user values (null, 'CEO', 'sdf', 18, 0);
 $ insert into user (name, title, age, gender) value ('CEO', 'sdf', 18, 0);
 $ delete from user where id = '4' ;
 $ select * from `user` where id > 3;
-
+$ update users set name = '麻子', gender = 0
 ```
 
