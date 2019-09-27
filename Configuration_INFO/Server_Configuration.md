@@ -210,6 +210,17 @@ date_default_timezone_set('PRC');
 
 
 
+## PHP	==>	SESSION配置
+
+``` ini
+
+;一般情况下回修改session.name  避免麻烦
+session.name = PHPSESSID
+
+```
+
+
+
 
 
 # MySQL配置

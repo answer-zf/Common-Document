@@ -48,6 +48,8 @@ document.cookie = "app-installed=1; expire =" + a.toGMTString();
 // 启动session（给用户找一个箱子，如果之前有用之前的，没有给新的，并且把钥匙给你）
 session_start();
 $_SESSION['key'] = value;
+// 删除session
+unset($_SESSION['key']);
 
 ```
 

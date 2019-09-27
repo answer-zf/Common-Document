@@ -105,6 +105,7 @@ $sc delete MySQL
 
 ##切换输入法    	   ==>   WIN + space
 
+##自定义截图		   ==>   WIN + SHFIT +S
 ```
 
 
