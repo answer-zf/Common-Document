@@ -252,8 +252,10 @@ $ git clone https://github.com/asnwer-zf/Common-Document.git
 ```shell
 
 ## 对于经常输入的url地址，可以做类似变量命名的操作简化，但是作用只在本地当前目录
+## 类似修改变量的操作用set-url name url
 ## 不是全局
 $ git remote add origin git@github.com:asnwer-zf/Common-Document.git
+$ git remote set-url origin https://github.com/asnwer-zf/ProJect_DaMiJun.git
 $ git push origin master
 
 ## origin 类似变量命名的操作
