@@ -129,17 +129,30 @@ $sc delete MySQL
 
 ##打开所在目录		==>    右击文件选  Reveal
 
-## 文件重命名		==>		F2
-
 ```
 
 
 
-## Chrome
+## Browser
+
+### Chrome
 
 ```shell
 
 ##console 命令行截图    ==>     Capture node screenshot
+
+```
+
+### 搜索栏技巧
+
+```shell
+## 搜索关键词如有空格，可用  ""  包含，视为一个词
+
+## 搜索限定
+
+$ 关键词 + site:cnblogs.com
+
+## 限定在 cnblogs.com 搜索
 
 ```
 

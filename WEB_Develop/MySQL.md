@@ -18,7 +18,7 @@ char     	固定字符长度（效率高），字符不够，在后面补空格�
 
 
 
-## MySQL cmd 语法
+## MySQL 语法
 
 ```shell
 
@@ -66,5 +66,26 @@ $ insert into user (name, title, age, gender) value ('CEO', 'sdf', 18, 0);
 $ delete from user where id = '4' ;
 $ select * from `user` where id > 3;
 $ update users set name = '麻子', gender = 0
+```
+
+
+
+## 联合查询
+
+```mysql
+
+select 
+	posts.id,
+	posts.title,
+	users.nickname as users_name,
+	categories.`name` as category_name,
+	posts.created,
+	posts.`status`
+from posts
+inner join categories on posts.category_id = categories.id 
+inner join users on posts.user_id = users.id 
+
+## as 字段重新命名   
+## on 声明 所联合的关系
 ```
 
