@@ -225,3 +225,14 @@ ajax中response 和responseText
 		response     	获取的结果会根据 this.responseType的变化而变化
 		responseText    永远获取的是字符串的响应体
 
+```php
+
+## 响应头 referer参数   标识 当前请求的来源
+$_SERVER['HTTP_REFERER']
+
+```
+
+
+
+
+
