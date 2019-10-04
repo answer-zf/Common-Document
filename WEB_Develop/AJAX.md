@@ -205,6 +205,18 @@ $(document).ajaxStop(function(){
 
 
 
+### AJAX动态添加文件的事件绑定
+
+```js
+
+// 利用冒泡，在父元素上绑定点击事件，判断子元素是否点击来判断事件
+$('#comments_tbody').on('click','.btn-delete',function(){
+  console.log(11);
+})
+```
+
+
+
 ## JSONP（跨域）
 
 
