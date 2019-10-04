@@ -118,6 +118,93 @@ $(document).ajaxStop(function(){
 
 
 
+### AJAX Template
+
+
+
+#### artTemplate
+
+```html
+
+<script type="text/x-art-template" id="tmpl">
+
+	{{each comments}}
+
+	<tr>
+		<td>{{$value.author}}</td>
+		<td>{{$value.content}}</td>
+		<td>{{$value.created}}</td>
+	</tr>
+	
+	{{/each}}
+
+</script>
+
+<script src="js/art-template.js"></script>
+
+<script>
+	
+	xhr = new XMLHttpRequest()
+
+	xhr.open('GET', '/php/text.php')
+
+	xhr.send()
+
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+	xhr.onreadystatechange = function(){
+
+		if(this.readyState !== 4) return
+		var json = JSON.parse(this.responseText)
+		var con = {comments: json.data}	  	//----------
+		var html = template('tmpl', con)	//----------
+		// console.log(html)
+		var table = document.getElementById('table');
+		table.innerHTML = html
+		
+	}
+
+</script>
+
+```
+
+
+
+#### jsrender
+
+```html
+
+<script src="/static/assets/vendors/jsrender/jsrender.min.js"></script>
+<script id="comments_tmpl" type="text/x-jsrender">
+ {{for comments}}
+  <tr{{if status === 'approved'}} class="warning"{{else status === 'rejected'}} class="danger"{{/if}}>
+   <td class="text-center"><input type="checkbox"></td>
+   <td>{{:author}}</td>
+   <td>{{:content}}</td>
+   <td>《{{:title_name}}》</td>
+   <td>{{:created}}</td>
+   <td>{{if status === 'approved'}}批准{{else status === 'rejected'}}未批准{{else status === 'held'}}待审批{{/if}}</td>
+   <td class="text-center">
+    {{if status === 'held'}}
+     <a href="post-add.html" class="btn btn-info btn-xs">批准</a>
+     <a href="post-add.html" class="btn btn-warning btn-xs">驳回</a>
+    {{/if}}
+     <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+    </td>
+   </tr>
+ {{/for}}
+</script>
+<script>
+ $.get('/admin/api/comments_select.php',function(res){
+   var html = $('#comments_tmpl').render({ comments: res})
+   $('#comments_tbody').html(html)
+ })    
+</script>
+
+```
+
+
+
 ## JSONP（跨域）
 
 
@@ -225,12 +312,7 @@ ajax中response 和responseText
 		response     	获取的结果会根据 this.responseType的变化而变化
 		responseText    永远获取的是字符串的响应体
 
-```php
 
-## 响应头 referer参数   标识 当前请求的来源
-$_SERVER['HTTP_REFERER']
-
-```
 
 
 

@@ -104,6 +104,12 @@ strpos($str,'a')
 // 查找指定字符串中某些字符首次出现位置     $str:指定字符串   'a': 泛指查找的字符
 // 返回：若有返回位置索引，若无返回false
     
+// 转数字
+(int)$str
+intval($str)
+    
+// 判断是不是数字
+is_numeric($str)   // 返回boolean值
 ```
 
 

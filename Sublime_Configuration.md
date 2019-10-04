@@ -213,10 +213,18 @@ $ csslint --version				   ##   命令行输出："v1.0.4"
 
 ## 设置配置
 
+
+
+## 连体字
+
 ```json
 
 //连体字符设置
 "font_face": "Fira Code"
 
+## 常用编程字体：
+-- Consolas
+-- Fira Code
+-- Source Code Pro
 ```
 

@@ -118,8 +118,10 @@ $().ready(function(){
 ### 动画相关
 
 ```js
+
 // fadeIn() / fadeOut()有function（）参数
 // 指的是在动画完成时执行的函数。
+// fadeIn() / fadeOut 先检测样式，所以可以先设置display：flex属性，行内隐藏。 
 
 // Example:
 $('.avatar').fadeOut(function() {
