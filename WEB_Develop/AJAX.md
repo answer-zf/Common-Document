@@ -118,6 +118,63 @@ $(document).ajaxStop(function(){
 
 
 
+### AJAX 异步上传文件
+
+```js
+
+## 客户端操作
+
+$('#avatar').on('change',function(){
+
+   $this = $(this)
+
+   var files = $this.prop('files')
+
+   if(!files.length) return
+
+   var file = files[0]
+
+   // h5新增的 专门配合ajax操作，用于客户端服务端间传递二进制数据
+   var data = new FormData()
+
+   data.append('avatar', file)
+
+   var xhr = new XMLHttpRequest()
+
+   xhr.open('POST','/admin/api/upload.php')
+
+   xhr.send(data) // 借助 formdata 传递文件
+
+   xhr.onload = function(){
+     $this.siblings('img').attr('src',this.responseText)
+     $this.siblings('input').val(this.responseText) // 界面添加隐藏域提交文件
+   }
+})
+
+```
+
+```php
+
+## 服务端  
+
+if(empty($_FILES['avatar'])){
+	exit();
+}
+$avatar = $_FILES['avatar'];
+if($avatar['error'] !== UPLOAD_ERR_OK){
+	exit();
+}
+$ext = pathinfo($avatar['name'], PATHINFO_EXTENSION);
+$target = '../../static/uploads/img-' . uniqid() . '.' . $ext;
+if( !move_uploaded_file($avatar['tmp_name'], $target)){
+	exit();
+}
+echo substr($target,5);
+
+```
+
+
+
 ### AJAX Template
 
 

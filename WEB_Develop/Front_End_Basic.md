@@ -26,3 +26,68 @@ script标签
 	
 ```
 
+
+
+## 自定义radio CheckBox  file...
+
+```html
+
+<style>
+	#checkbox{
+		display:none;
+	}
+	i::after{
+		content:'☆';
+	}
+	#checkbox:checked+i::after{
+		content:'★';
+	}
+</style>
+<body>
+	<label>
+		<input type="checkbox" name="checkbox" id="checkbox">
+		<i style="font-size: normal"></i>		
+	</label>
+</body>
+```
+
+
+
+## 兄弟选择器的灵活运用
+
+### 以及display:inline-block 出现空格的问题解决
+
+```html
+
+<style>
+	ul{
+		list-style: none;
+		font-size: 0;
+	}
+	ul li{
+		display:inline-block;
+		font-size: 14px;
+	}
+	ul > li + li:before{
+		content:'|';
+	}
+</style>
+<body>
+	<ul>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+		<li>item</li>
+	</ul>
+</body>
+
+```
+
+
+

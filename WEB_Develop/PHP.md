@@ -1,5 +1,3 @@
-
-
 # PHP操作数据库
 
 ## curd
@@ -110,6 +108,9 @@ intval($str)
     
 // 判断是不是数字
 is_numeric($str)   // 返回boolean值
+    
+// 获取文件拓展名
+pathinfo(string $path,PATHINFO_EXTENSION)
 ```
 
 
