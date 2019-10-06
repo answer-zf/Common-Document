@@ -53,6 +53,205 @@ $id = (int)$_GET['id'];
 
 
 
+# PHP CURD实例
+
+## add
+
+```php
+
+function add()
+{
+    if (empty($_POST['name'])) {
+        $GLOBALS['error_message'] = '请输入用户名';
+        return;
+    }
+    if (!(isset($_POST['gender']) && $_POST['gender'] !== '-1')) {
+        $GLOBALS['error_message'] = '选择性别';
+        return;
+    }
+    if (empty($_POST['birthday'])) {
+        $GLOBALS['error_message'] = '请选择日期';
+        return;
+    }
+
+   	$name = $_POST['name']; 
+
+   	$gender = $_POST['gender']; 
+   	
+   	$birthday = $_POST['birthday']; 
+
+    if (empty($_FILES['avatar'])) {
+        $GLOBALS['error_message'] = '请选择文件';
+        return;
+    }
+
+    $address = $_FILES['avatar'];
+
+    //var_dump($address);
+
+    if ($address['error'] !== UPLOAD_ERR_OK){
+    	$GLOBALS['error_message'] = '文件上传失败';
+        return;
+    }
+
+    if($address['size'] > 1 * 1024 *1024){
+    	$GLOBALS['error_message'] = '文件上传过大';
+        return;
+    }
+    if(strpos($address['type'],'image/') !== 0){
+    	$GLOBALS['error_message'] = '文件格式不符';
+        return;
+    };
+    $suffix = '../upload/avatar-' . uniqid() . '.' . pathinfo($address['name'], PATHINFO_EXTENSION);
+    if(!move_uploaded_file($address['tmp_name'],$suffix)){
+    	$GLOBALS['error_message'] = '文件上传失败';
+        return;
+    };
+    
+    $avatar = substr($suffix, 2);
+
+    $conn = mysqli_connect('127.0.0.1', 'root' ,'123456' ,'test');
+    if (!$conn) {
+    	$GLOBALS['error_message'] = '服务器连接失败';
+        return;
+    }
+    
+  	$query = mysqli_query($conn, "insert into users values (null, '{$name}', {$gender}, '{$birthday}', '{$avatar}');");
+    var_dump($query);
+    if (!$query) {
+    	$GLOBALS['error_message'] = '数据查询失败';
+        return;
+    }
+
+    if(mysqli_affected_rows($conn) !== 1){
+    	$GLOBALS['error_message'] = '添加信息失败';
+        return;
+    }
+
+	header('Location: index.php');
+
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    add();
+}
+
+```
+
+## delete
+
+```php
+
+if (empty($_GET["id"])) {
+    exit('<h1>必须传入指定参数</h1>');
+}
+
+$conn = mysqli_connect('127.0.0.1', 'root', '123456', 'test');
+
+if (!$conn) {
+    exit('<h1>连接数据库失败</h1>');
+}
+
+$query = mysqli_query($conn, 'delete from users where id = ' . $_GET["id"] . ';');
+
+if (!$query) {
+    exit('<h1>查询数据失败</h1>');
+}
+
+$affect = mysqli_affected_rows($conn);
+
+if ($affect <= 0) {
+    exit('<h1>删除失败</h1>');
+}
+
+header('Location: index.php');
+
+```
+
+
+
+## edit
+
+```php
+
+if (empty($_GET['id'])) {
+    exit('<h1>必须传入指定参数</h1>');
+}
+$id   = $_GET['id'];
+$conn = mysqli_connect('127.0.0.1', 'root', '123456', 'test');
+
+if (!$conn) {
+    exit('<h1>数据库连接失败</h1>');
+}
+
+$query = mysqli_query($conn, "select * from users where id = {$id} limit 1;");
+
+if (!$query) {
+    exit('<h1>数据查询失败</h1>');
+}
+
+$base = mysqli_fetch_assoc($query);
+
+if (!$base) {
+    exit('<h1>查询数据失败</h1>');
+}
+
+function edit()
+{
+
+    if (empty($_POST['name'])) {
+        $GLOBALS['error_message'] = "请输入姓名";
+        return;
+    }
+    if (empty($_POST['birthday'])) {
+        $GLOBALS['error_message'] = "请选择生日";
+        return;
+    }
+    if (!(isset($_POST['gender']) && $_POST['gender'] !== '-1')) {
+        $GLOBALS['error_message'] = "请输入姓名";
+        return;
+    }
+
+    global $base;
+
+    $base['name'] = $_POST['name'];
+
+    $base['gender'] = $_POST['gender'];
+
+    $base['birthday'] = $_POST['birthday'];
+
+    $p_id = $_GET['id'];
+
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+        $suffix = '../upload/avatar-' . uniqid() . '.' . pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+        if (!move_uploaded_file($_FILES['avatar']['tmp_name'], $suffix)) {
+            $GLOBALS['error_message'] = '文件上传失败';
+            return;
+        }
+
+        $base['avatar'] = substr($suffix, 2);
+
+    }
+
+    $conn = mysqli_connect('127.0.0.1', 'root', '123456', 'test');
+    if (!$conn) {
+        $GLOBALS['error_message'] = '服务器连接失败';
+        return;
+    }
+
+    $query = mysqli_query($conn, "update users set name = '{$base['name']}', gender = {$base['gender']}, birthday = '{$base['birthday']}', avatar = '{$base['avatar']}' where id = {$p_id};");
+
+    if (!$query) {
+        $GLOBALS['error_message'] = '数据查询失败';
+        return;
+    }
+
+    header('Location: index.php');
+    
+```
+
+
+
 # 重点笔记
 
 
@@ -191,6 +390,27 @@ include_once 'url';
 
 // 特点：
 	// 载入文件不存在不会报错误（会有警告，警告不用管），当前文件继续执行（适合：部分html）
+
+```
+
+
+
+# PHP 应用实例
+
+## 日期年龄转换
+
+``` php
+
+$both = strtotime($row['birthday'] . '0:0:0');
+$bY = date('Y', $both);
+$bm = date('m', $both);
+$bd = date('d', $both);
+$nm = date('m');
+$nd = date('d');
+$age = date('Y') - $bY;
+if( $bm > $nm || $bm == $nm && $bd > $nd){
+	$age--;
+}
 
 ```
 
