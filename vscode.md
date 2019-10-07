@@ -10,7 +10,7 @@
 ```json
 
 {
-    "workbench.colorTheme": "Dracula",
+    "workbench.colorTheme": "SynthWave '84",
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
     },
@@ -34,7 +34,13 @@
     "fileheader.Author": "answer-zf",
     "fileheader.LastModifiedBy": "answer-zf",
     "editor.fontFamily": "Fira Code",
-    "editor.fontLigatures": true
+    "editor.fontLigatures": true,
+    "files.autoGuessEncoding": true,
+    "editor.selectionHighlight": false,
+    "editor.renderWhitespace": "all",
+    "vscode_custom_css.imports": [
+        "file:///C:/Users/Administrator/synthwave84.css"
+        ]
 }
 
 ```
@@ -76,5 +82,26 @@ $ PHP Intelephense
 $ PHP DocBlocker
 $ PHP Debug
 
+
+$ Copy Relative Path
+$ highlight-icemode
+$ highlight-words
+$ Rainbow Brackets ：突出显示成对的括号。
+$ indent-rainbow：突出显示缩进。
 ```
 
+
+
+#  快捷键
+
+
+
+|   删除   |      Win快捷键       |                 作用                 |
+| :------: | :------------------: | :----------------------------------: |
+|          | **Ctrl + Backspace** |        删除光标之前的一个单词        |
+|          |    Ctrl + delete     |        删除光标之后的一个单词        |
+|          |                      |                                      |
+| **跳转** |    **Ctrl + Tab**    |     在已经打开的文件之间进行跳转     |
+|          |       Ctrl + P       | 在当前的项目工程里，**全局**搜索文件 |
+|          |     **Ctrl + G**     |             跳转到指定行             |
+|          |                      |                                      |
