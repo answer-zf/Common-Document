@@ -12,6 +12,8 @@ header('Content-Type: application/javascript');
 
 ```
 
+
+
 # JSON
 
  ```php
@@ -21,7 +23,6 @@ header('Content-Type: application/javascript');
 json_encode();
 
 ## 可以序列化boolean值 ，返回 对应的boolean值
-
 
  ```
 

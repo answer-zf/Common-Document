@@ -1,4 +1,4 @@
-## 插件
+# 插件
 
 ``` shell
 
@@ -57,7 +57,7 @@ $ colorsublime
 
 
 
-## 主题
+# 主题
 
 ``` shell
 
@@ -68,7 +68,7 @@ $ colorsublime
 
 
 
-## 首选项配置
+# 首选项配置
 
 ``` json
 
