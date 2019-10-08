@@ -96,6 +96,23 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
 
 
 
+### 读取目录
+
+```javascript
+
+var fs = require('fs')
+fs.readdir('url', function(err, files) {  // files: 返回数组
+  if (err) {
+    res.end('Not Found Root Dir')
+    return
+  }
+  console.log(files)  
+})
+
+```
+
+
+
 ### 写入文件
 
 ```js

@@ -28,12 +28,13 @@ continue    终止单次循环，不能跳出循环   		程度最小    执行�
 
 ```js
 // 支持解析变量 、 支持换行
+// 可以用${}的方式引用变量
 
 ``		
 ep      str=`a
 		   	b`
 
-		`name=${name}&password=${password}`    // 模板字符串拼接变量
+`name=${name}&password=${password}`    // 模板字符串拼接变量
 
 ```
 
