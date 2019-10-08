@@ -1,11 +1,12 @@
-# [FiraCode](https://github.com/tonsky/FiraCode)字体设置
-
-- ***Editor: Font Family***          - Fira Code -
-- ***Editor: Font Ligatures***     - 启动 -
+# VS Code 配置 
 
 
 
-# json配置
+## 字体：[FiraCode](https://github.com/tonsky/FiraCode)
+
+
+
+## json配置
 
 ```json
 
@@ -38,16 +39,26 @@
     "files.autoGuessEncoding": true,
     "editor.selectionHighlight": false,
     "editor.renderWhitespace": "all",
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "vue-html": "html",
+        "razor": "html",
+        "plaintext": "jade"
+    },
     "vscode_custom_css.imports": [
         "file:///C:/Users/Administrator/synthwave84.css"
-        ]
+    ],
+    "prettier.jsxSingleQuote": true,
+    "prettier.semi": false,
+    "prettier.singleQuote": true,
+    "prettier.eslintIntegration": true
 }
 
 ```
 
 
 
-# 插件
+## 插件
 
 ``` shell
 
@@ -88,11 +99,87 @@ $ highlight-icemode
 $ highlight-words
 $ Rainbow Brackets ：突出显示成对的括号。
 $ indent-rainbow：突出显示缩进。
+
+格式化插件
+
+$ Vetur
+$ ESLint
+$ Prettier - Code formatter
+
 ```
 
 
 
-#  快捷键
+## 格式化插件配置
+
+
+
+**.vscode/settings.json**
+
+```json
+
+{
+  //.vue文件template格式化支持，并使用js-beautify-html插件
+  "vetur.format.defaultFormatter.html": "js-beautify-html",
+  //js-beautify-html格式化配置，属性强制换行
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_attributes": "force-aligned"
+    }
+  },
+  //根据文件后缀名定义vue文件类型
+  "files.associations": {
+    "*.vue": "vue"
+  },
+  //配置 ESLint 检查的文件类型
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+  //保存时eslint自动修复错误
+  "eslint.autoFixOnSave": true,
+  //保存自动格式化
+  "editor.formatOnSave": true
+}
+
+```
+
+
+
+**.eslintrc.js**
+
+```js
+
+module.exports = {
+  root: true,
+  env: {
+    node: true
+  },
+  extends: ['plugin:vue/essential', 'eslint:recommended'],
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    //强制使用单引号
+    quotes: ['error', 'single'],
+    //强制不使用分号结尾
+    semi: ['error', 'never']
+  },
+  parserOptions: {
+    parser: 'babel-eslint'
+  }
+}
+
+```
+
+
+
+
+
+##  快捷键
 
 
 
@@ -105,3 +192,4 @@ $ indent-rainbow：突出显示缩进。
 |          |       Ctrl + P       | 在当前的项目工程里，**全局**搜索文件 |
 |          |     **Ctrl + G**     |             跳转到指定行             |
 |          |                      |                                      |
+

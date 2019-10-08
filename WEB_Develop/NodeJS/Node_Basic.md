@@ -1,4 +1,8 @@
-# Node.js 概述
+# Node.js_Basic
+
+
+
+## Node.js 概述
 
 - Node.js 是JavaScript运行时环境
 
@@ -18,7 +22,7 @@
 
   
 
-# Node.js 特性
+## Node.js 特性
 
 - event-driven 事件驱动
 
@@ -28,7 +32,7 @@
 
 
 
-# Node.js 功能
+## Node.js 功能
 
 - WEB服务器后台
   - B/S编程模型（与语言无关）
@@ -49,11 +53,11 @@
 
 
 
-# Node.js 基本操作
+## Node.js 基本操作
 
 
 
-## 执行文件
+### 执行文件
 
 ```shell
 
@@ -67,7 +71,7 @@ $node begin.js
 
 
 
-## 读取文件
+### 读取文件
 
 ```js
 
@@ -92,7 +96,7 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
 
 
 
-## 写入文件
+### 写入文件
 
 ```js
 
@@ -112,7 +116,7 @@ fs.writeFile('url','content',function(error){ // content: 写入文件内容   e
 
 
 
-## 创建服务器
+### 创建服务器
 
 ```javascript
 
@@ -159,14 +163,14 @@ server.listen(3000,function(){
 
 
 
-# Node.js 中 的 JavaScript
+## Node.js 中 的 JavaScript
 
 - EcmaScript
 - 核心模块
 - 第三方模块
 - 用户自定义模块
 
-## 核心模块
+### 核心模块
 
 Node为JavaScript提供了很多服务器级别的API，而且这些API绝大多数都被包装到了一个具名的核心模块中。他们都有自己特殊的名称标识，若要使用这些模块，必须用  ***require***  加载模块。
 
@@ -188,9 +192,9 @@ console.log(path.extname('url'))
 
 
 
-## 用户定义模块
+### 用户定义模块
 
-### require  方法
+#### require  方法
 
 ​	**用来加载模块，并执行里面的代码**（ 可加载执行多个JavaScript脚本文件 ）
 
@@ -228,7 +232,7 @@ console.log(path.extname('url'))
 
 
 
-### exports 对象
+#### exports 对象
 
 **每个文件模块都提供了  *exports*  对象 （ 默认是空对象 ）**
 
@@ -263,18 +267,18 @@ console.log(path.extname('url'))
   console.log(bExports.foo)
   console.log(bExports.add(10, 210))
   
-------------------------------------------
   ```
-  
-  
-
- 
-
-# Web 服务端开发
 
 
 
-## IP地址  与  端口号
+
+
+
+## Web 服务端开发
+
+
+
+### IP地址  与  端口号
 
 
 
@@ -298,9 +302,9 @@ console.log(path.extname('url'))
 
 
 
-## Content-Type
+### Content-Type
 
-- 服务端发送的数据默认，是utf8编码的
+- 服务端发送的数据默认，是utf-8编码的
 - 浏览器在不知道服务器响应内容的编码的情况下，会按照当前操作系统默认的编码去解析
   - 中文操作系统默认编码是 GBK
   - 在http协议中 Content-Type是用来告知，对方给你发送数据内容的数据类型
@@ -322,3 +326,5 @@ console.log(path.extname('url'))
   - 对于文本类型的数据，最好都加上编码，目的是为了防止中文解析乱码问题
 
   
+
+- 除了用 Content-Type 指定编码，也可以在HTML页面，通过meta元数据（用来 描述、特征、信息，存储内容的数据）来声明当前文本的编码格式
