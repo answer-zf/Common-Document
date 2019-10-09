@@ -94,3 +94,32 @@ server.listen('3000', function() {
 
 
 
+## node.js 使用模板引擎
+
+- npm 下载
+
+- require 引入第三方模板
+
+- var result = template.render('模板字符串'，{ 解析替换对象 })
+
+- response.end( result )
+
+  ```js
+  
+  var template = require('art-template')
+  var html = `
+  name : {{name}}
+  age : {{age}}
+  hb : {{each hb}} {{$value}} {{/each}}
+  `
+  
+  var res = template.render(html, {
+    name: 'ans',
+    age: 18,
+    hb: ['adsf', '123', 'pipo']
+  })
+  
+  ```
+
+  
+

@@ -1,3 +1,7 @@
+# AJAX
+
+
+
 ## JAVASCRIPT与服务端进行交互
 
 ``` js
@@ -180,6 +184,9 @@ echo substr($target,5);
 
 
 #### artTemplate
+
+- 创建 type =  type="text/x-art-template" 的script 标签 建立模板
+- 使用代码引入模板引擎：var html = template('script 标签 id', {对象})
 
 ```html
 
