@@ -1,8 +1,12 @@
-# JS_Basic
+# JavaScript
 
 
 
-## return    break    continue	
+## JS_Basic
+
+
+
+### return    break    continue	
 
 ```js
 return    break    continue					  
@@ -16,7 +20,7 @@ continue    终止单次循环，不能跳出循环   		程度最小    执行�
 
 
 
-## 逻辑运算符优先级
+### 逻辑运算符优先级
 
 ```js
 	!  >  &&   >   ||
@@ -24,7 +28,7 @@ continue    终止单次循环，不能跳出循环   		程度最小    执行�
 
 
 
-## 模板字符串（H5新增）
+### 模板字符串（H5新增）
 
 ```js
 // 支持解析变量 、 支持换行
@@ -40,7 +44,7 @@ ep      str=`a
 
 
 
-## 正则
+### 正则
 
 ```js
 // 创建正则
@@ -58,7 +62,7 @@ rec.exec('str')					// 提取组
 
 
 
-# 常用API
+## 常用API
 
 ```js
 
@@ -86,7 +90,7 @@ toString()
 
 
 
-# JQuery
+## JQuery
 
 
 
@@ -137,7 +141,86 @@ $('.avatar').fadeOut(function() {
 
 
 
-# DOM
+## each or Foreach
+
+### jQuery中的each
+
+- $.each(数组, function)
+
+- $('div').each(function) 一般用于遍历 jQuery 选择器选择到的伪数组实例对象
+
+- 同时也是低版本浏览器中 forEach的替代品
+
+- 但jQuery的实例对象不能用forEach方法，如果想要使用要转为数组
+
+  `;[].slice.call($('div')).forEach(function (item) {console.log(item)})`
+
+###  EcmaScript 5中的forEach
+
+- forEach 是 EcmaScript 5 中的一个数组遍历函数，是 JavaScript 原生支持的遍历方法 可以遍历任何可以被遍历的成员
+- jQuery 的 each 方法和 forEach 几乎一致
+- 由于 forEach 是 EcmaScript 5 中的，故不兼容 **IE8**
+
+```javascript
+
+// IE 8 不支持
+;['abc', 'd', 'efg'].forEach(function (item, index) {
+  console.log(item)
+})
+
+// 遍历 jQuery 元素
+$.each(['abc', 'd', 'efg'], function (index, item) {
+  console.log(item)
+})
+
+// $('#id') => 伪数组  是对象
+// 对象的原型链中没有 forEach
+// 对象的原型链是 Object.prototype
+// 这个 each 是 jQuery 提供的
+// 这个 each 在 jQuery 的原型链中
+// $('div').each(function (index, item) {
+//   console.log(item)
+// })
+
+// jQuery 不是专门用来遍历 jQuery 元素的
+// 1. 方便的遍历 jQuery 元素
+// 2. 可以在不兼容 forEach 的低版本浏览器中使用 jQuery 的 each 方法
+
+ ;[].slice.call($('div')).forEach(function (item) {console.log(item)})
+
+```
+
+```js
+Array.prototype.mySlice = function () {
+  var start = 0
+  var end = this.length
+  if (arguments.length === 1) {
+    start = arguments[0]
+  } else if (arguments.length === 2) {
+    start = arguments[0]
+    end = arguments[1]
+  }
+  var tmp = []
+  for (var i = start; i < end; i++) {
+    tmp.push(this[i])
+  }
+  return tmp
+}
+
+var fakeArr = {
+  0: 'abc',
+  1: 'efg',
+  2: 'haha',
+  length: 3
+}
+
+// 所以你就得到了真正的数组。 
+[].mySlice.call(fakeArr)
+```
+
+
+
+## DOM
 
 
 
@@ -149,7 +232,7 @@ $('.avatar').fadeOut(function() {
 
 
 
-### attr   or   prop
+#### attr   or   prop
 
 ```js
 
@@ -163,7 +246,7 @@ prop('search','?id=' + check_id)  //search的值是 href值中的 包含？之�
 
 
 
-### DOM 操作
+#### DOM 操作
 
 ```js
 
@@ -177,7 +260,7 @@ document.body.removeChild('')  // 在目标元素中删除子元素
 
 
 
-### 访问自定义属性 data-...
+#### 访问自定义属性 data-...
 
 ```js
 
@@ -189,7 +272,7 @@ document.body.removeChild('')  // 在目标元素中删除子元素
 
 
 
-# JSON
+## JSON
 
 ```js
 es5中有JSON对象（内置对象）
@@ -199,6 +282,4 @@ es5中有JSON对象（内置对象）
 	JSON.stringify(arr)		==>  将数组转换为json格式的字符串
 
 ```
-
-
 

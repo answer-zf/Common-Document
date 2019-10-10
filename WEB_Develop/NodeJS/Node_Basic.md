@@ -244,7 +244,8 @@ Node为JavaScript提供了很多服务器级别的API，而且这些API绝大多
 
 - 文件操作的核心模块：fs
 - 服务构建的核心模块：http
-- 路径操作的核心模块：path
+- 路径处理的核心模块：path
+- 路径操作的核心模块：url
 - 操作系统信息的核心模块：os
 - ...
 
@@ -308,6 +309,8 @@ console.log(path.extname('url'))
 
 - 把需要被外部访问的成员手动挂载到 ***exports*** 接口对象中
 
+- 多次在 **exports** 添加成员，实现对外导出多个内部成员
+
 - 哪个文件 ***require*** 这个的模块，就可以得到模块内部的   ***exports***  接口对象
 
   - 即：***require***  的返回值
@@ -337,9 +340,11 @@ console.log(path.extname('url'))
   
   ```
 
+- 一个模块需要直接导出某个成员，而非挂载的方式必须使用
 
+  `module.exports = add`
 
-
+  - add 可为 function，string， array。。都可以
 
 
 ## Web 服务端开发
@@ -459,6 +464,10 @@ http
 
 - 状态码设置 302临时重定向
 
+  - 301为永久重定向 浏览器会记住
+  - a  => b ,下次请求a，不经过a 直接到b
+  - 302为临时重定向 浏览器会记住
+    - a  => b ,下次继续请求a，a  => b
   - response.statusCode = 302
 
 - 响应头中通过 Location告诉客户端往哪重定向
