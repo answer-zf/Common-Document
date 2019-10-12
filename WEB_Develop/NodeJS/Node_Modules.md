@@ -422,12 +422,60 @@ app.get('/', function(req, res) {
 })
 ```
 
+- 获取get请求的参数
+
+  ```js
+  var comment = req.query 
+  ```
+
 post:
 
 ```js
 // 当以 post 方法请求 / 的时候，执行对应的处理函数 => 路由 / 映射关系
 app.post('/', function(req, res) {
   res.send('Got a POST request')
+})
+```
+
+重定向：
+
+```js
+res.redirect('/')
+```
+
+
+
+#### 在Express中获取 POST 请求体数据
+
+在Express中没有内置获取表单 POST 请求体的API，需要主要使用第三方包：`body-parser` 中间件（插件，专门用来解析表单 post 请求体）
+
+安装：
+
+```js
+npm install --save body-parser
+```
+
+配置：
+
+```js
+var express = require('express')
+var bodyParser = require('body-parser')
+
+var app = express()
+
+// 配置 body-parser
+// 加入这个配置后,则在 req 请求对象上会多出来一个属性： body
+// 通过 req.body 获取表单 POST 请求体数据
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
+
+app.use(function (req, res) {
+  res.setHeader('Content-Type', 'text/plain')
+  res.write('you posted:\n')
+  // 
+  res.end(JSON.stringify(req.body, null, 2))
 })
 ```
 
@@ -483,6 +531,7 @@ app.engine('html', require('express-art-template'))
 ```js
 app.get('/', function(req, res) {
   // express 默认会去项目中的 views 目录中找 index.html
+  // render方法 => 渲染文件 详解见说明
   res.render('index.html', {
      title: 'hello world'
   })
@@ -496,7 +545,7 @@ app.get('/', function(req, res) {
   app.set('views', 目录路径)
   ```
 
-#### 原理:
+#### 说明:
 
 - **配置art-template 模板引擎**
 
