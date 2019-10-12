@@ -422,12 +422,6 @@ app.get('/', function(req, res) {
 })
 ```
 
-- 获取get请求的参数
-
-  ```js
-  var comment = req.query 
-  ```
-
 post:
 
 ```js
@@ -443,9 +437,39 @@ app.post('/', function(req, res) {
 res.redirect('/')
 ```
 
+#### 静态服务
 
+```js
+## └─Project Directory
+##    └─public
+## 			 └─main.js
 
-#### 在Express中获取 POST 请求体数据
+// 当以 /public/ 开头的时候 ，去 ./public/ 目录中 查找对应的资源
+app.use('/public/', express.static('./public/'))      ## 推荐
+--------
+## 访问路径：http://127.0.0.1:5000/public/main.js
+
+// 当省略第一个参数的时候，可以通过省略/public的方式来访问
+app.use(express.static('./public/'))
+--------
+## 访问路径：http://127.0.0.1:5000/main.js
+
+// /a 相当于 /public的别名
+app.use('/static/', express.static('./public/'))
+--------
+## 访问路径：http://127.0.0.1:5000/static/main.js
+
+```
+
+#### 在Express中获取表单 GET请求参数
+
+Express内置了一个API，可以直接通过 `req.query` 来获取
+
+```js
+req.query
+```
+
+#### 在Express中获取表单 POST 请求体数据
 
 在Express中没有内置获取表单 POST 请求体的API，需要主要使用第三方包：`body-parser` 中间件（插件，专门用来解析表单 post 请求体）
 
@@ -471,38 +495,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+```
+
+使用：
+
+```js
 app.use(function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
   res.write('you posted:\n')
-  // 
+  // 可以通过 req.body 来获取表单 POST 请求体数据
   res.end(JSON.stringify(req.body, null, 2))
 })
-```
-
-
-
-#### 静态服务
-
-```js
-## └─Project Directory
-##    └─public
-## 			 └─main.js
-
-// 当以 /public/ 开头的时候 ，去 ./public/ 目录中 查找对应的资源
-app.use('/public/', express.static('./public/'))      ## 推荐
---------
-## 访问路径：http://127.0.0.1:5000/public/main.js
-
-// 当省略第一个参数的时候，可以通过省略/public的方式来访问
-app.use(express.static('./public/'))
---------
-## 访问路径：http://127.0.0.1:5000/main.js
-
-// /a 相当于 /public的别名
-app.use('/static/', express.static('./public/'))
---------
-## 访问路径：http://127.0.0.1:5000/static/main.js
-
 ```
 
 

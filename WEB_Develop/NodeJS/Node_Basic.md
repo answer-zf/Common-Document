@@ -92,6 +92,9 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
 
 ## ps: data 返回的数据是将文件存储的二进制数据 转为 十六进制数据，展现
 ##	   可以用 toString 方法转为 字符串
+
+## readFile 的第二个参数是可选的，传入 utf8 就是告诉他把读取到的文件直接按照 utf8 编码转成字符串
+## 等价于 data.toString()
 ```
 
 
