@@ -117,7 +117,7 @@ var custom = require('module')
 - .js     后缀名可以省略
 - ./      当前目录 （不可省略）
 - ../     上一级目录 （不可省略）
-- /xxx	( 首位的  / 表示当前文件模块所属磁盘根路径)  ==>  几乎不用
+- /xxx	绝对路径 ( 首位的  / 表示当前文件模块所属磁盘根路径)  ==>  几乎不用
 - d:/xxxx  绝对路径   ==>  几乎不用 
 
 **既不是核心模块，也不是路径形式的模块**
@@ -288,7 +288,7 @@ npm install --global npm     ## 升级npm
 
 #### npm 常用命令
 
-- npm init
+- npm init [--yes]
   - npm init -y 跳过向导，快速生成
 - npm install
   - 一次性把 dependencies 选项中的依赖项全部安装
@@ -324,6 +324,7 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
    npm install --global cnpm
    ## --global表示安装到全局，而非当前目录
    ## 这条命令中 --global不能省略
+   ## 所有需要用 --global 来安装的包都可以在任意目录执行
    ```
 
 2. 安装时包时将`npm` 替换成 `cnpm`
@@ -368,3 +369,176 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
   -  直接使用 `npm install` 找回
     - `npm install` 自动把package.json 中的dependencies 中所有的依赖项，都下载回来.
 
+
+
+## Node_Express
+
+**原生的http在某些方面不足以应对我们对开发的需求，需要使用框架加快开发效率，框架的目的就是提高效率，让代码更高度统一。**
+
+**在 Node 中有很多web开发框架，Express是其中一种**     http://expressjs.com/
+
+
+
+### 起步
+
+#### 安装：
+
+```js
+npm install --save express
+```
+
+
+
+#### hello world
+
+```js
+var express = require('express')
+// 创建app   =>相当于 http.creataServer
+var app = express()
+app.get('/', function(req, res) {
+  res.send('hello world')
+})
+app.listen(5000, function() {
+  console.log('express app is running...')
+})
+```
+
+
+
+#### 基本路由 router
+
+路由
+
+- 请求方法
+- 请求路径
+- 请求处理函数
+
+get：
+
+```js
+// 当以 get 方法请求 / 的时候，执行对应的处理函数 => 路由 / 映射关系
+app.get('/', function(req, res) {
+  res.send('hello world')
+})
+```
+
+post:
+
+```js
+// 当以 post 方法请求 / 的时候，执行对应的处理函数 => 路由 / 映射关系
+app.post('/', function(req, res) {
+  res.send('Got a POST request')
+})
+```
+
+
+
+#### 静态服务
+
+```js
+## └─Project Directory
+##    └─public
+## 			 └─main.js
+
+// 当以 /public/ 开头的时候 ，去 ./public/ 目录中 查找对应的资源
+app.use('/public/', express.static('./public/'))      ## 推荐
+--------
+## 访问路径：http://127.0.0.1:5000/public/main.js
+
+// 当省略第一个参数的时候，可以通过省略/public的方式来访问
+app.use(express.static('./public/'))
+--------
+## 访问路径：http://127.0.0.1:5000/main.js
+
+// /a 相当于 /public的别名
+app.use('/static/', express.static('./public/'))
+--------
+## 访问路径：http://127.0.0.1:5000/static/main.js
+
+```
+
+
+
+### 在Express中配置使用art-template模板引擎
+
+- [art-template - GitHub 仓库](https://github.com/aui/art-template)
+
+- [art-template - 官方文档](https://aui.github.io/art-template/zh-cn/index.html)
+
+####安装：
+
+```shell
+npm install --save art-template
+npm install --save express-art-template
+```
+
+####配置：
+
+```js
+app.engine('html', require('express-art-template'))
+```
+
+####使用：
+
+```js
+app.get('/', function(req, res) {
+  // express 默认会去项目中的 views 目录中找 index.html
+  res.render('index.html', {
+     title: 'hello world'
+  })
+})
+```
+
+- 如果希望修改默认的 `views` 视图渲染存储目录
+
+  ```js
+  // 注意第一个参数 views 千万不能错
+  app.set('views', 目录路径)
+  ```
+
+#### 原理:
+
+- **配置art-template 模板引擎**
+
+  ```js
+  app.engine('art', require('express-art-template'))
+  ```
+
+  - 第一个参数表示：当渲染以 .art 结尾的文件的时候，使用 art-template 模板引擎
+    - 个人习惯 `app.engine('html', require('express-art-template'))`
+  - express-art-template 是专门用来在 Express 中 把 art-template 整合到 Express中
+  - 虽然这里不需要加载 art-template 但是也必须安装
+  - 原因是 express-art-template 依赖了 art-template
+
+- **使用art-template 模板引擎**
+
+  - Express 为 Response 相应对象提供了一个方法：render
+  - render 方法默认是不可以使用的，但是如果配置了模板引擎就可以使用了
+
+  ```js
+  res.render('html模板名', {模板数据})
+  ```
+
+  - 第一个参数不能写路径，默认会去项目中的 views 目录查找该模板文件
+  - Express有个约定，开发人员把所有的视图文件都放到 views 目录中
+
+  ```js
+  app.get('/', function(req, res) {
+    res.render('index.html')// 若不需要模板引擎渲染，第二个参数不用传，直接渲染文件页面
+  })
+  ```
+
+  - 若要访问 views 下目录中的文件，直接跳过 views/ 即可
+
+  ```js
+  ## └─ views
+  ##    └─ admin
+  ## 			 └─ index.js
+  app.get('/admin', function(req, res) {
+    res.render('admin/index.html', {
+      title: 'index page'
+    })
+  })
+  ```
+
+  
