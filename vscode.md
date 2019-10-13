@@ -77,7 +77,6 @@ $ Git History
 $ GitLens — Git supercharged
 $ HTML CSS Support
 $ HTML Snippets
-$ Markdown Preview Enhanced
 $ npm Intellisense
 $ open in browser
 $ Path Intellisense
@@ -105,6 +104,12 @@ $ indent-rainbow：突出显示缩进。
 $ Vetur
 $ ESLint
 $ Prettier - Code formatter
+
+markdown
+$ Markdown All in One
+$ Markdown Shortcuts
+$ Markdown Preview Enhanced
+$ markdownlint
 
 ```
 
