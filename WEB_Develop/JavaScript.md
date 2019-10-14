@@ -287,19 +287,76 @@ es5中有JSON对象（内置对象）
 
 ## 回调函数：获取异步操作结果
 
+不成立情况：
+
+```js
+function add(x, y){
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+        return ret
+    }, 1000)
+    console.log(3)
+    // 到这里执行结束，不会等到前面的定时器，所以直接返回默认值 undefined
+}
+console.log(add(10, 20)) // => undefined
+```
+
+不成立情况：
+
+```js
+function add(x, y){
+    var ret
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+    }, 1000)
+    console.log(3)
+    return ret
+}
+console.log(add(10, 20)) // => undefined
+```
+
 **如果需要获取一个函数异步操作的结果，必须使用回调函数来获取**
 
 ```js
-function fn (callback) {
-  setTimeout(function () {
-    var data = 'callback'
-    callback(data)
-  }, 3000);
+function add(x, y, callback){
+    // callback 就是回调函数
+    setTimeout(function () {
+        var ret = x + y
+       	callback(ret)  // ret -> 实参
+    }, 1000)
 }
-fn(function (data) {
+add(10, 20, function (ret) {  // ret -> 形参
+    console.log(ret)
+}) 
+```
+
+基于原生XMLHTTPRequest封装get 方法
+
+```js
+function get(url, callback) {
+  var oReq = new XMLHttpRequest()
+  // 当请求加载成功之后要调用指定的函数
+  oReq.onload = function () {
+    callback(oReq.responseText)
+  }
+  oReq.open("get", url, true)
+  oReq.send()
+}
+
+get('data.json', function (data) {
   console.log(data)
 })
 ```
 
 
 
+- 异步API 一般都 伴随着回调函数(上层定义，下层调用)
+  - setTimeout
+  - readFile
+  - writeFile
+  - readdir
+  - ajax
