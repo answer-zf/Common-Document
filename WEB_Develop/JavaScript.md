@@ -283,3 +283,23 @@ es5中有JSON对象（内置对象）
 
 ```
 
+
+
+## 回调函数：获取异步操作结果
+
+**如果需要获取一个函数异步操作的结果，必须使用回调函数来获取**
+
+```js
+function fn (callback) {
+  setTimeout(function () {
+    var data = 'callback'
+    callback(data)
+  }, 3000);
+}
+fn(function (data) {
+  console.log(data)
+})
+```
+
+
+
