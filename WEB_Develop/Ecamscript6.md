@@ -8,6 +8,8 @@
 
 ### find
 
+方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 undefined
+
 #### 语法：
 
 ```js
@@ -60,3 +62,14 @@ var ret = users.myFind(function (item, index) {
 })
 ```
 
+every  -- 方法测试一个数组内的所有元素是否都能通过某个指定函数的测试。它返回一个布尔值。 
+
+some  --  方法测试数组中是不是有元素通过了被提供的函数测试。它返回的是一个Boolean类型的值。 
+
+findIndex--  方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined)。
+
+includes  --   方法返回数组中满足提供的测试函数的第一个元素的索引。否则返回-1。 
+
+map --  方法创建一个新数组，其结果是该数组中的每个元素都调用一个提供的函数后返回的结果。 
+
+reduce --  方法对数组中的每个元素执行一个由您提供的**reducer**函数(升序执行)，将其结果汇总为单个返回值 

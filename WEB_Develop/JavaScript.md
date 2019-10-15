@@ -287,7 +287,7 @@ es5中有JSON对象（内置对象）
 
 ## 回调函数：获取异步操作结果
 
-不成立情况：
+~~不成立情况：~~
 
 ```js
 function add(x, y){
@@ -303,7 +303,7 @@ function add(x, y){
 console.log(add(10, 20)) // => undefined
 ```
 
-不成立情况：
+~~不成立情况：~~
 
 ```js
 function add(x, y){
