@@ -40,3 +40,23 @@ var found = array.find(function(item) {
 console.log(found)  // 结果：130
 ```
 
+ #### 底层原理
+
+```js
+// find 接收一个方法作为参数，方法内部返回一个条件
+// find 会遍历所有的元素，执行你给定的带有条件返回值的函数
+// 符合该条件的元素会作为 find 方法的返回值
+// 如果遍历结束还没有符合该条件的元素，则返回 undefined
+Array.prototype.myFind = function (conditionFunc) {
+  for (var i = 0; i < this.length; i++) {
+    if (conditionFunc(this[i], i)) {
+      return this[i]
+    }
+  }
+}
+
+var ret = users.myFind(function (item, index) {
+  return item.id === 2
+})
+```
+

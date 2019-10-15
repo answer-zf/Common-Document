@@ -369,7 +369,24 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
   -  直接使用 `npm install` 找回
     - `npm install` 自动把package.json 中的dependencies 中所有的依赖项，都下载回来.
 
+#### package.json 和 package-lock.json
 
+npm5 以前是不会有 `package-lock.json` 这个文件的
+
+npm5以后才加入的
+
+当你安装包的时候，npm 都会生成或者更新 `package-lock.json` 这个文件
+
+- npm5以后的版本安装包，不需要加 `--save` 参数，他会自动保存依赖信息
+- 当安装包的时候，会自动创建或者是更新 `package-lock.json` 这个文件
+- `package-lock.json` 会保存 `node_modules` 中所有包的信息（版本、下载地址）
+  - 这样的话重新 `npm install` 的时候速度就可以提升
+- 从文件看来，有一个 `lock` 称之为 锁
+- 这个`lock` 是用来锁定版本的
+- 如果项目依赖1.1.1版本
+- 你重新install 其实会下载最新版本，而不是1.1.1
+- 我们的目的希望可以锁住1.1.1这个版本
+- `package-lock.json`这个文件的另一个作用就是锁定版本号，防止自动升级到最新版本
 
 ## Node_Express
 
@@ -516,20 +533,20 @@ app.use(function (req, res) {
 
 - [art-template - 官方文档](https://aui.github.io/art-template/zh-cn/index.html)
 
-####安装：
+#### 安装：
 
 ```shell
 npm install --save art-template
 npm install --save express-art-template
 ```
 
-####配置：
+#### 配置：
 
 ```js
 app.engine('html', require('express-art-template'))
 ```
 
-####使用：
+#### 使用：
 
 ```js
 app.get('/', function(req, res) {
