@@ -181,3 +181,181 @@ kitty.save(function (err) {
 })
 ```
 
+#### 官方指南
+
+#####设计 Schema 发布 Module
+
+```js
+var mongoose = require('mongoose')
+
+var Schema = mongoose.Schema
+// 1. 连接数据库
+// 指定连接的数据库不需要存在，当你插入第一条数据之后就会自动被创建出来
+mongoose.connect('mongodb://localhost/text')
+
+// 2. 设计文档结构（表结构）
+// 字段名称就是表结构中的属性名称
+// 约束的目的是为了保护数据的完整性，避免脏数据
+var userSchema = new Schema({
+  username: {
+    type: String,
+    required: true // 必须有
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String
+  }
+})
+
+// 3. 将文档架构发布为模型
+//    mongoose.model 方法就是用来将一个架构发布为 model
+//    第一个参数：传入一个大写名词单数字符串用来表示数据库名称
+//              mongoose 会自动将大写名词的字符串生成 小写复数 的集合名称
+//    第二个参数：架构 Schema
+//    返回值：模型构造函数
+var User = mongoose.model('User', userSchema)
+
+// 4. 使用这个构造函数 操作 users 集合中的数据
+```
+
+##### 增加数据
+
+```js
+var admin = new User({
+  username: 'admin',
+  password: '123456',
+  email: 'admin@admin.com'
+})
+
+admin.save(function(err, ret) {
+  if (err) {
+    console.log('保存失败')
+  } else {
+    console.log('保存成功')
+    console.log(ret)
+  }
+})
+```
+
+##### 查询数据
+
+查询所有：
+
+```js
+User.find(function(err, ret) {
+  if (err) {
+    console.log('查询失败')
+  } else {
+    console.log(ret)
+  }
+})
+```
+
+按条件查询所有：
+
+```js
+User.find(
+  {
+    username: 'zhangsan'
+  },
+  function(err, ret) {
+    if (err) {
+      console.log('查询失败')
+    } else {
+      console.log(ret)
+    }
+  }
+)
+```
+
+
+
+按条件查询单个：
+
+```js
+User.findOne(
+  {
+    username: 'zhangsan'
+  },
+  function(err, ret) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(ret)
+    }
+  }
+)
+```
+
+##### 删除数据
+
+根据条件删除所有：
+
+```js
+User.remove(
+  {
+    username: 'zhangsan'
+  },
+  function(err, ret) {
+    if (err) {
+      console.log('删除数据')
+    } else {
+      console.log('删除成功')
+    }
+  }
+)
+```
+
+根据条件删除一个：
+
+```js
+Model.findOneAndeRemove(conditions, [options], [callback])
+```
+
+根据id删除一个：
+
+```js
+Model.findByIdAndeRemove(id, [options], [callback])
+```
+
+##### 更新数据
+
+根据条件更新所有：
+
+```js
+Module.update(conditions, doc, [options], [callback])
+```
+
+根据指定条件更新一个：
+
+```js
+Module.findOneAndUpdate([conditions], [update], [options], [callback])
+```
+
+根据id更新一个：
+
+```js
+User.findByIdAndUpdate(
+  '5da6b53252309800c0231134',
+  {
+    password: '963'
+  },
+  function(err, ret) {
+    if (err) {
+      console.log('更新失败')
+    } else {
+      console.log('更新成功')
+    }
+  }
+)
+```
+
+
+
+
+
+
+

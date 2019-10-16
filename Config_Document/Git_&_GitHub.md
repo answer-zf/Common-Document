@@ -1,4 +1,4 @@
-# Git
+## 1Git
 
 
 
@@ -310,12 +310,13 @@ https://answer-zf.github.io
 
 ## GIT 报错集合
 
-```shell
-
+```
 warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
+
 The file will have its original line endings in your working directory
 
+
 ## 解决
+
 git config --global core.autocrlf false
-```
 
