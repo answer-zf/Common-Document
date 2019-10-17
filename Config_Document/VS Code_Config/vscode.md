@@ -110,7 +110,8 @@ $ Markdown All in One
 $ Markdown Shortcuts
 $ Markdown Preview Enhanced
 $ markdownlint
-
+字体图标
+Icon Fonts
 ```
 
 
@@ -188,11 +189,15 @@ module.exports = {
 
 
 
-| Ctrl + W               |            关闭编辑器            |
-| :--------------------- | :------------------------------: |
-| Ctrl + Backspace       |      删除光标之前的一个单词      |
-| Ctrl + delete          |      删除光标之后的一个单词      |
-| Ctrl + Pagedown/Pageup |   在已经打开的文件之间进行切换   |
-| Ctrl + Tab             |   在已经打开的文件之间进行跳转   |
-| Ctrl + P               | 在当前的项目工程里，全局搜索文件 |
+| Ctrl + W               |              关闭编辑器              |
+| :--------------------- | :----------------------------------: |
+| Ctrl + Backspace       |        删除光标之前的一个单词        |
+| Ctrl + delete          |        删除光标之后的一个单词        |
+| Ctrl + Pagedown/Pageup |     在已经打开的文件之间进行切换     |
+| Ctrl + Tab             |     在已经打开的文件之间进行跳转     |
+| Ctrl + P               |   在当前的项目工程里，全局搜索文件   |
+| **quokka**             |                                      |
+| Ctrl + K    Q          | 打开新的quokka文件    =>  JavaScript |
+| Ctrl + K     J         | 打开新的quokka文件    =>  TypeScript |
+| Ctrl + K    T          |          在现有文件重新启动          |
 

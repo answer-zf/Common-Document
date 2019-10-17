@@ -47,6 +47,21 @@
     },
     "git.enableSmartCommit": true,
     "git.autofetch": true
-}   
+} 
 ```
 
+gits仓库
+
+```
+tokens
+0e233203e4d00e6103a766ef027f1ae134adc724
+```
+
+ npm install -g eslint
+
+ npm i -g eslint-config-standard 
+
+npm install -g eslint-plugin-react
+npm install -g eslint-plugin-html 
+
+npm install -g eslint-plugin-vue

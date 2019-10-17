@@ -1124,7 +1124,67 @@ app.get('/', function(req, res) {
 
 
 
+## 异步编程
 
+### Promise
+
+callbackhell：
+
+![callbackhell](media/NodeJS. assets/callbackhell.jpg)
+
+无法保证顺序的代码：
+
+```js
+
+var fs = require('fs')
+
+fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+  if (err) {
+    // return console.log('读取失败')
+    // 抛出异常（做测试的时候经常使用）
+    //    1. 阻止程序的执行
+    //    2. 把错误消息打印到控制台
+    throw err
+  }
+  console.log(data)
+})
+
+fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+})
+
+fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+})
+
+```
+
+通过回调嵌套的方式来保证顺序：
+
+```js
+
+var fs = require('fs')
+
+fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+  fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+    if (err) { throw err }
+    console.log(data)
+    fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+      if (err) { throw err }
+      console.log(data)
+    })
+  })
+})
+
+```
+
+为了解决以上编码方式带来的问题（回调地狱嵌套），在Ecamscript 6 中新增了一个API：`Promise`
+
+- Promise  -  承诺、保证
 
 ## 其他：
 

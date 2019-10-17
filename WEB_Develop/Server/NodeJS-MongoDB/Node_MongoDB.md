@@ -126,7 +126,7 @@ exit
 
 - 插入数据
 
-  ![插入数据](../../../mackdown_UsePic/MongoDB_cmd.png)
+  ![MongoDB_cmd](media/Node_MongoDB. assets/MongoDB_cmd.png)
 
 ## 在 Node 中操作 MongoDB 数据库
 
@@ -352,10 +352,5 @@ User.findByIdAndUpdate(
   }
 )
 ```
-
-
-
-
-
 
 
