@@ -1126,7 +1126,85 @@ app.get('/', function(req, res) {
 
 ## 异步编程
 
+### 回调函数：获取异步操作结果
+
+~~不成立情况：~~
+
+```js
+function add(x, y){
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+        return ret
+    }, 1000)
+    console.log(3)
+    // 到这里执行结束，不会等到前面的定时器，所以直接返回默认值 undefined
+}
+console.log(add(10, 20)) // => undefined
+```
+
+~~不成立情况：~~
+
+```js
+function add(x, y){
+    var ret
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+    }, 1000)
+    console.log(3)
+    return ret
+}
+console.log(add(10, 20)) // => undefined
+```
+
+**如果需要获取一个函数异步操作的结果，必须使用回调函数来获取**
+
+```js
+function add(x, y, callback){
+    // callback 就是回调函数
+    setTimeout(function () {
+        var ret = x + y
+       	callback(ret)  // ret -> 实参
+    }, 1000)
+}
+add(10, 20, function (ret) {  // ret -> 形参
+    console.log(ret)
+}) 
+```
+
+基于原生XMLHTTPRequest封装get 方法
+
+```js
+function get(url, callback) {
+  var oReq = new XMLHttpRequest()
+  // 当请求加载成功之后要调用指定的函数
+  oReq.onload = function () {
+    callback(oReq.responseText)
+  }
+  oReq.open("get", url, true)
+  oReq.send()
+}
+
+get('data.json', function (data) {
+  console.log(data)
+})
+```
+
+
+
+- 异步API 一般都 伴随着回调函数(上层定义，下层调用)
+  - setTimeout
+  - readFile
+  - writeFile
+  - readdir
+  - ajax
+
 ### Promise
+
+#### 前提
 
 callbackhell：
 
@@ -1184,7 +1262,50 @@ fs.readFile('./data/a.txt', 'utf8', function (err, data) {
 
 为了解决以上编码方式带来的问题（回调地狱嵌套），在Ecamscript 6 中新增了一个API：`Promise`
 
+#### Promise基本语法
+
 - Promise  -  承诺、保证
+
+```js
+
+var fs = require('fs')
+// promise是一个构造函数
+// 不是异步，但里面往往封装一个异步任务
+
+// 创建 Promise 容器
+// Promise 容器一旦创建，就开始执行里面的代码
+var p1 = new Promise(function(resolve, reject) {
+  fs.readFile('./data/a.txt', 'utf8', function(err, data) {
+    if (err) {
+      // 承诺容器中的任务失败，
+      // console.log(err)
+      // 把容器中的 Pending 状态变为 rejected
+      // 调用 reject 就相当于调用了 then 方法的第二个参数
+      reject(err)
+    } else {
+      // 承诺容器中的任务成功，
+      // console.log(data)
+      // 把容器中的 Pending 状态变为 resolved
+      // 调用 resolve 就相当于调用了 then 方法的传递的那个function
+      resolve(data)
+    }
+  })
+})
+
+// 当 p1 成功了 然后（then） 做指定操作
+// then 方法接收的 function 就是容器中的 resolve 函数
+p1.then(
+  function(data) {
+    console.log(data)
+  },
+  function(err) {
+    console.log(err)
+  }
+)
+
+```
+
+
 
 ## 其他：
 

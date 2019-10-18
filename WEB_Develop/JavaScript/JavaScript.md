@@ -285,78 +285,33 @@ es5中有JSON对象（内置对象）
 
 
 
-## 回调函数：获取异步操作结果
+## JavaScript 模块化
 
-~~不成立情况：~~
-
-```js
-function add(x, y){
-    console.log(1)
-    setTimeout(function () {
-        console.log(2)
-        var ret = x + y
-        return ret
-    }, 1000)
-    console.log(3)
-    // 到这里执行结束，不会等到前面的定时器，所以直接返回默认值 undefined
-}
-console.log(add(10, 20)) // => undefined
-```
-
-~~不成立情况：~~
-
-```js
-function add(x, y){
-    var ret
-    console.log(1)
-    setTimeout(function () {
-        console.log(2)
-        var ret = x + y
-    }, 1000)
-    console.log(3)
-    return ret
-}
-console.log(add(10, 20)) // => undefined
-```
-
-**如果需要获取一个函数异步操作的结果，必须使用回调函数来获取**
-
-```js
-function add(x, y, callback){
-    // callback 就是回调函数
-    setTimeout(function () {
-        var ret = x + y
-       	callback(ret)  // ret -> 实参
-    }, 1000)
-}
-add(10, 20, function (ret) {  // ret -> 形参
-    console.log(ret)
-}) 
-```
-
-基于原生XMLHTTPRequest封装get 方法
-
-```js
-function get(url, callback) {
-  var oReq = new XMLHttpRequest()
-  // 当请求加载成功之后要调用指定的函数
-  oReq.onload = function () {
-    callback(oReq.responseText)
-  }
-  oReq.open("get", url, true)
-  oReq.send()
-}
-
-get('data.json', function (data) {
-  console.log(data)
-})
-```
-
-
-
-- 异步API 一般都 伴随着回调函数(上层定义，下层调用)
-  - setTimeout
-  - readFile
-  - writeFile
-  - readdir
-  - ajax
++ PHP 中为什么就可以直接 `require`、`include` 因为 PHP 当初在设计的时候就加入了这个功能
++ PHP 这门语言天生就支持
++ 模块作用域
++ 可以使用 API 来进行文件与文件之间的依赖加载
++ 在 Node 这个环境中对 JavaScript 进行了特殊的模块化支持 CommonJS
++ JavaScript 天生不支持模块化
+  * require
+  * exports
+  * Node.js 才有的
++ 在浏览器中也可以像在 Node 中的模块一样来进行编程
+  * `<script>` 标签来引用加载，而且你还必须考虑加载的顺序问题
+  * require.js 第三方库 AMD
+  * sea.js     第三方库 CMD
++ 无论是 CommonJS、AMD、CMD、UMD、EcmaScript 6 Modules 官方规范
+  * 都是为了解决 JavaScript 的模块化问题
+  * CommonJS、AMD、CMD 都是民间搞出来的
+  * EcmaScript 是官方规范定义
+  * 官方看民间都在乱搞，开发人员为了在不同的环境使用不同的 JavaScript 模块化解决方案
+  * 所以 EcmaScript 在 2015 年发布了 EcmaScript 2016 官方标准
+  * 其中就包含了官方对 JavaScript 模块化的支持
+  * 也就是说语言天生就支持了
+  * 但是虽然标准已经发布了，但是很多 JavaScript 运行换将还不支持
+  * Node 也是只在 8.5 版本之后才对 EcmaScript 6 module 进行了支持
+  * 后面学 Vue 的时候会去学习
+  * less 编译器 > css
+  * EcmaScript 6 -> 编译器 -> EcmaScript 5
+  * 目前的前端情况都是使用很多新技术，然后利用编译器工具打包可以在低版本浏览器运行。
+  * 使用新技术的目的就是为了提高效率，增加可维护性
