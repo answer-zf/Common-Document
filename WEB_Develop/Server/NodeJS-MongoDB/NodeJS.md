@@ -1275,19 +1275,19 @@ var fs = require('fs')
 // 创建 Promise 容器
 // Promise 容器一旦创建，就开始执行里面的代码
 var p1 = new Promise(function(resolve, reject) {
-  fs.readFile('./data/a.txt', 'utf8', function(err, data) {
+  fs.readFile('./data/a.txt', 'utf8', function(err, data) {  ## 异步任务
     if (err) {
       // 承诺容器中的任务失败，
       // console.log(err)
       // 把容器中的 Pending 状态变为 rejected
       // 调用 reject 就相当于调用了 then 方法的第二个参数
-      reject(err)
+      reject(err)  ## 失败调用
     } else {
       // 承诺容器中的任务成功，
       // console.log(data)
       // 把容器中的 Pending 状态变为 resolved
       // 调用 resolve 就相当于调用了 then 方法的传递的那个function
-      resolve(data)
+      resolve(data)  ## 成功调用
     }
   })
 })
@@ -1306,6 +1306,91 @@ p1.then(
 ```
 
 
+
+#### Promise的封装
+
+实例推导（ readFile ）
+
+- 异步调用链式编程
+
+```js
+var fs = require('fs')
+
+var p1 = new Promise(function(resolve, reject) {
+  fs.readFile('./data/a.txt', 'utf8', function(err, data) {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(data)
+    }
+  })
+})
+var p2 = /...
+var p3 = /...
+p1.then(
+  function(data) {
+    console.log(data)
+    // 当 p1 读取成功的时候
+    // 当前函数中 return 的结果就可以在后面的 then 中 function 接收到，故：
+    // 当 return 123 后面就接收到 123
+    // 没有 return 后面就接收的是 undefined
+    // 同理可以 return 一个 Promise 对象
+    // 当 return 一个Promise 对象的时候，后续的then中的 方法的第一个参数会作为p2 的 resolve
+    return p2
+  },
+  function(err) {
+    console.log(err)
+  }
+)
+  .then(function(data) {
+    console.log(data)
+    return p3
+  })
+  .then(function(data) {
+    console.log(data)
+    console.log('end')
+  })
+```
+
+
+
+![Snipaste_2019-10-19_15-40-57](media/NodeJS. assets/Snipaste_2019-10-19_15-40-57.jpg)
+
+
+
+=>  封装实例	promise
+
+```js
+
+var fs = require('fs')
+
+function pReadFile(filePath) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+pReadFile('./data/a.txt')
+  .then(function(data) {
+    console.log(data)
+    return pReadFile('./data/b.txt')
+  })
+  .then(function(data) {
+    console.log(data)
+    return pReadFile('./data/c.txt')
+  })
+  .then(function(data) {
+    console.log(data)
+  })
+
+```
+
+ h
 
 ## 其他：
 
@@ -1333,14 +1418,35 @@ nodemon app.js
 ### 文件操作中的 `/` 与模块标识中的 `/`
 
 - **文件标识中的路径可以省略 `./` **
-
 - **在模块加载中，相对路径中的 `./` 不能省略**
 
+### 快捷创建服务
 
+#### http-server
 
-### 所有文件操作的API都是异步操作
+##### 安装
 
+```shell
+npm install -g http-server@0.9.0 ## 新版本报错
+```
 
+##### 启动
 
+```shell
+hs -c-l -o
+```
 
+#### json-server
+
+##### 安装
+
+```shell
+npm install -g json-server
+```
+
+##### 启动
+
+```shell
+json-server --watch 文件名 
+```
 

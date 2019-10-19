@@ -95,3 +95,12 @@
 | Ctrl + K J | 打开新的quokka文件 => TypeScript |
 | Ctrl + K T | 在现有文件重新启动               |
 
+
+
+ ### Settings Sync（ 配置同步 ）
+
+| 快捷键          | 作用     |
+| --------------- | -------- |
+| Shift + Alt + U | 上传配置 |
+| Shift + Alt + D | 下载配置 |
+

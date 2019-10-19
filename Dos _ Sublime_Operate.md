@@ -88,18 +88,20 @@ $ cat >> a.txt （回车后 添加内容）
 
 ```shell
 
-##查询服务
+## 查询服务
 $sc query MySQL
 
-##启动服务
+## 启动服务
 $net start MySQL
 		
-##停止服务
+## 停止服务
 $net stop MySQL
 		
-##删除服务
+## 删除服务
 $sc delete MySQL
 
+## 查询端口情况
+$ netstat -ano
 ```
 
 
