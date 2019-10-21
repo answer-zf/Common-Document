@@ -65,3 +65,4 @@ npm install -g eslint-plugin-react
 npm install -g eslint-plugin-html 
 
 npm install -g eslint-plugin-vue
+

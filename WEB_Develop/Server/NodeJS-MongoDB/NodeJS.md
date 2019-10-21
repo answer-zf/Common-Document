@@ -868,6 +868,131 @@ npm5以后才加入的
 - 我们的目的希望可以锁住1.1.1这个版本
 - `package-lock.json`这个文件的另一个作用就是锁定版本号，防止自动升级到最新版本
 
+## path路径操作模块
+
+> 参考文档： https://nodejs.org/dist/latest-v12.x/docs/api/path.html 
+
+### 常用API：
+
+- path.basename
+  
+  - 获取一个路径的文件名（默认包含扩展名）
+- path.dirname
+  
+  - 获取一个路径中的目录部分
+- path.extname
+  
+  - 获取一个路径中的扩展名部分
+- path.parse
+  - 把一个路径转为对象
+    - root 根路径
+    - dir 目录
+    - base 包含后缀名的文件名
+    - ext 后缀名
+    - name 不包含后缀名的文件名
+
+- path.isAbsolute 
+
+  - 判断一个路径是不是绝对路径
+
+- path.join()
+
+  - 作用：拼接路径
+  - 参数可以为任意，多写或者少写 `/` 不影响
+
+  ```js
+  
+  path.join('c:/a', 'b')
+  -- 'c:\\a\\b'
+  
+  path.join('c:/a', '/b', 'c/', './f')
+  -- 'c:\\a\\b\\c\\f'
+  
+  ```
+
+
+
+
+![Snipaste_2019-10-20_15-29-18](C:\Users\answer_zf\Desktop\Snipaste_2019-10-20_15-29-18.png)
+
+
+
+## Node 中的其他成员
+
+在每个模块中，出来 `require` 、`exports`等模块相关API之外，还有两个特殊的成员：
+
+-  `__dirname` **动态获取** 当前文件模块所属目录的绝对路径
+-  `__filename` **动态获取** 当前文件的绝对路径
+- `__dirname` 和 `__filename`  不受 node 命令所属路径影响
+
+### 使用前提
+
+在文件操作路径中，相对路径设计的就是相对于执行 node 命令所处的路径
+
+```js
+fs.readFile('./a.txt',function(...){...})
+-- 相对于执行 node 命令所处的终端路径
+```
+
+### 问题
+
+```js
+## ├─app.js
+## └─foo
+##    ├─a.txt
+##    └─index.js
+
+var fs = require('fs')
+fs.readFile('./a.txt', function(err, data){
+    if (err) { throw err }
+    console.log(data)
+})
+--------------------------- index.js
+
+var fooIndex = require('./foo/index')
+--------------------------- app.js
+
+// 在app.js 当前目录执行终端 则加载不到 a.txt 
+```
+
+在文件操作中，使用相对路径是不可靠的，因为在 Node 中文操作的路径被设计为相对于执行 node 命令所处的路径。（不是 bug ）
+
+为了解决这个问题：把相对路径变为绝对路径即可
+
+### 解决
+
+可以使用 `__dirname` 或者 `__filename` 解决问题
+
+```js
+fs.readFile(__dirname + '/a.txt', function(err, data){
+    if (err) { throw err }   // node 执行中会把 / 转为 \
+    console.log(data)
+})
+--------------------------- index.js
+```
+
+在拼接路径的过程中，为了避免手动拼接带来的低级错误，推荐多使用, `path.join()`来辅助拼接。
+
+```js
+fs.readFile(path.join(__dirname, './a.txt'), 'utf8', function(err, data){
+    if (err) { throw err }
+    console.log(data)
+})
+--------------------------- index.js
+```
+
+
+
+ 为了尽量避免前面所描述的问题，以后文件操作中使用的相对路径都统一转换为 **动态的绝对路径**。
+
+
+
+> 补充： 模块中的路径标识和文件操作中的相对路径标识，不一样
+>
+> ​			模块中的路径标识就是相对于当前文件模块就，不受执行 node 命令所处路径影响
+
+
+
 ## Node_Express
 
 **原生的http在某些方面不足以应对我们对开发的需求，需要使用框架加快开发效率，框架的目的就是提高效率，让代码更高度统一。**
@@ -1203,6 +1328,8 @@ get('data.json', function (data) {
   - ajax
 
 ### Promise
+
+>  参考文档：http://es6.ruanyifeng.com/#docs/promise 
 
 #### 前提
 
