@@ -183,7 +183,7 @@ kitty.save(function (err) {
 
 #### 官方指南
 
-#####设计 Schema 发布 Module
+#####设计 Schema 发布 Module 
 
 ```js
 var mongoose = require('mongoose')
@@ -200,13 +200,6 @@ var userSchema = new Schema({
   username: {
     type: String,
     required: true // 必须有
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String
   }
 })
 
@@ -220,6 +213,30 @@ var User = mongoose.model('User', userSchema)
 
 // 4. 使用这个构造函数 操作 users 集合中的数据
 ```
+
+##### 设计Schema
+
+```js
+var userSchema = new Schema({
+    email : {
+    type: String,
+    required: true // 必填的
+  },
+    gender: {
+    type: Number,
+    enum: [-1, 0, 1],  // 枚举， 三个值内选一个
+    default: -1
+  },
+	  created_time: {
+    type: Date,
+    default: Date.now
+  }
+  // 不能是 Date.now() 会即刻调用 （死数据）
+  // 用 Date.now 方法 ：当 new model 时 用户没有传递 create_time ，mongoose 会调用 default指定的 Date.now 方法，使用其返回值作为默认值
+})
+```
+
+
 
 ##### 增加数据
 
