@@ -110,7 +110,7 @@ $ netstat -ano
 
 ```shell
 
-sysdm.cpl
+sysdm.cpl  cmd 开启服务
 
 ##显示桌面			==>   win + D
 
@@ -129,6 +129,12 @@ sysdm.cpl
 ##切换输入法    	   ==>   WIN + space
 
 ##自定义截图		   ==>   WIN + SHFIT +S
+```
+
+```
+win + Ctrl + D       新建桌面
+win + Ctrl + 方向键   切换桌面
+win + tab						 列表
 ```
 
 

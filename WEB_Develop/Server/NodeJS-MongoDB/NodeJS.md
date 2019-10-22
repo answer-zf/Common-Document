@@ -1140,6 +1140,12 @@ app.use(function (req, res) {
 
 ```
 
+#### 其他方法
+
+##### Express 中的 json 方法
+
+- 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
+
 
 
 ### 在Express中配置使用art-template模板引擎
@@ -1347,7 +1353,7 @@ fs.readFile('./data/a.txt', 'utf8', function (err, data) {
   if (err) {
     // return console.log('读取失败')
     // 抛出异常（做测试的时候经常使用）
-    //    1. 阻止程序的执行
+    //    1. 阻止程序的执行 （程序奔溃直接退出）
     //    2. 把错误消息打印到控制台
     throw err
   }
