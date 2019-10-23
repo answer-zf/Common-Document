@@ -1241,6 +1241,40 @@ app.get('/', function(req, res) {
 
   
 
+### Express 中配置使用 Express-session
+
+express 中默认不支持 session 和 cookie，使用第三方中间件 `express-session`解决
+
+安装： 
+
+`npm install express-session`
+
+配置：（必须在 app.use(router)之前）
+
+- 该插件会为 req 请求对象添加一个成员：`req.session`，默认是一个对象。
+
+```js
+var session = require('express-session')
+app.use(session({
+  // 配置加密字符串，会在原有加密基础之上，和这个字符串拼起来去加密
+  // 目的为了增加安全性，防止客户端恶意伪造
+  secret: 'keyboard cat', 
+  resave: false,
+  saveUninitialized: true // 无论是否使用 session ，默认直接分配一把钥匙（空 session ）
+  												// false：存数据的时候才会分配钥匙
+}))
+```
+
+使用：
+
+- 可以通过 req.session 来发访问和设置 Session 成员
+  - 添加 session 数据：
+    - req.session.foo = 'bar'
+  - 获取 session 数据：
+    - req.session.foo
+
+提示：默认Session 数据是内存存储的，服务器一旦存储就会丢失，真正的生产环境会把 Session 进行持久化存储。
+
 ## crud案例
 
 ### 模块化思想
