@@ -106,7 +106,7 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
 var fs = require('fs')
 fs.readdir('url', function(err, files) {  // files: 返回数组
   if (err) {
-    res.end('Not Found Root Dir')
+    res.end(err.message) // err对象 中有一个属性 message 
     return
   }
   console.log(files)  
@@ -1272,6 +1272,8 @@ app.use(session({
     - req.session.foo = 'bar'
   - 获取 session 数据：
     - req.session.foo
+  - 删除 session 数据：
+    - req.session.foo = null
 
 提示：默认Session 数据是内存存储的，服务器一旦存储就会丢失，真正的生产环境会把 Session 进行持久化存储。
 
@@ -1366,6 +1368,8 @@ get('data.json', function (data) {
   - writeFile
   - readdir
   - ajax
+
+- a 链接默认是同步请求
 
 ### Promise
 
