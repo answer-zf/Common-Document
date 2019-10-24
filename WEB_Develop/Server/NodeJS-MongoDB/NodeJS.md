@@ -1274,8 +1274,144 @@ app.use(session({
     - req.session.foo
   - 删除 session 数据：
     - req.session.foo = null
+    - 更严谨的做法使用 `delete` 语法
+      - delete req.session.foo
 
 提示：默认Session 数据是内存存储的，服务器一旦存储就会丢失，真正的生产环境会把 Session 进行持久化存储。
+
+
+
+### 中间件
+
+ http://expressjs.com/en/guide/using-middleware.html 
+
+![1-130I0234953631](media/NodeJS. assets/1-130I0234953631.png)
+
+中间件的本质就是一个请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，这样做的目的是提高代码的灵活性，动态可扩展。
+
+- 同一个请求所经过的中间件都是同一个请求对象和响应对象。
+
+#### 中间件类目
+
+##### 应用程序级别中间件
+
+万能匹配（不关心任何请求路径和请求方法）：
+
+```js
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now())
+  next()
+})
+```
+
+只要是以 `/xxx/` 开头的：
+
+```js
+app.use('/a', function (req, res, next) {
+  console.log('Time:', Date.now())
+  next()
+})
+```
+
+##### 路由级别中间件
+
+get:
+
+```js
+app.get('/', function (req, res) {
+	res.send('Hello World!')
+})
+```
+
+post:
+
+```js
+app.post('/', function (req, res) {
+	res.send('Got a POST request')
+})
+```
+
+put:
+
+```js
+app.put('/user', function (req, res) {
+	res.send('Got a PUT request at /user')
+})
+```
+
+delete:
+
+```js
+app.delete('/user', function (req, res) {
+	res.send('Got a DELETE request at /user')
+})
+```
+
+##### 错误处理中间件
+
+```js
+app.use(function (err, req, res, next) {
+	console.error(err.stack)
+	res.status(500).send('Something broke!')
+})
+```
+
+##### 内置中间件
+
+- [express.static](http://expressjs.com/en/4x/api.html#express.static) serves static assets such as HTML files, images, and so on.
+- [express.json](http://expressjs.com/en/4x/api.html#express.json) parses incoming requests with JSON payloads. **NOTE: Available with Express 4.16.0+**
+- [express.urlencoded](http://expressjs.com/en/4x/api.html#express.urlencoded) parses incoming requests with URL-encoded payloads. **NOTE: Available with Express 4.16.0+**
+
+##### 第三方中间件
+
+ http://expressjs.com/en/guide/using-middleware.html 
+
+-  [body-parser](http://expressjs.com/en/resources/middleware/body-parser.html) 
+
+-  [compression](http://expressjs.com/en/resources/middleware/compression.html) 
+-  [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html) 
+-  [morgan](http://expressjs.com/en/resources/middleware/morgan.html) 
+-  [response-time](http://expressjs.com/en/resources/middleware/response-time.html) 
+-  [serve-static](http://expressjs.com/en/resources/middleware/serve-static.html) 
+-  [session](http://expressjs.com/en/resources/middleware/session.html) 
+
+#### 中间件应用
+
+##### 配置处理 404 的中间件
+
+```js
+// 在项目入口文件的最后（app.listen之前）
+app.use(function(req, res) {
+  res.render('404.html')
+})
+```
+
+##### 配置全局处理中间件
+
+- 当调用 next 的时候，如果传递了参数，则直接往后找到带有 四个参数的应用程序级别中间件
+
+  ```js
+  // 在项目入口文件的最后（app.listen之前）
+  app.use(function (err, req, res, next) {
+    res.status(500).send(err.message)
+  })
+  ```
+
+- 当发生错误的时候，我们可以调用 next 传递错误对象
+
+  ```js
+  ···
+  if (err) {
+    return next(err) // 省去大量重复代码
+  }
+  ···
+  ```
+
+- 然后就会被全局错误处理中间件匹配到并处理之
+
+
+
+
 
 ## crud案例
 
