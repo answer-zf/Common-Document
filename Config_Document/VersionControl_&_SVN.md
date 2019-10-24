@@ -19,3 +19,50 @@
 
 # SVN
 
+SVN 全称 Apache Subversion，是一个开放源代码的集中式版本管理系统。
+在 2000 年由 CollabNet 开发，现已发展成为 Apache 软件基金会的一个开源项目。
+
+## 环境安装
+
+### 使用 VisualSVN 搭建 SVN 服务器：
+
+SVN 服务器：运行 Subversion 服务的计算机。
+
+为了方便，我们这里使用比较流行的图形化工具 `VisualSVN`
+来搭建我们的 SVN 服务。
+
+安装：
+
+​	 [https://www.visualsvn.com](https://www.visualsvn.com/)  = >  VisualSVN Server = > download
+
+配置：
+
+- 记住设置的端口号
+
+- 安装完毕之后，基本使用流程如下：
+  - 创建用户 `users` 
+  - 创建版本仓库 `Repositories`
+  - 设定用户权限
+
+
+
+### 使用 TortoiseSVN 作为 SVN 客户端
+
+SVN 客户端：用户通过SVN客户端同SVN服务器交互。
+
+这里我们使用最流行的 `TortoiseSVN`
+
+安装：
+
+​	 https://tortoisesvn.net/index.zh.html  = > download
+
+TortoiseSVN 客户端基本操作流程：
+
+- 检出项目：`checkout`
+  + 在没有源代码的前提下，需要通过 tortoise-svn 客户端下载
+- 提交修改：`commit`
+  + 帮你记录当前开发的软件的状态
+- 更新文件或目录：`update`（更新）
+  + 别的开发人员在已有源代码的前提下可以通过 update 更新服务器上最新的版本
+- 查看版本日志：`log`（日志）
+
