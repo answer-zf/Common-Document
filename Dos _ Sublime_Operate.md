@@ -142,6 +142,8 @@ win + tab						 列表
 ## Sublime
 
 ```shell
+## 命令行 用 sublime 打开当前目录
+subl .
 
 ##删除整行  		==>    CTRL + SHIFT + K 
 
