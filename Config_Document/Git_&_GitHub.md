@@ -1,4 +1,23 @@
-## 1Git
+# Git
+
+[维基百科 - Git](https://zh.wikipedia.org/wiki/Git)
+
+## Git 介绍
+
+- [Git教程 - 廖雪峰](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/)
+- [Pro Git](http://git.oschina.net/progit/)
+- [git - 简明指南](http://rogerdudler.github.io/git-guide/index.zh.html)
+- [猴子都能懂的GIT入门](http://backlogtool.com/git-guide/cn/)
+
+
+
+## Git 使用交互流程
+
+![git交互模型](media/Git_&_GitHub. assets/git交互模型-1571974764974.png)
+
+## 安装和配置 Git 环境
+
+下载地址：https://git-scm.com/
 
 
 
@@ -320,3 +339,5 @@ The file will have its original line endings in your working directory
 
 git config --global core.autocrlf false
 
+
+```
