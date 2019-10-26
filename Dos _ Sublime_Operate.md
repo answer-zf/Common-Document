@@ -142,8 +142,11 @@ win + tab						 列表
 ## Sublime
 
 ```shell
-## 命令行 用 sublime 打开当前目录
+## 命令行 用 sublime 打开当前目录 .表示当前目录
 subl .
+
+## 命令行 用 vscode 打开当前目录
+code .
 
 ##删除整行  		==>    CTRL + SHIFT + K 
 

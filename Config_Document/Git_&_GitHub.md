@@ -21,38 +21,66 @@
 
 
 
-## 初始化Git仓库
+### git-bash 常用命令
+
+- pwd
+- ls
+  + ls -a
+- cd
+- mkdir
+- clear
+- rmdir
+  + 只能删除空目录
+- rm ( Linux兼容 Mac 通用 )
+  + rm 文件名
+  + rm -rf 目录名 
+    * 注：很强大，可以删除非空目录，以及一些比较顽固的文件或者目录
+
+
+
+### 初始化Git仓库
 
 ```shell
-
 ## 找到目标文件夹并进入
 
 ## 右键  选择 Git Bash Here
 
-$ git init
-
+git init
 ```
 
 
 
-## 配置个人信息
+### 配置个人信息
 
 ```shell
 
 ## 方便每次备份将使用者信息备份起来，方便操作
 
-## 配置用户名
- 
-$ git config --global user.name "answer-zf"
+# 设置用户名
+git config --global user.name "answer-zf"
 
-## 配置邮箱
-$ git config --global user.email "feng18255163789@gmail"
+# 配置用户邮箱
+git config --global user.email "feng18255163789@gmail"
+
+# 设置 gitk 图形查看工具中文显示默认编码（防止乱码）
+git config --global gui.encoding utf-8
+
+# 查看配置列表项
+git config --list
 
 ```
 
 
 
-## 将文件备份到Git仓库中
+## 基本使用
+
+
+
+### 将文件备份到Git仓库中
+
+**操作 Git 的基本工作流程就是先修改文件，然后执行 `git add` 命令。**
+**`git add` 命令会把文件加入到暂存区，接着就可以执行 `git commit` 命令，将文件存入文档库，**
+**从而形成一次历史记录。**
 
 ```shell
 
@@ -74,11 +102,12 @@ $ git add ./	## 当前文件夹所有文件
 
 ## 一次性把所有修改后的文件直接放到版本库中
 $ git commit --all -m "这是一次性操作"        ## --all : 把所有修改后的文件直接放到版本库中
+
 ```
 
 
 
-## 查看状态
+### 查看状态
 
 ```shell
 
@@ -96,7 +125,7 @@ $ git status
 
 
 
-## 查看提交日志
+### 查看提交日志
 
 ``` shell
 
@@ -329,7 +358,7 @@ https://answer-zf.github.io
 
 ## GIT 报错集合
 
-```
+```shell
 warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
 
 The file will have its original line endings in your working directory
