@@ -6,18 +6,19 @@
 
 ```shell
 
-##切盘
+## 切盘
 $ D:
 
-##删除文件
+## 删除文件
 $ del
 
-##退出dos
+## 退出dos
 $ exit
 
-##清空命令行
+## 清空命令行
 $ cls
 
+## &&   同时执行两个操作 用 && 衔接
 ```
 
 
@@ -28,8 +29,7 @@ $ cls
 
 ##显示目录
 $ dir   ## 详细
-$ ls		## 简明   显示不隐藏的文件与文件夹
-$ ls -a		## 显示当前目录下的所有文件及文件夹包括隐藏的.和..等
+
 ##创建目录
 $ md 目录名
 
@@ -89,22 +89,36 @@ $ cat >> a.txt （回车后 添加内容）
 ```shell
 
 ## 查询服务
-$sc query MySQL
+sc query MySQL
 
 ## 启动服务
-$net start MySQL
+net start MySQL
 		
 ## 停止服务
-$net stop MySQL
+net stop MySQL
 		
 ## 删除服务
-$sc delete MySQL
+sc delete MySQL
 
 ## 查询端口情况
-$ netstat -ano
+netstat -ano
 ```
 
 
+
+## Linux
+
+
+
+- `ls`       显示不隐藏的文件与文件夹
+  - `ls -a`	显示当前目录下的所有文件及文件夹包括隐藏的.和..等
+
+- `pwd`     显示工作目录 
+
+- `rm`       ( Linux兼容 Mac 通用 )  删除一个文件或者目录 
+  - `rm 文件名`
+  - `rm -rf 目录名` 
+    - 注：很强大，可以删除非空目录，以及一些比较顽固的文件或者目录
 
 ## Window
 

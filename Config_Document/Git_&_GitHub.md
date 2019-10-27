@@ -23,18 +23,7 @@
 
 ### git-bash 常用命令
 
-- pwd
-- ls
-  + ls -a
-- cd
-- mkdir
-- clear
-- rmdir
-  + 只能删除空目录
-- rm ( Linux兼容 Mac 通用 )
-  + rm 文件名
-  + rm -rf 目录名 
-    * 注：很强大，可以删除非空目录，以及一些比较顽固的文件或者目录
+git-bash 
 
 
 
@@ -46,11 +35,17 @@
 ## 右键  选择 Git Bash Here
 
 git init
+
+git init 项目名称
+## 自动创建 项目目录 并且 初始化git 仓库
+
 ```
 
 
 
 ### 配置个人信息
+
+在用户目录下生成 `.gitconfig` 文件
 
 ```shell
 
@@ -140,6 +135,24 @@ $ git log --oneline
 $ git reflog
 
 ```
+
+
+
+### 打开图形界面
+
+```shell
+$ gitk 
+```
+
+
+
+## Git 各分区职责
+
+暂存区：
+
+- 可作为临时版本库
+- 可将修改的多个文件分多次提交
+  - 按照不同的修改分类提交
 
 
 
@@ -356,17 +369,22 @@ https://answer-zf.github.io
 
 
 
-## GIT 报错集合
+# GIT 报错集合
+
+## 将文件存放置暂存区警告：
+
+> warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
+>
+> The file will have its original line endings in your working directory
+
+解决：
 
 ```shell
-warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
-
-The file will have its original line endings in your working directory
-
-
-## 解决
-
 git config --global core.autocrlf false
-
-
 ```
+
+
+
+## Git Bash 中文乱码：
+
+![Snipaste_2019-10-27_14-04-08](media/Git_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
