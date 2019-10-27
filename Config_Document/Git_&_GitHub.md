@@ -227,11 +227,140 @@ $ git merge dev
 
 # GitHub
 
+**让你使用社交化的方式进行编程协作**
+
+**主要作用：**
+
+- 可以免费在线托管你的仓库
+- 可以实现多人协作
+- 提供了一个可视化界面（Web Page）让你能直观清晰的了解你的项目源代码
+
+## 基本使用
+
+- 注册
+- 登陆
+- 创建远程仓库
+- 通过 `git clone` 命令下载远程仓库到本地
+  + git clone 会自动帮你把远程仓库下载到本地，不需要再去 git init 了
+  + 通过 clone 下来的仓库，git 有一个远程仓库地址列表，git 默认会把你 clone 的地址起一个别名：origin
+  + 然后你执行 push 的时候实际上就是将本地的版本提交到 origin 上
+- 在本地进行操作，通过 `git commit` 形成历史记录
+- 通过 `git push` 将本地仓库中的历史记录提交到远程仓库
 
 
-## GitHub上传
 
-### Https上传
+## 本地已有仓库，需要提交到线上
+
+如果是本地  `git init` 出来的仓库，进行 `push` 提交的时候就不知道要往哪里 push。
+
+所以，这里通过 `remote` 相关命令进行设置：
+
+```bash
+# 查看所有的远程仓库信息
+git remote show
+# 根据别名查看指定的远程仓库信息
+git remote show 远程仓库地址别名
+# 添加远程仓库信息
+git remote add 别名 远程仓库地址
+```
+
+通过上面的 `git remote add` 添加完远程仓库地址信息之后，还不能直接 `git push`，必须在每一次
+`push` 的时候加上 `git push 仓库地址别名 master` 就可以提交了。
+
+如果想要省略 `git push` 后面需要指定的 `仓库地址别名 master` 可以通过下面的命令修改：
+
+```
+git push --set-upstream origin master
+```
+
+这样就可以直接使用 `git push` 进行提交而不需要指定 `origin master` 了
+
+
+
+## GitHub 远端交互
+
+### 基本操作
+
+```bash
+# 下载一个远程仓库
+git clone [url]
+
+# 显示所有远程仓库
+git remote -v
+
+# 显示某个远程仓库的信息
+git remote show [remote]
+
+# 增加一个新的远程仓库，并命名
+git remote add [shortname] [url]
+
+# 修改远程仓库地址
+git remote set-url [shortname] [url]
+
+# 取回远程仓库的变化，并与本地分支合并
+git pull [remote] [branch]
+
+# 上传本地指定分支到远程仓库
+git push [remote] [branch]
+
+# 强行推送当前分支到远程仓库，即使有冲突
+git push [remote] --force
+```
+
+
+
+### Clone 与 Pull
+
+**Pull**
+
+```bash
+## 开发优先推荐
+
+## 新建文件并初始化 git仓储
+
+## 从服务器下载 git
+
+git pull https://github.com/asnwer-zf/Common-Document.git master
+```
+
+
+
+**Clone**
+
+```bash
+
+## 不用初始化git仓储，会在本地新建根文件夹
+## 如果多次执行会覆盖本地内容
+git clone https://github.com/asnwer-zf/Common-Document.git
+```
+
+
+
+### Push 与 Pull简化操作
+
+```bash
+
+# 增加一个新的远程仓库，并命名 后
+git push origin master
+
+##*********************************
+## -u 参数关联
+git push -u origin master
+## 后面的提交简化：
+git push
+## 仍然提交上去了
+## -u：把当前分支与远程的指定分支进行关联，即：记住操作
+## 关联以后 git pull 同样可以
+
+## -u 关联在push中进行
+
+```
+
+
+
+### Https上传 与 SSH上传
+
+**Http上传**
 
 ```shell
 
@@ -240,7 +369,9 @@ $ git push https://github.com/answerooo3/Common-Document.git master
 
 ```
 
-### SSH上传
+
+
+**SSH上传**
 
 ```shell
 
@@ -267,33 +398,6 @@ $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 
 
 
-## GitHub下载
-
-### Pull
-
-```shell
-
-## 开发优先推荐
-
-## 新建文件并初始化 git仓储
-
-## 从服务器下载 git
-$ git pull https://github.com/asnwer-zf/Common-Document.git master
-
-```
-
-### Clone
-
-```shell
-
-## 不用初始化git仓储，会在本地新建根文件夹
-## 如果多次执行会覆盖本地内容
-$ git clone https://github.com/asnwer-zf/Common-Document.git
-
-```
-
-
-
 ## GitHub多人开发的冲突问题
 
 ```shell
@@ -307,32 +411,6 @@ $ git clone https://github.com/asnwer-zf/Common-Document.git
 ```
 
 
-
-## Push 与 Pull简化操作
-
-```shell
-
-## 对于经常输入的url地址，可以做类似变量命名的操作简化，但是作用只在本地当前目录
-## 类似修改变量的操作用set-url name url
-## 不是全局
-$ git remote add origin git@github.com:asnwer-zf/Common-Document.git
-$ git remote set-url origin https://github.com/asnwer-zf/ProJect_DaMiJun.git
-$ git push origin master
-
-## origin 类似变量命名的操作
-
-##*********************************
-## -u 参数关联
-$ git push origin -u master
-## 后面的提交简化：
-$ git push
-## 仍然提交上去了
-## -u：把当前分支与远程的指定分支进行关联，即：记住操作
-## 关联以后 git pull 同样可以
-
-## -u 关联在push中进行
-
-```
 
 
 
@@ -388,3 +466,8 @@ git config --global core.autocrlf false
 ## Git Bash 中文乱码：
 
 ![Snipaste_2019-10-27_14-04-08](media/Git_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
+
+
+
+街坊邻居阿斯蒂芬
+
