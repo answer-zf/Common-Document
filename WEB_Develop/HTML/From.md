@@ -24,6 +24,25 @@ autocomplete
 
 
 
+## 文字颜色
+
+```css
+input::-webkit-input-placeholder {
+  color: #182f62;
+}
+input::-moz-placeholder {
+  color: #182f62;
+}
+input:-moz-placeholder {
+  color: #182f62;
+}
+input:-ms-input-placeholder {
+  color: #182f62;
+}
+```
+
+
+
 ## INPUT 额外属性
 
 ```js
@@ -54,7 +73,7 @@ multiple
 
 ## CHECKBOX    
 
-	
+
 	默认提交   			‘on’;
 	
 	设置value提交 		value属性；
@@ -62,22 +81,22 @@ multiple
 	多选提交的话是在name属性后加[]
 	
 		==>   name="funs[]"
-		
+
 
 
 
 ## RADIO
 
-	
+
 	将多个radio的name属性设置成相同的  形成相同的组
 	
 	将value设置成不同的，在服务端辨别选则的是哪个
-			
+
 
 
 
 ## SELECT
 
-	
+
 	如果option有value提交value 如果没value  提交innerhtml、innertext
-			
+
