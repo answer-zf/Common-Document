@@ -80,10 +80,10 @@ git config --list
 ```shell
 
 ## 先存放置暂存区
-$ git add ./readme.md
+git add ./readme.md
 
 ## 再提交到版本库
-$ git commit -m "complete the first function！"    ## -m : 说明信息（便于查看）
+git commit -m "complete the first function！"    ## -m : 说明信息（便于查看）
  
 ----------------------
  	## 不输入 -m 会进去vim编辑器环境输说明信息。
@@ -93,11 +93,28 @@ $ git commit -m "complete the first function！"    ## -m : 说明信息（便�
 ##**************************************************************************
  	
 ## 把所有的文件存放到暂存区
-$ git add ./	## 当前文件夹所有文件
+git add --all
+git add .
+git add ./	## 当前文件夹所有文件
 
 ## 一次性把所有修改后的文件直接放到版本库中
-$ git commit --all -m "这是一次性操作"        ## --all : 把所有修改后的文件直接放到版本库中
+git commit --all -m "这是一次性操作"        ## --all : 把所有修改后的文件直接放到版本库中
 
+```
+
+
+
+### 删除文件
+
+```bash
+# 删除工作区文件，并且将这次删除放入暂存区
+git rm [file1] [file2] ...
+
+# 停止追踪指定文件，但该文件会保留在工作区
+git rm --cached [file]
+
+# 改名文件，并且将这个改名放入暂存区
+git mv [file-original] [file-renamed]
 ```
 
 
@@ -106,7 +123,7 @@ $ git commit --all -m "这是一次性操作"        ## --all : 把所有修改�
 
 ```shell
 
-$ git status
+git status
 
 ## Changes not staged for commit
 ## modified （红色）  =>  文件已修改，但未放入暂存区
@@ -124,14 +141,17 @@ $ git status
 
 ``` shell
 
-## 查看历史日志
-$ git log   ## 如果出现显示bug 输入q 即可。
+# 查看历史日志
+$ git log   
 
-## 查看精简日志，单行显示
+# 查看精简日志，单行显示
 $ git log --oneline
 
-## **************************************************
-## 查看每次切换版本记录
+# **************************************************
+
+# 日志过长会自动进入 less 查看模式
+
+# 查看每次切换版本记录
 $ git reflog
 
 ```
