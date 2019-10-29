@@ -79,32 +79,33 @@ git config --list
 
 ```shell
 
-## 先存放置暂存区
+# 先存放置暂存区
 git add ./readme.md
 
-## 再提交到版本库
-git commit -m "complete the first function！"    ## -m : 说明信息（便于查看）
+# 再提交到版本库
+git commit -m "complete the first function！"    # -m : 说明信息（便于查看）
  
 ----------------------
- 	## 不输入 -m 会进去vim编辑器环境输说明信息。
- 	## 在vim里输入说明信息后 Esc键 + :Wp 即可    ## w：保存 p：退出
- 	## 强制退出：Esc键 + :p
+ 	# 不输入 -m 会进去vim编辑器环境输说明信息。
+ 	# 在vim里输入说明信息后 Esc键 + :Wp 即可    # w：保存 p：退出
+ 	# 强制退出：Esc键 + :p
  	
 ##**************************************************************************
  	
-## 把所有的文件存放到暂存区
+# 把所有的文件存放到暂存区
 git add --all
 git add .
-git add ./	## 当前文件夹所有文件
+git add ./	# 当前文件夹所有文件
 
-## 一次性把所有修改后的文件直接放到版本库中
-git commit --all -m "这是一次性操作"        ## --all : 把所有修改后的文件直接放到版本库中
+# 一次性把所有修改后的文件直接放到版本库中
+git commit --all -m "这是一次性操作"        # --all : 把所有修改后的文件直接放到版本库中
+# 前提所有文件均被版本管理（提交过一次）
 
 ```
 
 
 
-### 删除文件
+### 删除工作区文件 
 
 ```bash
 # 删除工作区文件，并且将这次删除放入暂存区
@@ -121,17 +122,17 @@ git mv [file-original] [file-renamed]
 
 ### 查看状态
 
-```shell
+```bash
 
 git status
 
-## Changes not staged for commit
-## modified （红色）  =>  文件已修改，但未放入暂存区
+# Changes not staged for commit
+# modified （红色）  =>  文件已修改，但未放入暂存区
 
-## Changes to be committed
-## modified （绿色）  =>  文件已经放入暂存区
+# Changes to be committed
+# modified （绿色）  =>  文件已经放入暂存区
 
-## nothing to commit, working tree clean  ==> 文件已经在工作区
+# nothing to commit, working tree clean  ==> 文件已经在工作区
 
 ```
 
@@ -142,17 +143,17 @@ git status
 ``` shell
 
 # 查看历史日志
-$ git log   
+git log   
 
 # 查看精简日志，单行显示
-$ git log --oneline
+git log --oneline
 
 # **************************************************
 
 # 日志过长会自动进入 less 查看模式
 
 # 查看每次切换版本记录
-$ git reflog
+git reflog
 
 ```
 
@@ -161,7 +162,7 @@ $ git reflog
 ### 打开图形界面
 
 ```shell
-$ gitk 
+gitk 
 ```
 
 
