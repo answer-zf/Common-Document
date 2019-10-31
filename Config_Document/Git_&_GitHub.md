@@ -237,6 +237,8 @@ $ git stash pop
 
 ### 分支基础
 
+默认在 git 的仓库中，会有个分支的原点：master
+
 ```shell
 
 # 列出所有本地分支
@@ -277,6 +279,73 @@ $ git branch -d [branch-name]
 ## 合并分支以后，需要手动处理，在提交到主分支中
 
 ```
+
+
+
+## Git 工作流程：分支策略
+
+[Git 工作流程](http://www.ruanyifeng.com/blog/2015/12/git-workflow.html)
+
+### Git Flow
+
+[Git分支管理策略](http://www.ruanyifeng.com/blog/2012/07/git.html) 
+
+### Github Collabrators
+
+这种方式公司团队项目使用居多
+
+- 进入项目
+- settings - > Collaborators 
+- 添加 协作者 
+
+### Github Flow
+
+这种方式开源项目使用居多
+
+- fork
+- clone 到你的本地
+- 在clone下来的项目中拉出一个新的分支
+  + 修改的时候最好是基于 master 拉出一个修改的分支，例如这个分支是用来添加某个功能的
+- 在新分支上开发或者修改完成之后，提交到本地仓库，然后 push 推到自己的账户中 fork 过来的仓库
+- 最后，在 Github 上你 fork 过来的仓库界面中找到 New Pull Request 发起提交请求
+- 对方就会在仓库的 Pull Requests 中收到你发起的提交请求
+  + 然后双方就可以使用社会化交流方式进行沟通协作
+  + 例如 Code Review 代码审查
+- 最后对方审查通过没有问题之后，选择 Merge Request
+- 到此，一个完整的 Github 工作流结束
+- 这种方式开源项目更多一些（大家都不认识）
+
+### Gitlab Flow
+
+#### Gitlab
+
+[Gitlab](https://about.gitlab.com/ )
+
+Gitlab 是一个开源的类似于 Github 的一个系统，开源免费部署到自己的公司内容。
+
+
+
+## GIT 报错集合
+
+### 将文件存放置暂存区警告：
+
+> warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
+>
+> The file will have its original line endings in your working directory
+
+解决：
+
+```shell
+$ git config --global core.autocrlf false
+```
+
+
+
+### Git Bash 中文乱码：
+
+![Snipaste_2019-10-27_14-04-08](media/Git_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
+
+
 
 
 
@@ -469,60 +538,85 @@ $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 
 
 
-## GitHub 创建个人站点
+## GitHub Pages
 
-```shell
+Github Pages 提供了一个免费在线托管静态资源的服务，叫做：Github Pages。
 
-## 访问
-https://answer-zf.github.io
+使用方法如下：
 
-## 创建
-## 1. 新建仓库   注：用户名必须为  answer-zf.github.io
-## 2. 仓库内必须有.html文件
+1. 在个人的 Github 账户中创建一个仓库
+2. 仓库名称必须为 `个人账户名称.github.io`
+3. 往该仓库根目录中提交一个 `index.html` 文件
+4. 然后就可以在地址栏输入 `个人账户名称.github.io` 地址，就可以看到 `index.html` 网页内容了
 
+注意：上面创建的仓库名称必须是 `个人账户名称.github.io` ，否则无法访问
+
+
+
+# Hexo
+
+Hexo 是基于 Node.js 开发的一个静态博客生成器，提供本地实时预览及部署功能。
+基本使用方式如下：
+
+```bash
+npm install -g hexo-cli
+hexo init blog
+cd blog
+
+# 启动本地预览服务，默认是 127.0.0.1:4000
+hexo server
+
+# 新建文章
+hexo new 文章标题
 ```
 
+也可以参考 Hexo 官方文档：https://hexo.io/zh-cn/ , 里面有具体的使用方式。
 
 
-## GitHub 创建项目站点
 
-```shell
+## 自动发布 Hexo 搭建的静态博客
 
-## 访问
-https://answer-zf.github.io
+第一：先修改 `_config.yml` 配置文件，下面是一个示例：
 
-## 创建
-## 1. 进入项目主页，点击 settings
-## 2. 在settings页面，点击 Launch automatic page generator 来自动生成主题页面
-## 3. 新建站点基础信息设置
-## 4. 选择主题
-## 5. 生成网页
-
+```yml
+deploy:
+  type: git
+  repo: https://heima04:heima123456@github.com/heima04/heima04.github.io.git
 ```
 
+上面的配置选项中，一定要注意在 repo 中按照对应的格式加入 Github 用户名和密码。
 
+第二：安装自动发布的插件：
 
-# GIT 报错集合
-
-## 将文件存放置暂存区警告：
-
-> warning: LF will be replaced by CRLF in Config_Document/VS Code_Config/.vscode/settings.json.
->
-> The file will have its original line endings in your working directory
-
-解决：
-
-```shell
-$ git config --global core.autocrlf false
+```bash
+npm install hexo-deployer-git --save
 ```
 
+第三：使用命令一键进行发布：
+
+```bash
+hexo generate --deploy
+# 或者
+hexo deploy --generate
+```
+
+上面两条命令都可以，发布可能有延时，稍微等待即可。
 
 
-## Git Bash 中文乱码：
 
-![Snipaste_2019-10-27_14-04-08](media/Git_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
+## 修改Hexo博客主题
 
+将主题 `clone` 到 `blog\themes` 目录下
 
+```bash
+git clone 路径 --depth=1    # clone 最新的版本
+```
 
+配置：
 
+- 修改 `_config.yml` 配置文件
+
+```
+theme： 所下载的主题文件名
+```
 
