@@ -594,10 +594,14 @@ npm install hexo-deployer-git --save
 
 第三：使用命令一键进行发布：
 
-```bash
+```shell
 hexo generate --deploy
 # 或者
 hexo deploy --generate
+
+# 更新出bug
+hexo clean
+hexo generate --deploy
 ```
 
 上面两条命令都可以，发布可能有延时，稍微等待即可。
