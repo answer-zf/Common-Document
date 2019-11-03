@@ -29,3 +29,11 @@ h3.md-focus.md-heading:before {
   counter-increment: h3;
   content: counter(h1) '.' counter(h2) '.' counter(h3) ' ';
 }
+
+code {
+  padding: 2px 4px;
+  border: 1px solid #999;
+  background: transparent;
+  color: #dd0055;
+}
+
