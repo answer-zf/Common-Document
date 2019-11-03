@@ -773,12 +773,17 @@ npm install --global npm     ## 升级npm
 - npm install
   - 一次性把 dependencies 选项中的依赖项全部安装
   - npm i 
+  - npm install --production
+    - 只安装dependencies 依赖项，不安装devDependencies （用于生产环境）
 - npm install 包名
   - 只下载
   - npm i 包名
 - npm install 包名 --save
   - 下载并保存依赖项（ package.json 文件中的 dependencies 选项）
   - npm i -S 包名
+- npm install 包名 --save-dev
+  - 下载并保存依赖项（ package.json 文件中的 devDependencies 选项 ，对应上文的 --production）
+
 - npm uninstall 包名
   - 只删除，如果有依赖项会依然保存
   - npm un 包名
@@ -789,6 +794,44 @@ npm install --global npm     ## 升级npm
   - 查看使用帮助
 - npm 命令 --help
   - 查看指定命令的使用帮助
+
+####  npm 自定义脚本命令 的配置
+
+- 在 `package.json` 中配置  scripts - 自定义脚本命令
+- 自定义 键 的名字 ，值为对应的命令，使用时 用 `npm run key（所自定义键的名字）`
+  - 键为 `start` 时，可省略 run 即：`npm start`
+- 每一个自定义脚本命令支持一种规则：
+  - `pre + dev（自定义名称）` 
+    -  `npm run dev` 的时候先执行 `predev` 再执行 `dev`
+  -  `post + dev（自定义名称）`
+    -  `npm run dev` 的时候先执行 `dev` 再执行 `postdev`
+
+实例：
+
+```json
+
+// babel 配置后：
+// package.json 中配置  scripts - 自定义脚本命令
+
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    
+    // 开发环境 实时编译 执行
+    "dev": "nodemon main.js",   
+    // 配置后 运行 `$ npm run dev`  ==  `$ nodemon main.js`
+    
+    // 生产环境 转译 后执行 -- 生产环境借助 `@babel/cli` 工具 直接编译成 es5 后运行
+    "build": "npx babel src --out-dir dist",
+    "prestart": "npm run build",    
+    "start": "node dist/app.js"
+     // 配置后 运行 `$ npm start`  先执行 build 在 执行 start
+  }
+}
+
+```
+
+
 
 #### 解决npm被墙问题
 

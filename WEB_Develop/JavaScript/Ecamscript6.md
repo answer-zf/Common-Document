@@ -342,6 +342,10 @@ var o = {
 
 详细配置使用方式请见：http://es6.ruanyifeng.com/#docs/intro#Babel转码器
 
+```shell
+$ npm install --save-dev @babel/cli @babel/core @babel/preset-env @babel/preset-react
+```
+
 **使用 babel-register 作为开发的编译转换环境，可以在代码运行的过程中实时编译转换**
 
 -  在项目目录中，安装 `babel/register`
