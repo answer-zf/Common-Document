@@ -307,3 +307,57 @@ let foo = (x, y) => {
 使用场景：
 
 - 箭头函数最好都用在匿名函数的地方
+
+
+
+### 对象
+
+属性的简洁表示法：
+
+```js
+var foo = 'bar';
+var baz = {foo};
+baz {foo: "bar"}
+
+等同于
+var baz = {foo: foo}
+
+除了属性简写，方法也可以简写:
+var o = {
+  method() {
+    return "Hello!"
+  }
+}
+
+等同于
+
+var o = {
+  method: function() {
+    return "Hello!"
+  }
+}
+```
+
+### babel
+
+详细配置使用方式请见：http://es6.ruanyifeng.com/#docs/intro#Babel转码器
+
+**使用 babel-register 作为开发的编译转换环境，可以在代码运行的过程中实时编译转换**
+
+-  在项目目录中，安装 `babel/register`
+
+  - `$ npm install --save-dev @babel/register`
+
+- 设置钩子文件
+
+  ```js
+  
+  require('babel-register') // 加载一次 babel-register
+  require('./index.js') 		// 指定要加载的自己的入口文件模块
+  
+  // node 钩子文件  index.js 可以实时转码
+  
+  ```
+
+  
+
