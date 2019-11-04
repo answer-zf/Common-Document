@@ -164,9 +164,12 @@ server.on('request', function(request,response){
 })
 
 ## request  请求事件处理函数，需接收两个参数：
-## Request  请求对象（获取客户端请求信息：如请求路径）
+
+## Request  请求对象：用来获取当前客户端的一些请求数据或者请求报文信息
 						## req.url 获取端口号以后的路径，所有url都是以 / 开头的 默认为 /
-## Response 响应对象（给客户端发送响应信息）有 writer方法 ：给客户端发送响应数据
+            ## req.query 用来获取查询字符串数据
+            ## req.method 用来当前请求方法
+## Response 响应对象：用来向当前请求客户端发送消息数据
 						## writer方法 ：给客户端发送响应数据
             ## write 可以使用多次，但是最后一定要使用end结束响应，否则客户端会一直等待。
             ## 简化操作 直接end的同时发送响应数据 response.end('str')
@@ -907,7 +910,7 @@ app.listen(5000, function() {
 
 #### 基本路由 router
 
-路由
+路由：根据不同的请求路径分发到具体的请求处理函数
 
 - 请求方法
 - 请求路径
