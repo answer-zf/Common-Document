@@ -340,28 +340,124 @@ var o = {
 
 ### babel
 
-详细配置使用方式请见：http://es6.ruanyifeng.com/#docs/intro#Babel转码器
+详细配置使用方式请见：[ECMAScript 6 简介](http://es6.ruanyifeng.com/#docs/intro#Babel转码器)
+
+在项目根目录下创建一个 `.babelrc` 文件，写入以下内容：
+
+```json
+{
+  "presets": [
+    "@babel/env",
+    "@babel/preset-react"
+  ],
+  "plugins": []
+}
+
+```
+
+在项目中安装 转码规则、依赖等：
 
 ```shell
 $ npm install --save-dev @babel/cli @babel/core @babel/preset-env @babel/preset-react
 ```
 
-**使用 babel-register 作为开发的编译转换环境，可以在代码运行的过程中实时编译转换**
+使用：（后面的操作，上面的配置必不可少）
 
--  在项目目录中，安装 `babel/register`
+- `babel/cli` 命令行转码
+- `babel/core` 如果某些代码需要调用Babel的API进行转码，就要使用 `babel/core` 模块
 
-  - `$ npm install --save-dev @babel/register`
+- `babel/register ` ：**使用 babel/register 作为开发的编译转换环境，可以在代码运行的过程中实时编译转换**
 
-- 设置钩子文件
+  - 在项目目录中，安装 `babel/register`
 
-  ```js
-  
-  require('babel-register') // 加载一次 babel-register
-  require('./index.js') 		// 指定要加载的自己的入口文件模块
-  
-  // node 钩子文件  index.js 可以实时转码
-  
-  ```
+    - `$ npm install --save-dev @babel/register`
 
-  
+  - 添加钩子文件（main.js）
+
+    ```js
+    
+    require('babel-register')      // 加载一次 babel-register
+    require('核心功能代码入口文件模块')	// 指定要加载的自己的入口文件模块
+    
+    // node 钩子文件  index.js 可以实时转码
+    
+    ```
+
+  - 使用 node 执行 钩子文件（main.js）,而不是入口文件。
+
+
+## Module
+
+模块功能主要由两个命令构成：`export` 和 `import`。`export` 命令用于规定模块的对外接口，`import` 命令用于输入其他模块提供的功能。
+
+ ### 前提
+
+以下实例使用的目录结构：
+
+```js
+
+## └─ducument
+##    ├─main.js
+##    └─index.js
+
+// main.js 加载 index.js
+// export  实例书写在 ：index.js
+// import  实例书写在 ：main.js
+```
+
+
+
+### export
+
+```js
+
+export const foo = 'bar'
+export function f(){}
+
+// 或者
+
+const foo = 'bar'
+function f(){}
+export {
+	foo,
+	f
+}
+
+```
+
+### export default
+
+```js
+
+const foo = 'bar'
+function f(){}
+
+export default {
+	foo,
+	f
+}
+
+```
+
+
+
+### import
+
+通过 `export` 导出的成员：
+
+- 必须通过解构赋值按需加载
+
+  - `import {f, foo} from './main'`
+
+- 通过 `* as 变量名` 的形式加载所有通过 export 关键字导出的接口成员
+
+  - `import * as com from './main'`
+
+
+通过 `export default` 导出的成员：
+
+- 常规加载
+  - `import main from './main'`
+
+`export` 和 `export default` 可以共存
 
