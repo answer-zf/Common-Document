@@ -965,7 +965,6 @@ app.use('/static/', express.static('./public/'))
 --------
 ## 访问路径：http://127.0.0.1:5000/static/main.js
 
-
 ```
 
 #### 在Express中获取表单 GET请求参数
@@ -1003,7 +1002,6 @@ var app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
-
 
 ```
 
@@ -1166,28 +1164,31 @@ app.use(session({
 
 ![1-130I0234953631](media/NodeJS. assets/1-130I0234953631.png)
 
-中间件的本质就是一个请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，这样做的目的是提高代码的灵活性，动态可扩展。
+中间件：用来处理 http 请求的一个具体的环节（可能要执行某个具体的处理函数）
+        	   中间件一般都是通过修改 req 或者 res 对象来为后续的处理提供便利的使用
+
+**中间件的本质** 就是一个请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，这样做的目的是提高代码的灵活性，动态可扩展。
 
 - 同一个请求所经过的中间件都是同一个请求对象和响应对象。
 
 #### 中间件匹配机制
 
+在 http 中，没有请求就没有响应，服务端不可能主动给客户端发请求，就是一问一答的形式
+
 当请求进来，会从第一个中间件开始进行匹配
 
 - 如果匹配，则进来
-
 - 如果请求进入中间件之后，没有调用 next 则代码会停在当前中间件
-
 - 如果调用了 next 则继续向后找到第一个匹配的中间件
-
 - 如果不匹配，则继续判断匹配下一个中间件
 - 如果没有能匹配的中间件，则 Express 会默认输出：Cannot GET 路径
+- 对于一次请求来说，只能响应一次，如果发送了多次响应，则只有第一次生效
 
 #### 中间件类目
 
 ##### 应用程序级别中间件
 
-万能匹配（不关心任何请求路径和请求方法）：
+万能匹配 ：不关心请求方法和请求路径，没有具体路由规则，任何请求都会进入该中间件
 
 ```js
 // 中间件本身是一个方法，该方法接收三个参数：
@@ -1203,7 +1204,7 @@ app.use(function (req, res, next) {
 })
 ```
 
-只要是以 `/xxx/` 开头的：
+只要是以 `/xxx/` 开头的：不关心请求方法，只关心请求路径的中间件
 
 ```js
 app.use('/a', function (req, res, next) {
@@ -1212,7 +1213,7 @@ app.use('/a', function (req, res, next) {
 })
 ```
 
-##### 路由级别中间件
+##### 路由级别中间件（具体路由规则中间件）
 
 get:
 
@@ -1275,6 +1276,49 @@ app.use(function (err, req, res, next) {
 -  [session](http://expressjs.com/en/resources/middleware/session.html) 
 
 #### 中间件应用
+
+##### 模拟封装 `express.static` 
+
+- 前提知识储备：
+
+  - Express内置了一个API，可以通过 `req.path` 来获取请求URL的路径部分 
+
+    - ```js
+      // ...com/users?sort=desc
+      req.path // 获取结果：/users
+      ```
+
+  - 在 `use` 方法(中间件)中，如果指定了第一个路径参数，则通过 req.path 获取到的是不包含该请求路径的字符串，具体实例在封装中体现。
+
+    - ```js
+      // ...com/public/a.jpg 
+      req.path // 拿到的就是 a.jpg
+      
+      // ...com/public/a/a.css
+      req.path // 拿到的就是 a/a.css
+      ```
+
+
+
+
+```js
+const fs = require('fs')
+const path = require('path')
+
+module.exports = function (dirPath) {
+  return (req, res, next) => {
+    const filePath = path.join(dirPath, req.path)
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        return res.end('404 Not Found.')
+      }
+      res.end(data)
+    })
+  }
+}
+```
+
+- 使用时只需加载该模块就可以了
 
 ##### 配置处理 404 的中间件
 
