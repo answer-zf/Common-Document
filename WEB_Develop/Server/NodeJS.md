@@ -1028,7 +1028,6 @@ app.use(function (req, res) {
 ### 在Express中配置使用art-template模板引擎
 
 - [art-template - GitHub 仓库](https://github.com/aui/art-template)
-
 - [art-template - 官方文档](https://aui.github.io/art-template/zh-cn/index.html)
 
 #### 安装：
@@ -1116,7 +1115,85 @@ app.get('/', function(req, res) {
   
   ```
 
-  
+
+
+
+
+
+### 在Express中配置使用nunjucks模板引擎
+
+NodeJS 最火的模板引擎
+
+[nunjucks官网]( https://mozilla.github.io/nunjucks/ )
+
+#### 安装：
+
+```shell
+$ npm install nunjucks
+```
+
+#### 配置：
+
+```js
+nunjucks.configure('视图渲染存储目录路径', {   // 一般在配置文件中封装绝对路径
+  autoescape: true,
+  express: app
+})
+```
+
+#### 使用：
+
+使用类似 `art-template`
+
+`nunjucks` 模板引擎没有对模板文件名的后缀名做特定限制
+
+```js
+app.get('/', (req, res) => {
+  res.render('index.html')
+})
+```
+
+#### 高级语法
+
+- extends
+- block 
+- include
+
+```HTML
+<!--------   layout.html   -------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="normalize.css">
+  {% block style %}
+  {% endblock %}
+</head>
+<body>
+  {% include "header.html" %}
+  {% include "sidebar.html" %}
+  {% block body %}
+  {% endblock %}
+  {% include "footer.html" %}
+  <script src="jquery.js"></script>
+  {% block script %}
+  {% endblock %}
+</body>
+</html>
+```
+
+```html
+<!--------index.html-------->
+
+{% extends "layout.html" %}
+
+{% block body %}
+<h1>这是首页自己的内容 hello {{ foo }}</h1>
+{% endblock %}
+```
+
+
 
 ### Express 中配置使用 Express-session
 
@@ -1335,8 +1412,18 @@ app.use(function(req, res) {
 
   ```js
   // 在项目入口文件的最后（app.listen之前）
-  app.use(function (err, req, res, next) {
-    res.status(500).send(err.message)
+  app.use((err, req, res, next) => {
+  	const error_log = `
+  ====================================
+  错误名：${err.name}
+  错误消息：${err.message}
+  错误堆栈：${err.stack}
+  错误时间：${new Date()}
+  ====================================\n\n`
+    fs.appendFile('./err_log.txt', error_log, err => {
+      res.writeHead(500, {})
+      res.end('500 服务器正忙，请稍后重试')
+    })
   })
   ```
 
