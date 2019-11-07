@@ -1,6 +1,6 @@
-## npm
+## NPM
 
-**node package manager**
+**Node Package Management**
 
 ### npm 网站
 
@@ -98,7 +98,51 @@ npm install --global npm     ## 升级npm
 
 
 
-### 解决npm被墙问题
+### package.json
+
+- 每个项目的根目录下都要有一个 package.json 文件 （包描述文件）
+
+- 执行`npm install` 包名的时候都加上 --save，用来 保存依赖项信息
+
+- package.json 可以通过 `npm init `的方式自动初始化出来
+  - `dependencies` 选项，保存第三方包的依赖信息
+- 若删除了node_modules 文件夹，且package.json 存在
+  -  直接使用 `npm install` 找回
+     - `npm install` 自动把package.json 中的dependencies 中所有的依赖项，都下载回来.
+
+### package.json 和 package-lock.json
+
+npm5 以前是不会有 `package-lock.json` 这个文件的
+
+npm5以后才加入的
+
+当你安装包的时候，npm 都会生成或者更新 `package-lock.json` 这个文件
+
+- npm5以后的版本安装包，不需要加 `--save` 参数，他会自动保存依赖信息
+- 当安装包的时候，会自动创建或者是更新 `package-lock.json` 这个文件
+- `package-lock.json` 会保存 `node_modules` 中所有包的信息（版本、下载地址）
+  - 这样的话重新 `npm install` 的时候速度就可以提升
+- 从文件看来，有一个 `lock` 称之为 锁
+- 这个`lock` 是用来锁定版本的
+- 如果项目依赖1.1.1版本
+- 你重新install 其实会下载最新版本，而不是1.1.1
+- 我们的目的希望可以锁住1.1.1这个版本
+- `package-lock.json`这个文件的另一个作用就是锁定版本号，防止自动升级到最新版本
+
+
+
+## NVM
+
+**Node Version Management**
+
+ https://github.com/coreybutler/nvm-windows 
+
+- nvm list 查看所有已安装的 node 版本
+- nvm install 版本号 安装指定版本的 node
+- nvm use 版本号 切换到指定版本号
+- nvm proxy 代理地址 配置代理进行下载
+
+## CNPM
 
 npm存储包文件的服务器在国外，有时候会被墙，速度很慢
 
@@ -141,35 +185,7 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
 
    - 只要经过上面命令配置，以后所有的` npm install` 都会默认通过淘宝服务器来下载
 
+## NRM
 
+**Node Registry Manager**
 
-### package.json
-
-- 每个项目的根目录下都要有一个 package.json 文件 （包描述文件）
-
-- 执行`npm install` 包名的时候都加上 --save，用来 保存依赖项信息
-
-- package.json 可以通过 `npm init `的方式自动初始化出来
-  - `dependencies` 选项，保存第三方包的依赖信息
-- 若删除了node_modules 文件夹，且package.json 存在
-  -  直接使用 `npm install` 找回
-     - `npm install` 自动把package.json 中的dependencies 中所有的依赖项，都下载回来.
-
-### package.json 和 package-lock.json
-
-npm5 以前是不会有 `package-lock.json` 这个文件的
-
-npm5以后才加入的
-
-当你安装包的时候，npm 都会生成或者更新 `package-lock.json` 这个文件
-
-- npm5以后的版本安装包，不需要加 `--save` 参数，他会自动保存依赖信息
-- 当安装包的时候，会自动创建或者是更新 `package-lock.json` 这个文件
-- `package-lock.json` 会保存 `node_modules` 中所有包的信息（版本、下载地址）
-  - 这样的话重新 `npm install` 的时候速度就可以提升
-- 从文件看来，有一个 `lock` 称之为 锁
-- 这个`lock` 是用来锁定版本的
-- 如果项目依赖1.1.1版本
-- 你重新install 其实会下载最新版本，而不是1.1.1
-- 我们的目的希望可以锁住1.1.1这个版本
-- `package-lock.json`这个文件的另一个作用就是锁定版本号，防止自动升级到最新版本

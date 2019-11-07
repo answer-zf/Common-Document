@@ -134,6 +134,14 @@ fs.writeFile('url','content',function(error){ // content: 写入文件内容   e
 
 ```
 
+### 将查询字符串转为对象
+
+```js
+const queryString = require ('querystring')
+
+queryString.parse('查询字符串')
+```
+
 
 
 ### 创建服务器
@@ -1439,7 +1447,37 @@ app.use(function(req, res) {
 
 - 然后就会被全局错误处理中间件匹配到并处理之
 
+##### 模拟封装 `body-parser`
 
+由于表单 POST 请求可能会携带大量的数据，所以在进行请求提价的时候会分为多次提交
+
+具体分为多少次进行提交不一定，取决于数据量的大小
+
+在 Node 中，对于处理这种不确定的数据，使用事件的形式处理
+
+可以通过监听 req 对象的 data 事件，然后通过对应的回调处理函数中的参数 chunk 拿到每一次接收到的数据data 事件触发多少次，不一定
+
+当数据接收完毕之后，会自动触发 req 对象的 end 事件，然后就可以在 end 事件中使用接收到的表单 POST 请求体
+
+最后，手动给 req 对象挂载一个 body 属性，值就是当前表单 POST 请求体对象
+
+在后续的处理中间件中，就可以直接使用 req.body 了
+
+因为`在同一个请求中，流通的都是同一个 req 和 res 对象`
+
+```js
+// 解析处理表单 POST 请求体中间件
+app.use((req, res, next) => {
+  let data = ''
+  req.on('data', chunk => { // chunk中获取的是二进制数据，与字符串拼接自动 toString
+    data += chunk
+  })
+  req.on('end', () => {
+    req.body = queryString.parse(data)
+    next()
+  })
+})
+```
 
 
 
