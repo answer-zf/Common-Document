@@ -186,6 +186,8 @@ server.on('request', function(request,response){
 ## response.end()	一次请求对应一次响应，响应结束这次请求也结束  不执行后续代码  类似return
 ## response.end() 必须存在
 
+## response.write() / response.end() 只能接受 字符串 和 二进制数据 
+
 // 绑定端口号，启动服务器。
 
 server.listen(3000,function(){
@@ -1029,9 +1031,8 @@ app.use(function (req, res) {
 
 ##### Express 中的 json 方法
 
-- 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
-
-
+- `res.json()` 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
+- 等价于`res.end(JSON.stringify(req.body, null, ' '))`
 
 ### 在Express中配置使用art-template模板引擎
 

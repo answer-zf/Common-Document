@@ -168,7 +168,7 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
    cnpm install jquery
    ```
 
-3. 如果不想安装 cnpm 又想使用淘宝的服务器来下载
+3. `如果不想安装 cnpm 又想使用淘宝的服务器来下载` **--常用**
 
    ```shell
    npm install jquery --registry=https://registry.npm.taobao.org
@@ -188,4 +188,60 @@ https://npm.taobao.org/ 淘宝的开发团队，把npm在国内做了备份
 ## NRM
 
 **Node Registry Manager**
+
+安装：
+
+```shell
+$ npm install -g nrm
+```
+
+查看当前使用的镜像：
+
+```shell
+$ nrm ls
+```
+
+切换镜像：
+
+```shell
+$ nrm use '镜像名'
+```
+
+
+
+## YARN
+
+Yarn 是一个 Facebook 开源的一个类似于 npm 的一个包管理工具，也就是 npm 能做的，
+yarn 也能做。
+
+安装：
+
+```bash
+npm install -g yarn
+```
+
+使用：
+
+```bash
+# npm init
+yarn init
+
+# npm install --save 包名
+yarn add 包名
+
+# 离线安装
+yarn add 包名@版本号 --offline
+
+# npm install
+yarn install
+
+# npm uninstall 包名
+yarn remove 包名
+
+# npm install -g 包名
+yarn global add 包名
+
+# npm uninstall -g 包名
+yarn global remove 包名
+```
 
