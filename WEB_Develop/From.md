@@ -100,3 +100,21 @@ multiple
 
 	如果option有value提交value 如果没value  提交innerhtml、innertext
 
+
+
+## 表单提交 ajax
+
+```js
+$('form').on('submit', function (e) {
+  $.ajax({
+    url: $(this).attr('action'),
+    type: $(this).attr('method'),
+    data: $(this).serialize(),
+    success: function (data) {
+      console.log(data)
+    }
+  })
+  return false // 阻止本身提交行为
+})
+```
+

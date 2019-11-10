@@ -140,7 +140,7 @@ exit
 
   - 切换到指定数据库（如果没用会新建）
 
-- 插入数据
+- 查询数据
 
   ![MongoDB_cmd](media/Node_MongoDB. assets/MongoDB_cmd.png)
 
@@ -204,6 +204,7 @@ kitty.save(function (err) {
 ```js
 var mongoose = require('mongoose')
 
+// 创建一个模型架构，设计数据结构和约束
 var Schema = mongoose.Schema
 // 1. 连接数据库
 // 指定连接的数据库不需要存在，当你插入第一条数据之后就会自动被创建出来
@@ -221,7 +222,7 @@ var userSchema = new Schema({
 
 // 3. 将文档架构发布为模型
 //    mongoose.model 方法就是用来将一个架构发布为 model
-//    第一个参数：传入一个大写名词单数字符串用来表示数据库名称
+//    第一个参数：传入一个大写名词单数字符串用来表示数据库名称（帕斯卡命名法、大驼峰）
 //              mongoose 会自动将大写名词的字符串生成 小写复数 的集合名称
 //    第二个参数：架构 Schema
 //    返回值：模型构造函数
@@ -386,4 +387,10 @@ User.findByIdAndUpdate(
 )
 ```
 
+##### 模糊匹配
 
+`/advert/one/:advertId` 是一个模糊匹配路径
+可以匹配 `/advert/one/*` 的路径形式
+例如：`/advert/one/1 /advert/one/2 /advert/one/a /advert/one/abc` 等路径
+但是 `/advert/one` 或者 `/advert/one/a/b` 是不行的
+至于 `advertId` 是自己起的一个名字，可以在处理函数中通过 `req.params` 来进行获取

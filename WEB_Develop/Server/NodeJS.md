@@ -1027,12 +1027,17 @@ app.use(function (req, res) {
 
 ```
 
-#### 其他方法
+#### 其他API
 
 ##### Express 中的 json 方法
 
 - `res.json()` 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
 - 等价于`res.end(JSON.stringify(req.body, null, ' '))`
+
+##### Express中 `req.hearder`
+
+- 获取当前请求的请求报文中的请求头信息
+- 其中一个参数，`content-length`  GET 请求没有，POST请求有，表示：传入参数的字节长度
 
 ### 在Express中配置使用art-template模板引擎
 
