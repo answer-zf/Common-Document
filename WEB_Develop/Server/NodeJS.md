@@ -801,11 +801,6 @@ return module.exports
 
 
 
-
-![Snipaste_2019-10-20_15-29-18](C:\Users\answer_zf\Desktop\Snipaste_2019-10-20_15-29-18.png)
-
-
-
 ## Node 中的其他成员
 
 在每个模块中，出来 `require` 、`exports`等模块相关API之外，还有两个特殊的成员：
@@ -1482,6 +1477,120 @@ app.use((req, res, next) => {
     req.body = queryString.parse(data)
     next()
   })
+})
+```
+
+
+
+## 在 Node 中使用 formidable 处理文件上传
+
+> 具体使用方式参照官方文档：https://www.npmjs.com/package/formidable
+
+安装：
+
+```shell
+$ npm install formidable
+```
+
+使用：
+
+```js
+app.post('/', (req, res, next) => {
+  // parse a file upload 
+  const form = new formidable.IncomingForm()
+
+  // 指定上传路径
+  form.uploadDir = './upload' // 文件目录必须手动创建
+
+  // 保持原来的扩展名
+  form.keepExtensions = true
+
+  // err 就是可能发生的错误对象
+  // fields 就是普通的表单字段
+  // files 就是文件内容数据信息
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      throw err
+    }
+    // console.log(fields)
+    console.log(files)
+    res.end('success')
+  })
+})
+```
+
+
+
+- `files` 返回信息
+
+  ```js
+  { avatar:
+     File {
+       _events: [Object: null prototype] {},
+       _eventsCount: 0,
+       _maxListeners: undefined,
+       size: 470457, // 文件大小。单位：字节。
+       path: // 文件路径，formidable自动将接受解析到的文件重命名后，存储到操作系统的临时目录
+  'C:\\Users\\Administrator\\AppData\\Local\\Temp\\upload_ccba69d6c1695b583c2a5d3bb7a72d54',
+       name: '微信图片_20190703082406.png', // 原文件名
+       type: 'image/png',
+       hash: null,
+       lastModifiedDate: 2019-11-11T02:00:35.969Z,
+       _writeStream: WriteStream {
+          _writableState: [WritableState],
+          writable: false,
+          _events: [Object: null prototype] {},
+          _eventsCount: 0,
+          _maxListeners: undefined,
+          path:
+  'C:\\Users\\Administrator\\AppData\\Local\\Temp\\upload_ccba69d6c1695b583c2a5d3bb7a72d54',
+          fd: null,
+          flags: 'w',
+          mode: 438,
+          start: undefined,
+          autoClose: true,
+          pos: undefined,
+          bytesWritten: 470457,
+          closed: false 
+        } 
+     } 
+  }
+  ```
+
+
+### 异步上传文件
+
+原理：
+
+```js
+$('form').on('submit', function (e) {
+  var formData = new FormData()
+  formData.append('name', 'zf')
+  formData.append('file', document.getElementById('file').files[0])
+  var xhr = new XMLHttpRequest()
+  xhr.open('post', '/advert/add')
+  xhr.send(formData)
+  return false // 阻止本身提交行为
+})
+```
+
+ajax异步上传：
+
+```js
+$('form').on('submit', function (e) {
+  $.ajax({
+    url: $(this).attr('action'),
+    type: $(this).attr('method'),
+    data: new FormData($(this)[0]),
+    processData: false, // 当 data 选项被提交一个 FormData 对象时：使jQuery异步请求生效
+    contentType: false, // jQuery会默认将 contentType 设置为 
+    success: function (data) { // application/x-www-form-urlencoded; charset=UTF-8
+      if (data.err_code === 0) {
+        window.location.href = '/advert'
+      }
+    }
+  })
+  return false // 阻止本身提交行为
 })
 ```
 
