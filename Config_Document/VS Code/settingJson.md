@@ -66,3 +66,5 @@ npm install -g eslint-plugin-html
 
 npm install -g eslint-plugin-vue
 
+ npm install -g prettier 
+

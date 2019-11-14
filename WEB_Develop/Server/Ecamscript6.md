@@ -461,3 +461,428 @@ export default {
 
 `export` 和 `export default` 可以共存
 
+
+
+## 异步编程
+
+### 回调函数：获取异步操作结果
+
+~~不成立情况：~~
+
+```js
+function add(x, y){
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+        return ret
+    }, 1000)
+    console.log(3)
+    // 到这里执行结束，不会等到前面的定时器，所以直接返回默认值 undefined
+}
+console.log(add(10, 20)) // => undefined
+```
+
+~~不成立情况：~~
+
+```js
+function add(x, y){
+    var ret
+    console.log(1)
+    setTimeout(function () {
+        console.log(2)
+        var ret = x + y
+    }, 1000)
+    console.log(3)
+    return ret
+}
+console.log(add(10, 20)) // => undefined
+```
+
+**如果需要获取一个函数异步操作的结果，必须使用回调函数来获取**
+
+```js
+function add(x, y, callback){
+    // callback 就是回调函数
+    setTimeout(function () {
+        var ret = x + y
+       	callback(ret)  // ret -> 实参
+    }, 1000)
+}
+add(10, 20, function (ret) {  // ret -> 形参
+    console.log(ret)
+}) 
+```
+
+基于原生XMLHTTPRequest封装get 方法
+
+```js
+function get(url, callback) {
+  var oReq = new XMLHttpRequest()
+  // 当请求加载成功之后要调用指定的函数
+  oReq.onload = function () {
+    callback(oReq.responseText)
+  }
+  oReq.open("get", url, true)
+  oReq.send()
+}
+
+get('data.json', function (data) {
+  console.log(data)
+})
+```
+
+
+
+- 异步API 一般都 伴随着回调函数(上层定义，下层调用)
+  - setTimeout
+  - readFile
+  - writeFile
+  - readdir
+  - ajax
+
+- a 链接默认是同步请求
+
+### Promise
+
+>  参考文档：http://es6.ruanyifeng.com/#docs/promise 
+
+#### 前提
+
+callbackhell：
+
+![callbackhell](media/Ecamscript6. assets/callbackhell.jpg)
+
+无法保证顺序的代码：
+
+```js
+
+var fs = require('fs')
+
+fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+  if (err) {
+    // return console.log('读取失败')
+    // 抛出异常（做测试的时候经常使用）
+    //    1. 阻止程序的执行 （程序奔溃直接退出）
+    //    2. 把错误消息打印到控制台
+    throw err
+  }
+  console.log(data)
+})
+
+fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+})
+
+fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+})
+
+```
+
+通过回调嵌套的方式来保证顺序：
+
+```js
+
+var fs = require('fs')
+
+fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+  if (err) { throw err }
+  console.log(data)
+  fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+    if (err) { throw err }
+    console.log(data)
+    fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+      if (err) { throw err }
+      console.log(data)
+    })
+  })
+})
+
+```
+
+为了解决以上编码方式带来的问题（回调地狱嵌套），在Ecamscript 6 中新增了一个API：`Promise`
+
+#### Promise基本语法
+
+- Promise  -  承诺、保证
+
+原理：
+
+```js
+/**
+ * Promise 在 Ecmascript 6 中体现出来就是一个对象
+ * Promise 是一个容器
+ * 一般用来封装一个异步操作
+ *   异步操作是一个无法预测的事情，要吗成功，要吗失败
+ * 容器内部有三种状态：
+ *     pending  正在处理
+ *     resolved 成功，已解决
+ *     rejected 驳回，失败
+ */
+
+const fs = require('fs')
+
+// Promise 对象一经创建，立即执行
+new Promise((resolve, reject) => {
+  fs.readFile('./data/a.txt', (err, data) => {
+    if (err) {
+      // 当 Promise 对象内部的异步操作结果失败的时候，告诉 Promise 对象容器，该异步任务失败了
+      // 其实就是将 Promise 内部的 Pending 状态改为 Rejected
+      reject(err)
+    }
+    // 当代码执行到这里，说明该 Promise 对象内部的异步操作没有错误发生，证明成功了
+    // 然后在这里将 Promise 内部的 Pending 状态改为 Resolved
+    // resolve 不能传入多数据，需用[]/{}
+    resolve(data)
+  })
+})
+// Promise 实例对象有一个方法：then 方法
+// then 需要传递两个回调处理函数
+// 其中第一个回调处理函数就是 Promise 对象内部的  resolve 函数
+// 第二个回调处理函数是可选的，如果传递则就是 Promise 对象内部的 reject 函数
+.then((data) => {
+  console.log(111)
+  console.log(data.toString())
+  return new Promise((resolve, reject) => {
+    fs.readFile('./data/b.txt', (err, data) => {
+      if (err) {
+        // 这里没有使用 return 的原因就是 Promise 的状态只能从 Pending 变为 Resolve 或者 Rejected
+        // 状态一旦改变，就不会再发生变化
+        reject(err)
+      }
+      resolve(data)
+    })
+  })
+}, (err) => {
+  console.log('读取文件失败了')
+})
+// then 方法之后可以继续链式调用 then
+// 后续的每一个 then 中指定的回调处理函数都会被执行
+// 后续的 then 中指定的回调处理函数可以接收上一个 then 中指定的成功的回调处理函数的返回结果
+//    1. 没有返回值，默认就是 undefined
+//    2. 有普通的返回值，数字、字符串、对象、数组。。。
+//    3. 返回一个新的 Promise 对象
+.then((data) => {
+  console.log(222)
+  console.log(data.toString())
+  return new Promise((resolve, reject) => {
+    fs.readFile('./data/c.txt', (err, data) => {
+      if (err) {
+        // 这里没有使用 return 的原因就是 Promise 的状态只能从 Pending 变为 Resolve 或者 Rejected
+        // 状态一旦改变，就不会再发生变化
+        reject(err)
+      }
+      resolve(data)
+    })
+  })
+})
+.then((data) => {
+  console.log(333)
+  // 二进制数据调用 toString() 方法可以转换为普通的字符，默认就是 utf8 编码
+  console.log(data.toString())
+})
+
+```
+
+简化：
+
+```js
+
+var fs = require('fs')
+// promise是一个构造函数
+// 不是异步，但里面往往封装一个异步任务
+
+// 创建 Promise 容器
+// Promise 容器一旦创建，就开始执行里面的代码
+var p1 = new Promise(function(resolve, reject) {
+  fs.readFile('./data/a.txt', 'utf8', function(err, data) {  ## 异步任务
+    if (err) {
+      // 承诺容器中的任务失败，
+      // console.log(err)
+      // 把容器中的 Pending 状态变为 rejected
+      // 调用 reject 就相当于调用了 then 方法的第二个参数
+      reject(err)  ## 失败调用
+    } else {
+      // 承诺容器中的任务成功，
+      // console.log(data)
+      // 把容器中的 Pending 状态变为 resolved
+      // 调用 resolve 就相当于调用了 then 方法的传递的那个function
+      resolve(data)  ## 成功调用
+    }
+  })
+})
+
+// 当 p1 成功了 然后（then） 做指定操作
+// then 方法接收的 function 就是容器中的 resolve 函数
+p1.then(
+  function(data) {
+    console.log(data)
+  },
+  function(err) {
+    console.log(err)
+  }
+)
+
+```
+
+
+
+#### Promise的封装
+
+实例推导（ readFile ）
+
+- 异步调用链式编程
+
+```js
+var fs = require('fs')
+
+var p1 = new Promise(function(resolve, reject) {
+  fs.readFile('./data/a.txt', 'utf8', function(err, data) {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(data)
+    }
+  })
+})
+var p2 = /...
+var p3 = /...
+p1.then(
+  function(data) {
+    console.log(data)
+    // 当 p1 读取成功的时候
+    // 当前函数中 return 的结果就可以在后面的 then 中 function 接收到，故：
+    // 当 return 123 后面就接收到 123
+    // 没有 return 后面就接收的是 undefined
+    // 同理可以 return 一个 Promise 对象
+    // 当 return 一个Promise 对象的时候，后续的then中的 方法的第一个参数会作为p2 的 resolve
+    return p2
+  },
+  function(err) {
+    console.log(err)
+  }
+)
+  .then(function(data) {
+    console.log(data)
+    return p3
+  })
+  .then(function(data) {
+    console.log(data)
+    console.log('end')
+  })
+```
+
+
+
+![Snipaste_2019-10-19_15-40-57](media/Ecamscript6. assets/Snipaste_2019-10-19_15-40-57.jpg)
+
+
+
+=>  封装实例	promise
+
+```js
+
+var fs = require('fs')
+
+function pReadFile(filePath) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
+pReadFile('./data/a.txt')
+  .then(function(data) {
+    console.log(data)
+    return pReadFile('./data/b.txt')
+  })
+  .then(function(data) {
+    console.log(data)
+    return pReadFile('./data/c.txt')
+  })
+  .then(function(data) {
+    console.log(data)
+  })
+
+```
+
+ => Ecmascript 封装 promise
+
+```js
+const fs = require('fs')
+
+readFile('./data/a.txt', 'utf8')
+  .then(data => {
+    console.log(data)
+    return readFile('./data/b.txt', 'utf8')
+  })
+  .then(data => {
+    console.log(data)
+    return readFile('./data/c.txt', 'utf8')
+  })
+  .then(data => {
+    console.log(data)
+  })
+
+function readFile(...args) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(...args, (err, data) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(data)
+    })
+  })
+}
+```
+
+
+
+#### 错误处理 catch
+
+在使用 `Promise` 做异步流程控制的时候，
+关于异常的处理可以通过在最后一个 `then` 之后设置一个 `catch` ，然后指定一个失败处理函数
+该函数可以捕获前面所有的 `Promise` 对象本身以及 `then` 内部的任务错误
+当前面任何一个发生异常，直接进入 `catch`，后续所有的 `Promise` 包括 `then` 不再执行
+
+
+```js
+const fs = require('fs')
+
+readFile('./data/d.txt', 'utf8')
+  .then(data => {
+    console.log(data)
+    return readFile('./data/b.txt', 'utf8')
+  })
+  .then(data => {
+    console.log(data)
+    return readFile('./data/c.txt', 'utf8')
+  })
+  .then(data => {
+    console.log(data)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
+function readFile(...args) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(...args, (err, data) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(data)
+    })
+  })
+}
+```
+
+当使用 `then` 的第二个参数单独设置异常处理函数之后，无法阻止整体的 `promise`  处理流程的执行。
+一般不添加  `then` 的第二个参数， 交给 `catch` 统一处理。（程序级别的错误统一处理）
