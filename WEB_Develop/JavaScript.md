@@ -90,6 +90,9 @@ toString()
 // 返回：字符串：数组的元素用，拼接
 // object的toString方法
 // 返回：[object Object]
+
+eval(String)
+// 将传入的字符串当做 JavaScript 代码进行执行
 ```
 
 

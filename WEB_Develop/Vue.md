@@ -11,6 +11,10 @@
 
 ### 基本代码结构
 
+- el  指定要控制的区域   
+- data 是个对象，指定了控制的区域内要用到的数据    
+- methods 虽然带个s后缀，但是是个对象，这里可以自定义了方法
+
 ```vue
 ...
 <!-- 1. 导入Vue的包 -->
@@ -210,7 +214,7 @@ Vue 中提供了 `v-on:` 事件绑定机制
 - 事件修饰符可以串联
 - `.prevent` 与 `.once` 前后关系
 
-#### 双向数据绑定 `v-model`
+####  `v-model`（双向数据绑定）
 
 `v-bind:`只能实现数据的单向绑定，从 M 自动绑定到 V，无法实现数据的双向绑定
 
@@ -220,3 +224,172 @@ Vue 中提供了 `v-on:` 事件绑定机制
 <input type="text" name="" v-model="msg" id="">
 ```
 
+#### 样式操作
+
+##### 使用class样式
+
+1. 数组
+```html
+<h1 :class="['red', 'thin']">这是一个邪恶的H1</h1>
+```
+
+2. 数组中使用三元表达式
+```html
+<h1 :class="['red', 'thin', isactive?'active':'']">这是一个邪恶的H1</h1>
+```
+
+3. 数组中嵌套对象（代替三元表达式，提高代码的可读性）
+```html
+<h1 :class="['red', 'thin', {'active': isactive}]">这是一个邪恶的H1</h1>
+```
+
+4. 直接使用对象
+
+```html
+<h1 :class="{red:true, italic:true, active:true, thin:true}">这是一个邪恶的H1</h1>
+```
+
+- 在为 class 使用 v-bind 绑定 对象的时候，对象的属性是类名，由于 对象的属性可带引号，也可不带引号，所以 这里我没写引号；  属性的值 是一个标识符
+
+```vue
+<h1 :class="obj">这是一个邪恶的H1</h1>
+<script>
+...
+data: {
+  ...
+  obj: {red:true, italic:true, active:true, thin:true}
+  ...
+}
+...
+</script>
+```
+
+##### 使用内联样式
+
+1. 直接在元素上通过 `:style` 的形式，书写样式对象
+```
+<h1 :style="{color: 'red', 'font-size': '40px'}">这是一个善良的H1</h1>
+```
+
+2. 将样式对象，定义到 `data` 中，并直接引用到 `:style` 中
+ + 在data上定义样式：
+```
+data: {
+        h1StyleObj: { color: 'red', 'font-size': '40px', 'font-weight': '200' }
+}
+```
+ + 在元素中，通过属性绑定的形式，将样式对象应用到元素中：
+```
+<h1 :style="h1StyleObj">这是一个善良的H1</h1>
+```
+
+3. 在 `:style` 中通过数组，引用多个 `data` 上的样式对象
+ + 在data上定义样式：
+```
+data: {
+        h1StyleObj: { color: 'red', 'font-size': '40px', 'font-weight': '200' },
+        h1StyleObj2: { fontStyle: 'italic' }
+}
+```
+ + 在元素中，通过属性绑定的形式，将样式对象应用到元素中：
+```
+<h1 :style="[h1StyleObj, h1StyleObj2]">这是一个善良的H1</h1>
+```
+
+#### `v-for`和`key`属性
+
+1. 迭代数组
+
+```vue
+<ul>
+  <li v-for="(item, i) in list">索引：{{i}} --- 姓名：{{item.name}} --- 年龄：{{item.age}}</li>
+</ul>
+```
+
+2. 迭代对象中的属性
+
+```vue
+<!-- 循环遍历对象身上的属性 -->
+<!-- 注意：在遍历对象身上的键值对的时候， 除了有 val key ,在第三个位置还有 一个 索引  -->
+<p v-for="(val, key, i) in list">值是： {{ val }} --- 键是： {{key}} -- 索引： {{i}}</p>
+```
+
+3. 迭代数字
+
+```vue
+<!-- 注意：如果使用 v-for 迭代数字的话，前面的 count 值从 1 开始 -->
+<p v-for="i in 10">这是第 {{i}} 个P标签</p>
+```
+
+
+
+> 2.2.0+ 的版本里，**当在组件中使用** v-for 时，key 现在是必须的。
+
+当 Vue.js 用 v-for 正在更新已渲染过的元素列表时，它默认用 “**就地复用**” 策略。如果数据项的顺序被改变，Vue将**不是移动 DOM 元素来匹配数据项的顺序**， 而是**简单复用此处每个元素**，并且确保它在特定索引下显示已被渲染过的每个元素。
+
+为了给 Vue 一个提示，**以便它能跟踪每个节点的身份，从而重用和重新排序现有元素**，你需要为每项提供一个唯一 key 属性。
+
+```vue
+<div id="app">
+
+  <div>
+    <label>Id:
+      <input type="text" v-model="id">
+    </label>
+    <label>Name:
+      <input type="text" v-model="name">
+    </label>
+    <input type="button" value="添加" @click="add">
+  </div>
+  <!-- 注意： v-for 循环的时候，key 属性只能使用 number或string -->
+  <!-- 注意： key 在使用的时候，必须使用 v-bind 属性绑定的形式，指定 key 的值 -->
+  <!-- 在组件中，使用v-for循环的时候，或者在一些特殊情况中，如果 v-for 有问题，必须 在使用 v-for 的同时，指定 唯一的 字符串/数字 类型 :key 值 -->
+  <p v-for="item in list" :key="item.id">
+    <input type="checkbox">{{item.id}} --- {{item.name}}
+  </p>
+</div>
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      id: '',
+      name: '',
+      list: [
+        { id: 1, name: '李斯' },
+        { id: 2, name: '嬴政' },
+        { id: 3, name: '赵高' },
+        { id: 4, name: '韩非' },
+        { id: 5, name: '荀子' }
+      ]
+    },
+    methods: {
+      add() { // 添加方法
+        this.list.unshift({ id: this.id, name: this.name })
+      }
+    }
+  });
+</script>
+```
+
+#### `v-if` 和 `v-show`
+
+##### `v-if` 
+
+- 每次都会重新删除或创建元素
+- 有较高的切换性能消耗
+
+##### `v-show`
+
+- 每次不会重新进行DOM的删除和创建操作，只是切换了元素的 display:none 样式
+- 有较高的初始渲染消耗
+
+```vue
+<input type="submit" value="切换" @click="flag=!flag">
+    <h3 v-if="flag">v-if--------Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h3>
+    <h3 v-show="flag">v-show--------Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h3>
+```
+
+如果元素涉及到频繁的切换，最好不要使用 v-if, 而是推荐使用 v-show
+
+如果元素可能永远也不会被显示出来被用户看到，则推荐使用 v-if
