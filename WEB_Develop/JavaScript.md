@@ -70,7 +70,8 @@ rec.exec('str')					// 提取组
 
 ```js
 
-array.indexOf()
+String.replace()  // 第一个参数，除了可写一个 字符串之外，还可以定义一个正则
+array.indexOf()  
 // 检索：某个指定的字符串值在str中首次出现的位置，找不到返回-1
 // 第一个参数是指定的字符串 ，第二个参数是开始查找的位置（其默认值为0）
 // es5 新增includes()
@@ -93,6 +94,14 @@ toString()
 
 eval(String)
 // 将传入的字符串当做 JavaScript 代码进行执行
+
+some()
+Array.some((item, i) => {
+  if (item.id == id) {
+    // 在 数组的 some 方法中，如果 return true，就会立即终止这个数组的后续循环
+    return true;
+  }
+}) 
 ```
 
 
@@ -144,6 +153,22 @@ $('.avatar').fadeOut(function() {
 
 // img的onload事件指的是图片完全加载完以后执行 （异步操作）先注册后设置 src
 
+```
+
+### contains
+
+`$( ":contains(text)" )`
+
+ **text:** 用来查找的一个文本字符串。这是区分大小写的。 
+
+```html
+<div>John Resig</div>
+<div>George Martin</div>
+<div>Malcom John Sinclair</div>
+<div>J. Ohn</div>
+<script>
+  $("div:contains('John')").css("text-decoration", "underline")
+</script>
 ```
 
 
@@ -236,7 +261,7 @@ var fakeArr = {
 
 
 
-#### attr   or   prop
+### attr   or   prop
 
 ```js
 
@@ -250,7 +275,7 @@ prop('search','?id=' + check_id)  //search的值是 href值中的 包含？之�
 
 
 
-#### DOM 操作
+### DOM 操作
 
 ```js
 
@@ -264,7 +289,7 @@ document.body.removeChild('')  // 在目标元素中删除子元素
 
 
 
-#### 访问自定义属性 data-...
+### 访问自定义属性 data-...
 
 ```js
 
