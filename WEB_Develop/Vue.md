@@ -400,11 +400,244 @@ data: {
 ### 过滤器
 
 - 概念：Vue.js 允许你自定义过滤器，**可被用作一些常见的文本格式化**。
-
 - 过滤器可以用在两个地方：**mustache 插值和 v-bind 表达式**。
+- 过滤器应该被添加在 JavaScript 表达式的尾部，由“管道”符指示。
   - 调用：
     - `{{ name | '过滤器名称' }}`
-- 过滤器应该被添加在 JavaScript 表达式的尾部，由“管道”符指示。
-  - 定义：
-    - `Vue.filter('过滤器名称', function () { })`
-      - 其中的 function ，第一个参数，已经被规定死了，永远都是 过滤器 管道符前面 传递过来的数据
+
+#### 全局过滤器
+
+`Vue.filter('过滤器名称', function () { })`
+
+其中的 function ，第一个参数，已经被规定死了，永远都是 过滤器 管道符前面 传递过来的数据
+
+#### 私有过滤器
+
+在Vue 实例中，增加一个属性值：`filters：{}`
+
+> 注意：当有局部和全局两个名称相同的过滤器时候，会以就近原则进行调用，即：局部过滤器优先于全局过滤器被调用！
+
+#### 实例演示
+
+```vue
+<div id="app">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <div class="panel-title">brand management</div>
+    </div>
+    <div class="panel-body form-inline">
+      <label for="">
+        Id:
+        <input type="text" name="" id="" class="form-control" v-model="id">
+      </label>
+      <label for="">
+        NAME:
+        <input type="text" name="" id="" class="form-control" v-model="name">
+      </label>
+      <input type="button" value="add" class="btn btn-primary" @click="add">
+      <label for="">
+        搜索:
+        <input type="text" name="" id="" class="form-control" v-model="keywords" >
+      </label>
+    </div>
+  </div>
+  <table class="table table-bordered table-hover progress-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>NAME</th>
+        <th>Ctime</th>
+        <th>Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+<!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+<!-- 现在：自定义一个 search 方法，同时，把所有的关键字，通过传参的形式，传递给了 search 方法 -->
+<!-- 在 search 方法内部，通过执行 for 循环，把所有符合 搜索关键字的数据，保存到一个新数组中，返回-->
+      <tr v-for="item in search(keywords)" :key="item.id">
+        <td>{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td>{{ item.Ctime | dateFormat }}</td>
+        <td>
+          <a href="" @click.prevent="deleteFrom(item.id)">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  Vue.filter('dateFormat', function (dateStr, pattern = '') {  // 全局过滤器
+    // 根据给定的时间字符串，得到特定的时间
+    var dt = new Date(dateStr)
+    var y = dt.getFullYear()
+    var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+    var d = dt.getDate().toString().padStart(2, '0')
+    if (pattern.toLowerCase === 'yyyy-mm-dd') {
+      return `${y}-${m}-${d}`
+    }
+    var hh = dt.getHours().toString().padStart(2, '0')
+    var mm = dt.getMinutes().toString().padStart(2, '0')
+    var ss = dt.getSeconds().toString().padStart(2, '0')
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+  })
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      id: '',
+      name: '',
+      keywords: '',
+      list: [
+        { id: 1, name: 'BMW', Ctime: new Date() },
+        { id: 2, name: 'BZ', Ctime: new Date() },
+      ]
+    },
+    methods: {
+      add() {
+        var obj = {
+          id: this.id,
+          name: this.name,
+          Ctime: new Date()
+        }
+        this.list.push(obj)
+        this.id = this.name = ''
+      },
+      deleteFrom(id) {
+        var index = this.list.findIndex(item => item == id)
+        this.list.splice(index, 1)
+      },
+      search(keywords) {
+        return this.list.filter(item => {
+          if (item.name.includes(keywords)) {
+            return true
+          }
+        })
+      }
+    },
+    filters: { // 私有过滤器
+      dateFormat(dateStr, pattern = '') {
+        var dt = new Date(dateStr)
+        var y = dt.getFullYear()
+        var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+        var d = dt.getDate().toString().padStart(2, '0')
+        if (pattern.toLowerCase === 'yyyy-mm-dd') {
+          return `${y}-${m}-${d}`
+        }
+        var hh = dt.getHours().toString().padStart(2, '0')
+        var mm = dt.getMinutes().toString().padStart(2, '0')
+        var ss = dt.getSeconds().toString().padStart(2, '0')
+        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+      }
+    }
+  })
+</script>
+```
+
+### 键盘修饰符以及自定义键盘修饰符
+
+#### 1.x中自定义键盘修饰符【了解即可】
+
+```js
+Vue.directive('on').keyCodes.f2 = 113;
+```
+
+#### 2.x中自定义键盘修饰符
+
+1. 通过`Vue.config.keyCodes.名称 = 按键值`来自定义案件修饰符的别名：
+
+```js
+Vue.config.keyCodes.f2 = 113;
+```
+
+2. 使用自定义的按键修饰符：
+
+```html
+<input type="text" v-model="name" @keyup.f2="add">
+```
+
+3. 相关文档：
+
+> js 里面的键盘事件对应的键码：http://www.cnblogs.com/wuhua1/p/6686237.html
+> vue 2.x 键盘修饰符文档：https://cn.vuejs.org/v2/guide/events.html#键值修饰符
+
+###  自定义指令
+
+#### 全局自定义指令：
+
+使用  `Vue.directive('自定义属性名', { })` 定义全局的自定义指令
+
+- 参数1 ： 指令的名称，注意: 在定义的时候，指令的名称前面，不需要加 v- 前缀
+  - 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
+
+- 参数2： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
+
+  >  vue 2.x 自定义指令文档：https://cn.vuejs.org/v2/guide/custom-directive.html
+
+  ```js
+  ···
+  <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color="'blue'">// 'blue'不加单引号会当成变量在，data 中找。
+  ···
+  
+  Vue.directive('focus', {
+    bind: function (el) { // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，只执行一次
+      // 注意： 在每个 函数中，第一个参数，永远是 el ，表示 被绑定了指令的那个元素，这个 el 参数，是一个原生的JS对象
+      // 在元素 刚绑定了指令的时候，还没有 插入到 DOM中去，这时候，调用 focus 方法没有作用
+      // 因为，一个元素，只有插入DOM之后，才能获取焦点
+      // el.focus()
+    },// inserted 表示元素 插入到DOM中的时候，会执行 inserted 函数【触发1次】
+    inserted: function (el) {  
+      el.focus()
+      // 和JS行为有关的操作，最好在 inserted 中去执行，防止 JS行为不生效
+    },
+    update: function (el) {  // 当VNode更新的时候，会执行 updated， 可能会触发多次
+    }
+  })
+  
+  Vue.directive('color', {
+  // 样式，只要通过指令绑定给了元素，不管这个元素有没有被插入到页面中去，这个元素肯定有了一个内联的样式
+  // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析样式，应用给这个元素
+    bind: function (el, binding) {
+      // 和样式相关的操作，一般都可以在 bind 执行
+      // console.log(binding.value)      指令的绑定值  				clg: blue
+      // console.log(binding.expression) 字符串形式的指令表达式 clg: 'blue'
+      el.style.color = binding.value
+    }
+  })
+  ```
+
+  总结 ： 与样式有关的操作，设置到 `bind` 中，与行为有关的操作，设置到 `inserted`  中。
+
+  ​			  `bind` 的执行时机，早与 `inserted` 。
+
+#### 局部自定义指令：
+
+在Vue 实例中，增加一个属性值：`directives：{}`
+
+```html
+<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
+···
+directives: {
+  'fontweight': {
+    bind(el, binding) {
+      el.style.fontWeight = binding.value
+    }
+  }
+}
+···
+```
+
+#### 自定义属性中函数简写：
+
+若只使用 `bind` 和  `update`  触发相同行为，而不关心其它的钩子。 可简写：
+
+```html
+<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
+···
+directives: {
+  // 注意：这个 function 等同于 把 代码写到了 bind 和 update 中去
+  'fontsize': function (el, binding) { 
+    el.style.fontSize = parseInt(binding.value) + 'px'
+  }
+}
+···
+```
+

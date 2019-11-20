@@ -71,10 +71,12 @@ console.log(a, b, c, d, e) h e l l o
 实用方法：
 
 ```js
-includes(String)：返回布尔值，表示是否找到了参数字符串。
-startsWith(String)：返回布尔值，表示参数字符串是否在源字符串的头部。
-endsWith(String)：返回布尔值，表示参数字符串是否在源字符串的尾部。
-repeat(Number)：repeat方法需要指定一个数值，然后返回一个新字符串，表示将原字符串重复Number次。
+includes(String)  // 返回布尔值，表示是否找到了参数字符串。
+startsWith(String)// 返回布尔值，表示参数字符串是否在源字符串的头部。
+endsWith(String)  // 返回布尔值，表示参数字符串是否在源字符串的尾部。
+repeat(Number)    // repeat方法需要指定一个数值，然后返回一个新字符串，表示将原字符串重复Number次。
+padStart(num,str) // 如果某个字符串不够指定长度，会在头部补全,num:字符串长度，str：用来补全的字符串
+padEnd(num,str)   // 如果某个字符串不够指定长度，会在尾部补全
 ```
 
 模板字符串：
