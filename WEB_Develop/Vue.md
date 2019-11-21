@@ -566,8 +566,9 @@ Vue.config.keyCodes.f2 = 113;
 使用  `Vue.directive('自定义属性名', { })` 定义全局的自定义指令
 
 - 参数1 ： 指令的名称，注意: 在定义的时候，指令的名称前面，不需要加 v- 前缀
-  - 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
-
+  
+- 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
+  
 - 参数2： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
 
   >  vue 2.x 自定义指令文档：https://cn.vuejs.org/v2/guide/custom-directive.html
@@ -641,3 +642,197 @@ directives: {
 ···
 ```
 
+
+
+### [vue实例的生命周期](https://cn.vuejs.org/v2/guide/instance.html#实例生命周期)
+
+什么是生命周期：从Vue实例创建、运行、到销毁期间，总是伴随着各种各样的事件，这些事件，统称为生命周期！
+
+[生命周期钩子](https://cn.vuejs.org/v2/api/#选项-生命周期钩子)：就是生命周期事件的别名而已；
+
+生命周期钩子 = 生命周期函数 = 生命周期事件
+
+![lifecycle](media/Vue. assets/lifecycle.jpg)
+
+主要的生命周期函数分类：
+
+- 创建期间的生命周期函数：
+  - beforeCreate：实例刚在内存中被创建出来，此时，还没有初始化好 data 和 methods 属性
+  - created：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板
+  - beforeMount：此时已经完成了模板的编译，但是还没有挂载到页面中
+    - 在 beforeMount 执行的时候，页面中的元素，还没有被真正替换过来，只是之前写的一些模板字符串
+  - mounted：此时，已经将编译好的模板，挂载到了页面指定的容器中显示
+    - 注意： mounted 是 实例创建期间的最后一个生命周期函数，当执行完 mounted 就表示，实例已经被完全创建好了，此时，如果没有其它操作的话，这个实例，就静静的 躺在我们的内存中，一动不动
+
+ - 运行期间的生命周期函数：
+   - beforeUpdate：状态更新之前执行此函数， 此时 data 中的状态值是最新的，但是界面上显示的 数据还是旧的，因为此时还没有开始重新渲染DOM节点
+   - updated：实例更新完毕之后调用此函数，此时 data 中的状态值 和 界面上显示的数据，都已经完成了更新，界面已经被重新渲染好了！
+ - 销毁期间的生命周期函数：
+   - beforeDestroy：实例销毁之前调用。在这一步，实例仍然完全可用。
+   - destroyed：Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
+
+### [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
+
+> 除了 vue-resource 之外，还可以使用 `axios` 的第三方包实现实现数据的请求
+
+vue-resource 向 vue 挂载了一个属性 `this.$http`
+
+#### get请求
+
+`Vue.http.get('/Url', [config]).then(successCallback, errorCallback)`
+
+```html
+<input type="button" value="get请求" @click="getInfo">
+<script>
+ ...
+  methods: {
+    getInfo() {
+      this.$http.get('http://www.liulongbin.top:3005/api/getprodlist').then(function (result) {
+        // 通过 result.body 拿到服务器返回的成功的数据
+        console.log(result.body)
+      })
+    }
+  } 
+...
+</script>
+```
+
+#### post请求
+
+`Vue.http.post('/someUrl', [body], [config]).then(successCallback, errorCallback)`
+
+```html
+<input type="button" value="POST" @click="postInfo">
+<script>
+ ...
+postInfo() { // 发起 post 请求   application/x-wwww-form-urlencoded
+  //  手动发起的 Post 请求，默认没有表单格式，所以，有的服务器处理不了
+  //  通过 post 方法的第三个参数， { emulateJSON: true } 设置 提交的内容类型 为 普通表单数据格式
+  this.$http.post('http://www.liulongbin.top:3005/api/post', {}, { emulateJSON: true }).then(result => {
+    console.log(result.body)
+  })
+} 
+...
+</script>
+```
+
+#### jsonp请求
+
+`Vue.http.jsonp('/Url', [config]).then(successCallback, errorCallback)`
+
+```html
+<input type="button" value="jsonp请求" @click="jsonpInfo">
+<script>
+ ...
+  jsonpInfo() {
+    this.$http.jsonp('http://www.liulongbin.top:3005/api/jsonp').then(result => {
+      console.log(result.body)
+    })
+  }
+...
+</script>
+```
+
+#### jsonp原理
+
+ + 由于浏览器的安全性限制，不允许AJAX访问 协议不同、域名不同、端口号不同的 数据接口，浏览器认为这种访问不安全；
+ + 可以通过动态创建script标签的形式，把script标签的src属性，指向数据接口的地址，因为script标签不存在跨域限制，这种数据获取方式，称作JSONP（注意：根据JSONP的实现原理，知晓，JSONP只支持Get请求）；
+ + 具体实现过程：
+
+  - 先在客户端定义一个回调方法，预定义对数据的操作；
+  - 再把这个回调方法的名称，通过URL传参的形式，提交到服务器的数据接口；
+  - 服务器数据接口组织好要发送给客户端的数据，再拿着客户端传递过来的回调方法名称，拼接出一个调用这个方法的字符串，发送给客户端去解析执行；
+  - 客户端拿到服务器返回的字符串之后，当作Script脚本去解析执行，这样就能够拿到JSONP的数据了
+
+```js
+/---------- node 服务端
+server.on('request', (req, res) => {
+	const { pathname: url , query} =ulModule.parse(req.url, true)
+	// console.log(pathname, query)
+	if (url === '/getscript') {
+		var data = {
+			name: '123',
+			agg: 18,
+			gender: 'fomale'
+		}
+		var scriptStr = `${query.callback}(${JSON.stringify(data)})`
+		res.end(scriptStr)
+	} else {
+		res.end('404')
+	}
+})
+
+/---------- html 客户端
+  
+<script>
+  function showInfo(data) {
+    console.log(data)
+  }
+</script>
+<script src="http://127.0.0.1:3000/getscript?callback=showInfo"></script>
+```
+
+#### vue-resource 的全局配置
+
+配置根域名：
+
+`Vue.http.options.root = 'http://vue.studyit.io/'`
+
+- 如果通过全局配置了，请求的数据接口 根域名，则 ，在每次单独发起 http 请求的时候，请求的 url 路径，应该以相对路径开头，前面不能带 /  ，否则 不会启用根路径做拼接
+
+启用`emulateJSON` 配置
+
+`Vue.http.options.emulateJSON = true`
+
+- 作用：将 `content-type`设置  `application/x-www-form-urlencoded` 模拟表单发送请求
+
+#### 应用实例
+
+```js
+// 核心代码：
+Vue.http.options.root = 'http://www.liulongbin.top:3005/'
+Vue.http.options.emulateJSON = true
+var vm = new Vue({
+  el: '#app',
+  data: {
+    name: '',
+    list: [
+      { id: 1, name: 'BMW', ctime: new Date() },
+      { id: 2, name: 'AD', ctime: new Date() }
+    ]
+  },
+  methods: {
+    getAllList() {
+      this.$http.get('api/getprodlist').then(result => {
+        var data = result.body
+        if (data.status !== 0) {
+          return console.log('404')
+        }
+        this.list = data.message
+      })
+    },
+    add() {
+      this.$http.post('api/addproduct', { name: this.name }).then(result => {
+        if (result.body.status !== 0) {
+          return alert('404')
+        }
+        this.getAllList()
+        this.name = ''
+      })
+    },
+    del(id) {
+      this.$http.get('api/delproduct/' + id).then(result => {
+        if (result.body.status !== 0) {
+          return alert('404')
+        }
+        this.getAllList()
+      })
+    }
+  },
+  created() {
+    this.getAllList()
+  }
+})
+```
+
+### [Vue中的动画](https://cn.vuejs.org/v2/guide/transitions.html)
