@@ -836,3 +836,295 @@ var vm = new Vue({
 ```
 
 ### [Vue中的动画](https://cn.vuejs.org/v2/guide/transitions.html)
+
+#### 使用过渡类名
+
+使用 transition 元素，把 需要被动画控制的元素，包裹起来：
+
+```html
+<transition name="zf">
+    <h4 v-show="flag">Lorem, ipsum dolor sit amet consectetur.</h4>
+</transition>
+```
+
+自定义两组样式，来控制 transition 内部的元素实现动画：
+
+```css
+/* v-enter 【这是一个时间点】 是进入之前，元素的起始状态，此时还没有开始进入 */
+/* v-leave-to 【这是一个时间点】 是动画离开之后，离开的终止状态，此时，元素 动画已经结束了 */
+.zf-enter,
+.zf-leave-to {
+  opacity: 0;
+  transform: translateX(150px);
+}
+
+/* v-enter-active 【入场动画的时间段】 */
+/* v-leave-active 【离场动画的时间段】 */
+.zf-enter-active,
+.zf-leave-active{
+  transition: all 0.8s ease;
+}
+```
+
+自定义 `v-` 前缀：
+
+在  `transition` 元素中加 `name` 属性后，`css` 中的类名 可将默认的 `v-` 前缀 换成 `name` 的属性值加 `-`，达到区分不同动画。
+
+#### [使用第三方 CSS 动画库](https://cn.vuejs.org/v2/guide/transitions.html#自定义过渡类名)
+
+1. 导入动画类库：
+
+```
+<link rel="stylesheet" type="text/css" href="./lib/animate.css">
+```
+
+2. 定义 transition 及属性：
+
+```html
+<div id="app">
+  <input type="button" value="toggle" @click="flag= !flag">
+  <transition 
+  enter-active-class="bounceIn" 
+  leave-active-class="bounceOut" 
+  :duration="{ enter: 200, leave: 400 }">
+    <h4 v-if="flag" class="animated">
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+    </h4>
+  </transition>
+</div>
+```
+
+- 使用 `:duration="毫秒值"` 来统一设置 入场 和 离场 时候的动画时长
+
+- 使用 `:duration="{ enter: 200, leave: 400 }"`  来分别设置 入场的时长 和 离场的时长
+
+#### 使用动画钩子函数：（半场动画）
+
+```html
+<div id="app">
+  <input type="button" value="click" @click="flag = !flag">
+  <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+    <div class="ball" v-if="flag"></div>
+  </transition>
+</div>
+
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      flag: false
+    },
+    methods: {
+      // 注意： 动画钩子函数的第一个参数：el，表示 要执行动画的那个DOM元素，是个原生的 JS DOM对象
+      // el 是通过 document.getElementById('') 方式获取到的原生JS DOM对象
+      beforeEnter(el) {
+        // beforeEnter 表示动画入场之前，此时，动画尚未开始，可以 在 beforeEnter 中，设置元素开始动画之前的起始样式
+          // 设置小球开始动画之前的，起始位置
+        el.style.transform = 'translate(0, 0)'
+      },
+      enter(el, down) {
+        // 这句话，没有实际的作用，但是，如果不写，出不来动画效果；
+        // 可以认为 el.offsetWidth/offsetHeight/offsetLeft/offsetTop 会强制动画刷新
+        el.offsetWidth
+        // enter 表示动画 开始之后的样式，这里，可以设置小球完成动画之后的，结束状态
+        el.style.transform = 'translate(150px, 450px)'
+        el.style.transition = 'all 1s ease'
+        // 这里的 done， 起始就是 afterEnter 这个函数，也就是说：done 是 afterEnter 函数的引用
+        down()
+      },
+      afterEnter(el) {
+        // 动画完成之后，会调用 afterEnter
+        this.flag = !this.flag
+      }
+    }
+  })
+</script>
+```
+
+#### [v-for 的列表过渡](https://cn.vuejs.org/v2/guide/transitions.html#列表的进入和离开过渡)
+
+1.  定义过渡样式：
+
+   ```css
+   .v-enter,
+   .v-leave-to {
+     opacity: 0;
+     transform: translateY(80px);
+   }
+   
+   .v-enter-active,
+   .v-leave-active {
+     transition: all 0.6s ease;
+   }
+   ```
+
+2. 定义DOM结构，其中，需要使用 transition-group 组件把v-for循环的列表包裹起来：
+
+   ```html
+   <div id="app">
+     <div>
+       <label for="">
+         Id:
+         <input type="text" v-model="id">
+       </label>
+       <label for="">
+         Name:
+         <input type="text" v-model="name">
+       </label>
+       <input type="button" value="add" @click="add">
+     </div>
+     <transition-group appear tag="ul">
+       <li v-for="(item, i) in list" :key="item.id" @click="del(i)">
+         {{item.id}} --- {{item.name}}
+       </li>
+     </transition-group>
+   </div>
+   ```
+
+   - 在实现列表过渡的时候，如果需要过渡的元素，是通过 `v-for` 循环渲染出来的，不能使用 `transition` 包裹，需要使用 `transitionGroup`
+   - 如果要为 `v-for` 循环创建的元素设置动画，必须为每一个 元素 设置 `:key` 属性
+   - 给 `transition-group` 添加 `appear` 属性，实现页面刚展示出来时候，入场时候的效果
+   - 通过 为 `transition-group` 元素，设置 `tag` 属性，指定 `transition-group` 渲染为指定的元素，如果不指定 `tag` 属性，默认，渲染为 `span` 标签
+
+3. 定义 VM中的结构：
+
+   ```js
+   var vm = new Vue({
+     el: '#app',
+     data: {
+       id: '',
+       name: '',
+       list: [
+         { id: 1, name: 'qwe' },
+         { id: 2, name: 'asd' }
+       ]
+     },
+     methods: {
+       add() {
+         this.list.push({ id: this.id, name: this.name })
+         this.id = this.name = ''
+       },
+       del(i) {
+         this.list.splice(i, 1)
+       }
+     }
+   })
+   ```
+
+4. 列表的排序过渡:
+
+   `<transition-group>` 组件还有一个特殊之处。不仅可以进入和离开动画，**还可以改变定位**。要使用这个新功能只需了解新增的 `v-move` 特性，**它会在元素的改变定位的过程中应用**。
+
+   + `v-move` 和 `v-leave-active` 结合使用，能够让列表的过渡更加平缓柔和：
+
+   ```css
+   .v-move{
+     transition: all 0.6s ease;
+   }
+   .v-leave-active{
+     position: absolute;
+   }
+   ```
+
+## Vue 中的组件
+
+### 定义：
+
+什么是组件： 组件的出现，就是为了拆分Vue实例的代码量的，能够让我们以不同的组件，来划分不同的功能模块，将来我们需要什么样的功能，就可以去调用对应的组件即可；
+组件化和模块化的不同：
+
+ + 模块化： 是从代码逻辑的角度进行划分的；方便代码分层开发，保证每个功能模块的职能单一；
+ + 组件化： 是从UI界面的角度进行划分的；前端的组件化，方便UI组件的重用；
+
+### 全局组件定义的三种方式
+
+1. 使用 `Vue.extend` 配合 `Vue.component` 方法：
+
+   ```js
+   // 使用 Vue.extend 来创建全局的Vue组件
+   var com1 = Vue.extend({
+     template: '<h3>Lorem ipsum dolor sit amet consectetur</h3>'
+   })
+   // 使用 Vue.component('组件的名称', 创建出来的组件模板对象)
+   Vue.component('myCom1', com1)
+   ```
+
+   简写：
+
+   ```js
+   Vue.component('myCom1', Vue.extend({
+     template: '<h3>Lorem ipsum dolor sit amet consectetur</h3>'
+   }))
+   ```
+
+   -  第一个参数: 组件的名称, 将来在引用组件的时候, 就是一个标签形式 来引入 它的
+   -  第二个参数:  `Vue.extend` 创建的组件  ,其中 `template`  就是组件将来要展示的HTML内容
+
+   如果要使用组件，直接，把组件的名称，以 HTML 标签的形式，引入到页面中，即可
+
+   ```html
+   <div id="app">
+     <my-com1></my-com1>
+   </div>
+   ```
+
+   - 如果使用 Vue.component 定义全局组件的时候，组件名称使用了 驼峰命名，则在引用组件的时候，需要把 大写的驼峰改为小写的字母，同时，两个单词之前，使用 - 链接
+   - 如果不使用驼峰,则直接拿名称来使用即可
+
+2. 直接使用 Vue.component 方法：
+
+   ```js
+   Vue.component('myCom1', {
+         template: '<h3>Lorem ipsum dolor sit amet consectetur</h3>'
+       })
+   ```
+
+3. 将模板字符串，定义到 `template` 元素中：
+
+   ```js
+   Vue.component('myCom1', {
+     template: '#tmpl'
+   })
+   ```
+
+   在 被控制的 `#app` 外面,使用 `template` 元素,定义组件的HTML模板结构
+
+   ```html
+   <div id="app">
+     <my-Com1></my-Com1>
+   </div>
+   <template id="tmpl">
+     <div>
+       <h3>Lorem ipsum dolor sit amet consectetur</h3>
+     </div>
+   </template>
+   ```
+
+`注意 : 不论是哪种方式创建出来的组件,组件的 template 属性指向的模板内容,必须有且只能有唯一的一个根元素`
+
+### 私有组件定义
+
+```js
+var vm2 = new Vue({
+  el: '#app2',
+  components: {
+    'myCom2': {
+      template: '<h3>consectetur adipisicing elit. Commodi, nihil?</h3>'
+    }
+  }
+})
+```
+
+`template: '#tmpl2'`同理全局定义方式。
+
+## 相关文档：
+
+1. [vue.js 1.x 文档](https://v1-cn.vuejs.org/)
+2. [vue.js 2.x 文档](https://cn.vuejs.org/)
+3. [String.prototype.padStart(maxLength, fillString)](http://www.css88.com/archives/7715)
+4. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
+5. [Vue.js双向绑定的实现原理](http://www.cnblogs.com/kidney/p/6052935.html)
+6. [pagekit/vue-resource](https://github.com/pagekit/vue-resource)
+7. [navicat如何导入sql文件和导出sql文件](https://jingyan.baidu.com/article/a65957f4976aad24e67f9b9b.html)
+8. [贝塞尔在线生成器](http://cubic-bezier.com/#.4,-0.3,1,.33)
