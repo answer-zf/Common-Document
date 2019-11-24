@@ -923,7 +923,7 @@ var vm = new Vue({
           // 设置小球开始动画之前的，起始位置
         el.style.transform = 'translate(0, 0)'
       },
-      enter(el, down) {
+      enter(el, done) {
         // 这句话，没有实际的作用，但是，如果不写，出不来动画效果；
         // 可以认为 el.offsetWidth/offsetHeight/offsetLeft/offsetTop 会强制动画刷新
         el.offsetWidth
@@ -931,11 +931,17 @@ var vm = new Vue({
         el.style.transform = 'translate(150px, 450px)'
         el.style.transition = 'all 1s ease'
         // 这里的 done， 起始就是 afterEnter 这个函数，也就是说：done 是 afterEnter 函数的引用
-        down()
+        done()
       },
       afterEnter(el) {
         // 动画完成之后，会调用 afterEnter
+        // 第一个功能，是控制小球的显示与隐藏
+        // 第二个功能： 直接跳过后半场动画，让 flag 标识符 直接变为 false
+        // 当第二次再点击 按钮的时候， flag  false  ->    true
         this.flag = !this.flag
+        // Vue 把一个完整的动画，使用钩子函数，拆分为了两部分：
+        // 我们使用 flag 标识符，来表示动画的切换；
+        // 刚以开始，flag = false  ->   true   ->   false
       }
     }
   })
@@ -1039,6 +1045,8 @@ var vm = new Vue({
 
 ### 全局组件定义的三种方式
 
+定义组件的时候，如果要定义全局的组件， `Vue.component('组件的名称', {})`
+
 1. 使用 `Vue.extend` 配合 `Vue.component` 方法：
 
    ```js
@@ -1118,9 +1126,304 @@ var vm2 = new Vue({
 
 `template: '#tmpl2'`同理全局定义方式。
 
+### 组件中展示数据和响应事件
+
+1. 组件可以有自己的 `data` 数据
+
+   - 组件的 `data` 和 实例的 `data` 有点不一样,实例中的 `data` 可以为一个对象,但是 组件中的 data 必须是一个方法，而且这个方法内部必须返回一个对象
+   - 组件中 的`data` 数据,使用方式,和实例中的 `data` 使用方式完全一样
+
+   ```js
+   Vue.component('vuecontent', {
+     template: '<h2>this is h2,------data is {{msg}}</h2>',
+     data() {
+       return {
+         msg: 'Lorem ipsum dolor sit amet'
+       }
+     }
+   })
+   ```
+
+2. 组件可以有自己的 `methods` 响应时间。
+
+   - 使用同 `vue` 实例
+
+### 组件间切换
+
+#### 使用`flag`标识符结合`v-if`和`v-else`切换组件
+
+页面结构：
+
+```html
+<div id="app">
+  <a href="#" @click.prevent="flag = true">login</a>
+  <a href="#" @click.prevent="flag = false">register</a>
+  <login v-if="flag"></login>
+  <register v-else="flag"></register>
+</div>
+```
+
+vue实例：
+
+```js
+Vue.component('login', {
+  template: '<h3>login</h3>'
+})
+Vue.component('register', {
+  template: '<h3>register</h3>'
+})
+```
+
+#### 使用`components`属性定义局部子组件
+
+Vue提供了 `component` ,来展示对应名称的组件
+
+`component` 是一个占位符, `:is` 属性,可以用来指定要展示的组件的名称
+
+页面结构：
+
+```html
+<div id="app">
+  <a href="#" @click.prevent="comName = 'login'">login</a>
+  <a href="#" @click.prevent="comName = 'register'">register</a>
+  <component :is="comName"></component>
+</div>
+```
+
+vue实例：
+
+```js
+var vm = new Vue({
+  el: '#app',
+  data: {
+    comName: 'login' // 当前 component 中的 :is 绑定的组件的名称
+  },
+  methods: {}
+})
+```
+
+#### 组件切换的动画应用：
+
+使用 `transition`元素包裹 `component`元素，并设置样式即可
+
+并且通过 `transition`元素中的 `mode` 属性,设置组件切换时候的 模式
+
+页面结构：
+
+```html
+<transition mode="out-in">
+  <component :is="comName"></component>
+</transition>
+```
+
+css样式：
+
+```css
+.v-enter,
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(100px);
+}
+.v-enter-active,
+.v-leave-active {
+  transition: all .8s ease;
+}
+```
+
+### 组件传值：
+
+#### 父组件向子组件传值：
+
+- 本质：父组件向子组件传递数据 `data`
+
+子组件中，默认无法访问到 父组件中的 `data` 上的数据 和 `methods` 中的方法
+
+父组件，可以在引用子组件的时候， 通过 属性绑定`(v-bind:)` 的形式, 把 需要传递给 子组件的数据，以属性绑定的形式，传递到子组件内部，供子组件使用
+
+```html
+<div id="app">
+  <com1 :parentmsg="msg"></com1>
+</div>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      msg: '132'
+    },
+    components: {
+      com1: {
+        template: '<h1>9-----{{parentmsg}}</h1>',
+        props: [ // 把父组件传递过来的 parentmsg 属性，
+          			 // 先在 props 数组中，定义一下，这样，才能使用这个数据
+          'parentmsg'
+        ]
+      }
+    }
+  })
+</script>
+```
+
+- 与 组建中的 `data`的 区别：
+  - 子组件中的 `data` 数据，并不是通过 父组件传递过来的，而是子组件自身私有的，比如： 子组件通过 Ajax ，请求回来的数据，都可以放到 `data` 身上；且 `data` 上的数据，都是可读可写的
+  - 组件中的 所有 `props` 中的数据，都是通过 父组件传递给子组件的；且`props` 中的数据，都是只读的，无法重新赋值
+
+#### 子组件向父组件传值：
+
+- 父组件向子组件传递方法 `methods`
+
+父组件向子组件 传递 方法，使用的是 事件绑定机制； `v-on`, 当我们自定义了 一个 事件属性之后，那么，子组件就能够，通过某些方式，来调用 传递进去的 这个 方法
+
+```html
+<div id="app">
+  <com1 @func="show"></com1> // 切记 show 不能加（），不能传参，表示的是方法而不是调用！
+</div>
+<template id="tmpl">
+  <div>
+    <h1>this is component for son </h1>
+    <input type="button" value="touch" @click="touch">
+  </div>
+</template>
+<script>
+  var com1 = { // 定义了一个字面量类型的 组件模板对象
+    template: '#tmpl', // 通过指定了一个 Id, 表示要去加载这个指定Id的 template 元素中的内容，当作组件的HTML结构
+    data() {
+      return {
+        sonmsg: {
+          name: 'zf',
+          age: 18
+        }
+      }
+    },
+    methods: {
+      touch() { // 当点击子组件按钮的时候，通过 this.$emit 拿到父组件传递过来的 func 方法，并调用
+        this.$emit('func', this.sonmsg)
+      }
+    }
+  }
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      datamsgFromSon: null
+    },
+    methods: {
+      show(data) {
+        this.datamsgFromSon = data
+      }
+    },
+    components: {
+      com1
+    }
+  })
+</script>
+```
+
+#### 利用传值原理，在`localStorage`存储数据：
+
+ 将数据存放在内存中使用 h5 的新特性 `localStorage`
+
+- `localStorage` 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去删除。
+
+-  `localStorage` 中的键值对总是以字符串的形式存储 ，而且是只读的 
+-  保存数据：`localStorage.setItem('myCat', 'Tom')` 
+-  读取数据：`localStorage.getItem('myCat')`
+
+页面结构：
+
+```html
+<div id="app">
+  <comment-box @load="loadComments"></comment-box>
+  <ul class="list-group">
+    <li class="list-group-item" v-for="item in list" :key="item.id">
+      <span class="badge">person: {{item.name}}</span>
+      <div>{{item.content}}</div>
+    </li>
+  </ul>
+</div>
+<template id="tmpl">
+  <div>
+    <div class="form-group">
+      <label for="">person:</label>
+      <input type="text" class="form-control" v-model="name">
+    </div>
+    <div class="form-group">
+      <label for="">content:</label>
+      <textarea class="form-control" v-model="content"></textarea>
+    </div>
+    <div class="form-group">
+      <input type="button" value="add" class="btn btn-primary" @click="add">
+    </div>
+  </div>
+</template>
+```
+
+vue实例：
+
+```js
+var commentBox = {
+  data() {
+    return {
+      name: '',
+      content: ''
+    }
+  },
+  template: '#tmpl',
+  methods: {
+    add() {
+      var tmpl = {
+        id: Date.now(),
+        name: this.name,
+        content: this.content
+      }
+      var list = JSON.parse(localStorage.getItem('cmts') || '[]')
+      console.log(list);
+      list.unshift(tmpl)
+      localStorage.setItem('cmts', JSON.stringify(list))
+      this.name = this.content = ''
+      this.$emit('load')
+    }
+  },
+}
+var vm = new Vue({
+  el: '#app',
+  data: {
+    list: null
+  },
+  methods: {
+    loadComments() {
+      var list = JSON.parse(localStorage.getItem('cmts') || '[]')
+      this.list = list
+    }
+  },
+  components: {
+    commentBox
+  },
+  created() {
+    this.loadComments()
+  }
+})
+```
+
+### 使用 `this.$refs` 来获取元素和组件
+
+获取DOM节点： 
+
+1. 目标标签中添加 `ref` 属性，自定义名称
+2. 在vue 实例中使用 `this.$refs.自定义名称.innerText`
+
+```
+  <div id="app">
+    <input type="button" value="getDOM" @click="getDOM">
+    <h3 ref="content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+  </div>
+```
+
+
+
 ## 相关文档：
 
-1. [vue.js 1.x 文档](https://v1-cn.vuejs.org/)
+## 相关文档
+
+1. vue.js 1.x 文档](https://v1-cn.vuejs.org/)
 2. [vue.js 2.x 文档](https://cn.vuejs.org/)
 3. [String.prototype.padStart(maxLength, fillString)](http://www.css88.com/archives/7715)
 4. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
