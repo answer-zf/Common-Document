@@ -1408,22 +1408,257 @@ var vm = new Vue({
 获取DOM节点： 
 
 1. 目标标签中添加 `ref` 属性，自定义名称
+
+   ```html
+   <div id="app">
+     <input type="button" value="getDOM" @click="getDOM">
+     <h3 ref="content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+   </div>
+   ```
+
 2. 在vue 实例中使用 `this.$refs.自定义名称.innerText`
 
+   ```js
+   methods: {
+     getDOM() {
+       console.log(this.$refs.content.innerText);
+     }
+   }
+   ```
+
+获取组件的数据和方法：
+`this.$refs.自定义名称.数据名 / 方法名()`
+
+## Vue 中的路由
+
+1. **后端路由：**对于普通的网站，所有的超链接都是URL地址，所有的URL地址都对应服务器上对应的资源；
+
+2. **前端路由：**对于单页面应用程序来说，主要通过URL中的hash(#号)来实现不同页面之间的切换，同时，hash有一个特点：HTTP请求中不会包含hash相关的内容；所以，单页面程序中的页面跳转主要用hash实现；
+
+3. 在单页面应用程序中，这种通过hash改变来切换页面的方式，称作前端路由（区别于后端路由）；
+
+### 路由的基本使用
+
+1. 安装 `vue-router` 路由模块 （`script`标签引包）
+2. 创建一个路由对象， 当 导入 `vue-router` 包之后，在 window 全局对象中，就有了一个 路由的构造函数，叫做 `VueRouter`
+3. 在 `new` 路由对象的时候，可以为 构造函数，传递一个配置对象
+4. 每个路由规则，都是一个对象，这个规则对象，身上，有两个必须的属性：
+   - 属性1 是 `path`， 表示监听 哪个路由链接地址；
+   - 属性2 是 `component`， 表示，如果 路由是前面匹配到的 `path` ，则展示 `component` 属性对应的那个组件
+     - 注意： `component` 的属性值，必须是一个 组件的模板对象， 不能是 组件的引用名称；
+   - 属性2 可以设置 `redirect`，表示 ，重定向所匹配到的 `path`， 属性值为 所重定向的路由
+     - 注意：这里的 `redirect` 和 Node 中的 `redirect` 完全是两码事
+5. 将路由规则对象，注册到 vm 实例上，用来监听 URL 地址的变化，然后展示对应的组件
+6. `router-view` 是 `vue-router` 提供的元素，专门用来 当作占位符的，将来，路由规则，匹配到的组件，就会展示到这个 `router-view` 中去
+   - 可以把 `router-view` 认为是一个占位符
+
+```html
+<div id="app"> // router-link 默认渲染为一个a 标签，添加 tag 属性可将标签改为值所对应的标签
+  <router-link to="/login">login</router-link>  // 不论是不是 a 标签都有点击切换的功能
+  <router-link to="/register">register</router-link> 
+  <transition mode="out-in"> // 再加 过渡样式 即可使用动画
+    <router-view></router-view>
+  </transition>
+</div>
+<script>
+  var login = {
+    template: '<h3>login</h3>'
+  }
+  var register = {
+    template: '<h3>register</h3>'
+  }
+  const routerObj = new VueRouter({
+    routes: [ // 路由匹配规则
+      { path: '/', redirect: '/login' }, // 设置路由重定向
+      { path: '/login', component: login },
+      { path: '/register', component: register },
+    ],
+    linkActiveClass: 'zf-active' // 自定义高亮 class 类名，修改 class 即可自定义高亮样式
+  })														 // 默认值：'router-link-active'
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router: routerObj
+  })
+</script>
 ```
-  <div id="app">
-    <input type="button" value="getDOM" @click="getDOM">
-    <h3 ref="content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+
+url地址改变  ->  触发路由监听事件（url改变后进行路由规则的匹配） ->  匹配后展示所对应的 `component` 组件 放到 `router-view` 区域
+
+### 路由中的参数
+
+#### 在路由规则中定义参数：
+
+1. 查询字符串传参：`(query)`
+
+   - 使用 查询字符串，给路由传递参数，则 不需要修改 路由规则的 path 属性 
+   - 在 vue 实例中，使用 `this.$route.query.key` 即可获取参数
+
+   - 在模板对象中获取参数，在插值表达式中，可省略`this.`
+
+   - 支持多个参数传递 
+
+   ```html
+   <div id="app">
+     <router-link to="/login?id=10&name=123">login</router-link>
+     <router-link to="/register">register</router-link>
+     <router-view></router-view>
+   </div>
+   
+   <script>
+     var login = {
+       template: '<h3>login - page {{ $route.query.id }} -- {{ $route.query.name }}</h3>',
+       created() {
+         console.log(this.$route.query.id)
+       },
+     }
+     var register = {
+       template: '<h3>register - page</h3>'
+     }
+     const router = new VueRouter({
+       routes: [
+         { path: '/login', component: login },
+         { path: '/register', component: register },
+       ]
+     })
+     var vm = new Vue({
+       el: '#app',
+       data: {},
+       methods: {},
+       router
+     })
+   </script>
+   ```
+
+   
+
+2. `:id`方式传参：`(params)`
+
+   ```js
+   var login = {
+     template: '<h3>login - page -- {{ $route.params.id }} --{{ $route.params.name }}</h3>',
+     created() {
+       console.log(this.$route.params.id)
+     },
+   }
+   var register = {
+     template: '<h3>register - page</h3>'
+   }
+   const router = new VueRouter({
+     routes: [
+       { path: '/login/:id/:name', component: login },
+       { path: '/register', component: register },
+     ]
+   })
+   ```
+
+### 路由嵌套
+
+- 使用`children`属性实现路由嵌套
+
+```html
+<div id="app">
+  <router-link to="/account">account</router-link>
+  <router-view></router-view>
+</div>
+
+<template id="tmpl">
+  <div>
+    <h1>this is component</h1>
+    <router-link to="/account/login">login</router-link>
+    <router-link to="/account/register">register</router-link>
+    <router-view></router-view>
   </div>
+</template>
+<script>
+  var account = {
+    template: '#tmpl',
+  }
+  var login = {
+    template: '<h3>login</h3>'
+  }
+  var register = {
+    template: '<h3>register</h3>'
+  }
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/account',
+        component: account,
+        children: [ // 使用 children 属性，子路由的 path 前面不要带 / ，否则永远以根路径开始请求
+          { path: 'login', component: login },
+          { path: 'register', component: register },
+        ]
+      }
+    ]
+  })
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  })
+</script>
+```
+
+### 命名视图
+
+```html
+<div id="app">
+  <router-view></router-view>
+  <router-view name="side"></router-view> // 组件添加 name 属性
+  <router-view name="main"></router-view>
+</div>
+<script>
+  var header = {
+    template: '<h3>header - page </h3>'
+  }
+  var sidebar = {
+    template: '<h3>sidebar - page </h3>'
+  }
+  var mainbox = {
+    template: '<h3>mainbox - page </h3>'
+  }
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/', components: { // 使用 components 配置同级路由
+          default: header,
+          side: sidebar,
+          main: mainbox
+        }
+      }
+    ]
+  })
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  })
+</script>
 ```
 
 
 
-## 相关文档：
 
-## 相关文档
 
-1. vue.js 1.x 文档](https://v1-cn.vuejs.org/)
+
+
+
+
+
+
+
+
+
+
+##相关文档
+
+1. [vue.js 1.x 文档](https://v1-cn.vuejs.org/)
 2. [vue.js 2.x 文档](https://cn.vuejs.org/)
 3. [String.prototype.padStart(maxLength, fillString)](http://www.css88.com/archives/7715)
 4. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
@@ -1431,3 +1666,4 @@ var vm = new Vue({
 6. [pagekit/vue-resource](https://github.com/pagekit/vue-resource)
 7. [navicat如何导入sql文件和导出sql文件](https://jingyan.baidu.com/article/a65957f4976aad24e67f9b9b.html)
 8. [贝塞尔在线生成器](http://cubic-bezier.com/#.4,-0.3,1,.33)
+9. [URL中的hash（井号）](http://www.cnblogs.com/joyho/articles/4430148.html)
