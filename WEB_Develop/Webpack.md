@@ -206,4 +206,23 @@ module.exports = {
 { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] }
 ```
 
-注意：Webpack 2X以上版本，加载器必须带 `-loader`，1X的版本不需要带。
+注意：`Webpack2X` 以上版本，加载器必须带 `-loader`，1X的版本不需要带。
+
+## 最适合的插件版本：（最新的出bug）
+
+```js
+"devDependencies": {
+  "css-loader": "^3.2.0",
+  "eslint": "^6.7.1",
+  "eslint-plugin-vue": "^6.0.1",
+  "html-webpack-plugin": "^3.2.0",
+  "less": "^3.10.3",
+  "less-loader": "^5.0.0",
+  "node-sass": "^4.13.0",
+  "sass-loader": "^7.3.1",
+  "style-loader": "^1.0.0",
+  "webpack": "^3.8.1",
+  "webpack-dev-server": "^2.9.3"
+}
+```
+
