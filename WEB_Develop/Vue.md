@@ -1646,19 +1646,81 @@ url地址改变  ->  触发路由监听事件（url改变后进行路由规则�
 
 ## Vue实例 中的其他属性
 
-### 监听 `data` 中指定数据的变化
+### 监听数据的变化
 
+#### Vue 实例中的 `watch` 属性：
 
+- 可以监视 data 中指定数据的变化，然后触发这个 watch 中对应的 function 处理函数
 
+- 可以传递两个参数，第一个参数是指定数据改变后的数据，第二个参数是最近一次更改前的数据
+- 使用 `watch` 的优势，可以监听非 DOM 元素的改变，`ex：路由改变, wacth监听 $route.path 即可` 这是事件绑定做不到的
 
+```html
+<div id="app">
+  <input type="text" v-model="firstname"> +
+  <input type="text" v-model="lastname"> =
+  <input type="text" v-model="fullname">
+</div>
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstname: '',
+      lastname: '',
+      fullname: ''
+    },
+    methods: {},
+    watch: {
+      'firstname': function (newVal, oldVal) { // key 为所要监听的变量 ex: '$route.path'
+        this.fullname = newVal + '-' + this.lastname
+      },
+      lastname(newVal) {
+        this.fullname = this.firstname + newVal
+      },
+    },
+  })
+</script>
+```
 
+#### Vue 实例中的 `computed` 属性：
 
+在 `computed` 中，可以定义一些 属性，这些属性，叫做 【计算属性】， 计算属性的，本质，就是 一个方法，只不过，我们在使用 这些计算属性的时候，是把 它们的 名称，直接当作 属性来使用的；并不会把 计算属性，当作方法去调用.
 
+- 计算属性，在引用的时候，一定不要加 () 去调用，直接把它 当作 普通 属性去使用
+- 只要 计算属性，这个 `function` 内部，所用到的 任何 `data` 中的数据发送了变化，就会 立即重新计算 这个 计算属性的值
+- 计算属性的求值结果，会被缓存起来，方便下次直接使用； 如果 计算属性方法中，所以来的任何数据，都没有发生过变化，则，不会重新对 计算属性求值
 
+```html
+<div id="app">
+  <input type="text" v-model="firstname"> +
+  <input type="text" v-model="lastname"> =
+  <input type="text" v-model="fullname">
+</div>
 
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstname: '',
+      lastname: '',
+    },
+    methods: {},
+    computed: {
+      fullname() {
+        return this.firstname + '-' + this.lastname
+      }
+    },
+  })
+</script>
+```
 
+#### `watch`、`computed`和`methods`之间的对比
 
-
+1. `computed`属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用(操作数据)
+2. `methods`方法表示一个具体的操作，主要书写业务逻辑；(方法调用)
+3. `watch`一个对象，键是需要观察的表达式，值是对应回调函数。主要用来监听某些特定数据的变化，从而进行某些具体的业务逻辑操作；可以看作是`computed`和`methods`的结合体；(监听虚拟的数据，ex：router)
 
 
 
