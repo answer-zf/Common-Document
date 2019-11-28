@@ -1722,6 +1722,25 @@ url地址改变  ->  触发路由监听事件（url改变后进行路由规则�
 2. `methods`方法表示一个具体的操作，主要书写业务逻辑；(方法调用)
 3. `watch`一个对象，键是需要观察的表达式，值是对应回调函数。主要用来监听某些特定数据的变化，从而进行某些具体的业务逻辑操作；可以看作是`computed`和`methods`的结合体；(监听虚拟的数据，ex：router)
 
+### 使用`render`渲染页面：
+
+```js
+var login = {
+  template: '<h1>这是登录组件</h1>'
+}
+
+// 创建 Vue 实例，得到 ViewModel
+var vm = new Vue({
+  el: '#app',
+  data: {},
+  methods: {},
+  render: function (createElements) { // createElements 是一个 方法，调用它，能够把 指定的 组件模板，渲染为 html 结构
+    return createElements(login)
+    // 注意：这里 return 的结果，会 替换页面中 el 指定的那个 容器
+  }
+});
+```
+
 
 
 ##相关文档

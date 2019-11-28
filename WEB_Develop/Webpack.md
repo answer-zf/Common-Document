@@ -21,14 +21,12 @@
    - 借助于`webpack`这个前端自动化构建工具，可以完美实现资源的合并、打包、压缩、混淆等诸多功能。
    - 根据官网的图片介绍`webpack`打包的过程
 
-## 起步：
-
-### 安装
+## 安装
 
 1. 运行`npm i webpack -g`全局安装`webpack`，这样就能在全局使用`webpack`的命令
 2. 在项目根目录中运行`npm i webpack --save-dev`安装到项目依赖中
 
-### 初步使用`webpack`打包构建列表隔行变色案例
+## 初步使用`webpack`打包构建列表隔行变色案例
 
 1. 运行`npm init`初始化项目，使用 `npm` 管理项目中的依赖包
 2. 创建项目基本的目录结构
@@ -56,7 +54,7 @@ webpack src/js/main.js dist/bundle.js
 1. `webpack` 能够处理 JS 文件的互相依赖关系；
 2. `webpack` 能够处理JS的兼容问题，把 高级的、浏览器不是别的语法，转为 低级的，浏览器能正常识别的语法
 
-### 使用 `webpack` 的配置文件简化打包时候的命令
+## 使用 `webpack` 的配置文件简化打包时候的命令
 
 1. 在项目根目录中创建`webpack.config.js`
 2. 由于运行 `webpack` 命令的时候，`webpack` 需要指定入口文件和输出文件的路径，所以，我们需要在`webpack.config.js`中配置这两个路径：
@@ -79,7 +77,7 @@ module.exports = {
 3. 当找到配置文件后，`webpack` 会去解析执行这个 配置文件，当解析执行完配置文件后，就得到了 配置文件中，导出的配置对象
 4. 当 `webpack` 拿到 配置对象后，就拿到了 配置对象中，指定的 入口  和 出口，然后进行打包构建；
 
-### 实现`webpack`的实时打包构建
+## 实现`webpack`的实时打包构建
 
 1. 由于每次重新修改代码之后，都需要手动运行`webpack`打包的命令，比较麻烦，所以使用`webpack-dev-server`来实现代码实时打包编译，当修改代码之后，会自动进行打包构建。
 
@@ -127,7 +125,7 @@ module.exports = {
    }
    ```
 
-### 使用`html-webpack-plugin`插件配置启动页面
+## 使用`html-webpack-plugin`插件配置启动页面
 
 在内存中根据`index.html` 模板页面生成内存中的首页。
 
@@ -154,9 +152,9 @@ module.exports = {
    }
    ```
 
-### 使用webpack打包css文件
+## 使用`webpack`打包css文件
 
-注意：webpack, 默认只能打包处理 JS 类型的文件，无法处理 其它的非 JS 类型的文件
+注意：`webpack`, 默认只能打包处理 JS 类型的文件，无法处理 其它的非 JS 类型的文件
 
 如果要处理 非JS类型的文件，我们需要手动安装一些 合适 第三方 loader 加载器；
 
@@ -187,7 +185,7 @@ module.exports = {
 3. 在调用`loader` 的时候，是从后往前调用的；
 4. 当最后的一个 `loader` 调用完毕，会把 处理的结果，直接交给 `webpack` 进行 打包合并，最终输出到  `bundle.js` 中去
 
-#### 使用webpack打包less文件
+### 使用`webpack`打包less文件
 
 1. 运行`npm i less-loader less -D`
    - `less-loader`内部依赖`less`， 不需要显示定义配置文件中
@@ -197,7 +195,7 @@ module.exports = {
 { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] },
 ```
 
-#### 使用webpack打包sass文件
+### 使用`webpack`打包sass文件
 
 1. 运行`npm i sass-loader node-sass --save-dev`
 2. 在`webpack.config.js`中添加处理sass文件的loader模块：
@@ -208,21 +206,144 @@ module.exports = {
 
 注意：`Webpack2X` 以上版本，加载器必须带 `-loader`，1X的版本不需要带。
 
-## 最适合的插件版本：（最新的出bug）
+## `webpack` 中的 `url-loader`
 
-```js
-"devDependencies": {
-  "css-loader": "^3.2.0",
-  "eslint": "^6.7.1",
-  "eslint-plugin-vue": "^6.0.1",
-  "html-webpack-plugin": "^3.2.0",
-  "less": "^3.10.3",
-  "less-loader": "^5.0.0",
-  "node-sass": "^4.13.0",
-  "sass-loader": "^7.3.1",
-  "style-loader": "^1.0.0",
-  "webpack": "^3.8.1",
-  "webpack-dev-server": "^2.9.3"
-}
-```
+默认情况下，`webpack` 无法 处理 `CSS` 文件中的 `url` 地址，不管是图片还是 字体库， 只要是 `URL` 地址，都处理不了
+
+1. 运行 `npm i url-loader file-loader -D`
+
+2. 在`webpack.config.js`中配置：
+
+   ```js
+   { // 处理 图片路径的 loader
+     test: /\.(jpg|png|gif|bmp|jpeg)$/,
+     use: 'url-loader?limit=38000&name=[hash:8]-[name].[ext]'
+   },
+   { // 处理 字体文件的 loader 
+     test: /\.(ttf|eot|svg|woff|woff2)$/,
+     use: 'url-loader'
+   }
+   ```
+
+   - `limit` 给定的值，是图片的大小，单位是 `byte`， 如果我们引用的 图片，大于或等于给定的 `limit`值，则不会被转为`base64`格式的字符串， 如果 图片小于给定的 `limit` 值，则会被转为 `base64`的字符串
+   - `name` 自定义文件重命名，`[hash:8]` 8位哈希值（最长32），`[name]`原文件名，`[ext]` 原文件后缀名
+
+## `webpack` 中的 `babel-loader`
+
+在 `webpack` 中，默认只能处理 一部分 ES6 的新语法，一些更高级的ES6语法或者 ES7 语法，`webpack` 是处理不了的；这时候，就需要 借助于第三方的 `loader`，来帮助`webpack` 处理这些高级的语法。
+
+- 当第三方`loader` 把 高级语法转为 低级的语法之后，会把结果交给 `webpack` 去打包到 `bundle.js` 中
+
+- 通过 `Babel` ，可以帮我们将 高级的语法转换为 低级的语法
+
+1. 在 `webpack` 中，可以运行如下两套 命令，安装两套包，去安装 `Babel` 相关的`loader`功能：
+1.1 第一套包(转化工具)： `cnpm i babel-core babel-loader babel-plugin-transform-runtime -D`
+1.2 第二套包(语法工具)： `cnpm i babel-preset-env babel-preset-stage-0 -D`
+
+2. 打开 `webpack` 的配置文件，在 `module` 节点下的 `rules` 数组中，添加一个 新的 匹配规则：
+  2.1 `{ test:/\.js$/, use: 'babel-loader', exclude:/node_modules/ }`
+  2.2 注意： 在配置 `babel` 的 `loader`规则的时候，必须 把 `node_modules` 目录，通过 `exclude` 选项排除掉：原因有俩：
+  2.2.1 如果 不排除 `node_modules`， 则`Babel` 会把 `node_modules` 中所有的 第三方 `JS` 文件，都打包编译，这样，会非常消耗`CPU`，同时，打包速度非常慢；
+  2.2.2 哪怕，最终，`Babel` 把 所有 `node_modules` 中的`JS`转换完毕了，但是，项目也无法正常运行！
+
+3. 在项目的 根目录中，新建一个 叫做 `.babelrc`  的`Babel` 配置文件，这个配置文件，属于JSON格式，所以，在写 `.babelrc` 配置的时候，必须符合`JSON`语法规范： 不能写注释，字符串必须用双引号
+  3.1 在 `.babelrc` 写如下的配置：  大家可以把 `preset` 翻译成 【语法】 的意思
+
+  ```js
+  {
+    "presets": ["env", "stage-0"],
+    "plugins": ["transform-runtime"]
+  }
+  ```
+
+4. 了解： 目前，我们安装的 `babel-preset-env`, 是比较新的ES语法， 之前， 我们安装的是` babel-preset-es2015`, 现在，出了一个更新的 语法插件，叫做 `babel-preset-env` ，它包含了 所有的 和 es***相关的语法
+
+## 在 `webpack` 中构建 `vue`
+
+### 在使用webpack构建的Vue项目中使用模板对象
+
+- 在`webpack.config.js`中添加`resolve`属性：
+
+  ```js
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js'
+    }
+  }
+  ```
+
+- 或者 入口文件中引入：`import Vue from '../node_modules/vue/dist/vue.js'`
+
+  - 代替 `import Vue from 'vue'`
+
+回顾 包的查找规则：
+1. 找 项目根目录中有没有 node_modules 的文件夹
+2. 在 node_modules 中 根据包名，找对应的 vue 文件夹
+3. 在 vue 文件夹中，找 一个叫做 package.json 的包配置文件
+4. 在 package.json 文件中，查找 一个 main 属性【main属性指定了这个包在被加载时候，的入口文件】
+
+### 在webpack中配置.vue组件页面的解析
+
+1. 运行`npm i vue -S` 将vue安装为运行依赖；
+
+   - 默认，webpack 无法打包 `.vue` 文件，需要安装 相关的loader：
+
+2. 运行`npm i vue-loader vue-template-compiler -D`将解析转换vue的包安装为开发依赖；
+
+3. 在`webpack.config.js`中，新增`loader`的配置项：
+
+   - `{ test: /\.vue$/, use: 'vue-loader' }`
+
+4. 组件页面：
+
+   ```vue
+   <template>
+     <div>
+       <h1> .vue </h1>
+     </div>
+   </template>
+   
+   <script>
+   </script>
+   
+   <style>
+   </style>
+   ```
+
+5. 入口文件：
+
+   ```js
+   import Vue from 'vue'
+   import login from './login.vue'
+   var vm = new Vue({
+     el: '#app',
+     data: {
+       msg: '123'
+     },
+     methods: {},
+     render: c => c(login)
+   })
+   ```
+
+   
+
+## Debug：
+
+- `json` 文件中不能写注释
+
+- 不是内部命令或外部命令，也不是可运行的程序，
+
+  - 删除 `node_modules` 文件夹 重新 `npm init`
+
+- 有兼容问题的插件：
+
+  ```js
+  "devDependencies": {
+    "sass-loader": "^7.3.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
+  }
+  ```
+
+  
 

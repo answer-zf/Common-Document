@@ -388,6 +388,46 @@ $ npm install --save-dev @babel/cli @babel/core @babel/preset-env @babel/preset-
 
   - 使用 node 执行 钩子文件（main.js）,而不是入口文件。
 
+##面向对象编程
+
+`class` 关键字，是ES6中提供的新语法，是用来 实现 ES6 中面向对象编程的方式
+
+`Java`  `C#`  实现面向对象的方式完全一样了，   `class` 是从后端语言中借鉴过来的， 来实现面向对象
+
+```js
+class Person {
+  // 使用 static 关键字，可以定义静态属性
+  static info = { name: 'zs', age: 20 }
+}
+```
+
+静态属性：
+
+- 可以直接通过 类名， 直接访问的属性
+
+  - `console.log(Person.info)`
+
+实例属性：
+
+- 只能通过类的实例，来访问的属性
+
+  - `var p1 = new Person()`
+  - `console.log(p1.name)`
+
+`js` 中实现：
+
+```js
+function Animal(name){
+  this.name  = name
+}
+Animal.info = 123
+var a1 = new Animal('小花')
+// 这是静态属性：
+console.log(Animal.info)
+// 这是实例属性：
+console.log(a1.name)
+```
+
 
 ## Module
 
