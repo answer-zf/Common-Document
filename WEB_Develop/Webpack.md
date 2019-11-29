@@ -277,18 +277,18 @@ module.exports = {
   - 代替 `import Vue from 'vue'`
 
 回顾 包的查找规则：
-1. 找 项目根目录中有没有 node_modules 的文件夹
-2. 在 node_modules 中 根据包名，找对应的 vue 文件夹
-3. 在 vue 文件夹中，找 一个叫做 package.json 的包配置文件
-4. 在 package.json 文件中，查找 一个 main 属性【main属性指定了这个包在被加载时候，的入口文件】
+1. 找 项目根目录中有没有 `node_modules` 的文件夹
+2. 在` node_modules 中` 根据包名，找对应的 `vue` 文件夹
+3. 在 `vue `文件夹中，找 一个叫做 `package.json` 的包配置文件
+4. 在 `package.json` 文件中，查找 一个 main 属性【main属性指定了这个包在被加载时候，的入口文件】
 
-### 在webpack中配置.vue组件页面的解析
+### 在`webpack`中配置`.vue`组件页面的解析
 
-1. 运行`npm i vue -S` 将vue安装为运行依赖；
+1. 运行`npm i vue -S` 将`vue`安装为运行依赖；
 
-   - 默认，webpack 无法打包 `.vue` 文件，需要安装 相关的loader：
+   - 默认，`webpack` 无法打包 `.vue` 文件，需要安装 相关的loader：
 
-2. 运行`npm i vue-loader vue-template-compiler -D`将解析转换vue的包安装为开发依赖；
+2. 运行`npm i vue-loader vue-template-compiler -D`将解析转换`vue`的包安装为开发依赖；
 
 3. 在`webpack.config.js`中，新增`loader`的配置项：
 
@@ -325,9 +325,189 @@ module.exports = {
    })
    ```
 
-   
+
+总结梳理： `webpack `中如何使用 `vue `:
+1. 安装`vue`的包：  `cnpm i vue -S`
+2. 由于 在 `webpack `中，推荐使用` .vue `这个组件模板文件定义组件，所以，需要安装 能解析这种文件的 loader    `cnpm i vue-loader vue-template-complier -D`
+3. 在` main.js `中，导入 `vue `模块  `import Vue from 'vue'`
+4. 定义一个` .vue `结尾的组件，其中，组件有三部分组成： `template script style`
+5. 使用 `import login from './login.vue'` 导入这个组件
+6. 创建 `vm `的实例 `var vm = new Vue({ el: '#app', render: c => c(login) })`
+7. 在页面中创建一个 `id `为 `app `的 `div `元素，作为我们 `vm `实例要控制的区域；
+
+### 结合 `webpack` 使用 `vue-router`
+
+1. 运行` npm i vue-router -S` 将`vue-router`安装为运行依赖；
+2. 导入 `vue-router` 包
+3. 手动安装` VueRouter`
+4. 创建路由对象
+5. 将路由对象挂载到 `vm `上
+
+```js
+import Vue from 'vue'
+// 1. 导入 vue-router 包
+import VueRouter from 'vue-router'
+// 2. 手动安装 VueRouter 
+Vue.use(VueRouter)
+
+// 导入 app 组件
+import app from './App.vue'
+// 导入 Account 组件
+import account from './main/Account.vue'
+import goodslist from './main/GoodsList.vue'
+
+// 3. 创建路由对象
+var router = new VueRouter({
+  routes: [
+    // account  goodslist
+    { path: '/account', component: account },
+    { path: '/goodslist', component: goodslist }
+  ]
+})
+
+var vm = new Vue({
+  el: '#app',
+  render: c => c(app), // render 会把 el 指定的容器中，所有的内容都清空覆盖，所以 不要 把 路由的 router-view 和 router-link 直接写到 el 所控制的元素中，，需要写到 `App` 这个组件中
+  router // 4. 将路由对象挂载到 vm 上
+})
+```
+
+注意： `App `这个组件，是通过 `VM `实例的 `render `函数，渲染出来的， `render ` 函数如果要渲染 组件， 渲染出来的组件，只能放到 `el: '#app' `所指定的 元素中；
+`Account `和 `GoodsList `组件， 是通过 路由匹配监听到的，所以， 这两个组件，只能展示到 属于 路由的 `<router-view></router-view>` 中去；
+
+### 结合 `webpack` 实现路由嵌套以及路由提取
+
+```js
+import VueRouter from 'vue-router'
+
+// 导入 Account 组件
+import account from './main/Account.vue'
+import goodslist from './main/GoodsList.vue'
+
+// 导入Account的两个子组件
+import login from './subcom/login.vue'
+import register from './subcom/register.vue'
+
+// 3. 创建路由对象
+var router = new VueRouter({
+  routes: [
+    {
+      path: '/account',
+      component: account,
+      children: [
+        { path: 'login', component: login },
+        { path: 'register', component: register }
+      ]
+    },
+    { path: '/goodslist', component: goodslist }
+  ]
+})
+
+// 把路由对象暴露出去
+export default router
+```
+
+`account.vue` 中引入路由模块。
+
+```vue
+<template>
+  <div>
+    <h2>this is Account page</h2>
+    <router-link to="/account/login">login</router-link>
+    <router-link to="/account/register">register</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+```
+
+入口文件：
+
+```js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
+
+import App from './App.vue'
+import router from './router.js'
+
+var vm = new Vue({
+  el: '#app',
+  render: c => c(App),
+  router
+})
+```
+
+
+
+### .vue` 中 样式配置
+
+- 在 `.vue` 组件中，`style` 的样式作用于全局，开始 `scoped` 属性，则可以作用域局部，全局不受影响。
+- 普通的 `style` 标签只支持 普通的 样式，如果想要启用 `scss` 或 `less` ，需要为 `style` 元素，设置 `lang` 属性
+
+- 只要 咱们的 style 标签， 是在 `.vue` 组件中定义的，那么，推荐都为 `style` 开启 `scoped` 属性
+
+```html
+<style lang="scss" scoped>
+  body {
+    div {
+      font-style: italic;
+    }
+  }
+</style>
+```
+
+
+
+## `.babelrc` 配置
+
+```json
+{
+  "presets": ["env", "stage-0"],
+  "plugins": ["transform-runtime"]
+}
+```
+
+## `webpack.config.js` 最终配置
+
+```js
+const path = require('path')
+const htmlWebpackPlugin = require('html-webpack-plugin')
+module.exports = {
+  entry: path.join(__dirname, './src/main.js'),
+  output: {
+    path: path.join(__dirname, './dist'),
+    filename: 'bundle.js'
+  },
+  plugins: [
+    new htmlWebpackPlugin({
+      template: path.join(__dirname, './src/index.html'),
+      filename: 'index.html'
+    })
+  ],
+  module: {
+    rules: [
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] },
+      { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+      {
+        test: /\.(jpg|png|gif|bmp|jpeg)$/,
+        use: 'url-loader?limit=38000&name=[hash:8]-[name].[ext]'
+      },
+      {
+        test: /\.(ttf|eot|svg|woff|woff2)$/,
+        use: 'url-loader'
+      },
+      { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ },
+      { test: /\.vue$/, use: 'vue-loader' }
+    ]
+  }
+}
+```
 
 ## Debug：
+
+- `json` 文件中不能写注释 
 
 - `json` 文件中不能写注释
 

@@ -491,18 +491,22 @@ export default {
 - 必须通过解构赋值按需加载
 
   - `import {f, foo} from './main'`
-
 - 通过 `* as 变量名` 的形式加载所有通过 export 关键字导出的接口成员
 
   - `import * as com from './main'`
+- `export `可以向外暴露多个成员， 同时，如果某些成员，我们在 `import` 的时候，不需要，则可以 不在` {}`  中定义
+- 使用 `export `导出的成员，必须严格按照 导出时候的名称，来使用  `{}`  按需接收；
+- 使用 `export `导出的成员，如果 就想 换个 名称来接收，可以使用 `as` 来起别名；
 
 
 通过 `export default` 导出的成员：
 
 - 常规加载
   - `import main from './main'`
+- 使用 `export default` 向外暴露的成员，可以使用任意的变量来接收
+- 在一个模块中， `export default` 只允许向外暴露1次
 
-`export` 和 `export default` 可以共存
+在一个模块中，可以同时使用 `export default` 和 `export `向外暴露成员
 
 
 
