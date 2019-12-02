@@ -440,7 +440,7 @@ var vm = new Vue({
 
 
 
-### .vue` 中 样式配置
+### `.vue` 中 样式配置
 
 - 在 `.vue` 组件中，`style` 的样式作用于全局，开始 `scoped` 属性，则可以作用域局部，全局不受影响。
 - 普通的 `style` 标签只支持 普通的 样式，如果想要启用 `scss` 或 `less` ，需要为 `style` 元素，设置 `lang` 属性
@@ -458,6 +458,101 @@ var vm = new Vue({
 ```
 
 
+
+## 在 `webpack` 中使用 `MintUI`
+
+### Mint-UI中按需导入的配置方式
+
+[Github 仓储地址](https://github.com/ElemeFE/mint-ui)
+
+[Mint-UI官方文档](http://mint-ui.github.io/#!/zh-cn)
+
+#### 导入所有的 MIntUI 组件
+
+```js
+导入 Mint-UI
+import MintUI from 'mint-ui' //把所有的组件都导入进来
+// 这里 可以省略 node_modules 这一层目录
+import 'mint-ui/lib/style.css'
+// 将 MintUI 安装到 Vue 中
+Vue.use(MintUI) // 把所有的组件，注册为全局的组件
+```
+
+
+
+#### 按需导入 Mint-UI组件
+
+```js
+import { Button } from 'mint-ui'
+// 使用 Vue.component 注册 按钮组件
+Vue.component(Button.name, Button) // Button.name 可以自定义。
+```
+
+#### 在模板区域引入：
+
+`<mt-button type="danger" icon="more" @click="show">default</mt-button>`
+
+如果按需导入 组件，自定义组件名称，可使用自定义的名称做标签名。
+
+### 使用`js components`
+
+```js
+// 按需导入 Toast 组件
+import { Toast } from "mint-ui";
+
+export default {
+  data() {
+    return {
+      toastInstanse: null
+    };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    getList() {
+      // 模拟获取列表的 一个 AJax 方法
+      // 在获取数据之前，立即 弹出 Toast 提示用户，正在加载数据
+      this.show();
+      setTimeout(() => {
+        //  当 3 秒过后，数据获取回来了，要把 Toast 移除
+        this.toastInstanse.close();
+      }, 3000);
+    },
+    show() {
+      // Toast("提示信息");
+      this.toastInstanse = Toast({
+        message: "这是消息",
+        duration: -1, // 如果是 -1 则弹出之后不消失
+        position: "top",
+        iconClass: "glyphicon glyphicon-heart", // 设置 图标的类
+        className: "mytoast" // 自定义Toast的样式，需要自己提供一个类名
+      });
+    }
+  }
+};
+```
+
+## 在 `webpack` 中使用 `MUI`
+
+> 注意： MUI 不同于 Mint-UI，MUI只是开发出来的一套好用的代码片段，里面提供了配套的样式、配套的HTML代码段，类似于 Bootstrap； 而 Mint-UI，是真正的组件库，是使用 Vue 技术封装出来的 成套的组件，可以无缝的和 VUE项目进行集成开发；
+> 因此，从体验上来说， Mint-UI体验更好，因为这是别人帮我们开发好的现成的Vue组件；
+> 从体验上来说， MUI和Bootstrap类似；
+> 理论上，任何项目都可以使用 MUI 或 Bootstrap，但是，MInt-UI只适用于Vue项目；
+
+注意： MUI 并不能使用  npm 去下载，需要自己手动从 github 上，下载现成的包，自己解压出来，然后手动拷贝到项目中使用；
+
+[官网首页](http://dev.dcloud.net.cn/mui/)
+
+[文档地址](http://dev.dcloud.net.cn/mui/ui/)
+
+1. 导入 MUI 的样式表：
+
+```
+import '../lib/mui/css/mui.min.css'
+```
+
+3. 根据官方提供的文档和example，尝试使用相关的组件
 
 ## `.babelrc` 配置
 
