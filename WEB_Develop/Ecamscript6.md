@@ -658,6 +658,15 @@ fs.readFile('./data/a.txt', 'utf8', function (err, data) {
 
 原理：
 
+1. Promise 是一个 构造函数，既然是构造函数， 那么，我们就可以  new Promise() 得到一个 Promise 的实例；
+2. 在 Promise 上，有两个函数，分别叫做 resolve（成功之后的回调函数） 和 reject（失败之后的回调函数）
+3. 在 Promise 构造函数的 Prototype 属性上，有一个 .then() 方法，也就说，只要是 Promise 构造函数创建的实例，都可以访问到 .then() 方法
+4. Promise 表示一个 异步操作；每当我们 new 一个 Promise 的实例，这个实例，就表示一个具体的异步操作；
+5. 既然 Promise 创建的实例，是一个异步操作，那么，这个 异步操作的结果，只能有两种状态：
+ 5.1 状态1： 异步执行成功了，需要在内部调用 成功的回调函数 resolve 把结果返回给调用者；
+ 5.2 状态2： 异步执行失败了，需要在内部调用 失败的回调函数 reject 把结果返回给调用者；
+ 5.3 由于 Promise 的实例，是一个异步操作，所以，内部拿到 操作的结果后，无法使用 return 把操作的结果返回给调用者； 这时候，只能使用回调函数的形式，来把 成功 或 失败的结果，返回给调用者；
+
 ```js
 /**
  * Promise 在 Ecmascript 6 中体现出来就是一个对象
@@ -744,6 +753,8 @@ var fs = require('fs')
 
 // 创建 Promise 容器
 // Promise 容器一旦创建，就开始执行里面的代码
+// 每当 new 一个 Promise 实例的时候，就会立即 执行这个 异步操作中的代码
+// 也就是说，new 的时候，除了能够得到 一个 promise 实例之外，还会立即调用 我们为 Promise 构造函数传递的那个 function，执行这个 function 中的 异步操作代码；
 var p1 = new Promise(function(resolve, reject) {
   fs.readFile('./data/a.txt', 'utf8', function(err, data) {  ## 异步任务
     if (err) {
@@ -834,9 +845,9 @@ p1.then(
 
 var fs = require('fs')
 
-function pReadFile(filePath) {
-  return new Promise(function(resolve, reject) {
-    fs.readFile(filePath, 'utf8', function(err, data) {
+function pReadFile(filePath) { // 1 定义函数
+  var promise =  new Promise(function(resolve, reject) { // 3 new Promise 实例 并 立即执行方法 (异步执行中)
+    fs.readFile(filePath, 'utf8', function(err, data) { // 7 读取文件
       if (err) {
         reject(err)
       } else {
@@ -844,9 +855,11 @@ function pReadFile(filePath) {
       }
     })
   })
+  return promise // 4 瞬间返回 promise 实例 (异步未执行完)
 }
-pReadFile('./data/a.txt')
-  .then(function(data) {
+var p = pReadFile('./data/a.txt') // 2 主程序执行方法
+			// 5 得到 promise 实例 (异步未执行完)
+  p.then(function(data) { // 6 瞬间通过 .then 指定 resolve reject 的回调 (先于第7步执行完，所以必定能访问到 resolve reject )
     console.log(data)
     return pReadFile('./data/b.txt')
   })
