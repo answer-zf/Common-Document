@@ -675,7 +675,7 @@ data:{
   ```js
   ···
   <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color="'blue'">// 'blue'不加单引号会当成变量在，data 中找。
-  ···
+  ···			   // 可以传 data 中的数据 v-color="msg"
   
   Vue.directive('focus', {
     bind: function (el) { // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，只执行一次
@@ -700,12 +700,17 @@ data:{
       // console.log(binding.value)      指令的绑定值  				clg: blue
       // console.log(binding.expression) 字符串形式的指令表达式 clg: 'blue'
       el.style.color = binding.value
-    }
+      // el.style.color = binding.value.color
+      // data中的数据 
+      // msg:{
+    //    color: 'orange'
+      // }
+  }
   })
   ```
-
+  
   总结 ： 与样式有关的操作，设置到 `bind` 中，与行为有关的操作，设置到 `inserted`  中。
-
+  
   ​			  `bind` 的执行时机，早与 `inserted` 。
 
 ##### 局部自定义指令：
@@ -740,6 +745,37 @@ directives: {
 }
 ···
 ```
+
+#### 计算属性
+
+表达式的计算逻辑可能会比较复杂，使用计算属性可以使模板内容更加简洁
+
+- 模板中放入太多的逻辑会让模板过重且难以维护  使用计算属性可以让模板更加的简洁
+
+  - 把模板中复杂的计算逻辑抽取出来，使模板变得更加简单
+
+  ```html
+  <div>{{msg.split('').reverse().join('')}}</div>
+  <div>{{reverseString}}</div>
+  <script>
+  ...
+  data:{
+      msg:'hello'
+  },
+  computed: {
+      reverseString: function(){
+          return this.msg.split('').reverse().join('')
+      }
+  }
+  ...
+  </script>
+  ```
+
+  - **计算属性是基于它们的响应式依赖进行缓存的**
+
+- computed比较适合对多个变量或者对象进行处理后返回一个结果值，也就是数多个变量中的某一个值发生了变化则我们监控的这个值也就会发生变化
+
+
 
 
 
