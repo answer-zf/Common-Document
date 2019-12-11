@@ -7,7 +7,12 @@
 
 ![01.MVC和MVVM的关系图解](media/Untitled. assets/01.MVC和MVVM的关系图解.png)
 
-## Vue 基础
+## Vue 操作
+
+声明式编程：模板的结构和最终显示的效果基本一致
+
+- 与原生js： 字符串拼接DOM，并追加到页面中的编程方式有一定的区别
+- 增强编程体验
 
 ### 基本代码结构
 
@@ -38,7 +43,7 @@
 </script>
 ```
 
-### 基础数据操作
+### Vue 基础
 
 #### `v-cloak` 、  `v-text` 、`v-html` 、`v-pre`
 
@@ -80,21 +85,51 @@
 - 存在安全隐患，
 - 本网站内部数据可以使用，来自第三方的数据不可使用
 
-#### `v-bind`
+`v-pre`
 
-`v-bind`: 是 Vue中，提供的用于绑定属性的指令
+- 显示原始信息跳过编译过程
+- 跳过这个元素和它的子元素的编译过程。
+- **一些静态的内容不需要编译加这个指令可以加快渲染**
 
 ```vue
-<input type="button" value="按钮" v-bind:title="msg + '123'">
+<span v-pre>{{ this will not be compiled }}</span>  
+// 显示的是{{ this will not be compiled }}
 ```
 
-- `v-bind:` 指令可以被简写为 `:`要绑定的属性
-  - `<input type="button" value="按钮" :title="msg + '123'">`
-- `v-bind` 中，可以写合法的JS表达式
 
-#### `v-on` 与 事件修饰符
 
-##### `v-on`
+#### 数据响应、`v-once`
+
+- 数据的响应式（数据的变化导致页面内容的变化）
+- 数据绑定：将数据填充到标签中
+
+`v-once`
+
+- 执行一次性的插值【当数据改变时，插值处的内容不会继续更新】
+
+```vue
+<!-- 即使data里面定义了msg 后期我们修改了 仍然显示的是第一次data里面存储的数据-->
+<span v-once>{{ msg}}</span>    
+```
+
+
+
+####  `v-model`（双向数据绑定）
+
+- 当数据发生变化的时候，视图也就发生变化
+- 当视图发生变化的时候，数据也会跟着同步变化
+
+`v-bind:`只能实现数据的单向绑定，从 M 自动绑定到 V，无法实现数据的双向绑定
+
+`v-model` 指令，可以实现表单元素和  Model 中数据的双向数据绑定（只能在表单元素中使用）
+
+```vue
+<input type="text" name="" v-model="msg" id="">
+```
+
+> 在Vue中，已经实现了数据的双向绑定，每当我们修改了 data 中的数据，Vue会默认监听到数据的改动，自动把最新的数据，应用到页面上
+
+#### `v-on`
 
 Vue 中提供了 `v-on:` 事件绑定机制
 
@@ -115,8 +150,41 @@ Vue 中提供了 `v-on:` 事件绑定机制
 - `v-on:` 指令可以被简写为 `@`要绑定的属性
   - `<input type="button" value="按钮" @click="show">`
 - 使用事件绑定机制，为元素指定事件处理函数时，如加`()`，就可以给函数传参。
+- 如果事件直接绑定函数名称，那么默认会传递事件对象作为事件函数的第一个参数
+- 如果事件绑定函数调用，那么事件对象必须作为最后一个参数显示传递，并且事件对象的名称必须是`$event`
 
-##### 事件修饰符
+```html
+<div id="app">
+    <div>{{num}}</div>
+    <div>
+        <button v-on:click='handle1'>点击1</button>
+        <button v-on:click='handle2(123, 456, $event)'>点击2</button>
+    </div>
+</div>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            num: 0
+        },
+        methods: {
+            handle1: function(event) {
+                console.log(event.target.innerHTML)
+            },
+            handle2: function(p, p1, event) {
+                console.log(p, p1)
+                console.log(event.target.innerHTML)
+                this.num++;
+            }
+        }
+    });
+</script>
+```
+
+
+
+#### 事件修饰符
 
 + .stop       阻止冒泡
 
@@ -151,14 +219,18 @@ Vue 中提供了 `v-on:` 事件绑定机制
     el: '#app',
     data: {},
     methods: {
-      div1Handler() {
+      div1Handler(event) {
         console.log('这是触发了 inner div 的点击事件')
+        // 阻止冒泡 （原生js）
+        // event.stopPropagation();
       },
       btnHandler() {
         console.log('这是触发了 btn 按钮 的点击事件')
       },
-      linkClick() {
+      linkClick(event) {
         console.log('触发了连接的点击事件')
+        // 阻止默认行为 （原生js）
+        // event.preventDefault();
       },
       div2Handler() {
         console.log('这是触发了 outer div 的点击事件')
@@ -217,93 +289,157 @@ Vue 中提供了 `v-on:` 事件绑定机制
 - 事件修饰符可以串联
 - `.prevent` 与 `.once` 前后关系
 
-####  `v-model`（双向数据绑定）
+#### 键盘修饰符以及自定义键盘修饰符
 
-`v-bind:`只能实现数据的单向绑定，从 M 自动绑定到 V，无法实现数据的双向绑定
+##### 1.x中自定义键盘修饰符【了解即可】
 
-`v-model` 指令，可以实现表单元素和  Model 中数据的双向数据绑定（只能在表单元素中使用）
+```js
+Vue.directive('on').keyCodes.f2 = 113;
+```
+
+##### 2.x中自定义键盘修饰符
+
+1. 通过`Vue.config.keyCodes.名称 = 按键值`来自定义案件修饰符的别名：
+
+```js
+Vue.config.keyCodes.f2 = 113;
+```
+
+2. 使用自定义的按键修饰符：
+
+```html
+<input type="text" v-model="name" @keyup.f2="add">
+```
+
+3. 相关文档：
+
+> js 里面的键盘事件对应的键码：http://www.cnblogs.com/wuhua1/p/6686237.html
+> vue 2.x 键盘修饰符文档：https://cn.vuejs.org/v2/guide/events.html#键值修饰符
+
+#### 属性绑定：`v-bind`
+
+`v-bind`: 是 Vue中，提供的用于绑定属性的指令
 
 ```vue
-<input type="text" name="" v-model="msg" id="">
+<input type="button" value="按钮" v-bind:title="msg + '123'">
 ```
 
-> 在Vue中，已经实现了数据的双向绑定，每当我们修改了 data 中的数据，Vue会默认监听到数据的改动，自动把最新的数据，应用到页面上
+- `v-bind:` 指令可以被简写为 `:`要绑定的属性
+  - `<input type="button" value="按钮" :title="msg + '123'">`
+- `v-bind` 中，可以写合法的JS表达式
 
-#### 样式操作
-
-##### 使用class样式
-
-1. 数组
-```html
-<h1 :class="['red', 'thin']">这是一个邪恶的H1</h1>
-```
-
-2. 数组中使用三元表达式
-```html
-<h1 :class="['red', 'thin', isactive?'active':'']">这是一个邪恶的H1</h1>
-```
-
-3. 数组中嵌套对象（代替三元表达式，提高代码的可读性）
-```html
-<h1 :class="['red', 'thin', {'active': isactive}]">这是一个邪恶的H1</h1>
-```
-
-4. 直接使用对象
+v-model的低层实现原理分析：
 
 ```html
-<h1 :class="{red:true, italic:true, active:true, thin:true}">这是一个邪恶的H1</h1>
+<input v-bind:value="msg" v-on:input="msg=$event.target.value">
 ```
 
-- 在为 class 使用 v-bind 绑定 对象的时候，对象的属性是类名，由于 对象的属性可带引号，也可不带引号，所以 这里我没写引号；  属性的值 是一个标识符
 
-```vue
-<h1 :class="obj">这是一个邪恶的H1</h1>
+
+#### 样式绑定
+
+##### 使用class样式(演示案例忽略 css 样式-- active,error,text,base)
+
+- 对象绑定
+
+  ```html
+  <div v-bind:class="{ active: isActive,error: isError}">div</div>
+  <script>
+  ...
+  data:{
+    isActive:true,
+    isError:true,
+    obj: {active:true, error:true}
+  }
+  ...// 可用事件绑定控制 标识符，实现动态更新 class类名
+  </script>
+  ```
+
+  - class绑定的值简化操作 : 对象的属性是类名，由于 对象的属性可带引号，也可不带引号；  属性的值 是一个标识符
+
+    ```html
+    <div :class="obj">div</div>
+    ```
+
+- 数组绑定
+
+  ```html
+  <div v-bind:class="[activeClass, errorClass]">div</div>
+  <script>
+  ...
+  data:{
+    activeClass: 'active',
+    errorClass: 'error',
+    isText: true,
+    arrClass: ['active', 'error']
+  }
+  ...
+  </script>
+  ```
+
+1. 数组中嵌套对象
+
+   ```html
+   <div :class="[activeClass,errorClass, {text: isText}]">text</div>
+   ```
+
+2. class绑定的值简化操作
+
+   ```html
+   <div class="base" :class="arrClass"></div>
+   ```
+
+> 默认的class如何处理？默认的class会保留
+
+区别
+
+- 绑定对象的时候 对象的属性 即要渲染的类名 对象的属性值对应的是 data 中的数据 
+- 绑定数组的时候数组里面存的是data 中的数据 
+
+##### 使用内联样式
+
+对象绑定：
+
+```html
+<div :style="{border: borderStyle, width: widthStyle, height: heightStyle}"></div>
 <script>
 ...
 data: {
-  ...
-  obj: {red:true, italic:true, active:true, thin:true}
-  ...
+  borderStyle: '1px solid #0f0',
+  widthStyle: '100px',
+  heightStyle: '100px',
+  objStyles: {
+    border: '1px solid #00f',
+    width: '50px',
+    height: '50px'
+  },
+  overrideStyles: {
+    border: '5px solid orange',
+    backgroundColor: 'blue' 
+    		// CSS 属性名可以用驼峰式 (camelCase) 或短横线分隔 (kebab-case，记得用单引号括起来)
+  }
 }
 ...
 </script>
 ```
 
-##### 使用内联样式
+简化：
 
-1. 直接在元素上通过 `:style` 的形式，书写样式对象
-```
-<h1 :style="{color: 'red', 'font-size': '40px'}">这是一个善良的H1</h1>
-```
-
-2. 将样式对象，定义到 `data` 中，并直接引用到 `:style` 中
- + 在data上定义样式：
-```
-data: {
-        h1StyleObj: { color: 'red', 'font-size': '40px', 'font-weight': '200' }
-}
-```
- + 在元素中，通过属性绑定的形式，将样式对象应用到元素中：
-```
-<h1 :style="h1StyleObj">这是一个善良的H1</h1>
+```html
+<div :style="objStyles"></div>
 ```
 
-3. 在 `:style` 中通过数组，引用多个 `data` 上的样式对象
- + 在data上定义样式：
+数组绑定：可以将多个样式对象应用到同一个元素:
+
+```html
+<div :style="[objStyles,overrideStyle]"></div>
 ```
-data: {
-        h1StyleObj: { color: 'red', 'font-size': '40px', 'font-weight': '200' },
-        h1StyleObj2: { fontStyle: 'italic' }
-}
-```
- + 在元素中，通过属性绑定的形式，将样式对象应用到元素中：
-```
-<h1 :style="[h1StyleObj, h1StyleObj2]">这是一个善良的H1</h1>
-```
+
+
 
 #### `v-for`和`key`属性
 
-1. 迭代数组
+1. 遍历数组
 
 ```vue
 <ul>
@@ -311,15 +447,15 @@ data: {
 </ul>
 ```
 
-2. 迭代对象中的属性
+2. 遍历对象中的属性
 
-```vue
-<!-- 循环遍历对象身上的属性 -->
-<!-- 注意：在遍历对象身上的键值对的时候， 除了有 val key ,在第三个位置还有 一个 索引  -->
-<p v-for="(val, key, i) in list">值是： {{ val }} --- 键是： {{key}} -- 索引： {{i}}</p>
-```
+   ```html
+   <!-- 循环遍历对象身上的属性 -->
+   <!-- 注意：在遍历对象身上的键值对的时候， 除了有 val key ,在第三个位置还有 一个 索引  -->
+   <p v-for="(val, key, i) in list">值是： {{ val }} --- 键是： {{key}} -- 索引： {{i}}</p>
+   ```
 
-3. 迭代数字
+3. 遍历数字
 
 ```vue
 <!-- 注意：如果使用 v-for 迭代数字的话，前面的 count 值从 1 开始 -->
@@ -379,7 +515,23 @@ data: {
 
 #### `v-if` 和 `v-show`
 
-##### `v-if` 
+##### `v-if / v-else / v-else-if` 
+
+```html
+<div id="app">
+  <div v-if='score>= 90'>very good</div>
+  <div v-else-if='score < 90 && score>= 80'>better</div>
+  <div v-else-if='score < 80 && score>= 60'>good</div>
+  <div v-else>bad</div>
+</div>
+<script>
+...
+data:{
+	score: 87
+}
+...
+</script>
+```
 
 - 每次都会重新删除或创建元素
 - 有较高的切换性能消耗
@@ -391,13 +543,205 @@ data: {
 
 ```vue
 <input type="submit" value="切换" @click="flag=!flag">
-    <h3 v-if="flag">v-if--------Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h3>
-    <h3 v-show="flag">v-show--------Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h3>
+<h3 v-if="flag">v-if--------Lorem ipsum dolor, sit </h3>
+<h3 v-show="flag">v-show--------Lorem ipsum dolor, sit</h3>
 ```
+
+区别：
+
+- v-if控制元素是否渲染到页面
+- v-show控制元素是否显示（已经渲染到了页面）
 
 如果元素涉及到频繁的切换，最好不要使用 v-if, 而是推荐使用 v-show
 
 如果元素可能永远也不会被显示出来被用户看到，则推荐使用 v-if
+
+### Vue 高级
+
+#### 表单基本操作
+
+- 获取单选框中的值
+
+  1. 两个单选框需要同时通过v-model 双向绑定 一个值 
+  2. 每一个单选框必须要有value属性  且value 值不能一样 
+  3. 当某一个单选框选中的时候 v-model  变成 当前的 value值 
+
+  ```html
+  <input type="radio" id="male" value="1" v-model='gender'>
+  <label for="male">男</label>
+  <input type="radio" id="female" value="2" v-model='gender'>
+  <label for="female">女</label>
+  <script>
+  ...
+     data: {
+       // 默认会让当前的 value 值为 2 的单选框选中
+       // gender 的值就是选中的值，我们只需要实时监控他的值就可以了
+       gender: 2,  
+     }
+  ...
+  </script>
+  ```
+
+- 获取复选框中的值
+
+  1. 通过v-model
+  2. 和获取单选框中的值一样 
+  3. 复选框 `checkbox` 这种的组合时   data 中的 hobby 要定义成数组 否则无法实现多选
+
+  ```html
+  <div>
+     <span>爱好：</span>
+     <input type="checkbox" id="ball" value="1" v-model='hobby'>
+     <label for="ball">篮球</label>
+     <input type="checkbox" id="sing" value="2" v-model='hobby'>
+     <label for="sing">唱歌</label>
+     <input type="checkbox" id="code" value="3" v-model='hobby'>
+     <label for="code">写代码</label>
+   </div>
+  <script>
+  ...
+     data: {
+        // 默认会让当前的 value 值为 2 和 3 的复选框选中
+        hobby: ['2', '3'],
+     }
+  ...
+  </script>
+  ```
+
+- 获取下拉框和文本框中的值
+
+  1. 需要给select  通过v-model 双向绑定 一个值 
+  2. 每一个option  必须要有value属性  且value 值不能一样 
+  3. 当某一个option选中的时候 v-model 改变成 当前的 value值 
+  4. 文本框中的值与单选框一样，v-model 绑定
+     - 不能再双标签中间处理数据，只能用 v-model 进行数据绑定
+
+  ```html
+   <div>
+      <span>职业：</span>
+       <!--occupation 的值就是选中的值，我们只需要实时监控他的值就可以了-->
+       <!-- multiple  多选 -->
+      <select v-model='occupation' multiple>
+          <option value="0">请选择职业...</option>
+          <option value="1">教师</option>
+          <option value="2">软件工程师</option>
+          <option value="3">律师</option>
+      </select>
+      <!-- textarea 是 一个双标签   不需要绑定value 属性的  -->
+      <textarea v-model='desc'></textarea>
+  </div>
+  <script>
+  ...
+     data: {
+       // 默认会让当前的 value 值为 2 和 3 的下拉框选中
+       occupation: ['2', '3'],
+       // 加 multiple 属性后 occupation 的值必须为数组，否则报错
+       // 未加多选功能的时候，occupation 的值可以直接为 数值 
+       desc: 'nihao'
+     }
+  ...
+  </script>
+  ```
+
+#### 表单域修饰符
+
+- .number  转换为数值 `<input type="text" v-model.number="age">`
+
+  - 注意点：	
+  - 当开始输入非数字的字符串时，因为Vue无法将字符串转换成数值
+  - 所以属性值将实时更新成相同的字符串。即使后面输入数字，也将被视作字符串。
+- .trim  自动过滤用户输入的首尾空白字符 `<input type="text" v-model.trim="info">`
+
+  - 只能去掉首尾的 不能去除中间的空格
+- .lazy   将input事件切换成change事件 `<input type="text" v-model.lazy="msg">`
+  - input 事件 每次输入内容都会被触发
+  - change事件 在失去焦点 或者 按下回车键时才触发
+  - .lazy 修饰符延迟了同步更新属性值的时机。即将原本绑定在 input 事件的同步逻辑转变为绑定在 change 事件上  即：在失去焦点 或者 按下回车键时才更新
+
+####  自定义指令
+
+##### 全局自定义指令：
+
+使用  `Vue.directive('自定义属性名', { })` 定义全局的自定义指令
+
+- 参数1 ： 指令的名称，注意: 在定义的时候，指令的名称前面，不需要加 v- 前缀
+
+- 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
+
+- 参数2： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
+
+  >  vue 2.x 自定义指令文档：https://cn.vuejs.org/v2/guide/custom-directive.html
+
+  ```js
+  ···
+  <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color="'blue'">// 'blue'不加单引号会当成变量在，data 中找。
+  ···
+  
+  Vue.directive('focus', {
+    bind: function (el) { // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，只执行一次
+      // 注意： 在每个 函数中，第一个参数，永远是 el ，表示 被绑定了指令的那个元素，这个 el 参数，是一个原生的JS对象
+      // 在元素 刚绑定了指令的时候，还没有 插入到 DOM中去，这时候，调用 focus 方法没有作用
+      // 因为，一个元素，只有插入DOM之后，才能获取焦点
+      // el.focus()
+    },// inserted 表示元素 插入到DOM中的时候，会执行 inserted 函数【触发1次】
+    inserted: function (el) {  
+      el.focus()
+      // 和JS行为有关的操作，最好在 inserted 中去执行，防止 JS行为不生效
+    },
+    update: function (el) {  // 当VNode更新的时候，会执行 updated， 可能会触发多次
+    }
+  })
+  
+  Vue.directive('color', {
+  // 样式，只要通过指令绑定给了元素，不管这个元素有没有被插入到页面中去，这个元素肯定有了一个内联的样式
+  // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析样式，应用给这个元素
+    bind: function (el, binding) {
+      // 和样式相关的操作，一般都可以在 bind 执行
+      // console.log(binding.value)      指令的绑定值  				clg: blue
+      // console.log(binding.expression) 字符串形式的指令表达式 clg: 'blue'
+      el.style.color = binding.value
+    }
+  })
+  ```
+
+  总结 ： 与样式有关的操作，设置到 `bind` 中，与行为有关的操作，设置到 `inserted`  中。
+
+  ​			  `bind` 的执行时机，早与 `inserted` 。
+
+##### 局部自定义指令：
+
+在Vue 实例中，增加一个属性值：`directives：{}`
+
+```html
+<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
+···
+directives: {
+  'fontweight': {
+    bind(el, binding) {
+      el.style.fontWeight = binding.value
+    }
+  }
+}
+···
+```
+
+##### 自定义属性中函数简写：
+
+若只使用 `bind` 和  `update`  触发相同行为，而不关心其它的钩子。 可简写：
+
+```html
+<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
+···
+directives: {
+  // 注意：这个 function 等同于 把 代码写到了 bind 和 update 中去
+  'fontsize': function (el, binding) { 
+    el.style.fontSize = parseInt(binding.value) + 'px'
+  }
+}
+···
+```
+
+
 
 ### 过滤器
 
@@ -534,115 +878,7 @@ data: {
 </script>
 ```
 
-### 键盘修饰符以及自定义键盘修饰符
 
-#### 1.x中自定义键盘修饰符【了解即可】
-
-```js
-Vue.directive('on').keyCodes.f2 = 113;
-```
-
-#### 2.x中自定义键盘修饰符
-
-1. 通过`Vue.config.keyCodes.名称 = 按键值`来自定义案件修饰符的别名：
-
-```js
-Vue.config.keyCodes.f2 = 113;
-```
-
-2. 使用自定义的按键修饰符：
-
-```html
-<input type="text" v-model="name" @keyup.f2="add">
-```
-
-3. 相关文档：
-
-> js 里面的键盘事件对应的键码：http://www.cnblogs.com/wuhua1/p/6686237.html
-> vue 2.x 键盘修饰符文档：https://cn.vuejs.org/v2/guide/events.html#键值修饰符
-
-###  自定义指令
-
-#### 全局自定义指令：
-
-使用  `Vue.directive('自定义属性名', { })` 定义全局的自定义指令
-
-- 参数1 ： 指令的名称，注意: 在定义的时候，指令的名称前面，不需要加 v- 前缀
-  
-- 在调用的时候，必须 在指令名称前 加上 v- 前缀来进行调用
-  
-- 参数2： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关的操作
-
-  >  vue 2.x 自定义指令文档：https://cn.vuejs.org/v2/guide/custom-directive.html
-
-  ```js
-  ···
-  <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color="'blue'">// 'blue'不加单引号会当成变量在，data 中找。
-  ···
-  
-  Vue.directive('focus', {
-    bind: function (el) { // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，只执行一次
-      // 注意： 在每个 函数中，第一个参数，永远是 el ，表示 被绑定了指令的那个元素，这个 el 参数，是一个原生的JS对象
-      // 在元素 刚绑定了指令的时候，还没有 插入到 DOM中去，这时候，调用 focus 方法没有作用
-      // 因为，一个元素，只有插入DOM之后，才能获取焦点
-      // el.focus()
-    },// inserted 表示元素 插入到DOM中的时候，会执行 inserted 函数【触发1次】
-    inserted: function (el) {  
-      el.focus()
-      // 和JS行为有关的操作，最好在 inserted 中去执行，防止 JS行为不生效
-    },
-    update: function (el) {  // 当VNode更新的时候，会执行 updated， 可能会触发多次
-    }
-  })
-  
-  Vue.directive('color', {
-  // 样式，只要通过指令绑定给了元素，不管这个元素有没有被插入到页面中去，这个元素肯定有了一个内联的样式
-  // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析样式，应用给这个元素
-    bind: function (el, binding) {
-      // 和样式相关的操作，一般都可以在 bind 执行
-      // console.log(binding.value)      指令的绑定值  				clg: blue
-      // console.log(binding.expression) 字符串形式的指令表达式 clg: 'blue'
-      el.style.color = binding.value
-    }
-  })
-  ```
-
-  总结 ： 与样式有关的操作，设置到 `bind` 中，与行为有关的操作，设置到 `inserted`  中。
-
-  ​			  `bind` 的执行时机，早与 `inserted` 。
-
-#### 局部自定义指令：
-
-在Vue 实例中，增加一个属性值：`directives：{}`
-
-```html
-<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
-···
-directives: {
-  'fontweight': {
-    bind(el, binding) {
-      el.style.fontWeight = binding.value
-    }
-  }
-}
-···
-```
-
-#### 自定义属性中函数简写：
-
-若只使用 `bind` 和  `update`  触发相同行为，而不关心其它的钩子。 可简写：
-
-```html
-<input type="text" class="form-control" v-model="keywords" v-fontweight="200">
-···
-directives: {
-  // 注意：这个 function 等同于 把 代码写到了 bind 和 update 中去
-  'fontsize': function (el, binding) { 
-    el.style.fontSize = parseInt(binding.value) + 'px'
-  }
-}
-···
-```
 
 
 
