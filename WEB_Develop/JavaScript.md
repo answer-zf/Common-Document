@@ -105,8 +105,11 @@ Array.some((item, i) => {
 
 split()
 Array.split('') // 一个字符串分割成字符串数组（以'',即每一个字符串为数组的每一项），与join()相反
+
 reverse()
 Array.reverse() // 用于颠倒数组中元素的顺序
+
+charAt(0) // 返回指定位置的字符
 ```
 
 

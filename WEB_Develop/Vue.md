@@ -753,161 +753,80 @@ directives: {
 - 模板中放入太多的逻辑会让模板过重且难以维护  使用计算属性可以让模板更加的简洁
 
   - 把模板中复杂的计算逻辑抽取出来，使模板变得更加简单
+  - **计算属性是基于它们的响应式依赖（data中的数据）进行缓存的**
+
+  - computed比较适合对多个变量或者对象进行处理后返回一个结果值，也就是数多个变量中的某一个值发生了变化则我们监控的这个值也就会发生变化
 
   ```html
   <div>{{msg.split('').reverse().join('')}}</div>
+  <!-- 当多次调用 reverseString  的时候 
+       只要里面的 msg 值不改变 他会把第一次计算的结果直接返回
+  		 直到data 中的 msg 值改变 计算属性才会重新发生计算 -->
   <div>{{reverseString}}</div>
+  <div>{{reverseString}}</div>
+  <!-- 调用methods中的方法的时候  他每次会重新调用 -->
+  <div>{{reverseMessage()}}</div>
+  <div>{{reverseMessage()}}</div>
   <script>
   ...
   data:{
       msg:'hello'
   },
-  computed: {
-      reverseString: function(){
-          return this.msg.split('').reverse().join('')
+  methods: {
+      reverseMessage: function(){
+        console.log('methods')
+        return this.msg.split('').reverse().join('');
       }
+  },//computed  属性 定义 和 data 已经 methods 平级 
+  computed: {
+      reverseString: function(){ //  reverseString   这个是自己定义的名字 
+          return this.msg.split('').reverse().join('')
+      }   // 这里一定要有return 否则 调用 reverseString 的 时候无法拿到结果 
   }
   ...
   </script>
   ```
 
-  - **计算属性是基于它们的响应式依赖进行缓存的**
 
-- computed比较适合对多个变量或者对象进行处理后返回一个结果值，也就是数多个变量中的某一个值发生了变化则我们监控的这个值也就会发生变化
+#### 侦听器 watch
+
+- 使用watch来响应数据的变化
+- 一般用于异步或者开销较大的操作
+- watch 中的属性 一定是data 中 已经存在的数据 
+- **当需要监听一个对象的改变时，普通的watch方法无法监听到对象内部属性的改变，只有data中的数据才能够监听到变化，此时就需要deep属性对对象进行深度监听**
 
 
 
+![Snipaste_2019-12-12_08-48-43](media/Vue. assets/Snipaste_2019-12-12_08-48-43.png)
 
-
-### 过滤器
-
-- 概念：Vue.js 允许你自定义过滤器，**可被用作一些常见的文本格式化**。
-- 过滤器可以用在两个地方：**mustache 插值和 v-bind 表达式**。
-- 过滤器应该被添加在 JavaScript 表达式的尾部，由“管道”符指示。
-  - 调用：
-    - `{{ name | '过滤器名称' }}`
-
-#### 全局过滤器
-
-`Vue.filter('过滤器名称', function () { })`
-
-其中的 function ，第一个参数，已经被规定死了，永远都是 过滤器 管道符前面 传递过来的数据
-
-#### 私有过滤器
-
-在Vue 实例中，增加一个属性值：`filters：{}`
-
-> 注意：当有局部和全局两个名称相同的过滤器时候，会以就近原则进行调用，即：局部过滤器优先于全局过滤器被调用！
-
-#### 实例演示
-
-```vue
-<div id="app">
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <div class="panel-title">brand management</div>
-    </div>
-    <div class="panel-body form-inline">
-      <label for="">
-        Id:
-        <input type="text" name="" id="" class="form-control" v-model="id">
-      </label>
-      <label for="">
-        NAME:
-        <input type="text" name="" id="" class="form-control" v-model="name">
-      </label>
-      <input type="button" value="add" class="btn btn-primary" @click="add">
-      <label for="">
-        搜索:
-        <input type="text" name="" id="" class="form-control" v-model="keywords" >
-      </label>
-    </div>
-  </div>
-  <table class="table table-bordered table-hover progress-striped">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>NAME</th>
-        <th>Ctime</th>
-        <th>Operation</th>
-      </tr>
-    </thead>
-    <tbody>
-<!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
-<!-- 现在：自定义一个 search 方法，同时，把所有的关键字，通过传参的形式，传递给了 search 方法 -->
-<!-- 在 search 方法内部，通过执行 for 循环，把所有符合 搜索关键字的数据，保存到一个新数组中，返回-->
-      <tr v-for="item in search(keywords)" :key="item.id">
-        <td>{{item.id}}</td>
-        <td>{{item.name}}</td>
-        <td>{{ item.Ctime | dateFormat }}</td>
-        <td>
-          <a href="" @click.prevent="deleteFrom(item.id)">Delete</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+```html
+<span><input type="text" v-model.lazy="uname"></span>// TODO: 4. 改为失去焦点触发事件
+<span>{{tip}}</span>
 <script>
-  Vue.filter('dateFormat', function (dateStr, pattern = '') {  // 全局过滤器
-    // 根据给定的时间字符串，得到特定的时间
-    var dt = new Date(dateStr)
-    var y = dt.getFullYear()
-    var m = (dt.getMonth() + 1).toString().padStart(2, '0')
-    var d = dt.getDate().toString().padStart(2, '0')
-    if (pattern.toLowerCase === 'yyyy-mm-dd') {
-      return `${y}-${m}-${d}`
-    }
-    var hh = dt.getHours().toString().padStart(2, '0')
-    var mm = dt.getMinutes().toString().padStart(2, '0')
-    var ss = dt.getSeconds().toString().padStart(2, '0')
-    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
-  })
+  // 创建 Vue 实例，得到 ViewModel
   var vm = new Vue({
     el: '#app',
     data: {
-      id: '',
-      name: '',
-      keywords: '',
-      list: [
-        { id: 1, name: 'BMW', Ctime: new Date() },
-        { id: 2, name: 'BZ', Ctime: new Date() },
-      ]
+      uname: '',
+      tip: ''
     },
     methods: {
-      add() {
-        var obj = {
-          id: this.id,
-          name: this.name,
-          Ctime: new Date()
-        }
-        this.list.push(obj)
-        this.id = this.name = ''
-      },
-      deleteFrom(id) {
-        var index = this.list.findIndex(item => item == id)
-        this.list.splice(index, 1)
-      },
-      search(keywords) {
-        return this.list.filter(item => {
-          if (item.name.includes(keywords)) {
-            return true
+      checkName: function (uname) {
+        setTimeout(() => { // TODO: 2. （模拟）调用后台接口（异步）进行用户名的验证
+          if (uname === 'admin') {
+            this.tip = '用户名存在'
+          } else {
+            this.tip = '可以使用'
           }
-        })
+        }, 2000);
       }
     },
-    filters: { // 私有过滤器
-      dateFormat(dateStr, pattern = '') {
-        var dt = new Date(dateStr)
-        var y = dt.getFullYear()
-        var m = (dt.getMonth() + 1).toString().padStart(2, '0')
-        var d = dt.getDate().toString().padStart(2, '0')
-        if (pattern.toLowerCase === 'yyyy-mm-dd') {
-          return `${y}-${m}-${d}`
-        }
-        var hh = dt.getHours().toString().padStart(2, '0')
-        var mm = dt.getMinutes().toString().padStart(2, '0')
-        var ss = dt.getSeconds().toString().padStart(2, '0')
-        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+    watch: {
+      // TODO: 1. 使用侦听器监听用户名的变化
+      uname: function (val) {
+        this.checkName(val)
+        // TODO: 3. 根据验证结果调整提示信息
+        this.tip = '正在验证。。。'
       }
     }
   })
@@ -916,9 +835,83 @@ directives: {
 
 
 
+#### 过滤器
+
+- 概念：Vue.js 允许你自定义过滤器，**可被用作一些常见的文本格式化**。
+- 过滤器可以用在两个地方：**mustache 插值和 v-bind 表达式**。
+- 过滤器应该被添加在 JavaScript 表达式的尾部，由“管道”符指示。
+  - 调用：
+    - `{{ name | 过滤器名称 }}`
+    - `v-bind:id=" name | 过滤器名称 "`
+- 支持级联操作（同时使用多个）: 把前面 过滤器 的结果在作为下一个过滤器的输入值，在进行处理，再产出新的结果。
+- 过滤器不改变真正的`data`，而只是改变渲染的结果，并返回过滤后的版本
+
+##### 全局过滤器
+
+`Vue.filter('过滤器名称', function () { })`
+
+其中的 function ，第一个参数，已经被规定死了，永远都是 过滤器 管道符前面 传递过来的数据
+
+##### 私有过滤器
+
+在Vue 实例中，增加一个属性值：`filters：{}`
+
+> 注意：当有局部和全局两个名称相同的过滤器时候，会以就近原则进行调用，即：局部过滤器优先于全局过滤器被调用！
+
+##### 基本使用：
+
+```html
+<div id="app">
+  <input type="text" v-model='msg'>
+  <div>{{msg | upper}}</div>
+  <div>{{msg | upper | lower}}</div>
+  <div :abc='msg | upper'>测试数据</div>
+</div>
+<script type="text/javascript">
+  /*
+    过滤器
+    1、可以用与插值表达式和属性绑定
+    2、支持级联操作
+  */
+  // Vue.filter('upper', function(val) {
+  //   return val.charAt(0).toUpperCase() + val.slice(1);
+  // });
+  Vue.filter('lower', function(val) {
+    return val.charAt(0).toLowerCase() + val.slice(1);
+  });
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      msg: ''
+    },
+    filters: {
+      upper: function(val) {
+        return val.charAt(0).toUpperCase() + val.slice(1);
+      }
+    }
+  });
+</script>
+```
+
+##### 过滤器中传递参数
+
+```html
+<div>{{date | format('yyyy-MM-dd')}}</div> 
+<script>
+Vue.filter('format', function (val, arg) { // 过滤器接受参数从第二个参数开始接收
+  if (arg == 'yyyy-MM-dd') {
+    return val.getFullYear() + '-' + (val.getMonth() + 1) + '-' + val.getDate()
+  }
+  return val
+})
+</script>
+```
 
 
-### [vue实例的生命周期](https://cn.vuejs.org/v2/guide/instance.html#实例生命周期)
+
+
+
+#### [vue实例的生命周期](https://cn.vuejs.org/v2/guide/instance.html#实例生命周期)
 
 什么是生命周期：从Vue实例创建、运行、到销毁期间，总是伴随着各种各样的事件，这些事件，统称为生命周期！
 
@@ -930,20 +923,92 @@ directives: {
 
 主要的生命周期函数分类：
 
-- 创建期间的生命周期函数：
+- 创建期间的生命周期函数：`挂载`（初始化相关属性）
   - beforeCreate：实例刚在内存中被创建出来，此时，还没有初始化好 data 和 methods 属性
+    - 在实例初始化之后，数据观测和事件配置之前被调用。此时data 和 methods 以及页面的DOM结构都没有初始化   什么都做不了
   - created：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板
+    - 在实例创建完成后被立即调用
   - beforeMount：此时已经完成了模板的编译，但是还没有挂载到页面中
     - 在 beforeMount 执行的时候，页面中的元素，还没有被真正替换过来，只是之前写的一些模板字符串
+  - 在挂载开始之前被调用
   - mounted：此时，已经将编译好的模板，挂载到了页面指定的容器中显示
     - 注意： mounted 是 实例创建期间的最后一个生命周期函数，当执行完 mounted 就表示，实例已经被完全创建好了，此时，如果没有其它操作的话，这个实例，就静静的 躺在我们的内存中，一动不动
-
- - 运行期间的生命周期函数：
+    - el被新创建的vm.$el替换，并挂载到实例上去之后调用该钩子。
+  
+ - 运行期间的生命周期函数：`更新`（元素或组件的变更操作）
    - beforeUpdate：状态更新之前执行此函数， 此时 data 中的状态值是最新的，但是界面上显示的 数据还是旧的，因为此时还没有开始重新渲染DOM节点
+     - beforeUpdate 数据更新时调用，发生在虚拟DOM打补丁之前。
    - updated：实例更新完毕之后调用此函数，此时 data 中的状态值 和 界面上显示的数据，都已经完成了更新，界面已经被重新渲染好了！
- - 销毁期间的生命周期函数：
+     - 由于数据更改导致的虚拟DOM重新渲染和打补丁，在这之后会调用该钩子。
+ - 销毁期间的生命周期函数：`销毁`（销毁相关属性，目的释放资源）
    - beforeDestroy：实例销毁之前调用。在这一步，实例仍然完全可用。
    - destroyed：Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
+
+常用：
+
+mounted： 初始化已经完成，页面中模板内容已经存在，可以向里面填充数据了，
+
+- 应用场景： 调用后台接口，获取数据，然后把数据填充到模板里（保证页面中已经有模板内容了）
+
+#### 数组变异方法
+
+- 在 Vue 中，直接修改对象属性的值无法触发响应式。当你直接修改了对象属性的值，你会发现，只有数据改了，但是页面内容并没有改变
+- Vue 将被侦听的数组的变异方法进行了包裹，所以它们也将会触发视图更新
+- 变异数组方法即保持数组方法原有功能不变的前提下对其进行功能拓展
+
+| `push()`    | 往数组最后面添加一个元素，成功返回当前数组的长度             |
+| ----------- | ------------------------------------------------------------ |
+| `pop()`     | 删除数组的最后一个元素，成功返回删除元素的值                 |
+| `shift()`   | 删除数组的第一个元素，成功返回删除元素的值                   |
+| `unshift()` | 往数组最前面添加一个元素，成功返回当前数组的长度             |
+| `splice()`  | 有三个参数，第一个是想要删除的元素的下标（必选），第二个是想要删除的个数（必选），第三个是删除 后想要在原位置替换的值 |
+| `sort()`    | sort()  使数组按照字符编码默认从小到大排序,成功返回排序后的数组 |
+| `reverse()` | reverse()  将数组倒序，成功返回倒序后的数组                  |
+
+#### 替换数组
+
+- 不会改变原始数组，但总是返回一个新数组
+
+| filter | filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。 |
+| ------ | ------------------------------------------------------------ |
+| concat | concat() 方法用于连接两个或多个数组。该方法不会改变现有的数组 |
+| slice  | slice() 方法可从已有的数组中返回选定的元素。该方法并不会修改数组，而是返回一个子数组 |
+
+#### 动态数组响应式数据
+
+- Vue.set(vm.items, indexOfItem, newValue)
+- vm.$set(vm.items, indexOfItem, newValue)
+  - 参数一表示要处理的数组名称
+  - 参数二表示要处理的数组的索引
+  - 参数三表示要处理的数组的值
+
+```html
+<div id="app">
+  <div v-for="(item,i ) in list" :key="i"> {{item}}</div>
+  <div>{{info.name}}</div>
+  <div>{{info.age}}</div>
+  <div>{{info.gender}}</div>
+</div>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      list: ['apple', 'orange', 'banana'],
+      info: {
+        name: 'lisi',
+        age: 12
+      }
+    }
+  })
+  vm.list[1] = 'lemon' // 用索引的方式修改数据不是响应式的
+  Vue.set(vm.list, '2', 'tomato')
+  vm.$set(vm.list, '1', 'pear')
+  vm.info.gender = 'male' // 不是响应式的
+  vm.$set(vm.info, 'gender', 'male')
+</script>    
+```
+
+
 
 ### [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
