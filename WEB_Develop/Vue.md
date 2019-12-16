@@ -587,6 +587,7 @@ data:{
   1. 通过v-model
   2. 和获取单选框中的值一样 
   3. 复选框 `checkbox` 这种的组合时   data 中的 hobby 要定义成数组 否则无法实现多选
+  4. 单独使用 `checkbox` 实现点击全选/全不选 功能时 可用 `v-model='false/true'`,进行双向控制
 
   ```html
   <div>
