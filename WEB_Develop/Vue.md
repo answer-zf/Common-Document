@@ -957,23 +957,23 @@ mounted： 初始化已经完成，页面中模板内容已经存在，可以向
 - Vue 将被侦听的数组的变异方法进行了包裹，所以它们也将会触发视图更新
 - 变异数组方法即保持数组方法原有功能不变的前提下对其进行功能拓展
 
-| `push()`    | 往数组最后面添加一个元素，成功返回当前数组的长度             |
-| ----------- | ------------------------------------------------------------ |
-| `pop()`     | 删除数组的最后一个元素，成功返回删除元素的值                 |
-| `shift()`   | 删除数组的第一个元素，成功返回删除元素的值                   |
-| `unshift()` | 往数组最前面添加一个元素，成功返回当前数组的长度             |
+| `push()`    | 往数组最后面添加一个元素，成功返回当前数组的长度                                                                      |
+| ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `pop()`     | 删除数组的最后一个元素，成功返回删除元素的值                                                                          |
+| `shift()`   | 删除数组的第一个元素，成功返回删除元素的值                                                                            |
+| `unshift()` | 往数组最前面添加一个元素，成功返回当前数组的长度                                                                      |
 | `splice()`  | 有三个参数，第一个是想要删除的元素的下标（必选），第二个是想要删除的个数（必选），第三个是删除 后想要在原位置替换的值 |
-| `sort()`    | sort()  使数组按照字符编码默认从小到大排序,成功返回排序后的数组 |
-| `reverse()` | reverse()  将数组倒序，成功返回倒序后的数组                  |
+| `sort()`    | sort()  使数组按照字符编码默认从小到大排序,成功返回排序后的数组                                                       |
+| `reverse()` | reverse()  将数组倒序，成功返回倒序后的数组                                                                           |
 
 #### 替换数组
 
 - 不会改变原始数组，但总是返回一个新数组
 
 | filter | filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。 |
-| ------ | ------------------------------------------------------------ |
-| concat | concat() 方法用于连接两个或多个数组。该方法不会改变现有的数组 |
-| slice  | slice() 方法可从已有的数组中返回选定的元素。该方法并不会修改数组，而是返回一个子数组 |
+| ------ | ------------------------------------------------------------------------------------- |
+| concat | concat() 方法用于连接两个或多个数组。该方法不会改变现有的数组                         |
+| slice  | slice() 方法可从已有的数组中返回选定的元素。该方法并不会修改数组，而是返回一个子数组  |
 
 #### 动态数组响应式数据
 
@@ -1375,7 +1375,7 @@ var vm = new Vue({
 
 
 
-## Vue中的组件
+## Vue 中的组件
 
 组件：
 
@@ -1851,341 +1851,242 @@ var vm = new Vue({
 </script>
 ```
 
-
-
 ## Vue 中的路由
 
-1. **后端路由：**对于普通的网站，所有的超链接都是URL地址，所有的URL地址都对应服务器上对应的资源；
+### 前提
 
-2. **前端路由：**对于单页面应用程序来说，主要通过URL中的hash(#号)来实现不同页面之间的切换，同时，hash有一个特点：HTTP请求中不会包含hash相关的内容；所以，单页面程序中的页面跳转主要用hash实现；
+#### 接口调用方式
 
-3. 在单页面应用程序中，这种通过hash改变来切换页面的方式，称作前端路由（区别于后端路由）；
+- 原生ajax
+- 基于jQuery的ajax
+- fetch
+- axios
 
-### 路由的基本使用
+#### URL地址格式：
 
-1. 安装 `vue-router` 路由模块 （`script`标签引包）
-2. 创建一个路由对象， 当 导入 `vue-router` 包之后，在 window 全局对象中，就有了一个 路由的构造函数，叫做 `VueRouter`
-3. 在 `new` 路由对象的时候，可以为 构造函数，传递一个配置对象
-4. 每个路由规则，都是一个对象，这个规则对象，身上，有两个必须的属性：
-   - 属性1 是 `path`， 表示监听 哪个路由链接地址；
-   - 属性2 是 `component`， 表示，如果 路由是前面匹配到的 `path` ，则展示 `component` 属性对应的那个组件
-     - 注意： `component` 的属性值，必须是一个 组件的模板对象， 不能是 组件的引用名称；
-   - 属性2 可以设置 `redirect`，表示 ，重定向所匹配到的 `path`， 属性值为 所重定向的路由
-     - 注意：这里的 `redirect` 和 Node 中的 `redirect` 完全是两码事
-5. 将路由规则对象，注册到 vm 实例上，用来监听 URL 地址的变化，然后展示对应的组件
-6. `router-view` 是 `vue-router` 提供的元素，专门用来 当作占位符的，将来，路由规则，匹配到的组件，就会展示到这个 `router-view` 中去
-   - 可以把 `router-view` 认为是一个占位符
+**传统形式的URL：**
 
-```html
-<div id="app"> // router-link 默认渲染为一个a 标签，添加 tag 属性可将标签改为值所对应的标签
-  <router-link to="/login">login</router-link>  // 不论是不是 a 标签都有点击切换的功能
-  <router-link to="/register">register</router-link> 
-  <transition mode="out-in"> // 再加 过渡样式 即可使用动画
-    <router-view></router-view>
-  </transition>
-</div>
-<script>
-  var login = {
-    template: '<h3>login</h3>'
-  }
-  var register = {
-    template: '<h3>register</h3>'
-  }
-  const routerObj = new VueRouter({
-    routes: [ // 路由匹配规则
-      { path: '/', redirect: '/login' }, // 设置路由重定向
-      { path: '/login', component: login },
-      { path: '/register', component: register },
-    ],
-    linkActiveClass: 'zf-active' // 自定义高亮 class 类名，修改 class 即可自定义高亮样式
-  })														 // 默认值：'router-link-active'
-  // 创建 Vue 实例，得到 ViewModel
-  var vm = new Vue({
-    el: '#app',
-    data: {},
-    methods: {},
-    router: routerObj
-  })
-</script>
-```
+- 格式：schema://host:port/path?query#fragment
+  1.  schema: 协议。例如：http、https、ftp 等
+  2.  host: 域名或者IP地址
+  3.  port: 端口，http默认80端口可以省略
+  4.  path: 路径 例如：comments/study/...
+  5.  query: 查询参数，例如：uname=zf&age=22
+  6.  fragment: 锚点（哈希 Hash），用于定位页面的某个位置
 
-url地址改变  ->  触发路由监听事件（url改变后进行路由规则的匹配） ->  匹配后展示所对应的 `component` 组件 放到 `router-view` 区域
+**Restful 形式的URL：**
 
-### 路由中的参数
+- HTTP请求方式
 
-#### 在路由规则中定义参数：
+  | 请求方式 | 作用  |
+  | :------: | :---: |
+  |   GET    | 查询  |
+  |   POST   | 添加  |
+  |   PUT    | 修改  |
+  |  DELETE  | 删除  |
 
-1. 查询字符串传参：`(query)`
+- 符合规则的URL地址：
 
-   - 使用 查询字符串，给路由传递参数，则 不需要修改 路由规则的 path 属性 
-   - 在 vue 实例中，使用 `this.$route.query.key` 即可获取参数
+  1.  http://www.dorc.top/comments    	    GET
+  2.  http://www.dorc.top/comments    	    POST
+  3.  http://www.dorc.top/comments/3    	PUT
+  4.  http://www.dorc.top/comments/3    	DELETE
 
-   - 在模板对象中获取参数，在插值表达式中，可省略`this.`
+#### 异步调用：
 
-   - 支持多个参数传递 
+JavaScript的执行环境是「单线程」
 
-   ```html
-   <div id="app">
-     <router-link to="/login?id=10&name=123">login</router-link>
-     <router-link to="/register">register</router-link>
-     <router-view></router-view>
-   </div>
-   
-   <script>
-     var login = {
-       template: '<h3>login - page {{ $route.query.id }} -- {{ $route.query.name }}</h3>',
-       created() {
-         console.log(this.$route.query.id)
-       },
-     }
-     var register = {
-       template: '<h3>register - page</h3>'
-     }
-     const router = new VueRouter({
-       routes: [
-         { path: '/login', component: login },
-         { path: '/register', component: register },
-       ]
-     })
-     var vm = new Vue({
-       el: '#app',
-       data: {},
-       methods: {},
-       router
-     })
-   </script>
-   ```
+所谓单线程，是指JS引擎中负责解释和执行JavaScript代码的线程只有一个，也就是一次只能完成一项任务，这个任务执行完后才能执行下一个，它会「阻塞」其他任务。这个任务可称为主线程
 
-   
+异步效果分析：
 
-2. `:id`方式传参：`(params)`
+- 定时任何
+- ajax
+- 事件函数
 
-   ```js
-   var login = {
-     template: '<h3>login - page -- {{ $route.params.id }} --{{ $route.params.name }}</h3>',
-     created() {
-       console.log(this.$route.params.id)
-     },
-   }
-   var register = {
-     template: '<h3>register - page</h3>'
-   }
-   const router = new VueRouter({
-     routes: [
-       { path: '/login/:id/:name', component: login },
-       { path: '/register', component: register },
-     ]
-   })
-   ```
+多次异步调用的依赖分析：
 
-### 路由跳转
+- 多次异步调用的结果顺序不确定
+- 使用嵌套，使异步调用结果存在依赖关系
 
-在网页中，有两种跳转方式：
+#### Promise 概述
 
-方式1： 使用 a 标签 的形式叫做 标签跳转
+Promise 是异步编程的一种解决方案，语法上，Promise是一个对象，从他可以获取异步操作的信息
 
-方式2： 使用 `window.location.href` 的形式，叫做 编程式导航
-
-#### `this.$route` or `this.$router`
-
-`this.$route` 指的是：路由【参数对象】，所有路由中的参数，`params,query` 都属于他
-
-`this.$router` 指的是：一个路由【导航对象】，用它 可以方便使用 JS 代码，实现路由的前进、后退、跳转到新的 URL 地址
-
-- [编程式导航](https://router.vuejs.org/zh/guide/essentials/navigation.html)
-
-- 其中的 name 属性需要在 配置路由中的 route 自定义 name 来相互匹配 代替 path
-
-  
-
-###  路由嵌套
-
-- 使用`children`属性实现路由嵌套
-
-```html
-<div id="app">
-  <router-link to="/account">account</router-link>
-  <router-view></router-view>
-</div>
-
-<template id="tmpl">
-  <div>
-    <h1>this is component</h1>
-    <router-link to="/account/login">login</router-link>
-    <router-link to="/account/register">register</router-link>
-    <router-view></router-view>
-  </div>
-</template>
-<script>
-  var account = {
-    template: '#tmpl',
-  }
-  var login = {
-    template: '<h3>login</h3>'
-  }
-  var register = {
-    template: '<h3>register</h3>'
-  }
-  var router = new VueRouter({
-    routes: [
-      {
-        path: '/account',
-        component: account,
-        children: [ // 使用 children 属性，子路由的 path 前面不要带 / ，否则永远以根路径开始请求
-          { path: 'login', component: login },
-          { path: 'register', component: register },
-        ]
-      }
-    ]
-  })
-  // 创建 Vue 实例，得到 ViewModel
-  var vm = new Vue({
-    el: '#app',
-    data: {},
-    methods: {},
-    router
-  })
-</script>
-```
-
-### 命名视图
-
-```html
-<div id="app">
-  <router-view></router-view>
-  <router-view name="side"></router-view> // 组件添加 name 属性
-  <router-view name="main"></router-view>
-</div>
-<script>
-  var header = {
-    template: '<h3>header - page </h3>'
-  }
-  var sidebar = {
-    template: '<h3>sidebar - page </h3>'
-  }
-  var mainbox = {
-    template: '<h3>mainbox - page </h3>'
-  }
-  var router = new VueRouter({
-    routes: [
-      {
-        path: '/', components: { // 使用 components 配置同级路由
-          default: header,
-          side: sidebar,
-          main: mainbox
-        }
-      }
-    ]
-  })
-  var vm = new Vue({
-    el: '#app',
-    data: {},
-    methods: {},
-    router
-  })
-</script>
-```
-
-
-
-## Vue实例 中的其他属性
-
-### 监听数据的变化
-
-#### Vue 实例中的 `watch` 属性：
-
-- 可以监视 data 中指定数据的变化，然后触发这个 watch 中对应的 function 处理函数
-
-- 可以传递两个参数，第一个参数是指定数据改变后的数据，第二个参数是最近一次更改前的数据
-- 使用 `watch` 的优势，可以监听非 DOM 元素的改变，`ex：路由改变, wacth监听 $route.path 即可` 这是事件绑定做不到的
-
-```html
-<div id="app">
-  <input type="text" v-model="firstname"> +
-  <input type="text" v-model="lastname"> =
-  <input type="text" v-model="fullname">
-</div>
-<script>
-  // 创建 Vue 实例，得到 ViewModel
-  var vm = new Vue({
-    el: '#app',
-    data: {
-      firstname: '',
-      lastname: '',
-      fullname: ''
-    },
-    methods: {},
-    watch: {
-      'firstname': function (newVal, oldVal) { // key 为所要监听的变量 ex: '$route.path'
-        this.fullname = newVal + '-' + this.lastname
-      },
-      lastname(newVal) {
-        this.fullname = this.firstname + newVal
-      },
-    },
-  })
-</script>
-```
-
-#### Vue 实例中的 `computed` 属性：
-
-在 `computed` 中，可以定义一些 属性，这些属性，叫做 【计算属性】， 计算属性的，本质，就是 一个方法，只不过，我们在使用 这些计算属性的时候，是把 它们的 名称，直接当作 属性来使用的；并不会把 计算属性，当作方法去调用.
-
-- 计算属性，在引用的时候，一定不要加 () 去调用，直接把它 当作 普通 属性去使用
-- 只要 计算属性，这个 `function` 内部，所用到的 任何 `data` 中的数据发送了变化，就会 立即重新计算 这个 计算属性的值
-- 计算属性的求值结果，会被缓存起来，方便下次直接使用； 如果 计算属性方法中，所以来的任何数据，都没有发生过变化，则，不会重新对 计算属性求值
-
-```html
-<div id="app">
-  <input type="text" v-model="firstname"> +
-  <input type="text" v-model="lastname"> =
-  <input type="text" v-model="fullname">
-</div>
-
-<script>
-  // 创建 Vue 实例，得到 ViewModel
-  var vm = new Vue({
-    el: '#app',
-    data: {
-      firstname: '',
-      lastname: '',
-    },
-    methods: {},
-    computed: {
-      fullname() {
-        return this.firstname + '-' + this.lastname
-      }
-    },
-  })
-</script>
-```
-
-#### `watch`、`computed`和`methods`之间的对比
-
-1. `computed`属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用(操作数据)
-2. `methods`方法表示一个具体的操作，主要书写业务逻辑；(方法调用)
-3. `watch`一个对象，键是需要观察的表达式，值是对应回调函数。主要用来监听某些特定数据的变化，从而进行某些具体的业务逻辑操作；可以看作是`computed`和`methods`的结合体；(监听虚拟的数据，ex：router)
-
-### 使用`render`渲染页面：
+- 主要解决异步深层嵌套的问题
+- promise 提供了简洁的API  使得异步操作更加容易
 
 ```js
-var login = {
-  template: '<h1>这是登录组件</h1>'
-}
-
-// 创建 Vue 实例，得到 ViewModel
-var vm = new Vue({
-  el: '#app',
-  data: {},
-  methods: {},
-  render: function (createElements) { // createElements 是一个 方法，调用它，能够把 指定的 组件模板，渲染为 html 结构
-    return createElements(login)
-    // 注意：这里 return 的结果，会 替换页面中 el 指定的那个 容器
-  }
+/* 1. Promise基本使用
+     我们使用new来构建一个Promise  Promise的构造函数接收一个参数，是函数，并且传入两个参数：		   resolve，reject， 分别表示异步操作执行成功后的回调函数和异步操作执行失败后的回调函数 */
+    
+var p = new Promise(function(resolve, reject){
+  //2. 这里用于实现异步任务  setTimeout
+  setTimeout(function(){
+    var flag = false;
+    if(flag) {
+      //3. 正常情况
+      resolve('hello');
+    }else{
+      //4. 异常情况
+      reject('出错了');
+    }
+  }, 100);
+});
+//  5 Promise实例生成以后，可以用then方法指定resolved状态和reject状态的回调函数 
+//  在then方法中，你也可以直接return数据而不是Promise对象，在后面的then中就可以接收到数据了  
+p.then(function(data){
+  console.log(data)
+},function(info){
+  console.log(info)
 });
 ```
 
+##### 基于Promise发送Ajax请求
 
+```js
+function queryData(url) {
+  // 1.1 创建一个Promise实例
+  var p = new Promise(function(resolve, reject){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState != 4) return;
+      if(xhr.readyState == 4 && xhr.status == 200) {
+        // 1.2 处理正常的情况
+        resolve(xhr.responseText);
+      }else{
+        // 1.3 处理异常情况
+        reject('服务器错误');
+      }
+    };
+    xhr.open('get', url);
+    xhr.send(null);
+  });
+  return p;
+}
+// 注意：  这里需要开启一个服务 
+// 在then方法中，你也可以直接return数据而不是Promise对象，在后面的then中就可以接收到数据了
+queryData('http://localhost:3000/data')
+  .then(function(data){
+    console.log(data)
+    // 1.4 想要继续链式编程下去 需要 return  
+    return queryData('http://localhost:3000/data1');
+  })
+  .then(function(data){
+    console.log(data);
+    return queryData('http://localhost:3000/data2');
+  })
+  .then(function(data){
+    console.log(data)
+  });
+```
+
+##### then 参数中函数的返回值：
+1. 返回 Promise 实例对象：
+	- 返回的该实例对象会调用下一个 then
+2. 返回普通值：
+	- 返回的普通值会直接传递给下一个 then ，通过 then 参数中函数的参数接受该值
+    - then 默认产生 promise 实例对象，保证下一个 then 可以进行链式操作
+  
+##### Promise 常用API：
+1. 实例方法：
+	-  p.then() 得到异步操作的正确结果
+	-  p.catch() 获取异常信息(取代 then 中的第二个参数)
+	-  p.finally() 成功与否都会执行（不是正式标准） 
+	```js
+	foo()
+    .then(result => {
+      console.log(result);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .finally(() => {
+      console.log('finish');
+    })
+	```
+2. 对象方法：(静态方法)
+   - Promise.all  并发处理多个异步任务，所有任务都执行完才能得到结果
+     - `Promise.all`方法接受一个数组作参数，数组中的对象（p1、p2、p3）均为promise实例（如果不是一个promise，该项会被用`Promise.resolve`转换为一个promise)。它的状态由这三个promise实例决定
+   - Promise.race 并发处理多个异步任务，只要有一个任务完成就能得到结果
+     - `Promise.race`方法同样接受一个数组作参数。当p1, p2, p3中有一个实例的状态发生改变（变为`fulfilled`或`rejected`），p的状态就跟着改变。并把第一个改变状态的promise的返回值，传给p的回调函数
+```js
+var p1 = queryData('http://localhost:3000/a1');
+var p2 = queryData('http://localhost:3000/a2');
+var p3 = queryData('http://localhost:3000/a3');
+Promise.all([p1,p2,p3]).then(function(result){
+  console.log(result) 
+  //   all 中的参数  [p1,p2,p3]   和 返回的结果一 一对应
+  //   ["HELLO TOM", "HELLO JERRY", "HELLO SPIKE"]
+})
+Promise.race([p1,p2,p3]).then(function(result){
+ console.log(result) // "HELLO TOM"
+ //   由于p1执行较快，Promise的then()将获得结果'P1'。
+ //   p2,p3仍在继续执行，但执行结果将被丢弃。
+})
+```
+
+### Fetch API 概述：
+- Fetch API 是新的 ajax 解决方案 Fetch 会返回 Promise
+- **fetch 不是 ajax 的进一步封装，而是原生 js ，没有使用 XMLHttpRequest 对象**。
+- `fetch(url, options).then(）`
+```js
+/*
+  Fetch API 基本用法
+  	fetch(url).then()
+ 	第一个参数请求的路径   Fetch会返回Promise   所以我们可以使用then 拿到请求成功的结果 
+*/
+fetch('http://localhost:3000/fdata').then(function(data){
+  // text()方法属于fetchAPI的一部分，它返回一个Promise实例对象，用于获取后台返回的数据
+  return data.text();
+}).then(function(data){
+  //   在这个then里面我们能拿到最终的数据  
+  console.log(data);
+})
+```
+
+#### fetch API 中的 HTTP 请求
+
+**常用配置选项：**
+
+- method(String) : HTTP 请求方法，默认为 GET (GET, POST, PUT, DELETE)
+- body(String) : HTTP 的请求参数
+- header(Object) : HTTP 的请求头，默认{}
+
+HTTP协议，它给我们提供了很多的方法，如POST，GET，DELETE，UPDATE，PATCH和PUT
+
+- 默认的是 GET 请求
+- 需要在 options 对象中 指定对应的 method       method:请求使用的方法 
+- post 和 普通 请求的时候 需要在options 中 设置  请求头 headers   和  body
+
+```js
+// 1.1 GET参数传递 - 传统URL  通过url  ？ 的形式传参 
+fetch('http://localhost:3000/books?id=123', {
+  	// get 请求可以省略不写 默认的是GET 
+    method: 'get'
+  })
+  .then(function(data) {
+  	// 它返回一个Promise实例对象，用于获取后台返回的数据
+    return data.text();
+  }).then(function(data) {
+  	// 在这个then里面我们能拿到最终的数据  
+    console.log(data)
+  });
+//------------- 以下省略 then 部分代码 -------------
+
+// 1.2 GET参数传递  restful形式的URL  通过/ 的形式传递参数  
+//     即  id = 456 和id后台的配置有关   
+fetch('http://localhost:3000/books/456', {
+    method: 'get'
+  })
+
+// 2.1  DELETE请求方式参数传递      删除id  是  id=789
+fetch('http://localhost:3000/books/789', {
+    method: 'delete'
+  })
+
+// 
+```
 
 ## Vuex
 

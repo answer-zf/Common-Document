@@ -407,3 +407,336 @@ var vm = new Vue({
 
 获取组件的数据和方法：
 `this.$refs.自定义名称.数据名 / 方法名()`
+
+## Vue 中的路由
+
+1. **后端路由：**对于普通的网站，所有的超链接都是URL地址，所有的URL地址都对应服务器上对应的资源；
+
+2. **前端路由：**对于单页面应用程序来说，主要通过URL中的hash(#号)来实现不同页面之间的切换，同时，hash有一个特点：HTTP请求中不会包含hash相关的内容；所以，单页面程序中的页面跳转主要用hash实现；
+
+3. 在单页面应用程序中，这种通过hash改变来切换页面的方式，称作前端路由（区别于后端路由）；
+
+### 路由的基本使用
+
+1. 安装 `vue-router` 路由模块 （`script`标签引包）
+2. 创建一个路由对象， 当 导入 `vue-router` 包之后，在 window 全局对象中，就有了一个 路由的构造函数，叫做 `VueRouter`
+3. 在 `new` 路由对象的时候，可以为 构造函数，传递一个配置对象
+4. 每个路由规则，都是一个对象，这个规则对象，身上，有两个必须的属性：
+   - 属性1 是 `path`， 表示监听 哪个路由链接地址；
+   - 属性2 是 `component`， 表示，如果 路由是前面匹配到的 `path` ，则展示 `component` 属性对应的那个组件
+     - 注意： `component` 的属性值，必须是一个 组件的模板对象， 不能是 组件的引用名称；
+   - 属性2 可以设置 `redirect`，表示 ，重定向所匹配到的 `path`， 属性值为 所重定向的路由
+     - 注意：这里的 `redirect` 和 Node 中的 `redirect` 完全是两码事
+5. 将路由规则对象，注册到 vm 实例上，用来监听 URL 地址的变化，然后展示对应的组件
+6. `router-view` 是 `vue-router` 提供的元素，专门用来 当作占位符的，将来，路由规则，匹配到的组件，就会展示到这个 `router-view` 中去
+   - 可以把 `router-view` 认为是一个占位符
+
+```html
+<div id="app"> // router-link 默认渲染为一个a 标签，添加 tag 属性可将标签改为值所对应的标签
+  <router-link to="/login">login</router-link>  // 不论是不是 a 标签都有点击切换的功能
+  <router-link to="/register">register</router-link> 
+  <transition mode="out-in"> // 再加 过渡样式 即可使用动画
+    <router-view></router-view>
+  </transition>
+</div>
+<script>
+  var login = {
+    template: '<h3>login</h3>'
+  }
+  var register = {
+    template: '<h3>register</h3>'
+  }
+  const routerObj = new VueRouter({
+    routes: [ // 路由匹配规则
+      { path: '/', redirect: '/login' }, // 设置路由重定向
+      { path: '/login', component: login },
+      { path: '/register', component: register },
+    ],
+    linkActiveClass: 'zf-active' // 自定义高亮 class 类名，修改 class 即可自定义高亮样式
+  })														 // 默认值：'router-link-active'
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router: routerObj
+  })
+</script>
+```
+
+url地址改变  ->  触发路由监听事件（url改变后进行路由规则的匹配） ->  匹配后展示所对应的 `component` 组件 放到 `router-view` 区域
+
+### 路由中的参数
+
+#### 在路由规则中定义参数：
+
+1. 查询字符串传参：`(query)`
+
+   - 使用 查询字符串，给路由传递参数，则 不需要修改 路由规则的 path 属性 
+   - 在 vue 实例中，使用 `this.$route.query.key` 即可获取参数
+
+   - 在模板对象中获取参数，在插值表达式中，可省略`this.`
+
+   - 支持多个参数传递 
+
+   ```html
+   <div id="app">
+     <router-link to="/login?id=10&name=123">login</router-link>
+     <router-link to="/register">register</router-link>
+     <router-view></router-view>
+   </div>
+   
+   <script>
+     var login = {
+       template: '<h3>login - page {{ $route.query.id }} -- {{ $route.query.name }}</h3>',
+       created() {
+         console.log(this.$route.query.id)
+       },
+     }
+     var register = {
+       template: '<h3>register - page</h3>'
+     }
+     const router = new VueRouter({
+       routes: [
+         { path: '/login', component: login },
+         { path: '/register', component: register },
+       ]
+     })
+     var vm = new Vue({
+       el: '#app',
+       data: {},
+       methods: {},
+       router
+     })
+   </script>
+   ```
+
+   
+
+2. `:id`方式传参：`(params)`
+
+   ```js
+   var login = {
+     template: '<h3>login - page -- {{ $route.params.id }} --{{ $route.params.name }}</h3>',
+     created() {
+       console.log(this.$route.params.id)
+     },
+   }
+   var register = {
+     template: '<h3>register - page</h3>'
+   }
+   const router = new VueRouter({
+     routes: [
+       { path: '/login/:id/:name', component: login },
+       { path: '/register', component: register },
+     ]
+   })
+   ```
+
+### 路由跳转
+
+在网页中，有两种跳转方式：
+
+方式1： 使用 a 标签 的形式叫做 标签跳转
+
+方式2： 使用 `window.location.href` 的形式，叫做 编程式导航
+
+#### `this.$route` or `this.$router`
+
+`this.$route` 指的是：路由【参数对象】，所有路由中的参数，`params,query` 都属于他
+
+`this.$router` 指的是：一个路由【导航对象】，用它 可以方便使用 JS 代码，实现路由的前进、后退、跳转到新的 URL 地址
+
+- [编程式导航](https://router.vuejs.org/zh/guide/essentials/navigation.html)
+
+- 其中的 name 属性需要在 配置路由中的 route 自定义 name 来相互匹配 代替 path
+
+  
+
+###  路由嵌套
+
+- 使用`children`属性实现路由嵌套
+
+```html
+<div id="app">
+  <router-link to="/account">account</router-link>
+  <router-view></router-view>
+</div>
+
+<template id="tmpl">
+  <div>
+    <h1>this is component</h1>
+    <router-link to="/account/login">login</router-link>
+    <router-link to="/account/register">register</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+<script>
+  var account = {
+    template: '#tmpl',
+  }
+  var login = {
+    template: '<h3>login</h3>'
+  }
+  var register = {
+    template: '<h3>register</h3>'
+  }
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/account',
+        component: account,
+        children: [ // 使用 children 属性，子路由的 path 前面不要带 / ，否则永远以根路径开始请求
+          { path: 'login', component: login },
+          { path: 'register', component: register },
+        ]
+      }
+    ]
+  })
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  })
+</script>
+```
+
+### 命名视图
+
+```html
+<div id="app">
+  <router-view></router-view>
+  <router-view name="side"></router-view> // 组件添加 name 属性
+  <router-view name="main"></router-view>
+</div>
+<script>
+  var header = {
+    template: '<h3>header - page </h3>'
+  }
+  var sidebar = {
+    template: '<h3>sidebar - page </h3>'
+  }
+  var mainbox = {
+    template: '<h3>mainbox - page </h3>'
+  }
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/', components: { // 使用 components 配置同级路由
+          default: header,
+          side: sidebar,
+          main: mainbox
+        }
+      }
+    ]
+  })
+  var vm = new Vue({
+    el: '#app',
+    data: {},
+    methods: {},
+    router
+  })
+</script>
+```
+
+
+
+## Vue实例 中的其他属性
+
+### 监听数据的变化
+
+#### Vue 实例中的 `watch` 属性：
+
+- 可以监视 data 中指定数据的变化，然后触发这个 watch 中对应的 function 处理函数
+
+- 可以传递两个参数，第一个参数是指定数据改变后的数据，第二个参数是最近一次更改前的数据
+- 使用 `watch` 的优势，可以监听非 DOM 元素的改变，`ex：路由改变, wacth监听 $route.path 即可` 这是事件绑定做不到的
+
+```html
+<div id="app">
+  <input type="text" v-model="firstname"> +
+  <input type="text" v-model="lastname"> =
+  <input type="text" v-model="fullname">
+</div>
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstname: '',
+      lastname: '',
+      fullname: ''
+    },
+    methods: {},
+    watch: {
+      'firstname': function (newVal, oldVal) { // key 为所要监听的变量 ex: '$route.path'
+        this.fullname = newVal + '-' + this.lastname
+      },
+      lastname(newVal) {
+        this.fullname = this.firstname + newVal
+      },
+    },
+  })
+</script>
+```
+
+#### Vue 实例中的 `computed` 属性：
+
+在 `computed` 中，可以定义一些 属性，这些属性，叫做 【计算属性】， 计算属性的，本质，就是 一个方法，只不过，我们在使用 这些计算属性的时候，是把 它们的 名称，直接当作 属性来使用的；并不会把 计算属性，当作方法去调用.
+
+- 计算属性，在引用的时候，一定不要加 () 去调用，直接把它 当作 普通 属性去使用
+- 只要 计算属性，这个 `function` 内部，所用到的 任何 `data` 中的数据发送了变化，就会 立即重新计算 这个 计算属性的值
+- 计算属性的求值结果，会被缓存起来，方便下次直接使用； 如果 计算属性方法中，所以来的任何数据，都没有发生过变化，则，不会重新对 计算属性求值
+
+```html
+<div id="app">
+  <input type="text" v-model="firstname"> +
+  <input type="text" v-model="lastname"> =
+  <input type="text" v-model="fullname">
+</div>
+
+<script>
+  // 创建 Vue 实例，得到 ViewModel
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      firstname: '',
+      lastname: '',
+    },
+    methods: {},
+    computed: {
+      fullname() {
+        return this.firstname + '-' + this.lastname
+      }
+    },
+  })
+</script>
+```
+
+#### `watch`、`computed`和`methods`之间的对比
+
+1. `computed`属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用(操作数据)
+2. `methods`方法表示一个具体的操作，主要书写业务逻辑；(方法调用)
+3. `watch`一个对象，键是需要观察的表达式，值是对应回调函数。主要用来监听某些特定数据的变化，从而进行某些具体的业务逻辑操作；可以看作是`computed`和`methods`的结合体；(监听虚拟的数据，ex：router)
+
+### 使用`render`渲染页面：
+
+```js
+var login = {
+  template: '<h1>这是登录组件</h1>'
+}
+
+// 创建 Vue 实例，得到 ViewModel
+var vm = new Vue({
+  el: '#app',
+  data: {},
+  methods: {},
+  render: function (createElements) { // createElements 是一个 方法，调用它，能够把 指定的 组件模板，渲染为 html 结构
+    return createElements(login)
+    // 注意：这里 return 的结果，会 替换页面中 el 指定的那个 容器
+  }
+});
+```
+
