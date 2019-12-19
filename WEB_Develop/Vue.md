@@ -1851,7 +1851,7 @@ var vm = new Vue({
 </script>
 ```
 
-## Vue 中的路由
+## Vue 中的前后端交互
 
 ### 前提
 
@@ -2324,14 +2324,537 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
   })
 ```
 
+## Vue 中的路由
+
+### 路由基本概念：
+
+**路由的本质就是一种对应关系**
+
+- 在url地址中输入要访问的url地址之后，浏览器要去请求这个url地址对应的资源。
+- 那么url地址和真实的资源之间就有一种对应的关系，就是路由。
+
+路由分为前端路由和后端路由：
+
+1. 后端路由是由服务器端进行实现，并完成资源的分发
+2. 前端路由是依靠hash值(锚链接)的变化进行实现 
+    - 前端路由的基本概念：根据不同的事件来显示不同的页面内容，即事件与事件处理函数之间的对应关系
+    - 前端路由主要做的事情就是监听事件并分发执行事件处理函数
+
+### 前端路由基础：
+
+前端路由是基于hash值的变化进行实现的（比如点击页面中的菜单或者按钮改变URL的hash值，根据hash值的变化来控制组件的切换）
+
+**核心实现依靠一个事件，即监听hash值变化的事件**
+
+```js
+window.onhashchange = function(){
+  //location.hash可以获取到最新的hash值
+  location.hash
+}
+```
+
+前端路由实现 tab 栏切换：
+
+核心思路：
+
+- 当点击这些超链接的时候，就会改变 `url` 地址中的 `hash` 值，当 `hash` 值被改变时，就会触发 `onhashchange` 事件
+- 在触发 `onhashchange` 事件的时候，根据 `hash` 值来让不同的组件进行显示
+
+```html
+<!-- 被 vue 实例控制的 div 区域 -->
+<div id="app">
+  <!-- 切换组件的超链接 -->
+  <a href="#/zhuye">主页</a> 
+  <a href="#/keji">科技</a> 
+  <a href="#/caijing">财经</a>
+  <a href="#/yule">娱乐</a>
+  <!-- 根据 :is 属性指定的组件名称，把对应的组件渲染到 component 标签所在的位置 -->
+  <!-- 可以把 component 标签当做是【组件的占位符】 -->
+  <component :is="comName"></component>
+</div>
+
+<script>
+// #region 定义需要被切换的 4 个组件 略
+// #endregion
+
+// #region vue 实例对象
+const vm = new Vue({
+   el: '#app',
+   data: {
+   comName: 'zhuye'
+   },
+   // 注册私有组件
+   components: {
+   zhuye,
+   keji,
+   caijing,
+   yule
+   }
+})
+// #endregion
+
+// 监听 window 的 onhashchange 事件，根据获取到的最新的 hash 值，切换要显示的组件的名称
+window.onhashchange = function() {
+   // 通过 location.hash 获取到最新的 hash 值
+   console.log(location.hash);
+   switch(location.hash.slice(1)){
+   case '/zhuye':
+       vm.comName = 'zhuye'
+   break
+   case '/keji':
+       vm.comName = 'keji'
+   break
+   case '/caijing':
+       vm.comName = 'caijing'
+   break
+   case '/yule':
+       vm.comName = 'yule'
+   break
+   }
+}
+</script>
+```
+
+### Vue Router 概述：
+
+- 它是一个 `Vue.js` 官方提供的路由管理器。是一个功能更加强大的前端路由器，推荐使用。
+- `Vue Router` 和 `Vue.js` 非常契合，可以一起方便的实现 **SPA(single page web application,单页应用程序)** 应用程序的开发。
+- `Vue Router` 依赖于 `Vue` ，所以需要先引入 `Vue` ，再引入 `Vue Router`
+
+#### Vue Router的特性：
+
+- 支持H5历史模式或者hash模式
+- 支持嵌套路由
+- 支持路由参数
+- 支持编程式路由
+- 支持命名路由
+- 支持路由导航守卫
+- 支持路由过渡动画特效
+- 支持路由懒加载
+- 支持路由滚动行为
+
+#### Vue Router的使用步骤：
+
+1. 导入js文件
+
+    ```html
+    <script src="lib/vue_2.5.22.js"></script>
+    <script src="lib/vue-router_3.0.2.js"></script>
+    ```
+
+2. 添加路由链接: `<router-link>` 是路由中提供的标签，默认会被渲染为 `a` 标签， `to` 属性默认被渲染为 `href` 属性，`to` 属性的值会被渲染为 `#` 开头的 `hash` 地址
+
+    ```html
+    <router-link to="/user">User</router-link>
+    <router-link to="/login">Login</router-link>
+    ```
+
+3. 添加路由填充位（路由占位符）
+
+    ```html
+    <router-view></router-view>
+    ```
+
+4. 定义路由组件
+
+    ```js
+    var User = { template:"<div>This is User</div>" }
+    var Login = { template:"<div>This is Login</div>" }
+    ```
+
+5. 配置路由规则并创建路由实例
+    - 路由重定向：可以通过路由重定向为页面设置默认展示的组件
+      - 在路由规则中添加一条路由规则即可
+
+    ```js
+    var myRouter = new VueRouter({
+       //routes是路由规则数组
+       routes:[
+           //path设置为/表示页面最初始的地址 / ,redirect表示要被重定向的新地址，设置为一个路由即可
+           { path:"/",redirect:"/user"},
+           //每一个路由规则都是一个对象，对象中至少包含path和component两个属性
+           //path表示  路由匹配的hash地址，component表示路由规则对应要展示的组件对象
+           {path:"/user",component:User},
+           {path:"/login",component:Login}
+       ]
+    })
+    ```
+
+6. 将路由挂载到 Vue 实例中
+
+    ```js
+    new Vue({
+        el:"#app",
+        //通过router属性挂载路由对象
+        router:myRouter
+    })
+    ```
+
+**总结：**
+
+- 导入js文件
+- 添加路由链接
+- 添加路由占位符(最后路由展示的组件就会在占位符的位置显示)
+- 定义路由组件
+- 配置路由规则并创建路由实例
+- 将路由挂载到Vue实例中
+
+#### 嵌套路由
+
+- 当我们进行路由的时候显示的组件中还有新的子级路由链接以及内容。
+
+  ```js
+  var User = { template: "<div>This is User</div>" }
+  //Login组件中的模板代码里面包含了子级路由链接以及子级路由的占位符
+  var Login = { template: `<div>
+      <h1>This is Login</h1>
+      <hr>
+      <router-link to="/login/account">账号密码登录</router-link>
+      <router-link to="/login/phone">扫码登录</router-link>
+      <!-- 子路由组件将会在router-view中显示 -->
+      <router-view></router-view>
+      </div>` }
+
+  //定义两个子级路由组件
+  var account = { template:"<div>账号：<input><br>密码：<input></div>"};
+  var phone = { template:"<h1>扫我二维码</h1>"};
+  var myRouter = new VueRouter({
+      //routes是路由规则数组
+      routes: [
+          { path:"/",redirect:"/user"},
+          { path: "/user", component: User },
+          { 
+              path: "/login", 
+              component: Login,
+              //通过children属性为/login添加子路由规则
+              children:[
+                  { path: "/login/account", component: account },
+                  { path: "/login/phone", component: phone },
+              ]
+          }
+      ]
+  })
+  ```
+
+#### 动态路由匹配
+
+##### 基本用法：
+
+```js
+const user = {
+  template: '<h1>user page --- user id : {{$route.params.id}}</h1>',
+}
+const myRouter = new VueRouter({
+  //routes是路由规则数组
+  routes: [
+    //通过/:参数名  的形式传递参数 
+    { path: "/user/:id", component: User },
+  ]
+})
+```
+
+##### 组件传参 推荐使用 props
+
+- 使用 `$route.params.id` 来获取路径传参的数据不够灵活。
+- 可以使用 props 来传参
+
+**props 的值为 Booleans**
+
+- 需要在所对应组件的 路由规则中添加 `props` 将其设置为 `true`，那么在相应的组件中使用props接收 id ,即可接收到 id的值
+
+  ```js
+  var User = { 
+      props:["id"],
+      template:"<div>用户：{{id}}</div>"
+      }
+
+  var myRouter = new VueRouter({
+    //routes是路由规则数组
+    routes: [
+      //通过/:参数名  的形式传递参数 
+      //如果props设置为true，route.params将会被设置为组件属性
+      { path: "/user/:id", component: User, props:true },
+    ]
+  })
+  ```
+
+**props 的值为 对象**
+
+- 另外，可以将 `props` 设置为**对象**，那么就直接将对象的数据传递给组件进行使用
+    - 相当于 ：为 user 组件通过路由的形式传递了两个动态参数 分别是 username pwd
+    - 想要使用，在相应的组件中接收即可
+    - 此时 id 不能访问到，id相当于失效了
+    
+  ```js
+  var User = { 
+    props:["username","pwd"],
+    template:"<div>用户：{{username}}---{{pwd}}</div>"
+    }
+    var myRouter = new VueRouter({
+      //routes是路由规则数组
+      routes: [
+      //通过/:参数名  的形式传递参数 
+      //如果props设置为对象，则传递的是对象中的数据给组件
+        { path: "/user/:id", component: User,props:{username:"jack",pwd:123} },
+      ]
+    })
+  ```
+
+**props 的值为 函数**
+
+- 如果想要获取传递的参数值还想要获取传递的对象数据，那么props应该设置为 **函数形式**。
+
+  ```js
+  var User = { 
+    props:["username","pwd","id"],
+    template:"<div>用户：{{id}} -> {{username}}---{{pwd}}</div>"
+    }
+
+  var myRouter = new VueRouter({
+      // routes是路由规则数组
+      routes: [
+        // 通过/:参数名  的形式传递参数 
+        // 如果props设置为函数，则通过函数的第一个参数获取路由对象
+        // 并可以通过路由对象的params属性获取传递的参数
+        { path: "/user/:id", 
+          component: User,
+          props: route =>({ username:"jack", pwd:123, id: route.params.id })
+        },
+      ]
+  })
+  ```
+
+#### 命名路由
+
+```html
+<router-link :to="{ name:'user' , params: {id:123} }">User</router-link>
+
+<script>
+  var myRouter = new VueRouter({
+    //routes是路由规则数组
+    routes: [
+      //通过name属性为路由添加一个别名
+      //添加了别名之后，可以使用别名进行跳转
+      { path: "/user/:id", component: User, name:"user"},
+    ]
+  })
+</script>
+```
+
+#### 编程式导航
+
+**页面导航的两种方式：**
+
+1. 声明式导航：通过点击链接的方式实现的导航
+    - 普通网页中的 `<a></a>` 链接 或 `vue` 中的 `<router-link></router-link>`
+2. 编程式导航：调用js的api方法实现导航
+    - 普通网页中的 `location.href`
+
+
+**Vue-Router中常见的导航方式：**
+
+```js
+this.$router.push("hash地址");
+this.$router.push("/login");
+this.$router.push({ name:'user' , params: {id:123} });
+this.$router.push({ path:"/login" });
+this.$router.push({ path:"/login",query:{username:"jack"} });
+
+this.$router.go( n );//n为数字，参考history.go
+this.$router.go( -1 );
+```
+
+## Vue 中的模块化
+
+### 模块化概述：
+
+- **模块化** 就是把单独的一个功能封装到一个模块（文件）中，模块之间相互隔离，但是可以通过特定的接口公开内部成员，也可以依赖别的模块
+- 模块化开发的好处：方便代码的重用，从而提升开发效率，并且方便后期的维护
+
+#### 模块化相关规范
+
+1. 浏览器端模块化规范
+   - AMD(Asynchronous Module Definition,异步模块定义)
+      - 代表产品为：Require.js
+   - CMD(Common Module Definition,通用模块定义)
+      - 代表产品为：Sea.js
+2. 服务器端的模块化
+   - CommonJS 规范
+      - 使用 require 引入其他模块或者包
+      - 使用 exports 或者 module.exports 导出模块成员
+      - 一个文件就是一个模块，都拥有独立的作用域
+3. 大一统的模块化规范 - ES6 模块化
+   - 每一个js文件都是独立的模块
+   - 导入模块成员使用import关键字
+   - 暴露模块成员使用export关键字
+
+**小结：**
+- 推荐使用ES6模块化，因为AMD，CMD局限使用与浏览器端，而CommonJS在服务器端使用。
+- ES6模块化是浏览器端和服务器端通用的规范.
+
+#### Node.js 中通过 babel 体验 ES6 模块化
+
+1. 安装：
+
+   ```shell
+   npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node
+   npm install --save @babel/polyfill
+   ```
+
+2. 配置文件
+
+    - 项目跟目录创建文件 babel.config.js
+      ```js
+      const presets = [
+          ["@babel/env",{
+              targets:{
+                  edge:"17",
+                  firefox:"60",
+                  chrome:"67",
+                  safari:"11.1"
+              }
+          }]
+      ]
+      //暴露
+      module.exports = { presets }
+      ```
+
+3. 在项目中 创建 index.js 入口文件
+
+4. 使用npx执行文件
+
+    - 打开终端，输入命令：`npx babel-node ./index.js`
+
+##### 设置默认导入/导出
+
+默认导出:
+
+```js
+let a = 10
+let c = 30
+function show() {
+  console.log('777777777777777')
+}
+export default {
+  a,
+  c,
+  show
+}
+```
+
+默认导入:
+
+```js
+// import 接收名称 from "模块标识符"，
+import m1 from './m1.js'
+```
+
+**注意：**
+- 在一个模块中，只允许使用export default向外默认暴露一次成员，千万不要写多个export default。
+- 如果在一个模块中没有向外暴露成员，其他模块引入该模块时将会得到一个空对象 
+
+##### 设置按需导入/导出
+
+按需导出:
+
+```js
+export let s1 = 'aa'
+export let s2 = 'cc'
+export function say() {
+  console.log('986')
+}
+```
+
+按需导入:
+
+```js
+// 同时导入 默认导出 的成员 以及 按需导入 的成员
+// 使用 as 关键字 起别名，取代原名使用，原名失效
+import m1, { s1, s2 as ss2, say } from './m1.js'
+```
+
+注意：
+- 一个模块中既可以按需导入也可以默认导入，一个模块中既可以按需导出也可以默认导出
+- 每个模块中，可以使用多次按需导出
+
+##### 直接导入并执行模块代码
+
+- 只想单纯执行某个模块中的代码，并不需要得到模块中向外暴露的成员，此时，可以直接导入并执行模块代码。
+
+```js
+// ----------- 入口文件
+import './m2.js'
+// ----------- m2.js 文件
+for (let i = 0; i < 3; i++) {
+  console.log(i)
+}
+```
+
+### webpack 概述
+
+#### webpack 简介
+
+  - webpack 是一个流行的前端项目构建工具（打包工具），可以解决当前 web 开发中所面临的困境
+  - webpack 提供了友好的模块化支持，以及代码压缩混淆、处理 js 兼容问题、性能优化等强大的功能，从而让程序员把工作的重心放到具体的功能实现上，提高了开发效率和项目的可维护性。
+
+#### webpack的基本使用
+
+1. 安装：
+    - 打开项目目录终端，输入命令:
+    - `npm install webpack webpack-cli -D`
+2. webpack 配置
+    - 在项目根目录中，创建一个 webpack.config.js 的配置文件用来配置 webpack
+    - 在 webpack.config.js 文件中编写代码进行webpack配置：
+      ```js
+      module.exports = {
+        mode:"development"
+        //可以设置为development(开发模式)，production(发布模式)
+      }
+      ```
+      - 补充：mode设置的是项目的编译模式。
+      - 如果设置为development则表示项目处于开发阶段，不会进行压缩和混淆，打包速度会快一些
+      - 如果设置为production则表示项目处于上线发布阶段，会进行压缩和混淆，打包速度会慢一些
+3. npm 配置
+    - 修改项目中的 package.json 文件添加运行脚本 dev ，如下：
+      ```js
+      "scripts":{
+          "dev":"webpack"
+      }
+      ```
+    - 注意：scripts 节点下的脚本，可以通过 npm run 运行
+    - 将会启动 webpack 进行项目打包
+4. 运行 dev 命令进行项目打包，并在页面中引入项目打包生成的js文件
+    - 打开项目目录终端，输入命令: `npm run dev`
+    - 等待webpack打包完毕之后，找到默认的dist路径中生成的main.js文件，将其引入到html页面中。
+
+#### 配置 webpack 的打包入口/出口
+
+- 在webpack 4.x中，默认会将 src/index.js 作为默认的打包入口js文件
+                  默认会将dist/main.js 作为默认的打包输出js文件
+- 如果不想使用默认的入口/出口js文件，我们可以通过改变 webpack.config.js 来设置入口/出口的js文件
+
+```js
+const path = require("path");
+module.exports = {
+    mode:"development",
+    //设置入口文件路径
+    entry: path.join(__dirname,"./src/index.js"),
+    //设置出口文件
+    output:{
+        //设置路径
+        path:path.join(__dirname,"./dist"),
+        //设置文件名
+        filename:"bundle.js"
+    }
+}
+```
+
 ## Vuex
 
 概念：
 vuex 是 Vue 配套的 公共数据管理工具，它可以把一些共享的数据，保存到 vuex 中，方便 整个程序中的任何组件直接获取或修改我们的公共数据；
 
 [Vuex](https://vuex.vuejs.org/zh/)
-
-
 
 - vuex是 为了保存组件间共享数据而诞生的，如果组件间有要共享的数据， 可以直接挂载到 vuex 中，不必通过父子组件传值，不需要共享的私有数据不必挂载到vuex中vuex是 为了保存组件间共享数据而诞生的，如果组件间有要共享的数据， 可以直接挂载到 vuex 中，不必通过父子组件传值，不需要共享的私有数据不必挂载到vuex中
   - vuex 是 全局数据共享区域
