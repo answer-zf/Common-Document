@@ -2849,6 +2849,274 @@ module.exports = {
 }
 ```
 
+#### 配置 webpack 的自动打包功能
+
+> 默认情况下，我们更改入口js文件的代码，需要重新运行命令打包webpack，才能生成出口的js文件那么每次都要重新执行命令打包，这是一个非常繁琐的事情，那么，自动打包可以解决这样繁琐的操作。
+
+1. 安装支持项目自动打包的工具
+    - `npm install webpack-dev-server –D`
+
+2. 修改 `package.json` -> `scripts` 中的 `dev` 命令
+    ```js
+    "scripts": {
+      "dev": "webpack-dev-server" 
+      // script 节点下的脚本，可以通过 npm run 执行
+    }
+    ```
+
+3. 将 `src` -> `index.html` 中，`script` 脚本的引用路径，修改为 `"/buldle.js"`
+
+4. 运行 `npm run dev` 命令，重新进行打包
+
+5. 在浏览器中访问 `http://localhost:8080` 地址，查看自动打包效果
+
+**注意：**
+
+ - `webpack-dev-server` 会启动一个实时打包的 http 服务器
+ - `webpack-dev-server` 打包生成的输出文件，默认放到了项目根目录中，而且是虚拟的、看不见的
+
+#### 配置 html-webpack-plugin 生成预览页面
+
+ - 因为当我们访问默认的 `http://localhost:8080/` 的时候，看到的是一些文件和文件夹，想要查看我们的页面 还需要点击文件夹点击文件才能查看，那么我们希望默认就能看到一个页面，而不是看到文件夹或者目录。
+
+1. 安装生成预览页面的插件
+   `npm install html-webpack-plugin –D`
+
+2. 修改 `webpack.config.js` 文件头部区域，添加如下配置信息:
+    ```js
+    // 导入生成预览页面的插件，得到一个构造函数
+    const HtmlWebpackPlugin = require('html-webpack-plugin')
+    const htmlPlugin = new HtmlWebpackPlugin({ // 创建插件的实例对象
+    template: './src/index.html', // 指定要用到的模板文件
+    filename: 'index.html' // 指定生成的文件的名称，该文件存在于内存中在目录中不显示
+    })
+    ```
+    
+3. 修改 `webpack.config.js` 文件中向外暴露的配置对象，新增如下配置节点：
+    ```js
+    module.exports = {
+      ...
+      plugins: [ htmlPlugin ] 
+      // plugins 数组是 webpack 打包期间会用到的一些插件列表
+    }
+    ```
+
+#### 配置自动打包相关的参数
+
+- 在自动打包完毕之后，默认打开服务器网页，实现方式就是打开 `package.json` 文件，修改 `dev` 命令：
+
+```js
+// package.json中的配置
+// --open 打包完成后自动打开浏览器页面
+// --host 配置 IP 地址
+// --port 配置端口
+"scripts": {
+"dev": "webpack-dev-server --open --host 127.0.0.1 --port 8888"
+},
+```
+
+#### webpack 中的加载器
+
+##### 通过 loader 打包非 js 模块
+
+- 在实际开发过程中， `webpack` 默认只能打包处理以 `.js` 后缀名结尾的模块，其他非 `.js` 后缀名结尾的模块，`webpack` 默认处理不了，需要调用 `loader` 加载器才可以正常打包，否则会报错！
+
+`loader` 加载器可以协助 `webpack` 打包处理特定的文件模块:
+
+- less-loader 可以打包处理 .less 相关的文件
+- sass-loader 可以打包处理 .scss 相关的文件
+- url-loader 可以打包处理 css 中与 url 路径相关的文件
+
+##### webpack 中加载器的基本使用
+
+1. 打包处理 css 文件
+
+    - 安装处理 css 文件的 loader
+      - 运行 `npm i style-loader css-loader -D` 命令
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，添加  `loader` 规则
+      ```js
+      // 所有第三方文件模块的匹配规则
+      module: {
+        rules: [
+          //test设置需要匹配的文件类型，支持正则
+          //use表示该文件类型需要调用的loader
+          { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+        ]
+      }
+      ```
+
+   **注意：** 
+     - use 数组中指定的 loader 顺序是固定的
+     - 多个 loader 的调用顺序是：从后往前调用
+
+2. 打包处理 less 文件
+
+    - 安装处理 less 文件的 loader
+      - 运行 `npm i less-loader less -D` 命令
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，添加  `loader` 规则
+      ```js
+      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] }
+      ```
+
+3. 打包处理 scss 文件
+
+    - 安装处理 scss 文件的 loader
+      - 运行 `npm i sass-loader node-sass -D` 命令
+          - node-sass 必须要用 cnpm 安装否则报错
+          - sass-loader 高版本有识别问题，需要安装：7.3.1版本
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，添加  `loader` 规则
+      ```js
+      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] }
+      ```
+
+4. 配置 postCSS 自动添加 css 的兼容前缀
+
+    - 安装包
+      - 运行 `npm i postcss-loader autoprefixer -D` 命令
+    - 在项目根目录中创建 `postcss` 的配置文件 `postcss.config.js`，并初始化
+      ```js
+      // 导入自动添加前缀的插件
+      const autoprefixer = require('autoprefixer') 
+      module.exports = {
+        plugins: [ autoprefixer ] // 挂载插件
+      }
+      ```
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，**修改** `css` 的 `loader` 规则
+      ```js
+      { test:/\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] }
+      ```
+
+5. 打包样式表中的图片和字体文件
+
+    - 安装处理 打包图片文件 以及 字体文件的 loader
+      - 运行 `npm i url-loader file-loader -D` 命令
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，添加  `loader` 规则
+      ```js
+      { 
+        test: /\.jpg|png|gif|bmp|ttf|eot|svg|woff|woff2$/,
+        use: 'url-loader?limit=16940'
+      }
+      ```
+    
+    **注意：**
+      - 其中 ? 之后的是 loader 的参数项。
+      - limit 用来指定图片的大小，单位是字节(byte),只有小于 limit 大小的图片，才会被转为 base64 图片
+
+6. 打包处理 js 文件中的高级语法
+
+    - 安装 babel 转换器相关的包
+      - 运行 `npm i babel-loader @babel/core @babel/runtime -D` 命令
+    - 安装babel语法插件相关的包
+      - 运行 `npm i @babel/preset-env @babel/plugin-transform-runtime @babel/plugin-proposal-class-properties –D` 命令
+    - 在项目根目录中，创建 `babel` 配置文件 `babel.config.js` 并初始化基本配置
+      ```js
+      module.exports = {
+        presets: [ '@babel/preset-env' ],
+        plugins: [ '@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties' ]
+      }
+      ```
+    - 在 `webpack.config.js` 的 `module` -> `rules` 数组中，添加 `loader` 规则：
+      ```js
+      // exclude 为排除项，表示 babel-loader 不需要处理 node_modules 中的 js 文件
+      { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ }
+      ```
+
+### Vue 单文件组件
+
+#### 传统组件的问题和解决方案
+
+**问题:**
+
+- 全局定义的组件必须保证组件的名称不重复
+- 字符串模板缺乏语法高亮，在 HTML 有多行的时候，需要用到丑陋的 \
+- 不支持 CSS 意味着当 HTML 和 JavaScript 组件化时，CSS 明显被遗漏
+- 没有构建步骤限制，只能使用 HTML 和 ES5 JavaScript, 而不能使用预处理器（如：Babel）
+
+**解决方案:**
+
+- 针对传统组件的问题，Vue 提供了一个解决方案 —— 使用 Vue 单文件组件。
+
+#### Vue 单文件组件的基本用法
+
+**单文件组件的组成结构**
+
+- template 组件的模板区域
+- script 业务逻辑区域
+- style 样式区域
+
+```html
+<template>
+<!-- 这里用于定义Vue组件的模板内容 -->
+</template>
+<script>
+  // 这里用于定义Vue组件的业务逻辑
+  export default {
+  data: () { return {} }, // 私有数据
+  methods: {} // 处理函数
+  // ... 其它业务逻辑
+  }
+</script>
+<style scoped>
+/* 这里用于定义组件的样式 */
+</style>
+```
+
+#### webpack 中配置 vue 组件的加载器
+
+1. 运行 `npm i vue-loader vue-template-compiler -D` 命令
+2. 在 `webpack.config.js` 配置文件中，添加 `vue-loader` 的配置项
+
+   ```js
+   const VueLoaderPlugin = require('vue-loader/lib/plugin')
+   module.exports = {
+      module: {
+         rules: [
+         // ... 其它规则
+           { test: /\.vue$/, loader: 'vue-loader' }
+         ]
+      },
+      plugins: [
+      // ... 其它插件
+      new VueLoaderPlugin() // 请确保引入这个插件！
+      ]
+   }
+   ```
+
+#### 在 webpack 项目中使用 vue
+
+- 运行 npm i vue –S 安装 vue
+- 在 src -> index.js 入口文件中，通过 `import Vue from 'vue'` 来导入 vue 构造函数
+- 创建 vue 的实例对象，并指定要控制的 el 区域
+- 通过 render 函数渲染 App 根组件
+
+  ```js
+  // 1. 导入 Vue 构造函数
+  import Vue from 'vue'
+  // 2. 导入 App 根组件
+  import App from './components/App.vue'
+  const vm = new Vue({
+  // 3. 指定 vm 实例要控制的页面区域
+  el: '#app',
+  // 4. 通过 render 函数，把指定的组件渲染到 el 区域中
+  render: h => h(App)
+  })
+  ```
+
+#### webpack 打包发布
+
+- 上线之前需要通过webpack将应用进行整体打包，可以通过 package.json 文件配置打包命令
+
+  ```js
+  // 在package.json文件中配置 webpack 打包命令
+  // 该命令默认加载项目根目录中的 webpack.config.js 配置文件
+  "scripts": {
+  // 用于打包的命令
+  "build": "webpack -p",
+  // 用于开发调试的命令
+  "dev": "webpack-dev-server --open --host 127.0.0.1 --port 3000",
+  },
+  ```
+
 ## Vuex
 
 概念：
