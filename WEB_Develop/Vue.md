@@ -3117,6 +3117,106 @@ module.exports = {
   },
   ```
 
+### Vue 脚手架
+
+**Vue脚手架可以快速生成Vue项目基础的架构。**
+
+#### 3.x 版本的 Vue 脚手架
+
+**安装：3.x版本的Vue脚手架：**
+
++ `npm install -g @vue/cli`
+
+**基于3.x版本的脚手架创建Vue项目：**
+
+1. 使用命令创建Vue项目
+
+    + 命令：vue create my-project
+    + 选择 Manually select features (选择特性以创建项目)
+    + 勾选特性可以用空格进行勾选。
+      + Babel 、 Router 、 2Linter / Formatter
+    + 是否选用历史模式的路由：n
+    + ESLint选择：ESLint + Standard config
+    + 何时进行ESLint语法校验：Lint on save
+    + babel，postcss 等配置文件如何放置：In dedicated config files+ 独使用文件进行配置)
+    + 是否保存为模板：n
+    + 使用哪个工具安装包：npm
+
+2. 基于ui界面创建Vue项目
+
+  - `vue ui`
+  - 在自动打开的创建项目网页中配置项目信息。
+
+#### 2.x 版本的 Vue 脚手架
+
+**安装：2.x版本的Vue脚手架：**
+
++ `npm install -g @vue/cli-init`
+
+**基于3.x版本的脚手架创建Vue项目：**
+
++ `vue init webpack my-project`
+
+#### 分析 Vue 脚手架生成的项目结构
+
++  node_modules:依赖包目录
++  public：静态资源目录
++  src：源码目录
++  src/assets:资源目录
++  src/components：组件目录
++  src/views:视图组件目录
++  src/App.vue:根组件
++  src/main.js:入口js
++  src/router.js:路由js
++  babel.config.js:babel配置文件
++  .eslintrc.js:
+
+#### Vue 脚手架的自定义配置
+
+```js
+// 通过 package.json 进行配置 [不推荐使用]
+  "vue":{
+      "devServer":{
+          "port":"9990",
+          "open":true
+      }
+  }
+// 通过单独的配置文件进行配置，创建vue.config.js
+  module.exports = {
+      devServer:{
+          port:8888,
+          open:true
+      }
+  }
+```
+
+#### Element-UI的基本使用
+
+**Element-UI：一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库。**
+
+##### 基于命令行方式手动安装
+
+- 运行 `npm i element-ui –S` 命令
+- 导入 `Element-UI` 相关资源
+
+  ```js
+  // 导入组件库
+  import ElementUI from 'element-ui';
+  // 导入组件相关样式
+  import 'element-ui/lib/theme-chalk/index.css';
+  // 配置 Vue 插件
+  Vue.use(ElementUI);
+  ```
+
+##### 基于图形化界面自动安装
+
+1. 运行 vue ui 命令，打开图形化界面
+2. 通过 Vue 项目管理器，进入具体的项目配置面板
+3. 点击 插件 -> 添加插件，进入插件查询面板
+4. 搜索 vue-cli-plugin-element 并安装
+5. 配置插件，实现按需导入，从而减少打包后项目的体积
+
+
 ## Vuex
 
 概念：
