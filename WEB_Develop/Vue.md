@@ -3230,7 +3230,88 @@ module.exports = {
 
 ![token](./media/Vue.&#32;assets/token.png)
 
+1. 将登录成功之后的 token ，保存到客户端的 sessionStorage 中
+    - 项目中除了 login 之外其他的 API 接口，必须在登录以后才能访问
+    - token 只应该在当前网站打开期间生效，所以将 token 保存在 sessionStorage 中
+    ```js
+    // 将服务端传递的 token 传递给 sessionStorage
+    window.sessionStorage.setItem('token', res.data.token)
+    ```
+2. 通过编程式导航跳转到后台主页
+    - `this.$router.push('/home')`
 
+**路由导航守卫控制访问权限：**
+
+- 如果用户没有登录，但是直接通过URL访问特定页面，需要重新导航到登录页面。
+
+```js
+// 为路由对象，添加 beforeEach 导航守卫
+  // to 将要访问的路径
+  // from 代表从哪个路径跳转而来
+  // next 是一个函数，表示放行
+  //     next()  放行    next('/login')  强制跳转
+router.beforeEach((to, from, next) => {
+// 如果用户访问的登录页，直接放行
+if (to.path === '/login') return next()
+// 从 sessionStorage 中获取到 保存的 token 值
+const tokenStr = window.sessionStorage.getItem('token')
+// 没有token，强制跳转到登录页
+if (!tokenStr) return next('/login')
+next()
+})
+// 最后在将 router 用 export default 暴露出去
+export default router
+```
+
+**退出：**
+
+- 基于 token 的方式实现退出比较简单，只需要销毁本地的 token 即可。这样，后续的请求就不会携带 token ，必须重新登录生成一个新的 token 之后才可以访问页面。
+
+```js
+// 清空token
+window.sessionStorage.clear()
+// 跳转到登录页
+this.$router.push('/login')
+```
+
+#### token 接口授权配置
+
+- 需要授权的 API ，必须在请求头中使用 `Authorization` 字段提供 `token` 令牌
+
+```js
+// axios请求拦截
+axios.interceptors.request.use(config => {
+// 为请求头对象，添加 Token 验证的 Authorization 字段
+config.headers.Authorization = window.sessionStorage.getItem('token')
+return config
+}
+```
+
+#### 获取 元素的实例对象（获取DOM节点，直接操作DOM）
+
+获取DOM节点： 
+
+1. 目标标签中添加 `ref` 属性，自定义名称
+
+   ```html
+   <div id="app">
+     <input type="button" value="getDOM" @click="getDOM">
+     <h3 ref="content">Lorem ipsum dolor sit amet.</h3>
+   </div>
+   ```
+
+2. 在vue 实例中使用 `this.$refs.自定义名称.innerText`
+
+   ```js
+   methods: {
+     getDOM() {
+       console.log(this.$refs.content.innerText);
+     }
+   }
+   ```
+
+获取组件的数据和方法：
+`this.$refs.自定义名称.数据名 / 方法名()`
 
 ## Vuex
 
