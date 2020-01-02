@@ -908,7 +908,40 @@ Vue.filter('format', function (val, arg) { // 过滤器接受参数从第二个�
 </script>
 ```
 
+##### 过滤器示例
 
+```html
+<script>
+// 定义一个全局过滤器
+Vue.filter('dataFormat', function (input, pattern = '') {
+  var dt = new Date(input);
+  // 获取年月日
+  var y = dt.getFullYear();
+  var m = (dt.getMonth() + 1).toString().padStart(2, '0');
+  var d = dt.getDate().toString().padStart(2, '0');
+
+  // 如果 传递进来的字符串类型，转为小写之后，等于 yyyy-mm-dd，那么就返回 年-月-日
+  // 否则，就返回  年-月-日 时：分：秒
+  if (pattern.toLowerCase() === 'yyyy-mm-dd') {
+    return `${y}-${m}-${d}`;
+  } else {
+    // 获取时分秒
+    var hh = dt.getHours().toString().padStart(2, '0');
+    var mm = dt.getMinutes().toString().padStart(2, '0');
+    var ss = dt.getSeconds().toString().padStart(2, '0');
+
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+  }
+})
+</script>
+
+<!-- 在element ui 中使用全局过滤器，需要借助作用域插槽 -->
+<el-table-column prop="add_time" label="创建时间" width="140px">
+  <template v-slot="scope">
+     {{ scope.row.add_time | dataFormat }}
+  </template>
+</el-table-column>
+```
 
 
 
