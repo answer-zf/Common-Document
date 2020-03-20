@@ -81,3 +81,52 @@ Page({
   }
 })
 ```
+
+## 滚动条
+使用 scroll-view 组件 
+- 添加 scroll-y属性 纵向滚动
+- 添加 scroll-y属性 横向滚动
+- 添加 overflow : hidden ; 样式
+
+## 页面跳转
+### navigator
+#### 页面传值
+- 使用路由问号形式传参
+- 获取参数：
+  - 使用生命周期函数 onload 中的 第一个参数获取
+    ```js
+    Page({
+      onLoad: function(option) {
+        console.log(option)
+      }
+    })
+    ```
+#### 添加 redirect 属性 不产生访问历史记录
+
+> cursor pointer 的方式是一个我们发现的小技巧，可以让任何元素点击时高亮
+
+### API 跳转
+使用事件函数调用 API跳转
+```js
+Page({
+    tapHandle: function () {
+        // 当我们点击按钮 系统会自动执行这里的代码
+        wx.navigateTo({
+          url: '../demo2/demo2?id=123'
+        })
+
+        // 相当于加上redirect的 navigator
+        // wx.redirectTo({
+        //   url: '../demo2/demo2'
+        // })
+        
+        // 默认返回到上一页
+        // wx.navigateBack()
+        // 指定delta 就是返回到指定页面
+        // delta 过大（超出历史记录）默认返回最开始的页面
+        // wx.navigateBack({
+        //   delta: 100
+        // })
+        // }
+})
+```
