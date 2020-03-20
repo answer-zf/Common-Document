@@ -19,7 +19,7 @@
    - catchtap 绑定事件，阻止事件冒泡
 
 ### 事件传参
-1. 使用 data- 属性， 通过调用 e.target.dataset 的方式获取 （类似H5）
+1. 使用 data- 属性， 通过调用 e.target.dataset / e.currentTarget.dataset(有冒泡的情况下使用) 的方式获取 （类似H5）
 
 ## 数据绑定
 - 小程序不支持双向数据绑定
