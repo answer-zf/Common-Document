@@ -105,6 +105,8 @@ Page({
 
 > cursor pointer 的方式是一个我们发现的小技巧，可以让任何元素点击时高亮
 
+> 使用 navigator 跳转，默认不能跳转到主界面，即：tabbar 配置的页面，强制跳转：使用 open-type 属性，值为 switchTab
+
 ### API 跳转
 使用事件函数调用 API跳转
 ```js
@@ -130,3 +132,40 @@ Page({
         // }
 })
 ```
+## API 设置 navigationbar
+> https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.showNavigationBarLoading.html
+
+## 发请求
+1. 调用 wx.request() API
+   - ```js
+      wx.request({
+        url: 'https://******',
+        success: res => {
+          this.setData({
+            ***: res.data
+          })
+        }
+      })
+      // ------------ 进阶 promise 封装
+      module.exports = url => {
+        return new Promise((resolve, reject) => {
+          wx.request({
+            url: `https://******${url}`,
+            success: resolve,
+            fail: reject
+          })
+        })
+      }
+      // 调用：
+      const *** = require('---')
+      onLoad: function(options) {
+        ***('url').then(res => {
+          this.setData({
+            data: res.data
+          })
+        })
+      }
+     ```
+2. 请求地址必须在管理后台添加白名单，域名必须采用 HTTPS
+   - 配置 管理员设置
+     - https://mp.weixin.qq.com/wxamp/devprofile/get_profile?token=162944412&lang=zh_CN
