@@ -14,8 +14,9 @@
 
 ## Step1. 安装脚手架工具 Angular CLI
 - 安装
-  > cnpm i -g @angular/cli
-- 确认
+  ```shell
+  cnpm i -g @angular/cli
+  ```
   > ng --version
 
 ## Setp 2. 使用脚手架工具初始化项目
