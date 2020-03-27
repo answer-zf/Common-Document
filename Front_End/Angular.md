@@ -568,7 +568,50 @@ import { FormsModule } from "@angular/forms";
 
 ## 路由
 
-- 使用
+### 配置
+
+```typescript
+// ---------------app-routing.module.ts
+
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
+
+// 引入模块
+import { LayoutComponent } from './layout/layout.component'
+// 子模块
+import { ContactListComponent } from './contact-list/contact-list.component'
+import { ContactEditComponent } from './contact-edit/contact-edit.component'
+import { ContactNewComponent } from './contact-new/contact-new.component'
+// 配置路由
+const routes: Routes = [
+  // pathMatch, 必须完全匹配 路径 时，才做重定向，重定向的必备条件
+  {
+    path: '',
+    redirectTo: 'contacts',
+    pathMatch: 'full'
+  },
+  { path: 'layout', component: LayoutComponent },
+  {
+    path: 'contacts',
+    component: LayoutComponent,
+    canActivate: [AuthGuard], // 路由守卫
+    // 子模块
+    children: [
+      { path: '', component: ContactListComponent },
+      { path: 'edit/:id', component: ContactEditComponent }, // 路由传参
+      { path: 'new', component: ContactNewComponent }
+    ]
+  }
+]
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+```
+
+### API 跳转
 
 ```typescript
 import { Router } from '@angular/router'
@@ -581,10 +624,125 @@ export class SignupComponent implements OnInit {
 }
 ```
 
-- 模板使用路由跳转
+### 模板使用路由跳转
 
 ```html
-<a routerLink="/router"></a>
+<a routerLink="/router/:id"></a>
+```
+
+**获取路由传递的参数**
+
+```typescript
+// 使用 ActivatedRoute 模块
+import { Component, OnInit } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import { HttpClient } from '@angular/common/http'
+import { GlobalVariable } from '../globals'
+
+@Component({
+  selector: 'app-contact-edit',
+  templateUrl: './contact-edit.component.html',
+  styleUrls: ['./contact-edit.component.scss']
+})
+export class ContactEditComponent implements OnInit {
+  formData = {
+    name: '',
+    email: '',
+    phone: ''
+  }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.getEditContactHandle()
+  }
+
+  getEditContactHandle() {
+    const id = this.route.snapshot.params.id
+    console.log(id)
+  }
+  editContactByIdHandle() {}
+}
+```
+
+### 设置响应头
+
+```typescript
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+export class ContactListComponent implements OnInit {
+  constructor(private http: HttpClient) {}
+  ngOnInit(): void {
+    this.http
+      .get('http://.../contacts', {
+        headers: new HttpHeaders().set(
+          'X-Access-Token',
+          window.localStorage.getItem('auth_token')
+        )
+      })
+      .toPromise()
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+}
+```
+
+### 设置拦截器
+
+1. 添加模块
+
+```typescript
+// ------------ ./global.interceptor.ts
+import { Injectable } from '@angular/core'
+import {
+  HttpEvent,
+  HttpInterceptor,
+  HttpHandler,
+  HttpRequest
+} from '@angular/common/http'
+
+import { Observable } from 'rxjs'
+
+/** Pass untouched request through to the next request handler. */
+@Injectable()
+export class GlobalInterceptor implements HttpInterceptor {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const token = window.localStorage.getItem('auth_token')
+    const authReq = req.clone({
+      // 自定义响应头
+      headers: req.headers.set('X-Access-Token', token)
+    })
+    return next.handle(authReq)
+  }
+}
+```
+
+2. 模块配置
+
+```typescript
+// ------------- app.module.ts
+
+// http配置
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
+// 拦截器配置
+import { GlobalInterceptor } from './global.interceptor'
+
+@NgModule({
+  // ...
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: GlobalInterceptor, multi: true }
+  ]
+})
+
 ```
 
 ### 路由守卫（登录验证）
