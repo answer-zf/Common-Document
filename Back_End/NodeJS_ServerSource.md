@@ -1,21 +1,16 @@
 # Node.js_Server
 
+## Node 模拟 Apache 基础功能
 
-
-## Node 模拟Apache基础功能
-
-
-
-###  url 访问文件
+### url 访问文件
 
 ```js
-
 var http = require('http')
 var fs = require('fs')
 
 var server = http.createServer()
 
-var dir = 'E:/php-zf/text_zf/02'    // 文件访问目录
+var dir = 'E:/php-zf/text_zf/02' // 文件访问目录
 
 server.on('request', function(req, res) {
   var url = req.url
@@ -39,10 +34,7 @@ server.on('request', function(req, res) {
 server.listen('3000', function() {
   console.log('Server is running')
 })
-
 ```
-
-
 
 ### 目录浏览（ 未用模板引擎，原始版 ）
 
@@ -92,8 +84,6 @@ server.listen('3000', function() {
 
 ```
 
-
-
 ## node.js 使用模板引擎
 
 - npm 下载
@@ -105,21 +95,16 @@ server.listen('3000', function() {
 - response.end( result )
 
   ```js
-  
   var template = require('art-template')
   var html = `
   name : {{name}}
   age : {{age}}
   hb : {{each hb}} {{$value}} {{/each}}
   `
-  
+
   var res = template.render(html, {
     name: 'ans',
     age: 18,
     hb: ['adsf', '123', 'pipo']
   })
-  
   ```
-
-  
-

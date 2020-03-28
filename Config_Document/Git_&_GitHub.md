@@ -4,30 +4,24 @@
 
 ## Git 介绍
 
-- [Git教程 - 廖雪峰](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/)
+- [Git 教程 - 廖雪峰](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/)
 - [Pro Git](http://git.oschina.net/progit/)
 - [git - 简明指南](http://rogerdudler.github.io/git-guide/index.zh.html)
-- [猴子都能懂的GIT入门](http://backlogtool.com/git-guide/cn/)
-
-
+- [猴子都能懂的 GIT 入门](http://backlogtool.com/git-guide/cn/)
 
 ## Git 使用交互流程
 
-![git交互模型](media/Git_&_GitHub. assets/git交互模型-1571974764974.png)
+![git交互模型](media/Git\_&_GitHub. assets/git 交互模型-1571974764974.png)
 
 ## 安装和配置 Git 环境
 
 下载地址：https://git-scm.com/
 
-
-
 ### git-bash 常用命令
 
-git-bash 
+git-bash
 
-
-
-### 初始化Git仓库
+### 初始化 Git 仓库
 
 ```shell
 # 找到目标文件夹并进入
@@ -40,8 +34,6 @@ git init 项目名称
 # 自动创建 项目目录 并且 初始化git 仓库
 
 ```
-
-
 
 ### 配置个人信息
 
@@ -65,19 +57,13 @@ git config --list
 
 ```
 
-
-
 ## 基本使用
 
-
-
-### 将文件备份到Git仓库中
+### 将文件备份到 Git 仓库中
 
 **操作 Git 的基本工作流程就是先修改文件，然后执行 `git add` 命令。**
 **`git add` 命令会把文件加入到暂存区，接着就可以执行 `git commit` 命令，将文件存入文档库，**
 **从而形成一次历史记录。**
-
-
 
 **暂存区：**
 
@@ -92,14 +78,14 @@ $ git add ./readme.md
 
 # 再提交到版本库
 $ git commit -m "complete the first function！"    # -m : 说明信息（便于查看）
- 
+
 ----------------------
  	# 不输入 -m 会进去vim编辑器环境输说明信息。
  	# 在vim里输入说明信息后 Esc键 + :Wp 即可    # w：保存 p：退出
  	# 强制退出：Esc键 + :p
- 	
+
 ##**************************************************************************
- 	
+
 # 把所有的文件存放到暂存区
 $ git add --all
 $ git add .
@@ -117,9 +103,7 @@ $ git commit --amend -m [message]
 $ git commit --amend [file1] [file2] ...
 ```
 
-
-
-### 删除、修改工作区文件 
+### 删除、修改工作区文件
 
 ```bash
 
@@ -133,8 +117,6 @@ $ git rm --cached [file]
 $ git mv [file-original] [file-renamed]
 
 ```
-
-
 
 ### 查看状态
 
@@ -152,14 +134,12 @@ $ git status
 
 ```
 
-
-
 ### 查看提交日志
 
-``` shell
+```shell
 
 # 查看历史日志
-$ git log   
+$ git log
 
 # 查看精简日志，单行显示
 $ git log --oneline
@@ -173,15 +153,11 @@ $ git reflog
 
 ```
 
-
-
 ### 打开图形界面
 
 ```shell
-$ gitk 
+$ gitk
 ```
-
-
 
 ### 撤销、回滚
 
@@ -210,9 +186,9 @@ $ git reset --hard [commit]
 # ex-----------------------------------------
 $ git reset --hard Head~0    # Head~0   回退到上一次提交代码时的状态
 							 # Head~1   回退到上上一次提交代码时的状态
-							 
+
 							 # hard     允许工作区代码被以前的代码覆盖
-							 
+
 # 可以通过版本号精确回退到某一次提交的状态
 $ git reset --hard b0750f9   ## b0750f9 ：版本号
 # -------------------------------------------
@@ -229,11 +205,7 @@ $ git stash
 $ git stash pop
 ```
 
-
-
 ## 分支（ 默认有一个主分支 master）
-
-
 
 ### 分支基础
 
@@ -268,8 +240,6 @@ $ git branch -d [branch-name]
 - 对于没有提交到版本库的暂存区的文件，无论切换到那个分支，内容不变，处于待提交到版本库状态
 - 也就是说 只有 commit 到的指定分支 才能对该分支进行操作
 
-
-
 ### 合并分支冲突
 
 ```shell
@@ -280,23 +250,21 @@ $ git branch -d [branch-name]
 
 ```
 
-
-
 ## Git 工作流程：分支策略
 
 [Git 工作流程](http://www.ruanyifeng.com/blog/2015/12/git-workflow.html)
 
 ### Git Flow
 
-[Git分支管理策略](http://www.ruanyifeng.com/blog/2012/07/git.html) 
+[Git 分支管理策略](http://www.ruanyifeng.com/blog/2012/07/git.html)
 
 ### Github Collabrators
 
 这种方式公司团队项目使用居多
 
 - 进入项目
-- settings - > Collaborators 
-- 添加 协作者 
+- settings - > Collaborators
+- 添加 协作者
 
 ### Github Flow
 
@@ -304,13 +272,13 @@ $ git branch -d [branch-name]
 
 - fork
 - clone 到你的本地
-- 在clone下来的项目中拉出一个新的分支
-  + 修改的时候最好是基于 master 拉出一个修改的分支，例如这个分支是用来添加某个功能的
+- 在 clone 下来的项目中拉出一个新的分支
+  - 修改的时候最好是基于 master 拉出一个修改的分支，例如这个分支是用来添加某个功能的
 - 在新分支上开发或者修改完成之后，提交到本地仓库，然后 push 推到自己的账户中 fork 过来的仓库
 - 最后，在 Github 上你 fork 过来的仓库界面中找到 New Pull Request 发起提交请求
 - 对方就会在仓库的 Pull Requests 中收到你发起的提交请求
-  + 然后双方就可以使用社会化交流方式进行沟通协作
-  + 例如 Code Review 代码审查
+  - 然后双方就可以使用社会化交流方式进行沟通协作
+  - 例如 Code Review 代码审查
 - 最后对方审查通过没有问题之后，选择 Merge Request
 - 到此，一个完整的 Github 工作流结束
 - 这种方式开源项目更多一些（大家都不认识）
@@ -319,11 +287,9 @@ $ git branch -d [branch-name]
 
 #### Gitlab
 
-[Gitlab](https://about.gitlab.com/ )
+[Gitlab](https://about.gitlab.com/)
 
 Gitlab 是一个开源的类似于 Github 的一个系统，开源免费部署到自己的公司内容。
-
-
 
 ## GIT 报错集合
 
@@ -339,15 +305,9 @@ Gitlab 是一个开源的类似于 Github 的一个系统，开源免费部署�
 $ git config --global core.autocrlf false
 ```
 
-
-
 ### Git Bash 中文乱码：
 
-![Snipaste_2019-10-27_14-04-08](media/Git_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
-
-
-
-
+![Snipaste_2019-10-27_14-04-08](media/Git\_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
 
 # GitHub
 
@@ -365,17 +325,15 @@ $ git config --global core.autocrlf false
 - 登陆
 - 创建远程仓库
 - 通过 `git clone` 命令下载远程仓库到本地
-  + git clone 会自动帮你把远程仓库下载到本地，不需要再去 git init 了
-  + 通过 clone 下来的仓库，git 有一个远程仓库地址列表，git 默认会把你 clone 的地址起一个别名：origin
-  + 然后你执行 push 的时候实际上就是将本地的版本提交到 origin 上
+  - git clone 会自动帮你把远程仓库下载到本地，不需要再去 git init 了
+  - 通过 clone 下来的仓库，git 有一个远程仓库地址列表，git 默认会把你 clone 的地址起一个别名：origin
+  - 然后你执行 push 的时候实际上就是将本地的版本提交到 origin 上
 - 在本地进行操作，通过 `git commit` 形成历史记录
 - 通过 `git push` 将本地仓库中的历史记录提交到远程仓库
 
-
-
 ## 本地已有仓库，需要提交到线上
 
-如果是本地  `git init` 出来的仓库，进行 `push` 提交的时候就不知道要往哪里 push。
+如果是本地 `git init` 出来的仓库，进行 `push` 提交的时候就不知道要往哪里 push。
 
 所以，这里通过 `remote` 相关命令进行设置：
 
@@ -398,8 +356,6 @@ $ git push --set-upstream origin master
 ```
 
 这样就可以直接使用 `git push` 进行提交而不需要指定 `origin master` 了
-
-
 
 ## GitHub 远端交互
 
@@ -431,36 +387,30 @@ $ git push [remote] [branch]
 $ git push [remote] --force
 ```
 
-
-
 ### Clone 与 Pull
 
 **Pull**
 
 ```bash
-## 开发优先推荐
+# 开发优先推荐
 
-## 新建文件并初始化 git仓储
+# 新建文件并初始化 git仓储
 
-## 从服务器下载 git
+# 从服务器下载 git
 
 $ git pull https://github.com/asnwer-zf/Common-Document.git master
 ```
-
-
 
 **Clone**
 
 ```bash
 
-## 不用初始化git仓储，会在本地新建根文件夹
-## 如果多次执行会覆盖本地内容
+# 不用初始化git仓储，会在本地新建根文件夹
+# 如果多次执行会覆盖本地内容
 $ git clone https://github.com/asnwer-zf/Common-Document.git
 ```
 
-
-
-### Push 与 Pull简化操作
+### Push 与 Pull 简化操作
 
 ```bash
 
@@ -468,61 +418,55 @@ $ git clone https://github.com/asnwer-zf/Common-Document.git
 $ git push origin master
 
 ##*********************************
-## -u 参数关联
+# -u 参数关联
 $ git push -u origin master
-## 后面的提交简化：
+# 后面的提交简化：
 $ git push
-## 仍然提交上去了
-## -u：把当前分支与远程的指定分支进行关联，即：记住操作
-## 关联以后 git pull 同样可以
+# 仍然提交上去了
+# -u：把当前分支与远程的指定分支进行关联，即：记住操作
+# 关联以后 git pull 同样可以
 
 ## -u 关联在push中进行
 
 ```
 
+### Https 上传 与 SSH 上传
 
-
-### Https上传 与 SSH上传
-
-**Http上传**
+**Http 上传**
 
 ```shell
 
-## 格式 git push + url地址 + master    master指的是 将本地master分支提交到服务器master分支
+# 格式 git push + url地址 + master    master指的是 将本地master分支提交到服务器master分支
 $ git push https://github.com/answerooo3/Common-Document.git master
 
 ```
 
-
-
-**SSH上传**
+**SSH 上传**
 
 ```shell
 
-## 优势：不需要输入用户名密码，依旧可以进行身份验证 
+# 优势：不需要输入用户名密码，依旧可以进行身份验证
 
-## 公钥（GitHub存放），私钥（个人存放）
-## 生成公钥，私钥
+# 公钥（GitHub存放），私钥（个人存放）
+# 生成公钥，私钥
 $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 
-## 找到C:\Users\answer_zf\.ssh内的
-## id_rsa	    私钥
-## id_rsa.pub   公钥
+# 找到C:\Users\answer_zf\.ssh内的
+# id_rsa	    私钥
+# id_rsa.pub   公钥
 
-## 复制 id_rsa.pub 内代码
-## 进去GitHub => 点击我的头像 => Settings => SSh and GPG keys => NEW SSH key
-## 添加已复制的代码 起个名字（Title内填写） => Add SSH key
-## 再用push上传即可 （传参为SSH地址）
+# 复制 id_rsa.pub 内代码
+# 进去GitHub => 点击我的头像 => Settings => SSh and GPG keys => NEW SSH key
+# 添加已复制的代码 起个名字（Title内填写） => Add SSH key
+# 再用push上传即可 （传参为SSH地址）
 
-## 换主机：
-## 在路径  C:\Users\ + 主机用户名  的目录下找到 .ssh文件
-## 在目标主机更换.ssh 文件
+# 换主机：
+# 在路径  C:\Users\ + 主机用户名  的目录下找到 .ssh文件
+# 在目标主机更换.ssh 文件
 
 ```
 
-
-
-## GitHub多人开发的冲突问题
+## GitHub 多人开发的冲突问题
 
 ```shell
 
@@ -533,10 +477,6 @@ $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 ## 先pull到本地进入vim填写说明系统自行合并 ，再push到GitHub
 
 ```
-
-
-
-
 
 ## GitHub Pages
 
@@ -550,77 +490,3 @@ Github Pages 提供了一个免费在线托管静态资源的服务，叫做：G
 4. 然后就可以在地址栏输入 `个人账户名称.github.io` 地址，就可以看到 `index.html` 网页内容了
 
 注意：上面创建的仓库名称必须是 `个人账户名称.github.io` ，否则无法访问
-
-
-
-# Hexo
-
-Hexo 是基于 Node.js 开发的一个静态博客生成器，提供本地实时预览及部署功能。
-基本使用方式如下：
-
-```bash
-npm install -g hexo-cli
-hexo init blog
-cd blog
-
-# 启动本地预览服务，默认是 127.0.0.1:4000
-hexo server
-
-# 新建文章
-hexo new 文章标题
-```
-
-也可以参考 Hexo 官方文档：https://hexo.io/zh-cn/ , 里面有具体的使用方式。
-
-
-
-## 自动发布 Hexo 搭建的静态博客
-
-第一：先修改 `_config.yml` 配置文件，下面是一个示例：
-
-```yml
-deploy:
-  type: git
-  repo: https://heima04:heima123456@github.com/heima04/heima04.github.io.git
-```
-
-上面的配置选项中，一定要注意在 repo 中按照对应的格式加入 Github 用户名和密码。
-
-第二：安装自动发布的插件：
-
-```bash
-npm install hexo-deployer-git --save
-```
-
-第三：使用命令一键进行发布：
-
-```shell
-hexo generate --deploy
-# 或者
-hexo deploy --generate
-
-# 更新出bug
-hexo clean
-hexo generate --deploy
-```
-
-上面两条命令都可以，发布可能有延时，稍微等待即可。
-
-
-
-## 修改Hexo博客主题
-
-将主题 `clone` 到 `blog\themes` 目录下
-
-```bash
-git clone 路径 --depth=1    # clone 最新的版本
-```
-
-配置：
-
-- 修改 `_config.yml` 配置文件
-
-```
-theme： 所下载的主题文件名
-```
-

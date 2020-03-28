@@ -1,6 +1,4 @@
-# 设置cookie
-
-
+# 设置 cookie
 
 ## PHP 设置
 
@@ -20,26 +18,17 @@ setcookie('key', 'value', time() + 1 * 24 *60 *60);
 
 ```
 
-
-
-
 ## JAVASCRIPT 设置
 
-``` js
+```js
+var a = new Date()
 
-var a = new Date;
+a.setYear(2029)
 
-a.setYear(2029);
-
-document.cookie = "app-installed=1; expire =" + a.toGMTString();
-
+document.cookie = 'app-installed=1; expire =' + a.toGMTString()
 ```
 
-
-
 > 打开浏览器 到关闭浏览器之间的过程叫一次会话（session）
-
-
 
 # SESSION
 
@@ -52,4 +41,3 @@ $_SESSION['key'] = value;
 unset($_SESSION['key']);
 
 ```
-

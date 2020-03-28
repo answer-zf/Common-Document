@@ -1,61 +1,53 @@
 # Node.js
 
-
-
 ## Node.js 概述
 
-- Node.js 是JavaScript运行时环境
+- Node.js 是 JavaScript 运行时环境
 
-- 可以解析执行JavaScript代码
+- 可以解析执行 JavaScript 代码
 
-- 没有BOM 、DOM
+- 没有 BOM 、DOM
 
-- 遵循EcmaScript
+- 遵循 EcmaScript
 
-- 为JavaScript提供了服务器级别的操作API
+- 为 JavaScript 提供了服务器级别的操作 API
 
-- 构建与Chrome的V8引擎之上
+- 构建与 Chrome 的 V8 引擎之上
 
-  - Google Chrome 中的V8引擎世界上公认的解析执行JavaScript代码最快的
+  - Google Chrome 中的 V8 引擎世界上公认的解析执行 JavaScript 代码最快的
 
-  - Node.js作者把Google Chrome 中的V8引擎移出来，开发了独立的JavaScript运行时环境
-
-  
+  - Node.js 作者把 Google Chrome 中的 V8 引擎移出来，开发了独立的 JavaScript 运行时环境
 
 ## Node.js 特性
 
 - event-driven 事件驱动
 
-- non-blocking I/O model 非阻塞IO模型（异步）
+- non-blocking I/O model 非阻塞 IO 模型（异步）
 
 - lightweight and efficient 轻量和高效
 
-
-
 ## Node.js 功能
 
-- WEB服务器后台
-  - B/S编程模型（与语言无关）
-  - 模块化编程 （类似less  @import('文件路径')  引用加载文件）
+- WEB 服务器后台
+
+  - B/S 编程模型（与语言无关）
+  - 模块化编程 （类似 less @import('文件路径') 引用加载文件）
   - 异步编程
+
     - promise
     - async
-    - generator 
-  
-  - Express Web开发框架
+    - generator
+
+  - Express Web 开发框架
   - Ecmascript 6
-  
+
 - 命令行工具
-  
-  - git	（ C ）
+
+  - git （ C ）
   - npm（ Node ）
   - hexo（ Node ）
 
-
-
 ## Node.js 基本操作
-
-
 
 ### 执行文件
 
@@ -68,8 +60,6 @@
 $node begin.js
 
 ```
-
-
 
 ### 读取文件
 
@@ -87,7 +77,7 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
     }
     console.log(data.toString())
 })
-// 读取成功 error 返回 null   ，data 返回 数据									
+// 读取成功 error 返回 null   ，data 返回 数据
 // 读取失败 error 返回 错误对象，data 返回 undefined
 
 ## ps: data 返回的数据是将文件存储的二进制数据 转为 十六进制数据，展现
@@ -97,24 +87,19 @@ fs.readFile('url',function(error,data){   // URL：要读取的文件路径 （�
 ## 等价于 data.toString()
 ```
 
-
-
 ### 读取目录
 
 ```javascript
-
 var fs = require('fs')
-fs.readdir('url', function(err, files) {  // files: 返回数组
+fs.readdir('url', function(err, files) {
+  // files: 返回数组
   if (err) {
-    res.end(err.message) // err对象 中有一个属性 message 
+    res.end(err.message) // err对象 中有一个属性 message
     return
   }
-  console.log(files)  
+  console.log(files)
 })
-
 ```
-
-
 
 ### 写入文件
 
@@ -137,12 +122,10 @@ fs.writeFile('url','content',function(error){ // content: 写入文件内容   e
 ### 将查询字符串转为对象
 
 ```js
-const queryString = require ('querystring')
+const queryString = require('querystring')
 
 queryString.parse('查询字符串')
 ```
-
-
 
 ### 创建服务器
 
@@ -161,9 +144,9 @@ var server = http.createServer()
 // 返回响应
 
 // 注册 request 请求事件
-// 当客户端请求时，自动触发服务器的 request 请求事件，然后执行第二个参数：回调处理函数 
+// 当客户端请求时，自动触发服务器的 request 请求事件，然后执行第二个参数：回调处理函数
 server.on('request', function(request,response){
-    console.log('收到请求,请求路径' + request.url) 
+    console.log('收到请求,请求路径' + request.url)
     response.write('hello')
     response.write(' node.js')
     response.end()
@@ -182,11 +165,11 @@ server.on('request', function(request,response){
             ## write 可以使用多次，但是最后一定要使用end结束响应，否则客户端会一直等待。
             ## 简化操作 直接end的同时发送响应数据 response.end('str')
             ## response.end()支持两种数据类型：二进制 字符串
-            
+
 ## response.end()	一次请求对应一次响应，响应结束这次请求也结束  不执行后续代码  类似return
 ## response.end() 必须存在
 
-## response.write() / response.end() 只能接受 字符串 和 二进制数据 
+## response.write() / response.end() 只能接受 字符串 和 二进制数据
 
 // 绑定端口号，启动服务器。
 
@@ -198,26 +181,19 @@ server.listen(3000,function(){
 
 ```
 
-
-
 #### - 创建服务简写
 
 ```js
-
 http
-		.createServer(function (req, res) {
-  
-		})
-		.listen(3000,function () {
-  		console.log('Server is running')
-		})
+  .createServer(function(req, res) {})
+  .listen(3000, function() {
+    console.log('Server is running')
+  })
 ```
-
-
 
 ### 获取路径
 
-- 采用URL模块，获取
+- 采用 URL 模块，获取
 
 ```js
 
@@ -232,7 +208,7 @@ $
   protocol: 'http:',	// 协议
   slashes: true,
   auth: null,
-  host: '127.0.0.1:3000',  
+  host: '127.0.0.1:3000',
   port: '3000',	// 端口号
   hostname: '127.0.0.1',	// 主机名
   hash: null,
@@ -243,10 +219,6 @@ $
   href: 'http://127.0.0.1:3000/post?name=fasdf&mes=%20asdf' }
 ```
 
-
-
-
-
 ## Node.js 中 的 JavaScript
 
 - EcmaScript
@@ -256,7 +228,7 @@ $
 
 ### 核心模块
 
-Node为JavaScript提供了很多服务器级别的API，而且这些API绝大多数都被包装到了一个具名的核心模块中。他们都有自己特殊的名称标识，若要使用这些模块，必须用  ***require***  加载模块。
+Node 为 JavaScript 提供了很多服务器级别的 API，而且这些 API 绝大多数都被包装到了一个具名的核心模块中。他们都有自己特殊的名称标识，若要使用这些模块，必须用 **_require_** 加载模块。
 
 - 文件操作的核心模块：fs
 - 服务构建的核心模块：http
@@ -265,41 +237,33 @@ Node为JavaScript提供了很多服务器级别的API，而且这些API绝大多
 - 操作系统信息的核心模块：os
 - ...
 
-
-
 ```javascript
-
 var path = require('path')
 console.log(path.extname('url'))
 
 // 返回扩展名 .txt
 ```
 
-
-
 ### 用户定义模块
 
-#### require  方法
+#### require 方法
 
-​	**用来加载模块，并执行里面的代码**（ 可加载执行多个JavaScript脚本文件 ）
+​ **用来加载模块，并执行里面的代码**（ 可加载执行多个 JavaScript 脚本文件 ）
 
-​    **拿到被加载文件模块导出的接口对象**
+​ **拿到被加载文件模块导出的接口对象**
 
-
-
-- node中模块分三种
+- node 中模块分三种
 
   - 具名的核心模块 （ fs 、http ...）
 
   - 用户编写的文件模块
 
-    ​    相对路径必须加 ./ 或 ../    （ ./ 不能省略，否则报错）
+    ​ 相对路径必须加 ./ 或 ../ （ ./ 不能省略，否则报错）
 
-    ​	可以省略后缀名
+    ​ 可以省略后缀名
 
   - 第三方模块
 
-    
 
     ```js
     console.log('a.js => stat')
@@ -307,53 +271,49 @@ console.log(path.extname('url'))
     console.log('a.js => end')
     ```
 
-    
-
-- node中没有全局作用域，只有模块作用域（即文件作用域）
+- node 中没有全局作用域，只有模块作用域（即文件作用域）
 
   - 模块是完全封闭的
     - 文件与文件之间可以完全避免变量命名冲突、污染问题
     - 外部访问不到内部，内部访问不到外部
 
-
-
 #### exports 对象
 
-**每个文件模块都提供了  *exports*  对象 （ 默认是空对象 ）**
+**每个文件模块都提供了 _exports_ 对象 （ 默认是空对象 ）**
 
-- 由于node只有模块作用域，想要做到模块间通信需要用到  ***exports***
+- 由于 node 只有模块作用域，想要做到模块间通信需要用到 **_exports_**
 
-- 把需要被外部访问的成员手动挂载到 ***exports*** 接口对象中
+- 把需要被外部访问的成员手动挂载到 **_exports_** 接口对象中
 
 - 多次在 **exports** 添加成员，实现对外导出多个内部成员
 
-- 哪个文件 ***require*** 这个的模块，就可以得到模块内部的   ***exports***  接口对象
+- 哪个文件 **_require_** 这个的模块，就可以得到模块内部的 **_exports_** 接口对象
 
-  - 即：***require***  的返回值
-  
+  - 即：**_require_** 的返回值
+
   ```javascript
-  
+
   ## └─ducument
   ##    ├─a.js
   ##    └─b.js
-  
+
   ## ----  b.js content
-  
+
   var foo = '1231234'
   exports.foo = foo
-  
+
   exports.add = function (x, y) {
       return x + y
   }
-  
+
   ------------------------------------------
-  
+
   ## ----  a.js content
-  
+
   var bExports = require('./b')
   console.log(bExports.foo)
   console.log(bExports.add(10, 210))
-  
+
   ```
 
 - 一个模块需要直接导出某个成员，而非挂载的方式必须使用
@@ -362,22 +322,15 @@ console.log(path.extname('url'))
 
   - add 可为 function，string， array。。都可以
 
-
 ## Web 服务端开发
 
-
-
-### IP地址  与  端口号
-
-
+### IP 地址 与 端口号
 
 - 所有联网的程序都要进行网络通信
 
 - 计算机中只有一个物理网卡，且同一个局域网中的网卡地址必须唯一。
 
-- 网卡是通过唯一的ip地址进行定位
-
-
+- 网卡是通过唯一的 ip 地址进行定位
 
 **IP 地址用来定位计算机**
 
@@ -386,45 +339,39 @@ console.log(path.extname('url'))
 - 所有需要网络通信的软件都必须有端口号
 - 端口号使用范围 0 ~ 65536 之间
 - 计算机中有一些默认端口号 尽量不去使用 ex : 80 ..
-- 一台计算机，同一个端口号在同一时间，只能被一个 
+- 一台计算机，同一个端口号在同一时间，只能被一个
 - Node.js 可以开启多个服务，但是一定确保不同服务占用不同端口号
-
-
 
 ### Content-Type
 
-- 服务端发送的数据默认，是utf-8编码的
+- 服务端发送的数据默认，是 utf-8 编码的
 
 - 浏览器在不知道服务器响应内容的编码的情况下，会按照当前操作系统默认的编码去解析
+
   - 中文操作系统默认编码是 GBK
-  - 在http协议中 Content-Type是用来告知，对方给你发送数据内容的数据类型
+  - 在 http 协议中 Content-Type 是用来告知，对方给你发送数据内容的数据类型
   - 图片不需要指定编码，常说的编码一般指的是：字符编码，一般只为字符数据指定编码
 
-- **通过设置响应头的方式设置Content-Type的方式解决乱码问题**
+- **通过设置响应头的方式设置 Content-Type 的方式解决乱码问题**
 
   ```js
-  
-  server.on('request', function(req, res){
-      res.setHeader('Content-Type','text/plain; charset=utf-8')
-      res.end('hello 世界')
+  server.on('request', function(req, res) {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    res.end('hello 世界')
   })
-  
   ```
 
   - 服务器最好把每次响应的数据是什么内容类型 ，正确的告诉客户端
   - 不同的资源对应的 Content-Type 是不一样，具体参照：http://tool.oschina.net/commons
   - 对于文本类型的数据，最好都加上编码，目的是为了防止中文解析乱码问题
 
-  
-
-- 除了用 Content-Type 指定编码，也可以在HTML页面，通过meta元数据（用来 描述、特征、信息，存储内容的数据）来声明当前文本的编码格式
-
-
+* 除了用 Content-Type 指定编码，也可以在 HTML 页面，通过 meta 元数据（用来 描述、特征、信息，存储内容的数据）来声明当前文本的编码格式
 
 ### 请求与响应
 
-- 当浏览器收到HTML的响应内容以后，开始从上到下一次解析，
+- 当浏览器收到 HTML 的响应内容以后，开始从上到下一次解析，
 - 在解析过程中若发现
+
   - link
   - script
   - img
@@ -432,9 +379,7 @@ console.log(path.extname('url'))
   - video
   - audio
 
-- 等带有src href属性标签的时候，浏览器会自动对这些资源发起新的请求
-
-  
+- 等带有 src href 属性标签的时候，浏览器会自动对这些资源发起新的请求
 
 ### 统一资源管理
 
@@ -442,7 +387,6 @@ console.log(path.extname('url'))
 - 通过代码灵活控制那些资源能被访问，那些资源不允许访问
 
 ```js
-
 var http = require('http')
 var fs = require('fs')
 http
@@ -456,7 +400,8 @@ http
         }
         res.end(data)
       })
-    } else if (url.indexOf('/public/') === 0) {   // public 开启访问权限
+    } else if (url.indexOf('/public/') === 0) {
+      // public 开启访问权限
       fs.readFile('.' + url, function(err, data) {
         if (err) {
           res.end('404 Not Found')
@@ -469,37 +414,32 @@ http
   .listen(3000, function() {
     console.log('Server is running')
   })
-
 ```
 
-- 上个实例，只有public目录可以提供访问，灵活控制访问资源
-
-  
+- 上个实例，只有 public 目录可以提供访问，灵活控制访问资源
 
 ### 服务器重定向
 
-- 状态码设置 302临时重定向
+- 状态码设置 302 临时重定向
 
-  - 301为永久重定向 浏览器会记住
-  - a  => b ,下次请求a，不经过a 直接到b
-  - 302为临时重定向 浏览器会记住
-    - a  => b ,下次继续请求a，a  => b
+  - 301 为永久重定向 浏览器会记住
+  - a => b ,下次请求 a，不经过 a 直接到 b
+  - 302 为临时重定向 浏览器会记住
+    - a => b ,下次继续请求 a，a => b
   - response.statusCode = 302
-- 响应头中通过 Location告诉客户端往哪重定向
 
-  - response.setHeader( 'Location',  '/' )
-- 客户端发现收到的服务器的响应状态码是302，会自动在响应头中找 Location，然后对改地址发起新的请求。
+- 响应头中通过 Location 告诉客户端往哪重定向
+
+  - response.setHeader( 'Location', '/' )
+
+- 客户端发现收到的服务器的响应状态码是 302，会自动在响应头中找 Location，然后对改地址发起新的请求。
 - 客户端自动跳转
 
-
-
-## Node中的模块系统
-
-
+## Node 中的模块系统
 
 ### 前 提
 
-- 使用Node编写应用程序主要是使用
+- 使用 Node 编写应用程序主要是使用
   - EcamScript 语言
   - 核心模块
   - 第三方模块
@@ -515,18 +455,16 @@ http
 
   - 导出
 
-    
+### CommonJS 模块规范
 
-### CommonJS模块规范
-
-JavaScript本身并不支持模块化 在Node中不仅支持，还有一个很重要的概念  **模块系统**
+JavaScript 本身并不支持模块化 在 Node 中不仅支持，还有一个很重要的概念 **模块系统**
 
 - 模块作用域
   - 默认模块中任何内容不能被外部访问
-- 使用require方法加载模块
-- 使用exports接口对象导出模块中的成员
+- 使用 require 方法加载模块
+- 使用 exports 接口对象导出模块中的成员
 
-#### 加载  `require`
+#### 加载 `require`
 
 ##### 语法：
 
@@ -537,11 +475,11 @@ var custom = require('module')
 ##### 作用：
 
 1. 执行被加载模块中代码
-2. 得到被加载模块中的  `exports`  导出接口对象
+2. 得到被加载模块中的 `exports` 导出接口对象
 
 ##### 加载规则：
 
-模块查找机制：优先从缓存加载	=>  核心模块  =>  路径形式文件模块  =>  第三方模块
+模块查找机制：优先从缓存加载 => 核心模块 => 路径形式文件模块 => 第三方模块
 
 ###### 优先从缓存加载
 
@@ -554,37 +492,35 @@ var custom = require('module')
   ##    ├─a.js
   ##    ├─b.js
   ##    └─main.js
-  
+
   ## ----  main.js content
-  
+
   require('./a')
   var fn = require('./b')
   console.log(fn)
   ----------------------------------
-  
+
   ## ----  a.js content
-  
+
   console.log('a.js 被加载了')
   var fn = require('./b')
   console.log(fn)
   ----------------------------------
-  
+
   ## ----  b.js content
-  
+
   console.log('b.js 被加载了')
   module.exports = function () {
     console.log('hello bbb')
   }
   ----------------------------------
-  
+
   ## ----	 main.js输出结果
   a.js 被加载了
   b.js 被加载了
   [Function]
   [Function]
   ```
-
-  
 
 ###### 判断模块模块标识(符)
 
@@ -595,39 +531,37 @@ var custom = require('module')
   - 已被编译到了二进制文件中，只需要按名字加载即可
   - 模块标识 ：模块名
 - 第三方模块
-  - 凡是第三方模块必须通过npm下载，通过require('包名')进行加载使用
+  - 凡是第三方模块必须通过 npm 下载，通过 require('包名')进行加载使用
   - 不可能有一个第三方包 与 核心模块 重名
   - 模块标识 ：模块名
 - 用户模块
   - 模块标识 ：路径
 
-
-
 **路径形式的模块**：
 
-- .js     后缀名可以省略
-- ./      当前目录 （不可省略）
-- ../     上一级目录 （不可省略）
-- /xxx	绝对路径 ( 首位的  / 表示当前文件模块所属磁盘根路径)  ==>  几乎不用
-- d:/xxxx  绝对路径   ==>  几乎不用 
+- .js 后缀名可以省略
+- ./ 当前目录 （不可省略）
+- ../ 上一级目录 （不可省略）
+- /xxx 绝对路径 ( 首位的 / 表示当前文件模块所属磁盘根路径) ==> 几乎不用
+- d:/xxxx 绝对路径 ==> 几乎不用
 
 **既不是核心模块，也不是路径形式的模块**
 
 1. 模块加载规则
-   - 先找到当前文件所属目录中的 `node_modules` 目录    ( 以art-template 为例 )
-   - == >     node_modules/art-template
-   - == >     node_modules/art-template/package.json 文件
-   - == >     node_modules/art-template/package.json 文件中的 main 属性
-   - main属性记录了art-template的入口模块 
-   - 加载使用art-template
+   - 先找到当前文件所属目录中的 `node_modules` 目录 ( 以 art-template 为例 )
+   - == > node_modules/art-template
+   - == > node_modules/art-template/package.json 文件
+   - == > node_modules/art-template/package.json 文件中的 main 属性
+   - main 属性记录了 art-template 的入口模块
+   - 加载使用 art-template
    - 实际上最终加载的还是文件
 2. 特殊情况
-   - 如果 package.json 文件不存在或者 main指定的入口模块也没有，则 node 会找该目录下的 index.js
+   - 如果 package.json 文件不存在或者 main 指定的入口模块也没有，则 node 会找该目录下的 index.js
      - index.js 会作为默认备选项
    - 若所述所有条件均不成立，则会进人上一级目录中的 node_modules 目录执行查找
    - 若上一级还没有，则继续往上上一级查找
    - 。。。
-   - 如果直到当前磁盘根目录还找不到，最后报错  `can not find module xxx` 
+   - 如果直到当前磁盘根目录还找不到，最后报错 `can not find module xxx`
 
 **在项目中有且只有一个 `node_modules` ，不会出现多个**
 
@@ -635,9 +569,9 @@ var custom = require('module')
 
 #### 导出 `exports`
 
-- Node中是模块作用域，默认文件中所有成员只在当前文件模块有效
+- Node 中是模块作用域，默认文件中所有成员只在当前文件模块有效
 
-- 想要做到模块间通信需要用到  `exports` ，把需要被外部访问的成员手动挂载到 `exports` 接口对象中
+- 想要做到模块间通信需要用到 `exports` ，把需要被外部访问的成员手动挂载到 `exports` 接口对象中
 
   - 导出多个成员（必须在对象中）：
 
@@ -663,7 +597,7 @@ var custom = require('module')
       ```
 
       ```js
-      module.exports = function (x, y) {
+      module.exports = function(x, y) {
         return x + y
       }
       ```
@@ -674,27 +608,25 @@ var custom = require('module')
 
       ```js
       module.exports = {
-       add: function(x, y){
-         return x + y
-       },
-       str: 'string'
+        add: function(x, y) {
+          return x + y
+        },
+        str: 'string'
       }
       ```
 
-  
-
 ##### 原理
 
-- 在Node 中，每一个模块内部都有一个自己的 `module` 对象
+- 在 Node 中，每一个模块内部都有一个自己的 `module` 对象
 
 - 该 `module` 对象中，有一个成员叫： `exports` 也是一个对象（ 默认为空 ）
 
 - 若需要对外导出成员，只需要把导出的成员挂载到 `module.exports` 中
 
-- 由于每次导出接口成员的时候都通过 `module.exports.xxx = xxx` 比较麻烦，node为了简化操作专门提供一个变量 `exports`  等价于  `module.exports`  
+- 由于每次导出接口成员的时候都通过 `module.exports.xxx = xxx` 比较麻烦，node 为了简化操作专门提供一个变量 `exports` 等价于 `module.exports`
 
   ```js
-  console.log(exports === module.exports)	// => true
+  console.log(exports === module.exports) // => true
   exports.foo = 'bar'
   //等价于
   module.exports.add = 'bar'
@@ -704,22 +636,23 @@ var custom = require('module')
 
   ```js
   exports.foo = 'bar'
-  module.exports.add = function (x, y) {
+  module.exports.add = function(x, y) {
     return x + y
   }
-  -------------------
-  // require结果
-  { foo: 'bar', add: [Function] }
+  -------------------(
+    // require结果
+    { foo: 'bar', add: [Function] }
+  )
   ```
 
 - 当一个模块需要导出单个成员的时候
 
-  - 不能使用：` exports = 'string' ` 
+  - 不能使用：`exports = 'string'`
 
-    - `exports` 仅仅只是 `module.exports`  的引用,底层最后的代码是：
+    - `exports` 仅仅只是 `module.exports` 的引用,底层最后的代码是：
       - `var exports = module.exports`
       - `return module.exports`
-    - 重新赋值不再指向 `module.exports` , 便丢失了引用关系 
+    - 重新赋值不再指向 `module.exports` , 便丢失了引用关系
     - 只是快捷方式，可以忽略
 
   - 只能使用：`module.exports = 'string'`
@@ -732,18 +665,17 @@ var custom = require('module')
       ```js
       module.exports = 'string'
       exports.foo = 'bar'
-      -------------
-      // require结果
-      'string'
+      -------------(
+        // require结果
+        'string'
+      )
       ```
-
-      
 
 ##### 底层代码模拟
 
 ```js
 var module = {
-	exports: { 
+	exports: {
 	},
   ...
 }
@@ -755,24 +687,26 @@ var exports = module.exports
 return module.exports
 ```
 
+## path 路径操作模块
 
+> 参考文档： https://nodejs.org/dist/latest-v12.x/docs/api/path.html
 
-## path路径操作模块
-
-> 参考文档： https://nodejs.org/dist/latest-v12.x/docs/api/path.html 
-
-### 常用API：
+### 常用 API：
 
 - path.basename
-  
+
   - 获取一个路径的文件名（默认包含扩展名）
+
 - path.dirname
-  
+
   - 获取一个路径中的目录部分
+
 - path.extname
-  
+
   - 获取一个路径中的扩展名部分
+
 - path.parse
+
   - 把一个路径转为对象
     - root 根路径
     - dir 目录
@@ -780,7 +714,7 @@ return module.exports
     - ext 后缀名
     - name 不包含后缀名的文件名
 
-- path.isAbsolute 
+- path.isAbsolute
 
   - 判断一个路径是不是绝对路径
 
@@ -790,24 +724,20 @@ return module.exports
   - 参数可以为任意，多写或者少写 `/` 不影响
 
   ```js
-  
   path.join('c:/a', 'b')
-  -- 'c:\\a\\b'
-  
+  --'c:\\a\\b'
+
   path.join('c:/a', '/b', 'c/', './f')
-  -- 'c:\\a\\b\\c\\f'
-  
+  --'c:\\a\\b\\c\\f'
   ```
-
-
 
 ## Node 中的其他成员
 
-在每个模块中，出来 `require` 、`exports`等模块相关API之外，还有两个特殊的成员：
+在每个模块中，出来 `require` 、`exports`等模块相关 API 之外，还有两个特殊的成员：
 
--  `__dirname` **动态获取** 当前文件模块所属目录的绝对路径
--  `__filename` **动态获取** 当前文件的绝对路径
-- `__dirname` 和 `__filename`  不受 node 命令所属路径影响
+- `__dirname` **动态获取** 当前文件模块所属目录的绝对路径
+- `__filename` **动态获取** 当前文件的绝对路径
+- `__dirname` 和 `__filename` 不受 node 命令所属路径影响
 
 ### 使用前提
 
@@ -836,7 +766,7 @@ fs.readFile('./a.txt', function(err, data){
 var fooIndex = require('./foo/index')
 --------------------------- app.js
 
-// 在app.js 当前目录执行终端 则加载不到 a.txt 
+// 在app.js 当前目录执行终端 则加载不到 a.txt
 ```
 
 在文件操作中，使用相对路径是不可靠的，因为在 Node 中文操作的路径被设计为相对于执行 node 命令所处的路径。（不是 bug ）
@@ -848,42 +778,38 @@ var fooIndex = require('./foo/index')
 可以使用 `__dirname` 或者 `__filename` 解决问题
 
 ```js
-fs.readFile(__dirname + '/a.txt', function(err, data){
-    if (err) { throw err }   // node 执行中会把 / 转为 \
-    console.log(data)
+fs.readFile(__dirname + '/a.txt', function(err, data) {
+  if (err) {
+    throw err
+  } // node 执行中会把 / 转为 \
+  console.log(data)
 })
---------------------------- index.js
+---------------------------index.js
 ```
 
 在拼接路径的过程中，为了避免手动拼接带来的低级错误，推荐多使用, `path.join()`来辅助拼接。
 
 ```js
-fs.readFile(path.join(__dirname, './a.txt'), 'utf8', function(err, data){
-    if (err) { throw err }
-    console.log(data)
+fs.readFile(path.join(__dirname, './a.txt'), 'utf8', function(err, data) {
+  if (err) {
+    throw err
+  }
+  console.log(data)
 })
---------------------------- index.js
+---------------------------index.js
 ```
 
-
-
- 为了尽量避免前面所描述的问题，以后文件操作中使用的相对路径都统一转换为 **动态的绝对路径**。
-
-
+为了尽量避免前面所描述的问题，以后文件操作中使用的相对路径都统一转换为 **动态的绝对路径**。
 
 > 补充： 模块中的路径标识和文件操作中的相对路径标识，不一样
 >
-> ​			模块中的路径标识就是相对于当前文件模块就，不受执行 node 命令所处路径影响
-
-
+> ​ 模块中的路径标识就是相对于当前文件模块就，不受执行 node 命令所处路径影响
 
 ## Node_Express
 
-**原生的http在某些方面不足以应对我们对开发的需求，需要使用框架加快开发效率，框架的目的就是提高效率，让代码更高度统一。**
+**原生的 http 在某些方面不足以应对我们对开发的需求，需要使用框架加快开发效率，框架的目的就是提高效率，让代码更高度统一。**
 
-**在 Node 中有很多web开发框架，Express是其中一种**     http://expressjs.com/
-
-
+**在 Node 中有很多 web 开发框架，Express 是其中一种** http://expressjs.com/
 
 ### 起步
 
@@ -893,8 +819,6 @@ fs.readFile(path.join(__dirname, './a.txt'), 'utf8', function(err, data){
 npm install --save express
 
 ```
-
-
 
 #### hello world
 
@@ -908,10 +832,7 @@ app.get('/', function(req, res) {
 app.listen(5000, function() {
   console.log('express app is running...')
 })
-
 ```
-
-
 
 #### 基本路由 router
 
@@ -928,7 +849,6 @@ get：
 app.get('/', function(req, res) {
   res.send('hello world')
 })
-
 ```
 
 post:
@@ -938,14 +858,12 @@ post:
 app.post('/', function(req, res) {
   res.send('Got a POST request')
 })
-
 ```
 
 重定向：
 
 ```js
 res.redirect('/')
-
 ```
 
 #### 静态服务
@@ -972,18 +890,17 @@ app.use('/static/', express.static('./public/'))
 
 ```
 
-#### 在Express中获取表单 GET请求参数
+#### 在 Express 中获取表单 GET 请求参数
 
-Express内置了一个API，可以直接通过 `req.query` 来获取
+Express 内置了一个 API，可以直接通过 `req.query` 来获取
 
 ```js
 req.query
-
 ```
 
-#### 在Express中获取表单 POST 请求体数据
+#### 在 Express 中获取表单 POST 请求体数据
 
-在Express中没有内置获取表单 POST 请求体的API，需要主要使用第三方包：`body-parser` 中间件（插件，专门用来解析表单 post 请求体）
+在 Express 中没有内置获取表单 POST 请求体的 API，需要主要使用第三方包：`body-parser` 中间件（插件，专门用来解析表单 post 请求体）
 
 安装：
 
@@ -1007,34 +924,32 @@ var app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
-
 ```
 
 使用：
 
 ```js
-app.use(function (req, res) {
+app.use(function(req, res) {
   res.setHeader('Content-Type', 'text/plain')
   res.write('you posted:\n')
   // 可以通过 req.body 来获取表单 POST 请求体数据
   res.end(JSON.stringify(req.body, null, 2))
 })
-
 ```
 
-#### 其他API
+#### 其他 API
 
 ##### Express 中的 json 方法
 
 - `res.json()` 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
 - 等价于`res.end(JSON.stringify(req.body, null, ' '))`
 
-##### Express中 `req.hearder`
+##### Express 中 `req.hearder`
 
 - 获取当前请求的请求报文中的请求头信息
-- 其中一个参数，`content-length`  GET 请求没有，POST请求有，表示：传入参数的字节长度
+- 其中一个参数，`content-length` GET 请求没有，POST 请求有，表示：传入参数的字节长度
 
-### 在Express中配置使用art-template模板引擎
+### 在 Express 中配置使用 art-template 模板引擎
 
 - [art-template - GitHub 仓库](https://github.com/aui/art-template)
 - [art-template - 官方文档](https://aui.github.io/art-template/zh-cn/index.html)
@@ -1051,7 +966,6 @@ npm install --save express-art-template
 
 ```js
 app.engine('html', require('express-art-template'))
-
 ```
 
 #### 使用：
@@ -1061,10 +975,9 @@ app.get('/', function(req, res) {
   // express 默认会去项目中的 views 目录中找 index.html
   // render方法 => 渲染文件 详解见说明
   res.render('index.html', {
-     title: 'hello world'
+    title: 'hello world'
   })
 })
-
 ```
 
 - 如果希望修改默认的 `views` 视图渲染存储目录
@@ -1072,42 +985,38 @@ app.get('/', function(req, res) {
   ```js
   // 注意第一个参数 views 千万不能错
   app.set('views', 目录路径)
-  
   ```
 
 #### 说明:
 
-- **配置art-template 模板引擎**
+- **配置 art-template 模板引擎**
 
   ```js
   app.engine('art', require('express-art-template'))
-  
   ```
 
   - 第一个参数表示：当渲染以 .art 结尾的文件的时候，使用 art-template 模板引擎
     - 个人习惯 `app.engine('html', require('express-art-template'))`
-  - express-art-template 是专门用来在 Express 中 把 art-template 整合到 Express中
+  - express-art-template 是专门用来在 Express 中 把 art-template 整合到 Express 中
   - 虽然这里不需要加载 art-template 但是也必须安装
   - 原因是 express-art-template 依赖了 art-template
 
-- **使用art-template 模板引擎**
+- **使用 art-template 模板引擎**
 
   - Express 为 Response 相应对象提供了一个方法：render
   - render 方法默认是不可以使用的，但是如果配置了模板引擎就可以使用了
 
   ```js
-  res.render('html模板名', {模板数据})
-  
+  res.render('html模板名', { 模板数据 })
   ```
 
   - 第一个参数不能写路径，默认会去项目中的 views 目录查找该模板文件
-  - Express有个约定，开发人员把所有的视图文件都放到 views 目录中
+  - Express 有个约定，开发人员把所有的视图文件都放到 views 目录中
 
   ```js
   app.get('/', function(req, res) {
-    res.render('index.html')// 若不需要模板引擎渲染，第二个参数不用传，直接渲染文件页面
+    res.render('index.html') // 若不需要模板引擎渲染，第二个参数不用传，直接渲染文件页面
   })
-  
   ```
 
   - 若要访问 views 下目录中的文件，直接跳过 views/ 即可
@@ -1121,19 +1030,14 @@ app.get('/', function(req, res) {
       title: 'index page'
     })
   })
-  
+
   ```
 
-
-
-
-
-
-### 在Express中配置使用nunjucks模板引擎
+### 在 Express 中配置使用 nunjucks 模板引擎
 
 NodeJS 最火的模板引擎
 
-[nunjucks官网]( https://mozilla.github.io/nunjucks/ )
+[nunjucks 官网](https://mozilla.github.io/nunjucks/)
 
 #### 安装：
 
@@ -1144,7 +1048,8 @@ $ npm install nunjucks
 #### 配置：
 
 ```js
-nunjucks.configure('视图渲染存储目录路径', {   // 一般在配置文件中封装绝对路径
+nunjucks.configure('视图渲染存储目录路径', {
+  // 一般在配置文件中封装绝对路径
   autoescape: true,
   express: app
 })
@@ -1165,7 +1070,7 @@ app.get('/', (req, res) => {
 #### 高级语法
 
 - extends
-- block 
+- block
 - include
 
 ```HTML
@@ -1195,20 +1100,16 @@ app.get('/', (req, res) => {
 ```html
 <!--------index.html-------->
 
-{% extends "layout.html" %}
-
-{% block body %}
+{% extends "layout.html" %} {% block body %}
 <h1>这是首页自己的内容 hello {{ foo }}</h1>
 {% endblock %}
 ```
-
-
 
 ### Express 中配置使用 Express-session
 
 express 中默认不支持 session 和 cookie，使用第三方中间件 `express-session`解决
 
-安装： 
+安装：
 
 `npm install express-session`
 
@@ -1218,14 +1119,16 @@ express 中默认不支持 session 和 cookie，使用第三方中间件 `expres
 
 ```js
 var session = require('express-session')
-app.use(session({
-  // 配置加密字符串，会在原有加密基础之上，和这个字符串拼起来去加密
-  // 目的为了增加安全性，防止客户端恶意伪造
-  secret: 'keyboard cat', 
-  resave: false,
-  saveUninitialized: true // 无论是否使用 session ，默认直接分配一把钥匙（空 session ）
-  												// false：存数据的时候才会分配钥匙
-}))
+app.use(
+  session({
+    // 配置加密字符串，会在原有加密基础之上，和这个字符串拼起来去加密
+    // 目的为了增加安全性，防止客户端恶意伪造
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true // 无论是否使用 session ，默认直接分配一把钥匙（空 session ）
+    // false：存数据的时候才会分配钥匙
+  })
+)
 ```
 
 使用：
@@ -1240,18 +1143,16 @@ app.use(session({
     - 更严谨的做法使用 `delete` 语法
       - delete req.session.foo
 
-提示：默认Session 数据是内存存储的，服务器一旦存储就会丢失，真正的生产环境会把 Session 进行持久化存储。
-
-
+提示：默认 Session 数据是内存存储的，服务器一旦存储就会丢失，真正的生产环境会把 Session 进行持久化存储。
 
 ### 中间件
 
- http://expressjs.com/en/guide/using-middleware.html 
+http://expressjs.com/en/guide/using-middleware.html
 
 ![1-130I0234953631](media/NodeJS. assets/1-130I0234953631.png)
 
 中间件：用来处理 http 请求的一个具体的环节（可能要执行某个具体的处理函数）
-        	   中间件一般都是通过修改 req 或者 res 对象来为后续的处理提供便利的使用
+中间件一般都是通过修改 req 或者 res 对象来为后续的处理提供便利的使用
 
 **中间件的本质** 就是一个请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，这样做的目的是提高代码的灵活性，动态可扩展。
 
@@ -1284,7 +1185,7 @@ app.use(session({
 // 当一个请求进入一个中间件之后，如果不调用 next 则会停留在当前中间件
 // 所以 next 是一个方法，用来调用下一个中间件的
 // 调用 next 方法也是要匹配的（不是调用紧挨着的那个）
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   console.log('Time:', Date.now())
   next()
 })
@@ -1293,7 +1194,7 @@ app.use(function (req, res, next) {
 只要是以 `/xxx/` 开头的：不关心请求方法，只关心请求路径的中间件
 
 ```js
-app.use('/a', function (req, res, next) {
+app.use('/a', function(req, res, next) {
   console.log('Time:', Date.now())
   next()
 })
@@ -1304,41 +1205,41 @@ app.use('/a', function (req, res, next) {
 get:
 
 ```js
-app.get('/', function (req, res) {
-	res.send('Hello World!')
+app.get('/', function(req, res) {
+  res.send('Hello World!')
 })
 ```
 
 post:
 
 ```js
-app.post('/', function (req, res) {
-	res.send('Got a POST request')
+app.post('/', function(req, res) {
+  res.send('Got a POST request')
 })
 ```
 
 put:
 
 ```js
-app.put('/user', function (req, res) {
-	res.send('Got a PUT request at /user')
+app.put('/user', function(req, res) {
+  res.send('Got a PUT request at /user')
 })
 ```
 
 delete:
 
 ```js
-app.delete('/user', function (req, res) {
-	res.send('Got a DELETE request at /user')
+app.delete('/user', function(req, res) {
+  res.send('Got a DELETE request at /user')
 })
 ```
 
 ##### 错误处理中间件
 
 ```js
-app.use(function (err, req, res, next) {
-	console.error(err.stack)
-	res.status(500).send('Something broke!')
+app.use(function(err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
 })
 ```
 
@@ -1350,24 +1251,24 @@ app.use(function (err, req, res, next) {
 
 ##### 第三方中间件
 
- http://expressjs.com/en/guide/using-middleware.html 
+http://expressjs.com/en/guide/using-middleware.html
 
--  [body-parser](http://expressjs.com/en/resources/middleware/body-parser.html) 
+- [body-parser](http://expressjs.com/en/resources/middleware/body-parser.html)
 
--  [compression](http://expressjs.com/en/resources/middleware/compression.html) 
--  [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html) 
--  [morgan](http://expressjs.com/en/resources/middleware/morgan.html) 
--  [response-time](http://expressjs.com/en/resources/middleware/response-time.html) 
--  [serve-static](http://expressjs.com/en/resources/middleware/serve-static.html) 
--  [session](http://expressjs.com/en/resources/middleware/session.html) 
+- [compression](http://expressjs.com/en/resources/middleware/compression.html)
+- [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
+- [morgan](http://expressjs.com/en/resources/middleware/morgan.html)
+- [response-time](http://expressjs.com/en/resources/middleware/response-time.html)
+- [serve-static](http://expressjs.com/en/resources/middleware/serve-static.html)
+- [session](http://expressjs.com/en/resources/middleware/session.html)
 
 #### 中间件应用
 
-##### 模拟封装 `express.static` 
+##### 模拟封装 `express.static`
 
 - 前提知识储备：
 
-  - Express内置了一个API，可以通过 `req.path` 来获取请求URL的路径部分 
+  - Express 内置了一个 API，可以通过 `req.path` 来获取请求 URL 的路径部分
 
     - ```js
       // ...com/users?sort=desc
@@ -1377,21 +1278,18 @@ app.use(function (err, req, res, next) {
   - 在 `use` 方法(中间件)中，如果指定了第一个路径参数，则通过 req.path 获取到的是不包含该请求路径的字符串，具体实例在封装中体现。
 
     - ```js
-      // ...com/public/a.jpg 
+      // ...com/public/a.jpg
       req.path // 拿到的就是 a.jpg
-      
+
       // ...com/public/a/a.css
       req.path // 拿到的就是 a/a.css
       ```
-
-
-
 
 ```js
 const fs = require('fs')
 const path = require('path')
 
-module.exports = function (dirPath) {
+module.exports = function(dirPath) {
   return (req, res, next) => {
     const filePath = path.join(dirPath, req.path)
     fs.readFile(filePath, (err, data) => {
@@ -1422,7 +1320,7 @@ app.use(function(req, res) {
   ```js
   // 在项目入口文件的最后（app.listen之前）
   app.use((err, req, res, next) => {
-  	const error_log = `
+    const error_log = `
   ====================================
   错误名：${err.name}
   错误消息：${err.message}
@@ -1456,7 +1354,7 @@ app.use(function(req, res) {
 
 在 Node 中，对于处理这种不确定的数据，使用事件的形式处理
 
-可以通过监听 req 对象的 data 事件，然后通过对应的回调处理函数中的参数 chunk 拿到每一次接收到的数据data 事件触发多少次，不一定
+可以通过监听 req 对象的 data 事件，然后通过对应的回调处理函数中的参数 chunk 拿到每一次接收到的数据 data 事件触发多少次，不一定
 
 当数据接收完毕之后，会自动触发 req 对象的 end 事件，然后就可以在 end 事件中使用接收到的表单 POST 请求体
 
@@ -1470,7 +1368,8 @@ app.use(function(req, res) {
 // 解析处理表单 POST 请求体中间件
 app.use((req, res, next) => {
   let data = ''
-  req.on('data', chunk => { // chunk中获取的是二进制数据，与字符串拼接自动 toString
+  req.on('data', chunk => {
+    // chunk中获取的是二进制数据，与字符串拼接自动 toString
     data += chunk
   })
   req.on('end', () => {
@@ -1479,8 +1378,6 @@ app.use((req, res, next) => {
   })
 })
 ```
-
-
 
 ## 在 Node 中使用 formidable 处理文件上传
 
@@ -1496,7 +1393,7 @@ $ npm install formidable
 
 ```js
 app.post('/', (req, res, next) => {
-  // parse a file upload 
+  // parse a file upload
   const form = new formidable.IncomingForm()
 
   // 指定上传路径
@@ -1518,8 +1415,6 @@ app.post('/', (req, res, next) => {
   })
 })
 ```
-
-
 
 - `files` 返回信息
 
@@ -1551,19 +1446,18 @@ app.post('/', (req, res, next) => {
           autoClose: true,
           pos: undefined,
           bytesWritten: 470457,
-          closed: false 
-        } 
-     } 
+          closed: false
+        }
+     }
   }
   ```
-
 
 ### 异步上传文件
 
 原理：
 
 ```js
-$('form').on('submit', function (e) {
+$('form').on('submit', function(e) {
   var formData = new FormData()
   formData.append('name', 'zf')
   formData.append('file', document.getElementById('file').files[0])
@@ -1574,17 +1468,18 @@ $('form').on('submit', function (e) {
 })
 ```
 
-ajax异步上传：
+ajax 异步上传：
 
 ```js
-$('form').on('submit', function (e) {
+$('form').on('submit', function(e) {
   $.ajax({
     url: $(this).attr('action'),
     type: $(this).attr('method'),
     data: new FormData($(this)[0]),
     processData: false, // 当 data 选项被提交一个 FormData 对象时：使jQuery异步请求生效
-    contentType: false, // jQuery会默认将 contentType 设置为 
-    success: function (data) { // application/x-www-form-urlencoded; charset=UTF-8
+    contentType: false, // jQuery会默认将 contentType 设置为
+    success: function(data) {
+      // application/x-www-form-urlencoded; charset=UTF-8
       if (data.err_code === 0) {
         window.location.href = '/advert'
       }
@@ -1594,9 +1489,7 @@ $('form').on('submit', function (e) {
 })
 ```
 
-
-
-## crud案例
+## crud 案例
 
 ### 模块化思想
 
@@ -1606,11 +1499,7 @@ $('form').on('submit', function (e) {
 
 ### 案例
 
- https://github.com/asnwer-zf/nodeText_express_crud 
-
-
-
-
+https://github.com/asnwer-zf/nodeText_express_crud
 
 ## 其他：
 
@@ -1618,7 +1507,7 @@ $('form').on('submit', function (e) {
 
 **第三方命令行工具`nodemon`，可以解决频繁修改代码重启服务器问题**
 
-**`nodemon`是基于node.js开发的第三方命令行工具，需要独立安装**
+**`nodemon`是基于 node.js 开发的第三方命令行工具，需要独立安装**
 
 ```shell
 ## 所有需要用 --global 来安装的包都可以在任意目录执行
@@ -1667,6 +1556,5 @@ npm install -g json-server
 ##### 启动
 
 ```shell
-json-server --watch 文件名 
+json-server --watch 文件名
 ```
-
