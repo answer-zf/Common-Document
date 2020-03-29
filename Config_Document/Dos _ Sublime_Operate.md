@@ -1,8 +1,6 @@
 ## Dos 常用命令
 
-
-
-### CMD操作类
+### CMD 操作类
 
 ```shell
 
@@ -20,8 +18,6 @@ $ cls
 
 # &&   同时执行两个操作 用 && 衔接
 ```
-
-
 
 ### 目录操作类
 
@@ -44,8 +40,6 @@ $ cd 目录名
 $ tree
 
 ```
-
-
 
 ### 文件操作类
 
@@ -77,10 +71,6 @@ $ echo 追加 >> a.txt
 
 ```
 
-
-
-
-
 ### 服务操作类
 
 ```shell
@@ -90,10 +80,10 @@ $ sc query MySQL
 
 # 启动服务
 $ net start MySQL
-		
+
 # 停止服务
 $ net stop MySQL
-		
+
 # 删除服务
 $ sc delete MySQL
 
@@ -102,22 +92,20 @@ $ netstat -ano
 
 ```
 
+## Linux
 
-
-## Linux 
-
-Git Bash / Cmder 可以模拟Linux环境，在Windows操作
+Git Bash / Cmder 可以模拟 Linux 环境，在 Windows 操作
 
 ```bash
 
 # 清屏
 clear
 
-# 显示文件夹列表 （显示不隐藏的文件与文件夹） 
+# 显示文件夹列表 （显示不隐藏的文件与文件夹）
 ls
 ls -a  # (显示当前目录下的所有文件及文件夹包括隐藏的.和..等)
 
-# 显示工作目录 
+# 显示工作目录
 pwd
 
 # 删除一个文件或者目录
@@ -149,13 +137,13 @@ i 					# 进入插入模式
 
 ```
 
-
-
 ## Window
 
 ```shell
 
 sysdm.cpl  cmd 开启服务
+
+# 强制删除  =>  SHFIT + delete
 
 # 显示桌面			==>   win + D
 
@@ -182,8 +170,6 @@ win + Ctrl + 方向键   切换桌面
 win + tab						 列表
 ```
 
-
-
 ## Sublime
 
 ```shell
@@ -193,7 +179,7 @@ subl .
 # 命令行 用 vscode 打开当前目录
 code .
 
-# 删除整行  		==>    CTRL + SHIFT + K 
+# 删除整行  		==>    CTRL + SHIFT + K
 
 # 括号内部选中  	   ==>    CTRL + SHIFT + M
 
@@ -204,13 +190,11 @@ code .
 # 查找选择器		    ==>	   CTRL + R
 
 # 替换同一个目录下所有文件公共部分
-# ==>侧边栏目录下子文件右键选项   Find Advanced  >  In Parent Folder 
+# ==>侧边栏目录下子文件右键选项   Find Advanced  >  In Parent Folder
 
 # 打开所在目录		==>    右击文件选  Reveal
 
 ```
-
-
 
 ## Browser
 
@@ -235,15 +219,6 @@ $ 关键词 + site:cnblogs.com
 
 ```
 
-
-
 ## 右键菜单分栏设置地址
 
-> 
->
 > HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\
-
-
-
-
-
