@@ -5,7 +5,7 @@
  + MVC 是后端的分层开发概念，分为 Model ，View，Controllers
  + MVVM是前端视图层的概念，主要关注于 视图层分离，也就是说：MVVM把前端的视图层，分为了 三部分 Model, View , VM ViewModel
 
-![01.MVC和MVVM的关系图解](media/Untitled. assets/01.MVC和MVVM的关系图解.png)
+![01.MVC和MVVM的关系图解](http://images.dorc.top/blog/vue/MVC&MVVM.png)
 
 ## Vue 操作
 
@@ -798,7 +798,7 @@ directives: {
 
 
 
-![Snipaste_2019-12-12_08-48-43](media/Vue. assets/Snipaste_2019-12-12_08-48-43.png)
+![Snipaste_2019-12-12_08-48-43](http://images.dorc.top/blog/vue/token.pngSnipaste_2019-12-12_08-48-43.png)
 
 ```html
 <span><input type="text" v-model.lazy="uname"></span>// TODO: 4. 改为失去焦点触发事件
@@ -953,7 +953,7 @@ Vue.filter('dataFormat', function (input, pattern = '') {
 
 生命周期钩子 = 生命周期函数 = 生命周期事件
 
-![lifecycle](media/Vue. assets/lifecycle.jpg)
+![lifecycle](http://images.dorc.top/blog/vue/lifecycle.jpg)
 
 主要的生命周期函数分类：
 
@@ -3261,7 +3261,8 @@ module.exports = {
 
 **token 原理：**
 
-![token](./media/Vue.&#32;assets/token.png)
+![token](http://images.dorc.top/blog/vue/token.png)
+
 
 1. 将登录成功之后的 token ，保存到客户端的 sessionStorage 中
     - 项目中除了 login 之外其他的 API 接口，必须在登录以后才能访问

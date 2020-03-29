@@ -1,6 +1,6 @@
 # mongoDB
 
- https://www.runoob.com/mongodb/mongodb-tutorial.html 
+https://www.runoob.com/mongodb/mongodb-tutorial.html
 
 ## 关系型数据库和非关系型数据库
 
@@ -20,21 +20,21 @@
 
 非常灵活
 
-- 有的非关系型数据库就是key-value 对
-- 在MongoDB是长得最像关系型数据库的非关系型数据库
-  - 数据库  - > 数据库
-  - 数据表  - > 集合（数组）
-  - 表记录  - > (文档对象)
+- 有的非关系型数据库就是 key-value 对
+- 在 MongoDB 是长得最像关系型数据库的非关系型数据库
+  - 数据库 - > 数据库
+  - 数据表 - > 集合（数组）
+  - 表记录 - > (文档对象)
 - MongoDB 不需要设计表结构
 - 可以任意往里面存数据，没有结构性这么一说
 
-## MongoDB数据库基本概念
+## MongoDB 数据库基本概念
 
 - 数据库 : 可以有多个数据库
 - 集合 : 一个数据库可以有多个集合（表）
 - 文档：一个集合中可以有多个文档（表记录）
 - 文档结构非常灵活，没有任何限制
-- MongoDB非常灵活，不需要想MySQL一样先创建数据库、表、设计表结构
+- MongoDB 非常灵活，不需要想 MySQL 一样先创建数据库、表、设计表结构
   - 这里只需要，当你需要插入数据的时候，只需要指定往哪个数据库的哪个集合操作就可以
   - 一切都有 MongoDB 来帮你自动完成建库建表的事
 
@@ -49,15 +49,15 @@
       ...
     ],
     products: {
-      
+
     }
     ...
   },
   taobao:{
-    
+
   },
   baidu{
-    
+
   }
 }
 ```
@@ -67,20 +67,18 @@
 - 一个计算机上可以有一个数据库服务实例
 - 一个数据服务实例上可以有多个数据库
 - 一个数据库中可以有多个集合
-  + 集合根据数据的业务类型划分
-  + 例如用户数据、商品信息数据、广告信息数据。。。
-  + 对数据进行分门别类的存储
-  + 集合在 MongoDB 中就类似于数组
+  - 集合根据数据的业务类型划分
+  - 例如用户数据、商品信息数据、广告信息数据。。。
+  - 对数据进行分门别类的存储
+  - 集合在 MongoDB 中就类似于数组
 - 一个集合中可以有多个文档
-  + 文档在 MongoDB 中就是一个 类似于 JSON 的数据对象
-  + 文档对象是动态的，可以随意的生成
-  + 为了便于管理，最好一个集合中存储的数据一定要保持文档结构的统一（数据完整性）
-
-
+  - 文档在 MongoDB 中就是一个 类似于 JSON 的数据对象
+  - 文档对象是动态的，可以随意的生成
+  - 为了便于管理，最好一个集合中存储的数据一定要保持文档结构的统一（数据完整性）
 
 ## 安装
 
- https://www.runoob.com/mongodb/mongodb-window-install.html 
+https://www.runoob.com/mongodb/mongodb-window-install.html
 
 - 下载
 - 安装
@@ -142,7 +140,7 @@ exit
 
 - 查询数据
 
-  ![MongoDB_cmd](media/Node_MongoDB. assets/MongoDB_cmd.png)
+  ![MongoDB_cmd](http://images.dorc.top/blog/Back_End/MongoDB_cmd.png)
 
 ## 在 Node 中操作 MongoDB 数据库
 
@@ -158,9 +156,7 @@ exit
 
 - 第三方包：`mongoose` 基于 MongoDB 官方的 `mongodb` 包再一次做了封装。
 
-  > https://mongoosejs.com/ 
-
-
+  > https://mongoosejs.com/
 
 #### 起步：
 
@@ -176,7 +172,7 @@ hello world:
 var mongoose = require('mongoose')
 
 // 连接 MongoDB 数据库
-mongoose.connect('mongodb://localhost/test', { useMongoClient: true})
+mongoose.connect('mongodb://localhost/test', { useMongoClient: true })
 
 // 创建一个模型
 // 就是在设计数据库
@@ -187,8 +183,8 @@ var Cat = mongoose.model('Cat', { name: String })
 // 实例化一个Cat
 var kitty = new Cat({ name: 'Zildjian' })
 
-// 持久化保存 Kitty 实例 
-kitty.save(function (err) {
+// 持久化保存 Kitty 实例
+kitty.save(function(err) {
   if (err) {
     console.log(err)
   } else {
@@ -199,7 +195,7 @@ kitty.save(function (err) {
 
 #### 官方指南
 
-#####设计 Schema 发布 Module 
+#####设计 Schema 发布 Module
 
 ```js
 var mongoose = require('mongoose')
@@ -231,20 +227,20 @@ var User = mongoose.model('User', userSchema)
 // 4. 使用这个构造函数 操作 users 集合中的数据
 ```
 
-##### 设计Schema
+##### 设计 Schema
 
 ```js
 var userSchema = new Schema({
-    email : {
+  email: {
     type: String,
     required: true // 必填的
   },
-    gender: {
+  gender: {
     type: Number,
-    enum: [-1, 0, 1],  // 枚举， 三个值内选一个
+    enum: [-1, 0, 1], // 枚举， 三个值内选一个
     default: -1
   },
-	  created_time: {
+  created_time: {
     type: Date,
     default: Date.now
   }
@@ -252,8 +248,6 @@ var userSchema = new Schema({
   // 用 Date.now 方法 ：当 new model 时 用户没有传递 create_time ，mongoose 会调用 default指定的 Date.now 方法，使用其返回值作为默认值
 })
 ```
-
-
 
 ##### 增加数据
 
@@ -305,8 +299,6 @@ User.find(
 )
 ```
 
-
-
 按条件查询单个：
 
 ```js
@@ -349,7 +341,7 @@ User.remove(
 Model.findOneAndeRemove(conditions, [options], [callback])
 ```
 
-根据id删除一个：
+根据 id 删除一个：
 
 ```js
 Model.findByIdAndeRemove(id, [options], [callback])
@@ -369,7 +361,7 @@ Module.update(conditions, doc, [options], [callback])
 Module.findOneAndUpdate([conditions], [update], [options], [callback])
 ```
 
-根据id更新一个：
+根据 id 更新一个：
 
 ```js
 User.findByIdAndUpdate(

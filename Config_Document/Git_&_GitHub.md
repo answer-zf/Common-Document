@@ -11,7 +11,7 @@
 
 ## Git 使用交互流程
 
-![git交互模型](media/Git\_&_GitHub. assets/git 交互模型-1571974764974.png)
+![git交互模型](http://images.dorc.top/blog/Config_Document/git.png)
 
 ## 安装和配置 Git 环境
 
@@ -307,7 +307,7 @@ $ git config --global core.autocrlf false
 
 ### Git Bash 中文乱码：
 
-![Snipaste_2019-10-27_14-04-08](media/Git\_&_GitHub. assets/Snipaste_2019-10-27_14-04-08.png)
+![Snipaste_2019-10-27_14-04-08](http://images.dorc.top/blog/Config_Document/Snipaste_2019-10-27_14-04-08.png)
 
 # GitHub
 
