@@ -11,12 +11,12 @@
 
 ### 如何解决上述两个问题
 
-1. 合并、压缩、精灵图、图片的Base64编码
+1. 合并、压缩、精灵图、图片的 Base64 编码
 2. 可以使用`requireJS`、也可以使用`webpack`可以解决各个包之间的复杂依赖关系；
 
 ### 解决方案
 
-1. 使用Gulp， 是基于 task 任务的；
+1. 使用 Gulp， 是基于 task 任务的；
 2. 使用`Webpack`， 是基于整个项目进行构建的；
    - 借助于`webpack`这个前端自动化构建工具，可以完美实现资源的合并、打包、压缩、混淆等诸多功能。
    - 根据官网的图片介绍`webpack`打包的过程
@@ -37,12 +37,12 @@
 // 导入jquery类库
 import $ from 'jquery'
 // 设置偶数行背景色，索引从0开始，0是偶数
-$('#list li:even').css('backgroundColor','lightblue');
+$('#list li:even').css('backgroundColor', 'lightblue')
 // 设置奇数行背景色
-$('#list li:odd').css('backgroundColor','pink');
+$('#list li:odd').css('backgroundColor', 'pink')
 ```
 
-5. 直接在页面上引用 `main.js` 会报错，因为浏览器不认识 `import` 这种高级的JS语法，需要使用 `webpack` 进行处理，`webpack` 默认会把这种高级的语法转换为低级的浏览器能识别的语法；
+5. 直接在页面上引用 `main.js` 会报错，因为浏览器不认识 `import` 这种高级的 JS 语法，需要使用 `webpack` 进行处理，`webpack` 默认会把这种高级的语法转换为低级的浏览器能识别的语法；
 6. 运行 `webpack 入口文件路径 输出文件路径` 对 `main.js` 进行处理：
 
 ```shell
@@ -52,7 +52,7 @@ webpack src/js/main.js dist/bundle.js
 总结：
 
 1. `webpack` 能够处理 JS 文件的互相依赖关系；
-2. `webpack` 能够处理JS的兼容问题，把 高级的、浏览器不是别的语法，转为 低级的，浏览器能正常识别的语法
+2. `webpack` 能够处理 JS 的兼容问题，把 高级的、浏览器不是别的语法，转为 低级的，浏览器能正常识别的语法
 
 ## 使用 `webpack` 的配置文件简化打包时候的命令
 
@@ -63,7 +63,8 @@ webpack src/js/main.js dist/bundle.js
 const path = require('path')
 module.exports = {
   entry: path.join(__dirname, './src/main.js'), // 项目入口文件
-  output: { // 配置输出选项
+  output: {
+    // 配置输出选项
     path: path.join(__dirname, './dist'), // 配置输出的路径
     filename: 'bundle.js' // 配置输出的文件名
   }
@@ -75,7 +76,7 @@ module.exports = {
 1. 首先，`webpack` 发现，我们并没有通过命令的形式，给它指定入口和出口
 2. `webpack` 就会去 项目的 根目录中，查找一个叫做 `webpack.config.js` 的配置文件
 3. 当找到配置文件后，`webpack` 会去解析执行这个 配置文件，当解析执行完配置文件后，就得到了 配置文件中，导出的配置对象
-4. 当 `webpack` 拿到 配置对象后，就拿到了 配置对象中，指定的 入口  和 出口，然后进行打包构建；
+4. 当 `webpack` 拿到 配置对象后，就拿到了 配置对象中，指定的 入口 和 出口，然后进行打包构建；
 
 ## 实现`webpack`的实时打包构建
 
@@ -89,41 +90,41 @@ module.exports = {
 
 3. 安装完成之后，在命令行直接运行`webpack-dev-server`来进行打包，发现报错，此时需要借助于`package.json`文件中的指令，来进行运行`webpack-dev-server`命令，在`scripts`节点下新增`"dev": "webpack-dev-server"`指令，发现可以进行实时打包，但是`dist`目录下并没有生成`bundle.js`文件，这是因为`webpack-dev-server`将打包好的文件托管到了 电脑的内存中，并没有存放到 实际的 物理磁盘上，所以，我们在 项目根目录中，根本找不到 这个打包好的 `bundle.js`
 
-   - 我们可以认为， `webpack-dev-server` 把打包好的 文件，以一种虚拟的形式，托管到了 咱们项目的 根目录中，虽然我们看不到它，但是，可以认为， 和 `dist`  `src`   `node_modules`  平级，有一个看不见的文件，叫做 `bundle.js`
+   - 我们可以认为， `webpack-dev-server` 把打包好的 文件，以一种虚拟的形式，托管到了 咱们项目的 根目录中，虽然我们看不到它，但是，可以认为， 和 `dist` `src` `node_modules` 平级，有一个看不见的文件，叫做 `bundle.js`
 
- + 把`bundle.js`放在内存中的好处是：由于需要实时打包编译，所以放在内存中速度会非常快
+- 把`bundle.js`放在内存中的好处是：由于需要实时打包编译，所以放在内存中速度会非常快
 
- + 这个时候访问`webpack-dev-server`启动的`http://localhost:8080/`网站，发现是一个文件夹的面板，需要点击到`src`目录下，才能打开我们的index首页，此时引用不到`bundle.js`文件，需要修改`index.html`中`script`的`src`属性为:`<script src="/bundle.js"></script>`
+- 这个时候访问`webpack-dev-server`启动的`http://localhost:8080/`网站，发现是一个文件夹的面板，需要点击到`src`目录下，才能打开我们的 index 首页，此时引用不到`bundle.js`文件，需要修改`index.html`中`script`的`src`属性为:`<script src="/bundle.js"></script>`
 
- + 在 `package.json` 中设置 `scripts`节点下中的`"dev"` 
+- 在 `package.json` 中设置 `scripts`节点下中的`"dev"`
 
-    + `--open` 运行直接打开浏览器
-    + `--port 3000`设置启动时候的运行端口
-    + `--contentBase src` 设置托管的根目录
-    + `--hot` 减少不必要的代码更新，浏览器无刷新重载样式
+  - `--open` 运行直接打开浏览器
+  - `--port 3000`设置启动时候的运行端口
+  - `--contentBase src` 设置托管的根目录
+  - `--hot` 减少不必要的代码更新，浏览器无刷新重载样式
 
-   ```
-   "dev": "webpack-dev-server --open --port 3000 --contentBase src --hot"
-   ```
+  ```
+  "dev": "webpack-dev-server --open --port 3000 --contentBase src --hot"
+  ```
 
-   也可以在 `webpack.config.js` 配置文件中配置
+  也可以在 `webpack.config.js` 配置文件中配置
 
-   ```js
-   const webpack = require('webpack') // 启用热更新的 第1步
-   module.exports = {
-   	···
-     devServer: { // 这是配置 dev-server 命令参数的第二种形式，相对来说，这种方式麻烦一些
-       open: true, // 自动打开浏览器
-       port: 3000, // 设置启动时候的运行端口
-       contentBase: 'src', // 指定托管的根目录
-       hot: true // 启用热更新的 第2步
-     },
-     plugins: [ // 配置插件的节点
-       new webpack.HotModuleReplacementPlugin() 
-     ] 																	// new 一个热更新的 模块对象，启用热更新的 第3步
-     ···
-   }
-   ```
+  ```js
+  const webpack = require('webpack') // 启用热更新的 第1步
+  module.exports = {
+  	···
+    devServer: { // 这是配置 dev-server 命令参数的第二种形式，相对来说，这种方式麻烦一些
+      open: true, // 自动打开浏览器
+      port: 3000, // 设置启动时候的运行端口
+      contentBase: 'src', // 指定托管的根目录
+      hot: true // 启用热更新的 第2步
+    },
+    plugins: [ // 配置插件的节点
+      new webpack.HotModuleReplacementPlugin()
+    ] 																	// new 一个热更新的 模块对象，启用热更新的 第3步
+    ···
+  }
+  ```
 
 ## 使用`html-webpack-plugin`插件配置启动页面
 
@@ -141,7 +142,7 @@ module.exports = {
    //  1. 自动在内存中根据指定页面生成一个内存的页面
    //  2. 自动，把打包好的 bundle.js 追加到页面中去
    module.exports = {
-   	···  
+   	···
      plugins: [
        new htmlWebpackPlugin({ // 创建一个 在内存中 生成 HTML  页面的插件
          template: path.join(__dirname, './src/index.html'), // 指定 模板页面，将来会根据指定的页面路径，去生成内存中的 页面
@@ -152,13 +153,13 @@ module.exports = {
    }
    ```
 
-## 使用`webpack`打包css文件
+## 使用`webpack`打包 css 文件
 
 注意：`webpack`, 默认只能打包处理 JS 类型的文件，无法处理 其它的非 JS 类型的文件
 
-如果要处理 非JS类型的文件，我们需要手动安装一些 合适 第三方 loader 加载器；
+如果要处理 非 JS 类型的文件，我们需要手动安装一些 合适 第三方 loader 加载器；
 
-1. 使用 import 语法，导入 CSS样式表 `import './css/index.css'`
+1. 使用 import 语法，导入 CSS 样式表 `import './css/index.css'`
 
 2. 如果想要打包处理 `css` 文件，需要安装 `cnpm i style-loader css-loader -D`
 
@@ -168,24 +169,27 @@ module.exports = {
    - 在 这个 `module` 对象身上，有个 `rules` 属性，这个 `rules` 属性是个 数组；
    - 这个数组中，存放了，所有第三方文件的 匹配和 处理规则；
    - `use`表示使用哪些模块来处理`test`所匹配到的文件；
-   - `use`中相关loader模块的调用顺序是从右向左调用的；
+   - `use`中相关 loader 模块的调用顺序是从右向左调用的；
 
    ```js
-   module: { // 这个节点，用于配置 所有 第三方模块 加载器 
-     rules: [ // 所有第三方模块的 匹配规则
-       { test: /\.css$/, use: ['style-loader', 'css-loader'] } 
-       															//  配置处理 .css 文件的第三方loader 规则
+   module: {
+     // 这个节点，用于配置 所有 第三方模块 加载器
+     rules: [
+       // 所有第三方模块的 匹配规则
+       { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+       //  配置处理 .css 文件的第三方loader 规则
      ]
    }
    ```
 
 注意： `webpack` 处理第三方文件类型的过程：
+
 1. 发现这个 要处理的文件不是`JS`文件，然后就去 配置文件中，查找有没有对应的第三方 `loader` 规则
 2. 如果能找到对应的规则， 就会调用 对应的 `loader` 处理 这种文件类型；
 3. 在调用`loader` 的时候，是从后往前调用的；
-4. 当最后的一个 `loader` 调用完毕，会把 处理的结果，直接交给 `webpack` 进行 打包合并，最终输出到  `bundle.js` 中去
+4. 当最后的一个 `loader` 调用完毕，会把 处理的结果，直接交给 `webpack` 进行 打包合并，最终输出到 `bundle.js` 中去
 
-### 使用`webpack`打包less文件
+### 使用`webpack`打包 less 文件
 
 1. 运行`npm i less-loader less -D`
    - `less-loader`内部依赖`less`， 不需要显示定义配置文件中
@@ -195,16 +199,16 @@ module.exports = {
 { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader'] },
 ```
 
-### 使用`webpack`打包sass文件
+### 使用`webpack`打包 sass 文件
 
 1. 运行`npm i sass-loader node-sass --save-dev`
-2. 在`webpack.config.js`中添加处理sass文件的loader模块：
+2. 在`webpack.config.js`中添加处理 sass 文件的 loader 模块：
 
 ```js
 { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] }
 ```
 
-注意：`Webpack2X` 以上版本，加载器必须带 `-loader`，1X的版本不需要带。
+注意：`Webpack2X` 以上版本，加载器必须带 `-loader`，1X 的版本不需要带。
 
 ## `webpack` 中的 `url-loader`
 
@@ -219,48 +223,48 @@ module.exports = {
      test: /\.(jpg|png|gif|bmp|jpeg)$/,
      use: 'url-loader?limit=38000&name=[hash:8]-[name].[ext]'
    },
-   { // 处理 字体文件的 loader 
+   { // 处理 字体文件的 loader
      test: /\.(ttf|eot|svg|woff|woff2)$/,
      use: 'url-loader'
    }
    ```
 
    - `limit` 给定的值，是图片的大小，单位是 `byte`， 如果我们引用的 图片，大于或等于给定的 `limit`值，则不会被转为`base64`格式的字符串， 如果 图片小于给定的 `limit` 值，则会被转为 `base64`的字符串
-   - `name` 自定义文件重命名，`[hash:8]` 8位哈希值（最长32），`[name]`原文件名，`[ext]` 原文件后缀名
+   - `name` 自定义文件重命名，`[hash:8]` 8 位哈希值（最长 32），`[name]`原文件名，`[ext]` 原文件后缀名
 
 ## `webpack` 中的 `babel-loader`
 
-在 `webpack` 中，默认只能处理 一部分 ES6 的新语法，一些更高级的ES6语法或者 ES7 语法，`webpack` 是处理不了的；这时候，就需要 借助于第三方的 `loader`，来帮助`webpack` 处理这些高级的语法。
+在 `webpack` 中，默认只能处理 一部分 ES6 的新语法，一些更高级的 ES6 语法或者 ES7 语法，`webpack` 是处理不了的；这时候，就需要 借助于第三方的 `loader`，来帮助`webpack` 处理这些高级的语法。
 
 - 当第三方`loader` 把 高级语法转为 低级的语法之后，会把结果交给 `webpack` 去打包到 `bundle.js` 中
 
 - 通过 `Babel` ，可以帮我们将 高级的语法转换为 低级的语法
 
 1. 在 `webpack` 中，可以运行如下两套 命令，安装两套包，去安装 `Babel` 相关的`loader`功能：
-1.1 第一套包(转化工具)： `cnpm i babel-core babel-loader babel-plugin-transform-runtime -D`
-1.2 第二套包(语法工具)： `cnpm i babel-preset-env babel-preset-stage-0 -D`
+   1.1 第一套包(转化工具)： `cnpm i babel-core babel-loader babel-plugin-transform-runtime -D`
+   1.2 第二套包(语法工具)： `cnpm i babel-preset-env babel-preset-stage-0 -D`
 
 2. 打开 `webpack` 的配置文件，在 `module` 节点下的 `rules` 数组中，添加一个 新的 匹配规则：
-  2.1 `{ test:/\.js$/, use: 'babel-loader', exclude:/node_modules/ }`
-  2.2 注意： 在配置 `babel` 的 `loader`规则的时候，必须 把 `node_modules` 目录，通过 `exclude` 选项排除掉：原因有俩：
-  2.2.1 如果 不排除 `node_modules`， 则`Babel` 会把 `node_modules` 中所有的 第三方 `JS` 文件，都打包编译，这样，会非常消耗`CPU`，同时，打包速度非常慢；
-  2.2.2 哪怕，最终，`Babel` 把 所有 `node_modules` 中的`JS`转换完毕了，但是，项目也无法正常运行！
+   2.1 `{ test:/\.js$/, use: 'babel-loader', exclude:/node_modules/ }`
+   2.2 注意： 在配置 `babel` 的 `loader`规则的时候，必须 把 `node_modules` 目录，通过 `exclude` 选项排除掉：原因有俩：
+   2.2.1 如果 不排除 `node_modules`， 则`Babel` 会把 `node_modules` 中所有的 第三方 `JS` 文件，都打包编译，这样，会非常消耗`CPU`，同时，打包速度非常慢；
+   2.2.2 哪怕，最终，`Babel` 把 所有 `node_modules` 中的`JS`转换完毕了，但是，项目也无法正常运行！
 
-3. 在项目的 根目录中，新建一个 叫做 `.babelrc`  的`Babel` 配置文件，这个配置文件，属于JSON格式，所以，在写 `.babelrc` 配置的时候，必须符合`JSON`语法规范： 不能写注释，字符串必须用双引号
-  3.1 在 `.babelrc` 写如下的配置：  大家可以把 `preset` 翻译成 【语法】 的意思
+3. 在项目的 根目录中，新建一个 叫做 `.babelrc` 的`Babel` 配置文件，这个配置文件，属于 JSON 格式，所以，在写 `.babelrc` 配置的时候，必须符合`JSON`语法规范： 不能写注释，字符串必须用双引号
+   3.1 在 `.babelrc` 写如下的配置： 大家可以把 `preset` 翻译成 【语法】 的意思
 
-  ```js
-  {
-    "presets": ["env", "stage-0"],
-    "plugins": ["transform-runtime"]
-  }
-  ```
+```js
+{
+  "presets": ["env", "stage-0"],
+  "plugins": ["transform-runtime"]
+}
+```
 
-4. 了解： 目前，我们安装的 `babel-preset-env`, 是比较新的ES语法， 之前， 我们安装的是` babel-preset-es2015`, 现在，出了一个更新的 语法插件，叫做 `babel-preset-env` ，它包含了 所有的 和 es***相关的语法
+4. 了解： 目前，我们安装的 `babel-preset-env`, 是比较新的 ES 语法， 之前， 我们安装的是`babel-preset-es2015`, 现在，出了一个更新的 语法插件，叫做 `babel-preset-env` ，它包含了 所有的 和 es\*\*\*相关的语法
 
 ## 在 `webpack` 中构建 `vue`
 
-### 在使用webpack构建的Vue项目中使用模板对象
+### 在使用 webpack 构建的 Vue 项目中使用模板对象
 
 - 在`webpack.config.js`中添加`resolve`属性：
 
@@ -277,16 +281,17 @@ module.exports = {
   - 代替 `import Vue from 'vue'`
 
 回顾 包的查找规则：
+
 1. 找 项目根目录中有没有 `node_modules` 的文件夹
-2. 在` node_modules 中` 根据包名，找对应的 `vue` 文件夹
-3. 在 `vue `文件夹中，找 一个叫做 `package.json` 的包配置文件
-4. 在 `package.json` 文件中，查找 一个 main 属性【main属性指定了这个包在被加载时候，的入口文件】
+2. 在`node_modules 中` 根据包名，找对应的 `vue` 文件夹
+3. 在 `vue`文件夹中，找 一个叫做 `package.json` 的包配置文件
+4. 在 `package.json` 文件中，查找 一个 main 属性【main 属性指定了这个包在被加载时候，的入口文件】
 
 ### 在`webpack`中配置`.vue`组件页面的解析
 
 1. 运行`npm i vue -S` 将`vue`安装为运行依赖；
 
-   - 默认，`webpack` 无法打包 `.vue` 文件，需要安装 相关的loader：
+   - 默认，`webpack` 无法打包 `.vue` 文件，需要安装 相关的 loader：
 
 2. 运行`npm i vue-loader vue-template-compiler -D`将解析转换`vue`的包安装为开发依赖；
 
@@ -299,15 +304,13 @@ module.exports = {
    ```vue
    <template>
      <div>
-       <h1> .vue </h1>
+       <h1>.vue</h1>
      </div>
    </template>
-   
-   <script>
-   </script>
-   
-   <style>
-   </style>
+
+   <script></script>
+
+   <style></style>
    ```
 
 5. 入口文件：
@@ -325,29 +328,29 @@ module.exports = {
    })
    ```
 
+总结梳理： `webpack`中如何使用 `vue`:
 
-总结梳理： `webpack `中如何使用 `vue `:
-1. 安装`vue`的包：  `cnpm i vue -S`
-2. 由于 在 `webpack `中，推荐使用` .vue `这个组件模板文件定义组件，所以，需要安装 能解析这种文件的 loader    `cnpm i vue-loader vue-template-complier -D`
-3. 在` main.js `中，导入 `vue `模块  `import Vue from 'vue'`
-4. 定义一个` .vue `结尾的组件，其中，组件有三部分组成： `template script style`
+1. 安装`vue`的包： `cnpm i vue -S`
+2. 由于 在 `webpack`中，推荐使用`.vue`这个组件模板文件定义组件，所以，需要安装 能解析这种文件的 loader `cnpm i vue-loader vue-template-complier -D`
+3. 在`main.js`中，导入 `vue`模块 `import Vue from 'vue'`
+4. 定义一个`.vue`结尾的组件，其中，组件有三部分组成： `template script style`
 5. 使用 `import login from './login.vue'` 导入这个组件
-6. 创建 `vm `的实例 `var vm = new Vue({ el: '#app', render: c => c(login) })`
-7. 在页面中创建一个 `id `为 `app `的 `div `元素，作为我们 `vm `实例要控制的区域；
+6. 创建 `vm`的实例 `var vm = new Vue({ el: '#app', render: c => c(login) })`
+7. 在页面中创建一个 `id`为 `app`的 `div`元素，作为我们 `vm`实例要控制的区域；
 
 ### 结合 `webpack` 使用 `vue-router`
 
-1. 运行` npm i vue-router -S` 将`vue-router`安装为运行依赖；
+1. 运行`npm i vue-router -S` 将`vue-router`安装为运行依赖；
 2. 导入 `vue-router` 包
-3. 手动安装` VueRouter`
+3. 手动安装`VueRouter`
 4. 创建路由对象
-5. 将路由对象挂载到 `vm `上
+5. 将路由对象挂载到 `vm`上
 
 ```js
 import Vue from 'vue'
 // 1. 导入 vue-router 包
 import VueRouter from 'vue-router'
-// 2. 手动安装 VueRouter 
+// 2. 手动安装 VueRouter
 Vue.use(VueRouter)
 
 // 导入 app 组件
@@ -372,8 +375,8 @@ var vm = new Vue({
 })
 ```
 
-注意： `App `这个组件，是通过 `VM `实例的 `render `函数，渲染出来的， `render ` 函数如果要渲染 组件， 渲染出来的组件，只能放到 `el: '#app' `所指定的 元素中；
-`Account `和 `GoodsList `组件， 是通过 路由匹配监听到的，所以， 这两个组件，只能展示到 属于 路由的 `<router-view></router-view>` 中去；
+注意： `App`这个组件，是通过 `VM`实例的 `render`函数，渲染出来的， `render` 函数如果要渲染 组件， 渲染出来的组件，只能放到 `el: '#app'`所指定的 元素中；
+`Account`和 `GoodsList`组件， 是通过 路由匹配监听到的，所以， 这两个组件，只能展示到 属于 路由的 `<router-view></router-view>` 中去；
 
 ### 结合 `webpack` 实现路由嵌套以及路由提取
 
@@ -438,8 +441,6 @@ var vm = new Vue({
 })
 ```
 
-
-
 ### `.vue` 中 样式配置
 
 - 在 `.vue` 组件中，`style` 的样式作用于全局，开始 `scoped` 属性，则可以作用域局部，全局不受影响。
@@ -457,15 +458,13 @@ var vm = new Vue({
 </style>
 ```
 
-
-
 ## 在 `webpack` 中使用 `MintUI`
 
-### Mint-UI中按需导入的配置方式
+### Mint-UI 中按需导入的配置方式
 
 [Github 仓储地址](https://github.com/ElemeFE/mint-ui)
 
-[Mint-UI官方文档](http://mint-ui.github.io/#!/zh-cn)
+[Mint-UI 官方文档](http://mint-ui.github.io/#!/zh-cn)
 
 #### 导入所有的 MIntUI 组件
 
@@ -478,9 +477,7 @@ import 'mint-ui/lib/style.css'
 Vue.use(MintUI) // 把所有的组件，注册为全局的组件
 ```
 
-
-
-#### 按需导入 Mint-UI组件
+#### 按需导入 Mint-UI 组件
 
 ```js
 import { Button } from 'mint-ui'
@@ -498,49 +495,49 @@ Vue.component(Button.name, Button) // Button.name 可以自定义。
 
 ```js
 // 按需导入 Toast 组件
-import { Toast } from "mint-ui";
+import { Toast } from 'mint-ui'
 
 export default {
   data() {
     return {
       toastInstanse: null
-    };
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
       // 模拟获取列表的 一个 AJax 方法
       // 在获取数据之前，立即 弹出 Toast 提示用户，正在加载数据
-      this.show();
+      this.show()
       setTimeout(() => {
         //  当 3 秒过后，数据获取回来了，要把 Toast 移除
-        this.toastInstanse.close();
-      }, 3000);
+        this.toastInstanse.close()
+      }, 3000)
     },
     show() {
       // Toast("提示信息");
       this.toastInstanse = Toast({
-        message: "这是消息",
+        message: '这是消息',
         duration: -1, // 如果是 -1 则弹出之后不消失
-        position: "top",
-        iconClass: "glyphicon glyphicon-heart", // 设置 图标的类
-        className: "mytoast" // 自定义Toast的样式，需要自己提供一个类名
-      });
+        position: 'top',
+        iconClass: 'glyphicon glyphicon-heart', // 设置 图标的类
+        className: 'mytoast' // 自定义Toast的样式，需要自己提供一个类名
+      })
     }
   }
-};
+}
 ```
 
 ## 在 `webpack` 中使用 `MUI`
 
-> 注意： MUI 不同于 Mint-UI，MUI只是开发出来的一套好用的代码片段，里面提供了配套的样式、配套的HTML代码段，类似于 Bootstrap； 而 Mint-UI，是真正的组件库，是使用 Vue 技术封装出来的 成套的组件，可以无缝的和 VUE项目进行集成开发；
-> 因此，从体验上来说， Mint-UI体验更好，因为这是别人帮我们开发好的现成的Vue组件；
-> 从体验上来说， MUI和Bootstrap类似；
-> 理论上，任何项目都可以使用 MUI 或 Bootstrap，但是，MInt-UI只适用于Vue项目；
+> 注意： MUI 不同于 Mint-UI，MUI 只是开发出来的一套好用的代码片段，里面提供了配套的样式、配套的 HTML 代码段，类似于 Bootstrap； 而 Mint-UI，是真正的组件库，是使用 Vue 技术封装出来的 成套的组件，可以无缝的和 VUE 项目进行集成开发；
+> 因此，从体验上来说， Mint-UI 体验更好，因为这是别人帮我们开发好的现成的 Vue 组件；
+> 从体验上来说， MUI 和 Bootstrap 类似；
+> 理论上，任何项目都可以使用 MUI 或 Bootstrap，但是，MInt-UI 只适用于 Vue 项目；
 
-注意： MUI 并不能使用  npm 去下载，需要自己手动从 github 上，下载现成的包，自己解压出来，然后手动拷贝到项目中使用；
+注意： MUI 并不能使用 npm 去下载，需要自己手动从 github 上，下载现成的包，自己解压出来，然后手动拷贝到项目中使用；
 
 [官网首页](http://dev.dcloud.net.cn/mui/)
 
@@ -552,32 +549,32 @@ export default {
 import '../lib/mui/css/mui.min.css'
 ```
 
-3. 根据官方提供的文档和example，尝试使用相关的组件
+3. 根据官方提供的文档和 example，尝试使用相关的组件
 
-## 使用mui的`tab-top-webview-main`完成分类滑动栏
+## 使用 mui 的`tab-top-webview-main`完成分类滑动栏
 
 ### 兼容问题
 
-1. 和 App.vue 中的 `router-link` 身上的类名 `mui-tab-item` 存在兼容性问题，导致tab栏失效，可以把`mui-tab-item`改名为`mui-tab-item1`，并复制相关的类样式，来解决这个问题；
+1. 和 App.vue 中的 `router-link` 身上的类名 `mui-tab-item` 存在兼容性问题，导致 tab 栏失效，可以把`mui-tab-item`改名为`mui-tab-item1`，并复制相关的类样式，来解决这个问题；
 
 2. `tab-top-webview-main`组件第一次显示到页面中的时候，无法被滑动的解决方案：
 
- + 先导入 mui 的JS文件:
+- 先导入 mui 的 JS 文件:
 
- ```
- import mui from '../../../lib/mui/js/mui.min.js'
- ```
+```
+import mui from '../../../lib/mui/js/mui.min.js'
+```
 
- + 在 组件的 `mounted` 事件钩子中，注册 mui 的滚动事件：
+- 在 组件的 `mounted` 事件钩子中，注册 mui 的滚动事件：
 
- ```
- 	mounted() {
-    	// 需要在组件的 mounted 事件钩子中，注册 mui 的 scroll 滚动事件
-        mui('.mui-scroll-wrapper').scroll({
-          deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-        });
-  	}
- ```
+```
+	mounted() {
+   	// 需要在组件的 mounted 事件钩子中，注册 mui 的 scroll 滚动事件
+       mui('.mui-scroll-wrapper').scroll({
+         deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+       });
+ 	}
+```
 
 3. 滑动的时候报警告：`Unable to preventDefault inside passive event listener due to target being treated as passive. See https://www.chromestatus.com/features/5093566007214080`
 
@@ -585,9 +582,8 @@ import '../lib/mui/css/mui.min.css'
 解决方法，可以加上* { touch-action: pan-y; } 这句样式去掉。
 ```
 
-原因：（是chrome为了提高页面的滑动流畅度而新折腾出来的一个东西） http://www.cnblogs.com/pearl07/p/6589114.html
+原因：（是 chrome 为了提高页面的滑动流畅度而新折腾出来的一个东西） http://www.cnblogs.com/pearl07/p/6589114.html
 https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
-
 
 ## 移除严格模式
 
@@ -595,7 +591,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
 
 ## [vue-preview](https://github.com/LS1231/vue-preview)
 
-一个Vue集成PhotoSwipe图片预览插件
+一个 Vue 集成 PhotoSwipe 图片预览插件
 
 ## `.babelrc` 配置
 
@@ -645,7 +641,7 @@ module.exports = {
 
 ## Debug：
 
-- `json` 文件中不能写注释 
+- `json` 文件中不能写注释
 
 - `json` 文件中不能写注释
 
@@ -662,6 +658,3 @@ module.exports = {
     "webpack-dev-server": "^2.9.3"
   }
   ```
-
-  
-

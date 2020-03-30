@@ -52,3 +52,28 @@
    - 新建系统环境变量 `ANDROID_HOME` , 值为：`C:\Android` (SDK 的根目录)
 
    - 修改系统环境变量 `Path` , 新增：`%ANDROID_HOME%\tools` 、 `%ANDROID_HOME%\platform-tools`
+
+### 安装 yarn react-native-cli
+
+- `npm install -g yarn react-native-cli`
+
+- 设置 yarn 淘宝镜像：
+  - `yarn config set registry https://registry.npm.taobao.org -g`
+  - `yarn config set disturl https://npm.taobao.org/dist --global`
+
+### react native 快速打包
+
+1. 初始化项目 ：`react-native init projectname`
+
+2. **切换到项目目录**, 将手机连接电脑, 运行 `adb devices` , 确认手机是否连接
+
+3. `react-native run-android` , 设备上安装并启动应用
+
+### [Weex 快速打包](http://weex.apache.org/cn/guide/tools/toolkit.html)
+
+1. 安装依赖:Weex 官方提供了 weex-toolkit 的脚手架工具来辅助开发和调试。首先，你需要最新稳定版的 Node.js 和 Weex CLi。
+2. 运行`npm install -g weex-toolkit`安装 Weex 官方提供的 `weex-toolkit` 脚手架工具到全局环境中
+3. 运行`weex create project-name`初始化 Weex 项目
+4. 进入到项目的根目录中，打开 cmd 窗口，运行`weex platform add android`安装 android 模板，首次安装模板时，等待时间较长，建议 fq 安装模板
+5. 打开`android studio`中的`安卓模拟器`，或者将`启用USB调试的真机`连接到电脑上，运行`weex run android`，打包部署 weex 项目
+6. 部署完成，查看项目效果

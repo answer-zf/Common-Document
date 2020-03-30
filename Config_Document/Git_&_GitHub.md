@@ -451,6 +451,7 @@ $ git push https://github.com/answerooo3/Common-Document.git master
 # 生成公钥，私钥
 $ ssh-keygen -t rsa -C "feng18255163789@gmail.com"
 
+# 三个回车生产秘钥
 # 找到C:\Users\answer_zf\.ssh内的
 # id_rsa	    私钥
 # id_rsa.pub   公钥
