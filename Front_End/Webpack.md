@@ -26,7 +26,7 @@
 1. 运行`npm i webpack -g`全局安装`webpack`，这样就能在全局使用`webpack`的命令
 2. 在项目根目录中运行`npm i webpack --save-dev`安装到项目依赖中
 
-## 初步使用`webpack`打包构建列表隔行变色案例
+## 初步使用 webpack 打包构建列表隔行变色案例
 
 1. 运行`npm init`初始化项目，使用 `npm` 管理项目中的依赖包
 2. 创建项目基本的目录结构
@@ -54,7 +54,7 @@ webpack src/js/main.js dist/bundle.js
 1. `webpack` 能够处理 JS 文件的互相依赖关系；
 2. `webpack` 能够处理 JS 的兼容问题，把 高级的、浏览器不是别的语法，转为 低级的，浏览器能正常识别的语法
 
-## 使用 `webpack` 的配置文件简化打包时候的命令
+## 使用 webpack 的配置文件简化打包时候的命令
 
 1. 在项目根目录中创建`webpack.config.js`
 2. 由于运行 `webpack` 命令的时候，`webpack` 需要指定入口文件和输出文件的路径，所以，我们需要在`webpack.config.js`中配置这两个路径：
@@ -78,7 +78,7 @@ module.exports = {
 3. 当找到配置文件后，`webpack` 会去解析执行这个 配置文件，当解析执行完配置文件后，就得到了 配置文件中，导出的配置对象
 4. 当 `webpack` 拿到 配置对象后，就拿到了 配置对象中，指定的 入口 和 出口，然后进行打包构建；
 
-## 实现`webpack`的实时打包构建
+## 实现 webpack 的实时打包构建
 
 1. 由于每次重新修改代码之后，都需要手动运行`webpack`打包的命令，比较麻烦，所以使用`webpack-dev-server`来实现代码实时打包编译，当修改代码之后，会自动进行打包构建。
 
@@ -126,7 +126,7 @@ module.exports = {
   }
   ```
 
-## 使用`html-webpack-plugin`插件配置启动页面
+## 使用 html-webpack-plugin 插件配置启动页面
 
 在内存中根据`index.html` 模板页面生成内存中的首页。
 
@@ -153,7 +153,7 @@ module.exports = {
    }
    ```
 
-## 使用`webpack`打包 css 文件
+## 使用 webpack 打包 css 文件
 
 注意：`webpack`, 默认只能打包处理 JS 类型的文件，无法处理 其它的非 JS 类型的文件
 
@@ -210,7 +210,7 @@ module.exports = {
 
 注意：`Webpack2X` 以上版本，加载器必须带 `-loader`，1X 的版本不需要带。
 
-## `webpack` 中的 `url-loader`
+## webpack 中的 url-loader
 
 默认情况下，`webpack` 无法 处理 `CSS` 文件中的 `url` 地址，不管是图片还是 字体库， 只要是 `URL` 地址，都处理不了
 
@@ -232,7 +232,7 @@ module.exports = {
    - `limit` 给定的值，是图片的大小，单位是 `byte`， 如果引用的 图片，大于或等于给定的 `limit`值，则不会被转为`base64`格式的字符串， 如果 图片小于给定的 `limit` 值，则会被转为 `base64`的字符串
    - `name` 自定义文件重命名，`[hash:8]` 8 位哈希值（最长 32），`[name]`原文件名，`[ext]` 原文件后缀名
 
-## `webpack` 中的 `babel-loader`
+## webpack 中的 babel-loader
 
 在 `webpack` 中，默认只能处理 一部分 ES6 的新语法，一些更高级的 ES6 语法或者 ES7 语法，`webpack` 是处理不了的；这时候，就需要 借助于第三方的 `loader`，来帮助`webpack` 处理这些高级的语法。
 
@@ -262,7 +262,7 @@ module.exports = {
 
 4. 了解： 目前，我们安装的 `babel-preset-env`, 是比较新的 ES 语法， 之前， 我们安装的是`babel-preset-es2015`, 现在，出了一个更新的 语法插件，叫做 `babel-preset-env` ，它包含了 所有的 和 es\*\*\*相关的语法
 
-## 在 `webpack` 中构建 `vue`
+## 在 webpack 中构建 vue
 
 ### 在使用 webpack 构建的 Vue 项目中使用模板对象
 
@@ -441,7 +441,7 @@ var vm = new Vue({
 })
 ```
 
-### `.vue` 中 样式配置
+### .vue 中 样式配置
 
 - 在 `.vue` 组件中，`style` 的样式作用于全局，开始 `scoped` 属性，则可以作用域局部，全局不受影响。
 - 普通的 `style` 标签只支持 普通的 样式，如果想要启用 `scss` 或 `less` ，需要为 `style` 元素，设置 `lang` 属性
@@ -458,7 +458,7 @@ var vm = new Vue({
 </style>
 ```
 
-## 在 `webpack` 中使用 `MintUI`
+## 在 webpack 中使用 MintUI
 
 ### Mint-UI 中按需导入的配置方式
 
@@ -491,7 +491,7 @@ Vue.component(Button.name, Button) // Button.name 可以自定义。
 
 如果按需导入 组件，自定义组件名称，可使用自定义的名称做标签名。
 
-### 使用`js components`
+### 使用 js components
 
 ```js
 // 按需导入 Toast 组件
@@ -530,7 +530,7 @@ export default {
 }
 ```
 
-## 在 `webpack` 中使用 `MUI`
+## 在 webpack 中使用 MUI
 
 > 注意： MUI 不同于 Mint-UI，MUI 只是开发出来的一套好用的代码片段，里面提供了配套的样式、配套的 HTML 代码段，类似于 Bootstrap； 而 Mint-UI，是真正的组件库，是使用 Vue 技术封装出来的 成套的组件，可以无缝的和 VUE 项目进行集成开发；
 > 因此，从体验上来说， Mint-UI 体验更好，因为这是别人帮我们开发好的现成的 Vue 组件；
@@ -551,7 +551,7 @@ import '../lib/mui/css/mui.min.css'
 
 3. 根据官方提供的文档和 example，尝试使用相关的组件
 
-## 使用 mui 的`tab-top-webview-main`完成分类滑动栏
+## 使用 mui 的 tab-top-webview-main 完成分类滑动栏
 
 ### 兼容问题
 
@@ -593,7 +593,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
 
 一个 Vue 集成 PhotoSwipe 图片预览插件
 
-## `.babelrc` 配置
+## .babelrc 配置
 
 ```json
 {
@@ -602,7 +602,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action
 }
 ```
 
-## `webpack.config.js` 最终配置
+## webpack.config.js 最终配置
 
 ```js
 const path = require('path')

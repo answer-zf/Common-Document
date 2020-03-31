@@ -464,7 +464,7 @@ JavaScript 本身并不支持模块化 在 Node 中不仅支持，还有一个�
 - 使用 require 方法加载模块
 - 使用 exports 接口对象导出模块中的成员
 
-#### 加载 `require`
+#### 加载 require
 
 ##### 语法：
 
@@ -567,7 +567,7 @@ var custom = require('module')
 
 **位置：放在项目根目录中，这样项目中所有子目录中的代码都可以加载第三方包**
 
-#### 导出 `exports`
+#### 导出 exports
 
 - Node 中是模块作用域，默认文件中所有成员只在当前文件模块有效
 
@@ -944,7 +944,7 @@ app.use(function(req, res) {
 - `res.json()` 该方法接收一个对象作为参数，自动把对象转为字符串，在发送给浏览器
 - 等价于`res.end(JSON.stringify(req.body, null, ' '))`
 
-##### Express 中 `req.hearder`
+##### Express 中 req.hearder
 
 - 获取当前请求的请求报文中的请求头信息
 - 其中一个参数，`content-length` GET 请求没有，POST 请求有，表示：传入参数的字节长度
@@ -1264,7 +1264,7 @@ http://expressjs.com/en/guide/using-middleware.html
 
 #### 中间件应用
 
-##### 模拟封装 `express.static`
+##### 模拟封装 express.static
 
 - 前提知识储备：
 
@@ -1346,7 +1346,7 @@ app.use(function(req, res) {
 
 - 然后就会被全局错误处理中间件匹配到并处理之
 
-##### 模拟封装 `body-parser`
+##### 模拟封装 body-parser
 
 由于表单 POST 请求可能会携带大量的数据，所以在进行请求提价的时候会分为多次提交
 
@@ -1524,7 +1524,7 @@ nodemon app.js
 
 **通过 `nodemon` 启动的服务，会监视文件变化，当文件发生变化，自动重启服务器**
 
-### 文件操作中的 `/` 与模块标识中的 `/`
+### 文件操作中的 / 与模块标识中的 /
 
 - **文件标识中的路径可以省略 `./` **
 - **在模块加载中，相对路径中的 `./` 不能省略**

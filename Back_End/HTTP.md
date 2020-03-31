@@ -1,8 +1,6 @@
 # 响应头参数
 
-
-
-``` php
+```php
 
 ## 响应头 referer参数   标识 当前请求的来源
 $_SERVER['HTTP_REFERER']
@@ -12,11 +10,9 @@ header('Content-Type: application/javascript');
 
 ```
 
-
-
 # JSON
 
- ```php
+```php
 
 ## json 序列化
 
@@ -24,5 +20,4 @@ json_encode();
 
 ## 可以序列化boolean值 ，返回 对应的boolean值
 
- ```
-
+```

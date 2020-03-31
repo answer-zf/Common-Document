@@ -69,7 +69,7 @@
 
 3. `react-native run-android` , 设备上安装并启动应用
 
-### [Weex 快速打包](http://weex.apache.org/cn/guide/tools/toolkit.html)
+[Weex 快速打包](http://weex.apache.org/cn/guide/tools/toolkit.html)
 
 1. 安装依赖:Weex 官方提供了 weex-toolkit 的脚手架工具来辅助开发和调试。首先，你需要最新稳定版的 Node.js 和 Weex CLi。
 2. 运行`npm install -g weex-toolkit`安装 Weex 官方提供的 `weex-toolkit` 脚手架工具到全局环境中

@@ -1,6 +1,4 @@
-# MySQL语法
-
-
+# MySQL 语法
 
 ## 数据类型
 
@@ -13,10 +11,8 @@ char     	固定字符长度（效率高），字符不够，在后面补空格�
 
 			字符集：	 utf8
 			排序规则：	utf8_general_ci
-			
+
 ```
-
-
 
 ## MySQL 语法
 
@@ -35,7 +31,7 @@ char     	固定字符长度（效率高），字符不够，在后面补空格�
 
 ## 子语句：
 
-where 
+where
 
 	...where id = 6 and gender in (0,2);
 	...where id > 6 or gender = 0;
@@ -68,13 +64,11 @@ $ select * from `user` where id > 3;
 $ update users set name = '麻子', gender = 0
 ```
 
-
-
 ## 联合查询
 
 ```mysql
 
-select 
+select
 	posts.id,
 	posts.title,
 	users.nickname as users_name,
@@ -82,21 +76,19 @@ select
 	posts.created,
 	posts.`status`
 from posts
-inner join categories on posts.category_id = categories.id 
-inner join users on posts.user_id = users.id 
+inner join categories on posts.category_id = categories.id
+inner join users on posts.user_id = users.id
 
-## as 字段重新命名   
+## as 字段重新命名
 ## on 声明 所联合的关系
 
 ```
-
-
 
 ## 分页查询
 
 ```mysql
 
- select 
+ select
    posts.id,
    posts.title,
    users.nickname as users_name,
@@ -104,12 +96,11 @@ inner join users on posts.user_id = users.id
    posts.created,
   posts.`status`
  from posts
- inner join categories on posts.category_id = categories.id 
+ inner join categories on posts.category_id = categories.id
  inner join users on posts.user_id = users.id
  order by posts.created desc
  limit 0,10
- 
- ## order by  以某字段排序  desc降序 asc升序
- 
-```
 
+ ## order by  以某字段排序  desc降序 asc升序
+
+```

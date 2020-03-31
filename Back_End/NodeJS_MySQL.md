@@ -6,10 +6,10 @@
 npm install --save mysql
 ```
 
- ## 使用
+## 使用
 
 ```js
-var mysql = require('mysql');
+var mysql = require('mysql')
 
 // 1. 创建连接
 var connection = mysql.createConnection({
@@ -17,27 +17,30 @@ var connection = mysql.createConnection({
   user: 'root',
   password: 'root',
   database: 'users'
-});
+})
 
-// 2. 连接数据库 
-connection.connect();
+// 2. 连接数据库
+connection.connect()
 
 // 3. 执行数据操作
-connection.query('SELECT * FROM `users`', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results);
-});
+connection.query('SELECT * FROM `users`', function(error, results, fields) {
+  if (error) throw error
+  console.log('The solution is: ', results)
+})
 
 // 4. 关闭连接
-connection.end();
+connection.end()
 ```
 
 - 增加数据
 
 ```js
-connection.query('INSERT INTO users VALUES(NULL, "admin", "123456")', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results);
-});
+connection.query('INSERT INTO users VALUES(NULL, "admin", "123456")', function(
+  error,
+  results,
+  fields
+) {
+  if (error) throw error
+  console.log('The solution is: ', results)
+})
 ```
-

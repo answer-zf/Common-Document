@@ -46,9 +46,9 @@ var vm = new Vue({
 
 ### Vue 基础
 
-#### 数据绑定：`v-cloak` 、 `v-text` 、`v-html` 、`v-pre`
+#### 数据绑定：v-cloak 、 v-text 、v-html 、v-pre
 
-##### `v-cloak`
+##### v-cloak
 
 ```vue
 <style>
@@ -65,7 +65,7 @@ var vm = new Vue({
 
 - 可以使用 `v-cloak` 解决 闪烁问题
 
-##### `v-text`
+##### v-text
 
 ```vue
 <div v-text="msg"></div>
@@ -74,7 +74,7 @@ var vm = new Vue({
 - 默认 `v-text` 是没有闪烁问题的
 - `v-text`会覆盖元素中原本的内容
 
-##### `v-html`
+##### v-html
 
 ```vue
 <div v-html="msg2">1212112</div>
@@ -96,7 +96,7 @@ var vm = new Vue({
 <span v-pre>{{ this will not be compiled }}</span> // 显示的是{{ this will not be compiled }}
 ```
 
-#### 数据响应、`v-once`
+#### 数据响应、v-once
 
 - 数据的响应式（数据的变化导致页面内容的变化）
 - 数据绑定：将数据填充到标签中
@@ -110,7 +110,7 @@ var vm = new Vue({
 <span v-once>{{ msg}}</span>
 ```
 
-#### 双向数据绑定：`v-model`
+#### 双向数据绑定：v-model
 
 - 当数据发生变化的时候，视图也就发生变化
 - 当视图发生变化的时候，数据也会跟着同步变化
@@ -125,7 +125,7 @@ var vm = new Vue({
 
 > 在 Vue 中，已经实现了数据的双向绑定，每当我们修改了 data 中的数据，Vue 会默认监听到数据的改动，自动把最新的数据，应用到页面上
 
-#### 事件绑定：`v-on`
+#### 事件绑定：v-on
 
 Vue 中提供了 `v-on:` 事件绑定机制
 
@@ -234,7 +234,7 @@ var vm = new Vue({
 </script>
 ```
 
-###### 使用`.stop` 阻止冒泡 （里 -> 外）
+###### 使用 .stop 阻止冒泡 （里 -> 外）
 
 ```vue
 <div class="inner" @click="div1Handler">
@@ -242,7 +242,7 @@ var vm = new Vue({
 </div>
 ```
 
-###### 使用 `.prevent` 阻止默认行为
+###### 使用 .prevent 阻止默认行为
 
 ```vue
 <a href="http://www.baidu.com" @click.prevent="linkClick">有问题，先去百度</a>
@@ -312,7 +312,7 @@ Vue.config.keyCodes.f2 = 113
 > js 里面的键盘事件对应的键码：http://www.cnblogs.com/wuhua1/p/6686237.html
 > vue 2.x 键盘修饰符文档：https://cn.vuejs.org/v2/guide/events.html#键值修饰符
 
-#### 属性绑定：`v-bind`
+#### 属性绑定：v-bind
 
 `v-bind`: 是 Vue 中，提供的用于绑定属性的指令
 
@@ -431,7 +431,7 @@ v-model 的低层实现原理分析：
 <div :style="[objStyles,overrideStyle]"></div>
 ```
 
-#### 循环结构：`v-for`和`key`属性
+#### 循环结构：v-for 和 key 属性
 
 1. 遍历数组
 
@@ -508,9 +508,9 @@ var vm = new Vue({
 </script>
 ```
 
-#### 分支结构： `v-if` 和 `v-show`
+#### 分支结构： v-if 和 v-show
 
-##### `v-if / v-else / v-else-if`
+##### v-if / v-else / v-else-if
 
 ```html
 <div id="app">
@@ -531,7 +531,7 @@ var vm = new Vue({
 - 每次都会重新删除或创建元素
 - 有较高的切换性能消耗
 
-##### `v-show`
+##### v-show
 
 - 每次不会重新进行 DOM 的删除和创建操作，只是切换了元素的 display:none 样式
 - 有较高的初始渲染消耗
