@@ -229,7 +229,7 @@ module.exports = {
    }
    ```
 
-   - `limit` 给定的值，是图片的大小，单位是 `byte`， 如果我们引用的 图片，大于或等于给定的 `limit`值，则不会被转为`base64`格式的字符串， 如果 图片小于给定的 `limit` 值，则会被转为 `base64`的字符串
+   - `limit` 给定的值，是图片的大小，单位是 `byte`， 如果引用的 图片，大于或等于给定的 `limit`值，则不会被转为`base64`格式的字符串， 如果 图片小于给定的 `limit` 值，则会被转为 `base64`的字符串
    - `name` 自定义文件重命名，`[hash:8]` 8 位哈希值（最长 32），`[name]`原文件名，`[ext]` 原文件后缀名
 
 ## `webpack` 中的 `babel-loader`
@@ -658,3 +658,260 @@ module.exports = {
     "webpack-dev-server": "^2.9.3"
   }
   ```
+
+## webpack senior （webpack 4）
+
+**若使用 webpack 4 , 在安装 webpack 的同时还需要安装 webpack-cli**
+
+```bash
+# 若 vscode 不能使用 yarn/webpack 命令做一下操作
+
+# 以管理员身份运行vs code
+Set-ExecutionPolicy -Scope CurrentUser
+RemoteSigned
+get-ExecutionPolicy
+# => RemoteSigned 修改成功
+
+yarn add webpack webpack-cli --dev
+```
+
+### 快速配置
+
+> 最好使用 npm 安装，node-sass yarn 安装不上
+
+#### webpack 以及实时打包工具、启动页面
+
+1. 安装
+
+```bash
+npm install webpack webpack-cli html-webpack-plugin webpack-dev-server -D
+```
+
+2.  配置
+
+`webpack.config.js`
+
+```javascript
+const path = require('path')
+const htmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  entry: path.join(__dirname, './src/main.js'),
+  output: { path: path.join(__dirname, './dist'), filename: 'bundle.js' },
+  plugins: [
+    new htmlWebpackPlugin({
+      template: path.join(__dirname, './src/index.html'),
+      filename: 'index.html'
+    })
+  ]
+}
+```
+
+`package.json` 中的 script 添加
+
+```json
+{
+  "scripts": {
+    "dev": "webpack-dev-server --open --port 3000"
+  }
+}
+```
+
+#### 加载器（loader）
+
+1. 安装
+
+**css url 加载器**
+
+```bash
+npm install style-loader css-loader sass-loader node-sass url-loader file-loader -D
+```
+
+> ps: postcss-loader 插件也可以安装 => 给 CSS3 的属性添加前缀，样式格式校验（stylelint），提前使用 css 的新特性比如：表格布局，更重要的是可以实现 CSS 的模块化，防止 CSS 样式冲突。
+
+作者：最底层的技术渣
+链接：https://www.jianshu.com/p/15d51e796dca
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+**babel 加载器**
+
+```bash
+# babel-core 8.0.0版本有问题 需要使用 7.1.5
+npm install babel-core babel-loader@7.1.5 babel-plugin-transform-runtime babel-preset-env babel-preset-stage-0 -D
+```
+
+2. 配置
+
+`webpack.config.js`
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+      { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ },
+      { test: /\.(png|gif|jpg|bmp)$/, use: 'url-loader?limit=5000' }
+    ]
+  }
+}
+```
+
+`.babelrc`
+
+```javascript
+{
+  "presets": ["env", "stage-0"],
+  "plugins": ["transform-runtime"]
+}
+```
+
+### 优化项目并打包
+
+1. 新建一个 js 文件 命名：`webpack.pub.config.js`
+
+2. package.json 中新添加一个 script 脚本：`"pub": "webpack --config webpack.pub.config.js"`
+
+3. clean-webpack-plugin 每次发布，删除之前发布的文件
+
+   1. 安装：`npm install clean-webpack-plugin -D`
+   2. 配置 `webpack.pub.config.js`中
+
+```javascript
+// webpack 4 新写法
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+// plugins 节点中新增：
+`new CleanWebpackPlugin()`,
+```
+
+4. 分离第三方包
+
+   - `webpack.pub.config.js`
+
+   1. `修改：entry` 节点
+
+   ```javascript
+   entry: {
+       // 配置入口节点
+       app: path.join(__dirname, './src/main.js'),
+       vendors: ['jquery'] // 把需要抽离的第三方包名称，放到该数组中
+     }
+   ```
+
+   2. 新增 `optimization` 节点，与 `entry` 同级（webpack 4 新写法）
+
+   ```javascript
+   optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          name: 'vendors', // 指定要抽离的入口名称
+          chunks: 'initial',
+          minChunks: 2,
+          filename: 'vendors.js' // 发布时将抽离的第三方包放到该文件中
+        }
+      }
+    }
+   }
+   ```
+
+5. 分离 css
+
+**webpack 4 必须使用 `mini-css-extract-plugin`**
+
+> 该插件 只能在生产环境中使用，不支持 style-loader 即：<style></style>标签中使用 css，不支持 hrm
+
+> 已内置 CSS 压缩器，无需使用 `optimize-css-assets-webpack-plugin`
+
+1. 新增 `const MiniCssExtractPlugin = require('mini-css-extract-plugin')`
+2. 在 plugins 节点中新增
+
+```javascript
+new MiniCssExtractPlugin({
+  filename: 'css/styles.css'
+})
+```
+
+3. 修改与 css 相关的 rules
+
+```javascript
+{
+  test: /\.(sa|sc|c)ss$/,
+  use: [
+    {
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        publicPath: '../' // 指定公共路径
+      }
+    },
+    'css-loader',
+    'sass-loader'
+  ]
+}
+```
+
+**完整 webpack.pub.config.js 文件配置**
+
+```javascript
+const path = require('path')
+const htmlWebpackPlugin = require('html-webpack-plugin')
+// 插件：每次发布，删除之前发布的文件
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+// css 抽离 webpack4中
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+module.exports = {
+  entry: {
+    // 配置入口节点
+    app: path.join(__dirname, './src/main.js'),
+    vendors: ['jquery'] // 把需要抽离的第三方包名称，放到该数组中
+  },
+  output: { path: path.join(__dirname, './dist'), filename: 'js/bundle.js' },
+  plugins: [
+    new htmlWebpackPlugin({
+      template: path.join(__dirname, './src/index.html'),
+      filename: 'index.html'
+    }),
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/styles.css'
+    })
+  ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          //打包第三方类库
+          name: 'vendors',
+          chunks: 'initial',
+          minChunks: 2,
+          filename: 'js/vendors.js'
+        }
+      }
+    }
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+      { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ },
+      {
+        test: /\.(png|gif|jpg|bmp)$/,
+        use: 'url-loader?limit=5000&name=images/[hash:8]-[name].[ext]' // 优化扩展名及图片存储位置
+      }
+    ]
+  }
+}
+```
