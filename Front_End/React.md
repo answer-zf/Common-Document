@@ -79,3 +79,150 @@
 6.  部署完成，查看项目效果
 
 ## ReactJs
+
+### React 基础
+
+#### 安装：
+
+```bash
+npm install react react-dom -S
+```
+
+#### 起步
+
+```js
+import React from 'react'
+import ReactDOM from 'react-dom'
+// 参数1：创建元素的类型 => string
+// 参数2：元素上的属性 => Object
+// 参数3 + ：当前元素的子节点
+const div = React.createElement('div',{id: 'zf', className: 'zf', title: 'title'}, 'this.is.div')
+// 使用 ReactDOM 把元素渲染到页面指定的容器中：
+// 参数1：要渲染的虚拟DOM元素
+// 参数2：要渲染到页面上的哪个位置中
+ReactDOM.render(div, document.getElementById('app'))
+```
+
+#### JSX (语法糖)
+
+1.  安装：
+
+    -   `npm i babel-preset-react -D`
+
+2.  配置：
+
+    -   在 .babelrc 文件 presets 的值添加 "react"
+
+3.  使用：
+
+    ```js
+    const div = React.createElement('div',{id: 'zf', className: 'zf', title: 'title'}, 'this.is.div')
+    // 可替换为：
+    const div = (
+      <div className="zf" id="zf" title="title">
+        this.is.div
+      </div>
+    )
+    ```
+
+4.  语法：
+
+    -   变量的使用，用 `{}` 包含使用
+
+        ```js
+        const title = 'this.is.variable'
+        const div = (
+          <div className="zf" id="zf" title={title}>
+            this.is.div
+          </div>
+        )
+        ```
+
+        > 当 编译引擎，在编译JSX代码的时候，如果遇到了&lt; 那么就把它当作 HTML 代码去编译，如果遇到了 {} 就把 花括号内部的代码当作 普通JS代码去编译；
+
+    -   在 `{}` 内部，可以写任何符合 JS 规范的代码
+    -   在 JSX 中，如果要为元素添加 class 属性了，必须写成 className , 避免与 ES6 中的 class 冲突
+    -   label标签的 for 属性需要替换为 htmlFor
+    -   在 JSX 创建 DOM 的时候，所有的节点，必须用**唯一**的根元素进行包裹
+    -   注释必须放到 {} 内部 => `{/* 注释 */}`
+
+    ```js
+    // 综合事例
+    const arr = []
+      for (let i = 0; i < 10; i++) {
+        const p = <p key={i}>this.is.p</p>
+        arr.push(p)
+      }
+      const title = 'this.is.variable'
+      const div = (
+        <div className="zf" id="zf" title={title}>
+          this.is.div
+          {arr}
+          {/* 注释 */}
+        </div>
+      )
+    ReactDOM.render(div, document.getElementById('app'))
+    ```
+
+5.  创建组件：
+
+    -   在 react 中，构造函数就是一个组件。
+    -   如果想要把组件放到页面中，只需把 构造函数的名称 当做 组件名称，以 HTML 标签形式引入页面中即可。
+    -   构造函数首字母必须大写，否则会按普通 HTML 标签渲染
+
+    ```js
+    function MyDiv() {
+      return (
+        <div>
+          <h1>this.is.component</h1>
+        </div>
+      )
+    }
+    ReactDOM.render(
+      <div>
+        <MyDiv></MyDiv>
+      </div>,
+      document.getElementById('app')
+    )
+    ```
+
+6.  组件传值：
+
+    -   父组件向子组件传递数据
+
+        -   传值：
+
+            -   非对象的值的传递：使用属性向子组件传值
+            -   对象的传递：...obj 使用 es6 中的属性扩散, 即:简化属性的方式的操作
+
+        -   获取：
+            -   非对象的值，直接通过属性名获取
+            -   对象：通过向构造函数传递形参（props）,通过 props 接收
+                -   通过 props 获取的值是只读的,不能重新赋值
+
+    ```js
+    const username = 'z...f'
+    const person = {
+      age: 30,
+      name: 'zf',
+      address: 'anhui'
+    }
+    function MyDiv(props) {
+      return (
+        <div>
+          <h1>
+            this.is.component
+            {username}
+            {props.name}
+            {props.address}
+          </h1>
+        </div>
+      )
+    }
+    ReactDOM.render(
+      <div>
+        <MyDiv {...person}></MyDiv>
+      </div>,
+      document.getElementById('app')
+    )
+    ```
