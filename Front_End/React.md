@@ -190,63 +190,64 @@ ReactDOM.render(div, document.getElementById('app'))
 
 **组件传值：**
 
-    -   父组件向子组件传递数据
+-   父组件向子组件传递数据
 
-        -   传值：
+    -   传值：
 
-            -   非对象的值的传递：使用属性向子组件传值
-            -   对象的传递：...obj 使用 es6 中的属性扩散, 即:简化属性的方式的操作
+        -   非对象的值的传递：使用属性向子组件传值
+        -   对象的传递：...obj 使用 es6 中的属性扩散, 即:简化属性的方式的操作
 
-        -   获取：
-            -   非对象的值，直接通过属性名获取
-            -   对象：通过向构造函数传递形参（props）,通过 props 接收
-                -   通过 props 获取的值是只读的,不能重新赋值
+    -   获取：
 
-        ```js
-        const username = 'z...f'
-        const person = {
-          age: 30,
-          name: 'zf',
-          address: 'anhui'
-        }
-        // 组件未分离
-        function MyDiv(props) {
-          return (
-            <div>
-              <h1>
-                this.is.component
-                {username}
-                {props.name}
-                {props.address}
-              </h1>
-            </div>
-          )
-        }
-        // end - 组件未分离
+        -   非对象的值，直接通过属性名获取
+        -   对象：通过向构造函数传递形参（props）,通过 props 接收
+            -   通过 props 获取的值是只读的,不能重新赋值
 
-        // 组件分离
-        // - mini.js
-        import React from 'react'
-        function Person(props) {
-          return (
-            <div>
-              <h1>this.is h1 {props.name}</h1>
-              <p></p>
-            </div>
-          )
-        }
-        export default Person
-        // - end - mini.js
-        import Person from './components/mini.jsx'
-        // end - 组件分离
-        ReactDOM.render(
-          <div>
-            <MyDiv {...person}></MyDiv>
-            <Person {...person}></Person>
-          </div>,
-          document.getElementById('app')
-        )
-        ```
+```js
+const username = 'z...f'
+const person = {
+  age: 30,
+  name: 'zf',
+  address: 'anhui'
+}
+// 组件未分离
+function MyDiv(props) {
+  return (
+    <div>
+      <h1>
+        this.is.component
+        {username}
+        {props.name}
+        {props.address}
+      </h1>
+    </div>
+  )
+}
+// end - 组件未分离
+
+// 组件分离
+// - mini.js
+import React from 'react'
+function Person(props) {
+  return (
+    <div>
+      <h1>this.is h1 {props.name}</h1>
+      <p></p>
+    </div>
+  )
+}
+export default Person
+// - end - mini.js
+import Person from './components/mini.jsx'
+// end - 组件分离
+ReactDOM.render(
+  <div>
+    <MyDiv {...person}></MyDiv>
+    <Person {...person}></Person>
+  </div>,
+  document.getElementById('app')
+)
+```
 
 ##### 以 class 关键字的方式创建
 
