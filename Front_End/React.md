@@ -172,21 +172,21 @@ ReactDOM.render(div, document.getElementById('app'))
     -   如果想要把组件放到页面中，只需把 构造函数的名称 当做 组件名称，以 HTML 标签形式引入页面中即可。
     -   构造函数首字母必须大写，否则会按普通 HTML 标签渲染
 
-```js
-function MyDiv() {
-  return (
-    <div>
-      <h1>this.is.component</h1>
-    </div>
-  )
-}
-ReactDOM.render(
-  <div>
-    <MyDiv></MyDiv>
-  </div>,
-  document.getElementById('app')
-)
-```
+        ```js
+        function MyDiv() {
+          return (
+            <div>
+              <h1>this.is.component</h1>
+            </div>
+          )
+        }
+        ReactDOM.render(
+          <div>
+            <MyDiv></MyDiv>
+          </div>,
+          document.getElementById('app')
+        )
+        ```
 
 **组件传值：**
 
