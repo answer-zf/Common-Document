@@ -246,8 +246,9 @@ ReactDOM.render(div, document.getElementById('app'))
           </div>,
           document.getElementById('app')
         )
+        ```
 
-    ##### 以 class 关键字的方式创建
+##### 以 class 关键字的方式创建
 
     **前提**
 
@@ -258,33 +259,34 @@ ReactDOM.render(div, document.getElementById('app'))
               -  继承：子类继承父类的属性和方法
               -  多态：父类只定义 方法的名称和作用，但不定义具体的实现逻辑，由子类继承后自己实现后才调用
 
-    ```js
-    class Person {
-      static info = 'this.is.person'
-      constructor(name, age) {
-        this.name = name
-        this.age = age
-      }
-      say() {
-        console.log('ok')
-      }
-    }
-    class Chinese extends Person {
-      // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
-      static cInfo = 'this.is.chinese'
-      constructor(name, age, color, lang) {
-        super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
-        this.color = color
-        this.lang = lang
-      }
-    }
+              ```js
+              class Person {
+                static info = 'this.is.person'
+                constructor(name, age) {
+                  this.name = name
+                  this.age = age
+                }
+                say() {
+                  console.log('ok')
+                }
+              }
+              class Chinese extends Person {
+                // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
+                static cInfo = 'this.is.chinese'
+                constructor(name, age, color, lang) {
+                  super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
+                  this.color = color
+                  this.lang = lang
+                }
+              }
 
-    const p1 = new Person('zf', 16)
-    console.log(p1)
+              const p1 = new Person('zf', 16)
+              console.log(p1)
 
-    const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
-    console.log(c1)
-    console.log(Chinese.info)
+              const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
+              console.log(c1)
+              console.log(Chinese.info)
+              ```
 
     - 组件的创建
 
@@ -299,28 +301,28 @@ ReactDOM.render(div, document.getElementById('app'))
         -  props 与 function 一样是只读的不允许修改(**只要是 组件的 props 都是只读的**)
         -  在 constructor 中想要访问 props 需要在 constructor 构造器的参数列表中，显示定义 props 来接收
 
-        ```js
-        class Person extends React.Component {
-          constructor(props) {
-            // 在 constructor 中想要访问 props 需要在 constructor 构造器的参数列表中，显示定义 props 来接收，
-            super(props)
+          ```js
+          class Person extends React.Component {
+            constructor(props) {
+              // 在 constructor 中想要访问 props 需要在 constructor 构造器的参数列表中，显示定义 props 来接收，
+              super(props)
+            }
+            render() {
+              return (
+                <div>
+                  <h1>{this.props.info}</h1>
+                  <h2>{this.props.address}</h2>
+                </div>
+              )
+            }
           }
-          render() {
-            return (
-              <div>
-                <h1>{this.props.info}</h1>
-                <h2>{this.props.address}</h2>
-              </div>
-            )
-          }
-        }
-        ReactDOM.render(
-          <div>
-            <Person address="address" info="infoo"></Person>
-          </div>,
-          document.getElementById('app')
-        )
-        ```
+          ReactDOM.render(
+            <div>
+              <Person address="address" info="infoo"></Person>
+            </div>,
+            document.getElementById('app')
+          )
+          ```
 
     - 私有属性：this.state
 
@@ -333,63 +335,63 @@ ReactDOM.render(div, document.getElementById('app'))
                 -  `this.state.msg = '66666'`
             -  推荐使用 this.setState({配置对象})，为 state 重新赋值
 
-        ```js
-        class Person extends React.Component {
-          constructor() {
-            this.state = {
-              msg: 'this.msg1111111',
-              info: '****'
-            }
-          }
-          render() {
-            return (
-              <div>
-                <h1>{this.props.info}</h1>
-                <h2>{this.props.address}</h2>
-                <h3>{this.state.msg}</h3>
-                <input
-                  type="button"
-                  value="editMsg"
-                  id="changeMsg"
-                  onClick={this.changeMsg}
-                />
-                <br />
-              </div>
-            )
-          }
-          // react 定义: 在方法中 默认 this 指向 undefined，需要使用箭头函数改变 this 指向，指向外部的 class
-          changeMsg = () => {
-            // 推荐使用 this.setState({配置对象})，为 state 重新赋值
-            // this.setState(),只会重新覆盖显示定义的属性值，没有提供的属性值不会被覆盖
-            // this.setState({
-            //   msg: '123'
-            // })
-            // this.setState() 也可以传递一个 function ，function 内部必须 return 一个对象
-            // 在 function 中支持传递两个参数，
-            // this.setState()在调用的时候是 内部异步操作
-            this.setState(
-              function(prevState, props) {
-                console.log(prevState) // 第一个参数 prevState 修改之前的 state 的数据
-                console.log(props) // 第二个参数 props 外界传递给当前组件的 props 数据
-                return {
-                  msg: '12111'
+            ```js
+            class Person extends React.Component {
+              constructor() {
+                this.state = {
+                  msg: 'this.msg1111111',
+                  info: '****'
                 }
-              },
-              // 由于 setState 是异步执行，想要拿到最新的修改结果，需要在回调函数中操作新数据
-              function() {
-                console.log(this.state.msg)
               }
-            )
-          }
-        }
+              render() {
+                return (
+                  <div>
+                    <h1>{this.props.info}</h1>
+                    <h2>{this.props.address}</h2>
+                    <h3>{this.state.msg}</h3>
+                    <input
+                      type="button"
+                      value="editMsg"
+                      id="changeMsg"
+                      onClick={this.changeMsg}
+                    />
+                    <br />
+                  </div>
+                )
+              }
+              // react 定义: 在方法中 默认 this 指向 undefined，需要使用箭头函数改变 this 指向，指向外部的 class
+              changeMsg = () => {
+                // 推荐使用 this.setState({配置对象})，为 state 重新赋值
+                // this.setState(),只会重新覆盖显示定义的属性值，没有提供的属性值不会被覆盖
+                // this.setState({
+                //   msg: '123'
+                // })
+                // this.setState() 也可以传递一个 function ，function 内部必须 return 一个对象
+                // 在 function 中支持传递两个参数，
+                // this.setState()在调用的时候是 内部异步操作
+                this.setState(
+                  function(prevState, props) {
+                    console.log(prevState) // 第一个参数 prevState 修改之前的 state 的数据
+                    console.log(props) // 第二个参数 props 外界传递给当前组件的 props 数据
+                    return {
+                      msg: '12111'
+                    }
+                  },
+                  // 由于 setState 是异步执行，想要拿到最新的修改结果，需要在回调函数中操作新数据
+                  function() {
+                    console.log(this.state.msg)
+                  }
+                )
+              }
+            }
 
-        ReactDOM.render(
-          <div>
-            <Person address="address" info="infoo"></Person>
-          </div>,
-          document.getElementById('app')
-        )
-        ```
+            ReactDOM.render(
+              <div>
+                <Person address="address" info="infoo"></Person>
+              </div>,
+              document.getElementById('app')
+            )
+            ```
 
 ##### 无状态组件 有状态组件
 
