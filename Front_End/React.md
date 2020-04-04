@@ -115,15 +115,15 @@ ReactDOM.render(div, document.getElementById('app'))
 
 3.  使用：
 
-    ```js
-    const div = React.createElement('div',{id: 'zf', className: 'zf', title: 'title'}, 'this.is.div')
-    // 可替换为：
-    const div = (
-      <div className="zf" id="zf" title="title">
-        this.is.div
-      </div>
-    )
-    ```
+```js
+const div = React.createElement('div',{id: 'zf', className: 'zf', title: 'title'}, 'this.is.div')
+// 可替换为：
+const div = (
+  <div className="zf" id="zf" title="title">
+    this.is.div
+  </div>
+)
+```
 
 4.  语法：
 
@@ -146,23 +146,23 @@ ReactDOM.render(div, document.getElementById('app'))
     -   在 JSX 创建 DOM 的时候，所有的节点，必须用**唯一**的根元素进行包裹
     -   注释必须放到 {} 内部 => `{/* 注释 */}`
 
-    ```js
-    // 综合事例
-    const arr = []
-      for (let i = 0; i < 10; i++) {
-        const p = <p key={i}>this.is.p</p>
-        arr.push(p)
-      }
-      const title = 'this.is.variable'
-      const div = (
-        <div className="zf" id="zf" title={title}>
-          this.is.div
-          {arr}
-          {/* 注释 */}
-        </div>
-      )
-    ReactDOM.render(div, document.getElementById('app'))
-    ```
+```js
+// 综合事例
+const arr = []
+  for (let i = 0; i < 10; i++) {
+    const p = <p key={i}>this.is.p</p>
+    arr.push(p)
+  }
+  const title = 'this.is.variable'
+  const div = (
+    <div className="zf" id="zf" title={title}>
+      this.is.div
+      {arr}
+      {/* 注释 */}
+    </div>
+  )
+ReactDOM.render(div, document.getElementById('app'))
+```
 
 #### 创建组件：
 
@@ -172,21 +172,21 @@ ReactDOM.render(div, document.getElementById('app'))
     -   如果想要把组件放到页面中，只需把 构造函数的名称 当做 组件名称，以 HTML 标签形式引入页面中即可。
     -   构造函数首字母必须大写，否则会按普通 HTML 标签渲染
 
-    ```js
-    function MyDiv() {
-      return (
-        <div>
-          <h1>this.is.component</h1>
-        </div>
-      )
-    }
-    ReactDOM.render(
-      <div>
-        <MyDiv></MyDiv>
-      </div>,
-      document.getElementById('app')
-    )
-    ```
+```js
+function MyDiv() {
+  return (
+    <div>
+      <h1>this.is.component</h1>
+    </div>
+  )
+}
+ReactDOM.render(
+  <div>
+    <MyDiv></MyDiv>
+  </div>,
+  document.getElementById('app')
+)
+```
 
 **组件传值：**
 
@@ -202,51 +202,51 @@ ReactDOM.render(div, document.getElementById('app'))
             -   对象：通过向构造函数传递形参（props）,通过 props 接收
                 -   通过 props 获取的值是只读的,不能重新赋值
 
-    ```js
-    const username = 'z...f'
-    const person = {
-      age: 30,
-      name: 'zf',
-      address: 'anhui'
-    }
-    // 组件未分离
-    function MyDiv(props) {
-      return (
-        <div>
-          <h1>
-            this.is.component
-            {username}
-            {props.name}
-            {props.address}
-          </h1>
-        </div>
-      )
-    }
-    // end - 组件未分离
+```js
+const username = 'z...f'
+const person = {
+  age: 30,
+  name: 'zf',
+  address: 'anhui'
+}
+// 组件未分离
+function MyDiv(props) {
+  return (
+    <div>
+      <h1>
+        this.is.component
+        {username}
+        {props.name}
+        {props.address}
+      </h1>
+    </div>
+  )
+}
+// end - 组件未分离
 
-    // 组件分离
-    // - mini.js
-    import React from 'react'
-    function Person(props) {
-      return (
-        <div>
-          <h1>this.is h1 {props.name}</h1>
-          <p></p>
-        </div>
-      )
-    }
-    export default Person
-    // - end - mini.js
-    import Person from './components/mini.jsx'
-    // end - 组件分离
-    ReactDOM.render(
-      <div>
-        <MyDiv {...person}></MyDiv>
-        <Person {...person}></Person>
-      </div>,
-      document.getElementById('app')
-    )
-    ```
+// 组件分离
+// - mini.js
+import React from 'react'
+function Person(props) {
+  return (
+    <div>
+      <h1>this.is h1 {props.name}</h1>
+      <p></p>
+    </div>
+  )
+}
+export default Person
+// - end - mini.js
+import Person from './components/mini.jsx'
+// end - 组件分离
+ReactDOM.render(
+  <div>
+    <MyDiv {...person}></MyDiv>
+    <Person {...person}></Person>
+  </div>,
+  document.getElementById('app')
+)
+```
 
 ##### 以 class 关键字的方式创建
 
@@ -259,34 +259,34 @@ ReactDOM.render(div, document.getElementById('app'))
           -  继承：子类继承父类的属性和方法
           -  多态：父类只定义 方法的名称和作用，但不定义具体的实现逻辑，由子类继承后自己实现后才调用
 
-    ```js
-    class Person {
-      static info = 'this.is.person'
-      constructor(name, age) {
-        this.name = name
-        this.age = age
-      }
-      say() {
-        console.log('ok')
-      }
-    }
-    class Chinese extends Person {
-      // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
-      static cInfo = 'this.is.chinese'
-      constructor(name, age, color, lang) {
-        super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
-        this.color = color
-        this.lang = lang
-      }
-    }
+```js
+class Person {
+  static info = 'this.is.person'
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+  say() {
+    console.log('ok')
+  }
+}
+class Chinese extends Person {
+  // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
+  static cInfo = 'this.is.chinese'
+  constructor(name, age, color, lang) {
+    super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
+    this.color = color
+    this.lang = lang
+  }
+}
 
-    const p1 = new Person('zf', 16)
-    console.log(p1)
+const p1 = new Person('zf', 16)
+console.log(p1)
 
-    const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
-    console.log(c1)
-    console.log(Chinese.info)
-    ```
+const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
+console.log(c1)
+console.log(Chinese.info)
+```
 
     - 组件的创建
 
@@ -404,7 +404,9 @@ ReactDOM.render(div, document.getElementById('app'))
 -   有状态组件和无状态组件，最本质的区别，就是有无 state 属性；
 -   class 创建的组件，有自己的生命周期函数，function 创建的 组件，没有自己的生命周期函数；
 
-##### 组件内行内的样式
+##### 组件的样式
+
+###### 组件内行内的样式
 
 -   写行内样式 外层 {} jsx语法的标志，内层的 {} 表示的是 js 对象
     -   即：行内样式书写时，值为 一个对象
@@ -439,4 +441,105 @@ export default {
   h3Style: { fontSize: 14, color: 'red', fontWeight: 200 }
 }
 //#endregion
+```
+
+###### css 的模块化
+
+> 在 组件内部 引入 css 样式，父组件的样式与子组件的样式会冲突
+
+1.  启动 css 模块化
+
+    -   修改 webpack.config.js 有关 css 的配置信息
+
+    ```js
+    {
+      test: /\.css$/,
+      use: [
+        { loader: 'style-loader' },
+        {
+          loader: 'css-loader',
+          options: { // 使用 css 的模块化，会对 className 类名 重命名，此配置为：优化命名名称（webpack4书写规则）
+            modules: { localIdentName: '[name]-[local]-[hash:5]' }
+          }
+        }
+      ]
+    }
+    ```
+
+2.  模块化 实例
+
+    ```js
+    import React from 'react'
+    // 使用此方式引入，是 css 模块化的方式， 此时的类是私有的，会将类名重新命名
+    import itemStyles from '../../css/commentItem.css'
+
+    export default function CmtItem(props) {
+      return (
+        // 将重新命名的类 与 className 衔接代替之前的 "box"
+        <div className={itemStyles.box}>
+          <h2 className={itemStyles.title}>{props.user}</h2>
+          <h3 className={itemStyles.body}>{props.content}</h3>
+        </div>
+      )
+    }
+    ```
+
+    ```css
+    /*#region commentItem.css 样式表 */
+    .box {
+      padding-left: 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 6px #ccc;
+    }
+    /* 可以使用 :global() 的方式将该类全局暴露，此时的类不在私有，不会被重命名，上文中的 itemStyle.title 无效*/
+    /* 等同于未模块化的效果 className = "title" 即可实现效果*/
+    :global(.title) {
+      font-size: 16px;
+      color: purple;
+    }
+    .title{
+      color: green;
+    }
+    .body {
+      font-size: 14px;
+      color: red;
+    }
+    /*#endregion */
+    ```
+
+##### 组件的生命周期
+
+1.  组件创建阶段：执行一次
+
+    -   componentWillMount：将要挂载
+    -   render
+    -   componentDidMount ：完成挂载
+
+2.  组件运行阶段：根据模块组件的
+
+    -   componentWillReceiveProps：父组件为子组件传递传递新的属性值 即触发
+    -   shouldComponentUpdate：尚未被更新，state props 是最新的
+    -   componentWillUpdate：尚未开始更新，虚拟DOM为旧的
+    -   render
+    -   componentDidUpdate：页面重新渲染，state 虚拟DOM 页面保持同步
+
+3.  组件销毁阶段：执行一次 state 和 props 改变，触发0次或多次
+
+    -   componentDidUpdate：组件将要被卸载，组件还可以正常使用
+
+![React-LifeCycle.jpg](http://images.dorc.top/blog/React/React-LifeCycle.jpg)
+
+-   defaultProps
+
+> 在组件创建之前，会先初始化默认的props属性，这是全局调用一次，严格地来说，这不是组件的生命周期的一部分。在组件被创建并加载候，首先调用 constructor 构造器中的 this.state = {}，来初始化组件的状态。
+
+**React生命周期的回调函数总结**
+
+![React-LifeCycle-Table](http://images.dorc.top/blog/React/React-LifeCycle-Table.png)
+
+**实例：**
+
+```jsx
+
 ```
