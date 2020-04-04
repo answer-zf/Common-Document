@@ -202,91 +202,89 @@ ReactDOM.render(div, document.getElementById('app'))
             -   对象：通过向构造函数传递形参（props）,通过 props 接收
                 -   通过 props 获取的值是只读的,不能重新赋值
 
-```js
-const username = 'z...f'
-const person = {
-  age: 30,
-  name: 'zf',
-  address: 'anhui'
-}
-// 组件未分离
-function MyDiv(props) {
-  return (
-    <div>
-      <h1>
-        this.is.component
-        {username}
-        {props.name}
-        {props.address}
-      </h1>
-    </div>
-  )
-}
-// end - 组件未分离
+        ```js
+        const username = 'z...f'
+        const person = {
+          age: 30,
+          name: 'zf',
+          address: 'anhui'
+        }
+        // 组件未分离
+        function MyDiv(props) {
+          return (
+            <div>
+              <h1>
+                this.is.component
+                {username}
+                {props.name}
+                {props.address}
+              </h1>
+            </div>
+          )
+        }
+        // end - 组件未分离
 
-// 组件分离
-// - mini.js
-import React from 'react'
-function Person(props) {
-  return (
-    <div>
-      <h1>this.is h1 {props.name}</h1>
-      <p></p>
-    </div>
-  )
-}
-export default Person
-// - end - mini.js
-import Person from './components/mini.jsx'
-// end - 组件分离
-ReactDOM.render(
-  <div>
-    <MyDiv {...person}></MyDiv>
-    <Person {...person}></Person>
-  </div>,
-  document.getElementById('app')
-)
-```
+        // 组件分离
+        // - mini.js
+        import React from 'react'
+        function Person(props) {
+          return (
+            <div>
+              <h1>this.is h1 {props.name}</h1>
+              <p></p>
+            </div>
+          )
+        }
+        export default Person
+        // - end - mini.js
+        import Person from './components/mini.jsx'
+        // end - 组件分离
+        ReactDOM.render(
+          <div>
+            <MyDiv {...person}></MyDiv>
+            <Person {...person}></Person>
+          </div>,
+          document.getElementById('app')
+        )
 
-##### 以 class 关键字的方式创建
+    ##### 以 class 关键字的方式创建
 
-**前提**
+    **前提**
 
-    - class 基本使用
+        - class 基本使用
 
-      -  面向对象的语言有三部分组成：封装、继承、多态
-          -  封装：class 的类、方法 都属于封装
-          -  继承：子类继承父类的属性和方法
-          -  多态：父类只定义 方法的名称和作用，但不定义具体的实现逻辑，由子类继承后自己实现后才调用
+          -  面向对象的语言有三部分组成：封装、继承、多态
+              -  封装：class 的类、方法 都属于封装
+              -  继承：子类继承父类的属性和方法
+              -  多态：父类只定义 方法的名称和作用，但不定义具体的实现逻辑，由子类继承后自己实现后才调用
 
-```js
-class Person {
-  static info = 'this.is.person'
-  constructor(name, age) {
-    this.name = name
-    this.age = age
-  }
-  say() {
-    console.log('ok')
-  }
-}
-class Chinese extends Person {
-  // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
-  static cInfo = 'this.is.chinese'
-  constructor(name, age, color, lang) {
-    super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
-    this.color = color
-    this.lang = lang
-  }
-}
+    ```js
+    class Person {
+      static info = 'this.is.person'
+      constructor(name, age) {
+        this.name = name
+        this.age = age
+      }
+      say() {
+        console.log('ok')
+      }
+    }
+    class Chinese extends Person {
+      // 使用 extends 实现继承，entends 的前面是子类， 后面是父类
+      static cInfo = 'this.is.chinese'
+      constructor(name, age, color, lang) {
+        super(name, age) // 使用 extends 实现了继承，在子类的 constructor 构造函数中必须显示调用 super() 方法，super() 是父类 constructor的引用
+        this.color = color
+        this.lang = lang
+      }
+    }
 
-const p1 = new Person('zf', 16)
-console.log(p1)
+    const p1 = new Person('zf', 16)
+    console.log(p1)
 
-const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
-console.log(c1)
-console.log(Chinese.info)
-```
+    const c1 = new Chinese('zzzzz', 1666, 'yellow', 'english')
+    console.log(c1)
+    console.log(Chinese.info)
 
     - 组件的创建
 
