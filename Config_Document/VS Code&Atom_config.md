@@ -4,11 +4,11 @@
 
 ### VS Code
 
-**token：0e233203e4d00e6103a766ef027f1ae134adc724**
+**sync.gist.id：42cafa1971c8eabf28258d9dd154f762**
 
 ### Atom
 
-**token：fb0982f3ff5558c5df09bf641311a3ec509aa419**
+**sync.token：6abd13e01b3fa94069f5122f59a32cec7315dc57**
 
 ## Atom 相关
 
@@ -17,7 +17,8 @@
 | 快捷键              | 作用            |
 | :--------------- | :------------ |
 | Ctrl + atl + /   | markdown 打开视图 |
-| Ctrl + atl   | 菜单栏显示/隐藏 |
+| Ctrl + atl + ,   | 选中括号内内容       |
+| Ctrl + atl       | 菜单栏显示/隐藏      |
 | Ctrl + shift + M | 合并行           |
 
 ### 重要信息
@@ -26,8 +27,8 @@
 "exception-reporting":
   userId: "3834aca1-c9bc-45f9-934b-5e9b8738cb9f"
 "sync-settings":
-  gistId: "f73657d005d7fad341ae979a7bde11a9"
-  personalAccessToken: "fb0982f3ff5558c5df09bf641311a3ec509aa419"
+  gistId: "ef8497cfe8c9ecf9eaa5244c957d7c54"
+  personalAccessToken: "6abd13e01b3fa94069f5122f59a32cec7315dc57"
 ```
 
 ## VS Code 相关
@@ -141,7 +142,7 @@ eslint --init
 
 ### VS Code settings.json 的配置备份
 
-```json
+```js
 {
   "files.associations": {
     "*.wxml": "wxml",
@@ -165,7 +166,6 @@ eslint --init
   "editor.renderWhitespace": "all", // 显示空格
   "editor.fontFamily": "'Fira Code','Source Code Pro', 'STZhongsong'", // 字体设置
   "editor.fontLigatures": true, // 配置连体字
-  "sync.gist": "b07dd1e2ff5feaf41148e110da3db5fe", // 系统配置同步码
   "emmet.triggerExpansionOnTab": true, // emmet 语法
   "emmet.includeLanguages": {
     "javascript": "javascriptreact",
@@ -183,12 +183,6 @@ eslint --init
   },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
   },
   "eslint.validate": [
     // 添加 vue 支持
@@ -235,6 +229,7 @@ eslint --init
   "html.format.wrapAttributes": "force-aligned",
   "search.followSymlinks": false,
   "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
     // 自定义 md 代码段
     "editor.formatOnSave": true,
     "editor.renderWhitespace": "all",
@@ -250,6 +245,15 @@ eslint --init
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "typescript.validate.enable": false,
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "sync.gist": "42cafa1971c8eabf28258d9dd154f762"
 }
 ```
