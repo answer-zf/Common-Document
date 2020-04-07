@@ -781,14 +781,88 @@ class Grandson extends React.Component {
 
 1.  安装
     -   `npm install react-router-dom -S`
-2.  按需导入
+2.  基本使用：按需导入
+
     -   `import { HashRouter, Route, Link } from 'react-router-dom'`
         -   HashRouter：路由的根容器，一个网站只是用一次
-        -   Route：路由规则
-            -   path
-            -   component:
+            -   当使用 HashRouter 把 APP 根组件元素包裹起来后，网站就已启用路由
+            -   HashRouter 内部只能有为唯一一个 根元素
+        -   Route：路由规则，其中有两个重要的属性：
+            -   path / component 作用类似 vue 中的 route 的配置
+            -   Route 标签的作用 等价于 vue 中的 Router-view 标签的作用（路由‘占位符’）
         -   Link：路由链接 => vue 中的 `<router-link to=""></router-link>`
-3.  
+
+    ```jsx
+    import React from 'react'
+    import { HashRouter, Route, Link } from 'react-router-dom'
+
+    import Home from './components/Home.jsx'
+    import About from './components/About.jsx'
+    import Contact from './components/Contact.jsx'
+
+    export default class App extends React.Component {
+      constructor(props) {
+        super(props)
+        this.state = {}
+      }
+      render() {
+        return (
+          <HashRouter>
+            <div>
+              <h1>App.jsx</h1>
+              <hr />
+              <Link to="/home">home</Link>&nbsp;&nbsp;
+              <Link to="/about">about</Link>&nbsp;&nbsp;
+              <Link to="/contact">contact</Link>&nbsp;&nbsp;
+              <hr />
+              <Route path="/home" component={Home}></Route>
+              <Route path="/about" component={About}></Route>
+              <Route path="/contact" component={Contact}></Route>
+            </div>
+          </HashRouter>
+        )
+      }
+    }
+    ```
+
+3.  路由传参
+
+    -   默认情况下路由是模糊匹配的，路由部分匹配成功，就展示路由对应的组件，开启精确匹配，添加属性 exact
+    -   匹配参数，可以在匹配规则中使用 `:` 修饰符，表示匹配参数
+        -   `<Route path="/about/:type/:id" component={About} exact></Route>`
+    -   在路由模块中匹配参数使用：`this.props.match.params.参数名`
+
+## React fetch
+
+> 在 React 中，使用 fetch API 获取数据（基于 promise 封装）
+
+```jsx
+componentWillMount() {
+  // 使用 fetch API 第一个 .then 获取不到数据，拿到的是 response 对象
+  fetch('https://douban.uieee.com/v2/movie/in_theaters')
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => console.log(data))
+}
+```
+
+> 默认的window.fetch 受到跨域限制无法使用，跨域时使用 fetch-jsonp ，用法与浏览器内置的 fetch 完全兼容
+
+安装：`npm i fetch-jsonp -S`
+
+# Ant Design
+
+1.  安装：`npm install antd -S`
+
+2.  使用前配置， 取消对 css 的模块化，开启对 scss 的模块化
+
+    -   原因：一般情况下，第三方UI组件都是以 .css 结尾
+
+3.  按需导入：
+    -   安装插件：`npm i babel-plugin-import -D`
+    -   在.babelrc 的 plugins 中添加 `["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css"}]`
+    -   然后只需从 antd 引入模块即可，无需单独引入样式
 
 # ReactNative
 

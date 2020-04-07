@@ -1,3 +1,19 @@
+## emmet 语法进阶版
+
+属性：`[]`
+序号递增：`$`
+文本: `{}`
+
+div>a.item$[href="/pic$"]{content$}\*3
+
+```html
+<div>
+  <a href="/pic1" class="item1">content1</a>
+  <a href="/pic2" class="item2">content2</a>
+  <a href="/pic3" class="item3">content3</a>
+</div>
+```
+
 ## html 属性书写顺序规范
 
 1.  class
