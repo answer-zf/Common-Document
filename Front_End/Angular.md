@@ -4,17 +4,17 @@
 
 ### Step 0. 安装依赖环境
 
-1. 安装 Node.js
-2. 安装 npm
-3. 安装 Python（ 使用 Python 2 ）
-   - https://www.python.org/downloads/release/python-2717/
-     - Windows x86-64 MSI installer
-   - 确认 Python 环境 python --version
-4. 安装 C++ 编译工具
+1.  安装 Node.js
+2.  安装 npm
+3.  安装 Python（ 使用 Python 2 ）
+    -   <https://www.python.org/downloads/release/python-2717/>
+        -   Windows x86-64 MSI installer
+    -   确认 Python 环境 python --version
+4.  安装 C++ 编译工具
 
-- Angular CLi 在 Windows 上同时依赖 C++ 编译工具。
-- 执行下面的命名安装 C++ 编译工具：
-  - npm install --global --production windows-build-tools
+-   Angular CLi 在 Windows 上同时依赖 C++ 编译工具。
+-   执行下面的命名安装 C++ 编译工具：
+    -   npm install --global --production windows-build-tools
 
 ### Step1. 安装脚手架工具 Angular CLI
 
@@ -53,7 +53,7 @@
 
 ### 目录结构
 
-> https://www.cnblogs.com/nightnight/p/11186387.html
+> <https://www.cnblogs.com/nightnight/p/11186387.html>
 
 ### angular.json 部分配置
 
@@ -98,9 +98,9 @@
 
 ### 环境
 
-1. 在线测试编译环境 compiler
-   - https://www.typescriptlang.org/play/index.html
-2. 本地开发编译环境
+1.  在线测试编译环境 compiler
+    -   <https://www.typescriptlang.org/play/index.html>
+2.  本地开发编译环境
 
 ```shell
   npm i -g typescript
@@ -161,7 +161,7 @@ zfs = 111
 
 **函数中应用**
 
-- 用于函数的形参
+-   用于函数的形参
 
 ```typescript
 function add(x: number, y: number): number {
@@ -174,7 +174,7 @@ function fn(): void {
 }
 ```
 
-- 可选参数
+-   可选参数
 
 ```typescript
 function add(x: number, y?: number): number {
@@ -182,7 +182,7 @@ function add(x: number, y?: number): number {
 }
 ```
 
-- 默认参数
+-   默认参数
 
 ```typescript
 function add(x: number, y: number = 20): number {
@@ -190,7 +190,7 @@ function add(x: number, y: number = 20): number {
 }
 ```
 
-- 剩余参数
+-   剩余参数
 
 ```typescript
 function sum(...args: number[]): number {
@@ -204,7 +204,7 @@ function sum(...args: number[]): number {
 sum(1, 2, 3)
 ```
 
-- 箭头函数
+-   箭头函数
 
 ```typescript
 let add = (x: number, y: number): number => x + y
@@ -212,7 +212,7 @@ let add = (x: number, y: number): number => x + y
 
 **Null 和 Undefined**
 
-- 和 void 相似，它们的本身的类型用处不是很大：
+-   和 void 相似，它们的本身的类型用处不是很大：
 
 ```typescript
 // 几乎不用
@@ -222,7 +222,7 @@ let n: null = null
 
 #### 接口
 
-- 重用
+-   重用
 
 ```typescript
 interface Person {
@@ -239,7 +239,7 @@ let xyz: Person = {
 
 **数组**
 
-- 数组按照 顺序 解构
+-   数组按照 顺序 解构
 
 ```typescript
 let arr: number[] = [10, 20]
@@ -248,7 +248,7 @@ let [num1, num2, num3] = arr
 
 **对象**
 
-- 对象按照 键名 解构
+-   对象按照 键名 解构
 
 ```typescript
 let obj: {
@@ -334,14 +334,14 @@ class Student extends Person {
 
 ##### 实例成员访问修饰符
 
-- `public` 默认值 公开的
-  - 类的成员默认是对外公开的
-- `private` 私有的
-  - 用来声明私有成员，只能在类的内部访问，外部访问不到
-  - 私有成员 无法继承
-- `protected` 受保护的
-  - 与 private 类似 私有成员，外部无法直接访问，但可以被继承
-- `readonly` 只读的，不允许修改，与 const 定义的常量类似
+-   `public` 默认值 公开的
+    -   类的成员默认是对外公开的
+-   `private` 私有的
+    -   用来声明私有成员，只能在类的内部访问，外部访问不到
+    -   私有成员 无法继承
+-   `protected` 受保护的
+    -   与 private 类似 私有成员，外部无法直接访问，但可以被继承
+-   `readonly` 只读的，不允许修改，与 const 定义的常量类似
 
 ```typescript
 // 类的成员默认是对外公开的
@@ -410,8 +410,8 @@ p1.age = -10 // 运行代码报错，ts 内编译不报错
 
 ##### 实例成员与静态成员
 
-- 实例成员：只能通过 new 出来的实例访问
-- 静态成员：即类本身的成员，只能通过类本身访问
+-   实例成员：只能通过 new 出来的实例访问
+-   静态成员：即类本身的成员，只能通过类本身访问
 
 > 所有的成员默认是实例成员 ，加上 static 关键字，变为静态成员
 
@@ -428,12 +428,12 @@ Person.sayHello()
 
 #### 循环
 
-- forEach
-  - 不支持 break
-- for in
-  - 会把数组当作对象来遍历
-- for of
-  - 支持 break
+-   forEach
+    -   不支持 break
+-   for in
+    -   会把数组当作对象来遍历
+-   for of
+    -   支持 break
 
 ```typescript
 let arr: number[] = [1, 2, 3]
@@ -486,11 +486,11 @@ export class AppComponent {
 }
 ```
 
-- @Component：这是一个 Decorator（装饰器），其作用类似于 Java 里面的注解。Decorator 这个语言特性目前（2017-10）处于 Stage 2（草稿）状态，还不是 ECMA 的正式规范。
-- selector：组件的标签名，外部使用者可以这样来使用这个组件：。默认情况下，ng 命令生成出来的组件都会带上一个 app 前缀，如果你不喜欢，可以在 angular.json 里面修改 prefix 配置项，设置为空字符串将会不带任何前缀。
-- templateUrl：引用外部的 HTML 模板。如果你想直接编写内联模板，可以使用 template，支持 ES6 引入的“模板字符串”写法。
-- styleUrls：引用外部 CSS 样式文件，这是一个数组，也就意味着可以引用多份 CSS 文件。
-- export class AppComponent：这是 ES6 里面引入的模块和 class 定义方式。
+-   @Component：这是一个 Decorator（装饰器），其作用类似于 Java 里面的注解。Decorator 这个语言特性目前（2017-10）处于 Stage 2（草稿）状态，还不是 ECMA 的正式规范。
+-   selector：组件的标签名，外部使用者可以这样来使用这个组件：。默认情况下，ng 命令生成出来的组件都会带上一个 app 前缀，如果你不喜欢，可以在 angular.json 里面修改 prefix 配置项，设置为空字符串将会不带任何前缀。
+-   templateUrl：引用外部的 HTML 模板。如果你想直接编写内联模板，可以使用 template，支持 ES6 引入的“模板字符串”写法。
+-   styleUrls：引用外部 CSS 样式文件，这是一个数组，也就意味着可以引用多份 CSS 文件。
+-   export class AppComponent：这是 ES6 里面引入的模块和 class 定义方式。
 
 ## Project start
 
@@ -695,7 +695,7 @@ export class ContactListComponent implements OnInit {
 
 ### 设置拦截器
 
-1. 添加模块
+1.  添加模块
 
 ```typescript
 // ------------ ./global.interceptor.ts
@@ -726,7 +726,7 @@ export class GlobalInterceptor implements HttpInterceptor {
 }
 ```
 
-2. 模块配置
+2.  模块配置
 
 ```typescript
 // ------------- app.module.ts
@@ -742,12 +742,11 @@ import { GlobalInterceptor } from './global.interceptor'
     { provide: HTTP_INTERCEPTORS, useClass: GlobalInterceptor, multi: true }
   ]
 })
-
 ```
 
 ### 路由守卫（登录验证）
 
-1. 创建路由验证文件
+1.  创建路由验证文件
 
 ```typescript
 // auth-guard.ts
@@ -768,7 +767,7 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-2. 配置
+2.  配置
 
 ```typescript
 // admin-routing.module.ts
@@ -779,7 +778,7 @@ import { AuthGuard } from './auth-guard'
 })
 ```
 
-3. 使用
+3.  使用
 
 ```typescript
 // 在需要使用守卫的路由添加
@@ -793,7 +792,7 @@ const routes: Routes = [
 
 ## 请求
 
-1. 模块配置
+1.  模块配置
 
 ```typescript
 // ------------------- app.module.ts
@@ -806,7 +805,7 @@ import { HttpClientModule } from '@angular/common/http'
 })
 ```
 
-2. 使用配置
+2.  使用配置
 
 ```typescript
 import { HttpClient } from '@angular/common/http'
@@ -816,7 +815,7 @@ export class SignupComponent implements OnInit {
 }
 ```
 
-3. 使用
+3.  使用
 
 ```typescript
   signupHandle() {

@@ -832,6 +832,16 @@ class Grandson extends React.Component {
         -   `<Route path="/about/:type/:id" component={About} exact></Route>`
     -   在路由模块中匹配参数使用：`this.props.match.params.参数名`
 
+4.  编程式导航
+
+```jsx
+pageChangedHandle = (page) => {
+  // 使用 react-router-dom 实现 编程式导航
+  this.props.history.push('/movie/' + this.state.movieType + '/' + page)
+  // window.location.href = '/#/movie/' + this.state.movieType + '/' + page
+}
+```
+
 ## React fetch
 
 > 在 React 中，使用 fetch API 获取数据（基于 promise 封装）
@@ -840,9 +850,7 @@ class Grandson extends React.Component {
 componentWillMount() {
   // 使用 fetch API 第一个 .then 获取不到数据，拿到的是 response 对象
   fetch('https://douban.uieee.com/v2/movie/in_theaters')
-    .then((response) => {
-      return response.json()
-    })
+    .then((response) => return response.json())
     .then((data) => console.log(data))
 }
 ```
@@ -935,6 +943,13 @@ componentWillMount() {
 
 3.  `react-native run-android` , 设备上安装并启动应用
 
+4.  会新增一个新的 node 窗口，此窗口为 ReactNative Package 窗口，作用：实时编译项目源代码，并把编译的结果，应用到手机，随时查看最新的项目代码 效果
+
+    -   实时打包编译代码的功能是个服务，运行中在本机8081端口
+    -   若误关闭窗口、编译时报错，可以在项目根目录中运行 `react-native start` 来重启 ReactNative Package
+
+5.  在项目根目录运行命令行工具，使用 `adb shell input keyevent 82` 可在手机端弹出 reload 选项
+
 [Weex 快速打包](http://weex.apache.org/cn/guide/tools/toolkit.html)
 
 1.  安装依赖:Weex 官方提供了 weex-toolkit 的脚手架工具来辅助开发和调试。首先，你需要最新稳定版的 Node.js 和 Weex CLi。
@@ -943,3 +958,21 @@ componentWillMount() {
 4.  进入到项目的根目录中，打开 cmd 窗口，运行`weex platform add android`安装 android 模板，首次安装模板时，等待时间较长，建议 fq 安装模板
 5.  打开`android studio`中的`安卓模拟器`，或者将`启用USB调试的真机`连接到电脑上，运行`weex run android`，打包部署 weex 项目
 6.  部署完成，查看项目效果
+
+## ReactNative 起步
+
+-   基于 react 框架语法进行开发
+-   RN 提供了移动端专用的一些组件，网页中的 div p img 不能使用，只能使用 RN 固有组件
+-   结合：安卓的 签名打包步骤，并使用 RN 提供的打包命令，进行完整 apk 文件的发布，最终发布出来 Release 版本的项目，可以上传到应用商店；
+
+1.  在 RN 中只能使用 .js 不能使用 .jsx
+2.  RN 常用组件：
+
+    -   布局：View
+    -   文本：Text（文本必须使用text，否则报错）
+
+3.  创建基本RN页面步骤：
+    -   导入 react 包 创建组件
+    -   导入 react-native 包中的 开发组件进行开发、StyleSheet 组件，调用 create 方法创建样式对象
+        -   只能使用 RN库 的提供固有组件，不能使用网页中的任何元素
+    -   使用 react 语法创建出来的组件就是合法的 RN 组件页面
