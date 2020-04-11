@@ -970,6 +970,25 @@ componentWillMount() {
 
     -   布局：View
     -   文本：Text（文本必须使用text，否则报错）
+    -   文本框：TextInput
+    -   图片：Image (引入网络中的图片指定加宽高)
+
+        ```js
+        <Image source={require('./images/text.jpg')}></Image>
+        <Image
+          style={{width: 64, height: 64}}
+          source={{
+            uri: 'http://images.dorc.top/blog/blog-logo.png',
+          }}></Image>
+        ```
+
+    -   按钮：Button
+        -   title：按钮内的文本
+        -   onPress：点击按钮触发的操作
+    -   加载中：ActivityIndicator
+    -   ScrollView（一次渲染全部）：在 RN 中，页面超出屏幕宽度，不会自动提供滚动条，实现页面滚动要使用 SrollView 包裹
+    -   FlatList （渲染可见部分，不可见的用空白代替）： ListView 的升级版 
+
 
 3.  创建基本RN页面步骤：
     -   导入 react 包 创建组件
