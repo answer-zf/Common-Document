@@ -987,7 +987,7 @@ componentWillMount() {
         -   onPress：点击按钮触发的操作
     -   加载中：ActivityIndicator
     -   ScrollView（一次渲染全部）：在 RN 中，页面超出屏幕宽度，不会自动提供滚动条，实现页面滚动要使用 SrollView 包裹
-    -   FlatList （渲染可见部分，不可见的用空白代替）： ListView 的升级版 
+    -   FlatList （渲染可见部分，不可见的用空白代替）： ListView 的升级版
 
 
 3.  创建基本RN页面步骤：
@@ -995,3 +995,95 @@ componentWillMount() {
     -   导入 react-native 包中的 开发组件进行开发、StyleSheet 组件，调用 create 方法创建样式对象
         -   只能使用 RN库 的提供固有组件，不能使用网页中的任何元素
     -   使用 react 语法创建出来的组件就是合法的 RN 组件页面
+
+## 项目
+
+### react-navigation 使用
+
+1.  安装
+
+```bash
+# 安装包
+npm install @react-navigation/native
+
+# 安装依赖
+npm install react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
+
+# 按需安装相应组件
+# tabbar
+npm install @react-navigation/bottom-tabs
+```
+
+2.  项目中导入
+
+`import 'react-native-gesture-handler';`
+
+```js
+//#region 导包部分
+// react navigation 相关导入
+import 'react-native-gesture-handler';
+import React from 'react';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
+
+// 图标库
+import Ionicons from 'react-native-vector-icons/AntDesign';
+//#endregion
+
+//#region 渲染部分
+<NavigationContainer
+  initialRouteName="Home"
+  tabBarOptions={{
+    activeTintColor: '#e91e63',
+  }}>
+  <Tab.Navigator>
+    <Tab.Screen
+      name="Home"
+      component={Home}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({color, size}) => (
+          <Ionicons name="home" color={color} size={size} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Me"
+      component={Me}
+      options={{
+        tabBarLabel: 'Me',
+        tabBarIcon: ({color, size}) => (
+          <Ionicons name="user" color={color} size={size} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
+</NavigationContainer>
+//#endregion
+```
+
+### react-native-vector-icons 图标库使用
+
+1.  安装
+
+    -   `npm install --save react-native-vector-icons`
+
+2.  配置
+
+    -   自动关联：`react-native link react-native-vector-icons`
+    -   配置：
+
+        ```js
+        // 进入android/app/build.gradle文件，添加如下内容：
+        project.ext.vectoricons = [
+            iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ]
+        ]
+        apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+        // 项目中使用
+        import Icon from 'react-native-vector-icons/FontAwesome';
+        // 注意不同的库名不同按需导入，库名对应下面图标名
+        <Icon name={'angle-right'} size={24} color={'#999'} />
+        ```
