@@ -1072,18 +1072,65 @@ import Ionicons from 'react-native-vector-icons/AntDesign';
 
 2.  配置
 
-    -   自动关联：`react-native link react-native-vector-icons`
-    -   配置：
+        -   自动关联：`react-native link react-native-vector-icons`
+        -   配置：
 
-        ```js
-        // 进入android/app/build.gradle文件，添加如下内容：
-        project.ext.vectoricons = [
-            iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ]
-        ]
-        apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+            ```js
+            // 进入android/app/build.gradle文件，添加如下内容：
+            project.ext.vectoricons = [
+                iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ]
+            ]
+            apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
-        // 项目中使用
-        import Icon from 'react-native-vector-icons/FontAwesome';
-        // 注意不同的库名不同按需导入，库名对应下面图标名
-        <Icon name={'angle-right'} size={24} color={'#999'} />
-        ```
+            // 项目中使用
+            import Icon from 'react-native-vector-icons/FontAwesome';
+            // 注意不同的库名不同按需导入，库名对应下面图标名
+            <Icon name={'angle-right'} size={24} color={'#999'} />
+            ```
+
+### 产品发布
+
+-   命令行运行
+    -   `keytool -genkey -v -keystore app.keystore -alias zhoufeng -keyalg RSA -keysize 2048 -validity 10000`
+-   把 app.keystore 文件放到项目文件中的 android/app 文件夹下。
+-   打开项目目录下的 android/app/build.gradle 文件，添加如下的签名配置：
+
+```gradle
+...
+android {
+    ...
+    defaultConfig { ... }
+    signingConfigs {
+        release {
+            keyAlias 'yingqi' //别名
+            keyPassword '123456' //密钥密码 之前设置秘钥口令
+            storeFile file('app.keystore') //my-release-key.keystore文件的绝对路径
+            storePassword '123456' //存储密码
+        }
+    }
+    buildTypes {
+        release {
+            ...
+            minifyEnabled enableProguardInReleaseBuilds // 在 当前文件中，找到变量 enableProguardInReleaseBuilds ,将其值修改为 ue
+            signingConfig signingConfigs.release // 引用签名
+        }
+    }
+}
+...
+```
+
+-   修改应用名称：打开项目目录下的android/app/src/main/res/values/strings.xml文件，修改名称
+
+```xml
+<resources>
+    <string name="app_name">豆瓣</string>
+</resources>
+```
+
+-   修改应用 icon : 将如下文件夹中的 icon 替换成需要修改的图标即可,注意icon大小保持一致
+
+    -   `E:\answer_zf\code\doubanRN\android\app\src\main\res` 下的 `mipmap-***` 文件夹中
+
+-   打包命令：进入根目录下的 Android 中，运行`./gradlew assembleRelease`
+
+    -   Release 发行版存放的目录：`E:\answer_zf\code\doubanRN\android\app\build\outputs\apk\release`
