@@ -1,9 +1,30 @@
+## Browser
+
+### Firefox
+
+| 作用      | 快捷键                                         |
+| :------ | :------------------------------------------ |
+| 前进/退后   | Atl + ←/→ (Backspace/ Shift Backspace)      |
+| 刷新/强制刷新 | Ctrl + R / Ctrl + Shift + R (F5/ Ctrl + F5) |
+| 新标签页    | Ctrl + T                                    |
+| 书签      | Ctrl + B                                    |
+| 历史      | Ctrl + H                                    |
+| 下载      | Ctrl + J                                    |
+| 清除数据    | Ctrl + Shift + Del                          |
+| 选中地址    | Alt + D / F6 / Ctrl + L                     |
+| setting | 地址栏输入：about:preferences                     |
+
+### Chrome
+
+```shell
+# console 命令行截图    ==>     Capture node screenshot
+```
+
 ## Dos 常用命令
 
 ### CMD 操作类
 
 ```shell
-
 # 切盘
 $ D:
 
@@ -22,7 +43,6 @@ $ cls
 ### 目录操作类
 
 ```shell
-
 #显示目录
 $ dir   ## 详细
 
@@ -38,13 +58,11 @@ $ cd 目录名
 
 #树形图显示目录结构
 $ tree
-
 ```
 
 ### 文件操作类
 
 ```shell
-
 # 重名名文件
 $ ren
 
@@ -61,20 +79,16 @@ $ del 文件名
 # 创建文件
 $ echo on > a.txt
 
-
-
 # 向文件添加内容 （覆盖）
 $ echo 内容 > a.txt
 
 # 向文件添加内容 （向后追加）
 $ echo 追加 >> a.txt
-
 ```
 
 ### 服务操作类
 
 ```shell
-
 # 查询服务
 $ sc query MySQL
 
@@ -89,7 +103,6 @@ $ sc delete MySQL
 
 # 查询端口情况
 $ netstat -ano
-
 ```
 
 ## Linux
@@ -97,7 +110,6 @@ $ netstat -ano
 Git Bash / Cmder 可以模拟 Linux 环境，在 Windows 操作
 
 ```bash
-
 # 清屏
 clear
 
@@ -134,13 +146,11 @@ i 					# 进入插入模式
 :w 					# 保存编辑
 :wq 				# 保存并退出
 :q! 				# 强制退出不保存修改
-
 ```
 
 ## Window
 
 ```shell
-
 sysdm.cpl  cmd 开启服务
 
 # 强制删除  =>  SHFIT + delete
@@ -164,11 +174,9 @@ sysdm.cpl  cmd 开启服务
 # 自定义截图		   ==>   WIN + SHFIT +S
 ```
 
-```
-win + Ctrl + D       新建桌面
-win + Ctrl + 方向键   切换桌面
-win + tab						 列表
-```
+    win + Ctrl + D       新建桌面
+    win + Ctrl + 方向键   切换桌面
+    win + tab						 列表
 
 ## Sublime
 
@@ -193,17 +201,6 @@ code .
 # ==>侧边栏目录下子文件右键选项   Find Advanced  >  In Parent Folder
 
 # 打开所在目录		==>    右击文件选  Reveal
-
-```
-
-## Browser
-
-### Chrome
-
-```shell
-
-# console 命令行截图    ==>     Capture node screenshot
-
 ```
 
 ### 搜索栏技巧
@@ -216,9 +213,8 @@ code .
 $ 关键词 + site:cnblogs.com
 
 # 限定在 cnblogs.com 搜索
-
 ```
 
 ## 右键菜单分栏设置地址
 
-> HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\
+> HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CommandStore\\shell\\
