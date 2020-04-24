@@ -164,6 +164,21 @@ else:
     print("...")
 ```
 
+-   真值表达式：
+    -   if 条件可以为 非布尔变量，python 自动转化为 bool
+-   条件表达式：
+    -   语法：`variable` = `result1` if `condition` else `result2`
+
+3.  循环
+
+```py
+while condition:
+    result
+    if exit_condition:
+        break # 退出循环体
+# while True => 死循环，后续代码不再执行
+```
+
 ### del 语句
 
 1.  作用： del 语句可以删除变量

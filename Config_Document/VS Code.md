@@ -1,41 +1,12 @@
-# VS Code & Atom 配置
+# VS Code
 
 ## Setting Sync：远程配置同步插件的 token：
 
-### VS Code
-
 **sync.gist.id：42cafa1971c8eabf28258d9dd154f762**
 
-### Atom
+## 字体：[FiraCode](https://github.com/tonsky/FiraCode)
 
-**sync.token：6abd13e01b3fa94069f5122f59a32cec7315dc57**
-
-## Atom 相关
-
-### shortcut
-
-| 快捷键              | 作用            |
-| :--------------- | :------------ |
-| Ctrl + atl + /   | markdown 打开视图 |
-| Ctrl + atl + ,   | 选中括号内内容       |
-| Ctrl + atl       | 菜单栏显示/隐藏      |
-| Ctrl + shift + M | 合并行           |
-
-### 重要信息
-
-```json
-"exception-reporting":
-  userId: "3834aca1-c9bc-45f9-934b-5e9b8738cb9f"
-"sync-settings":
-  gistId: "ef8497cfe8c9ecf9eaa5244c957d7c54"
-  personalAccessToken: "6abd13e01b3fa94069f5122f59a32cec7315dc57"
-```
-
-## VS Code 相关
-
-### 字体：[FiraCode](https://github.com/tonsky/FiraCode)
-
-### vue 代码时使用 eslint
+## vue 代码时使用 eslint
 
 ```shell
 # 安装
@@ -51,11 +22,11 @@ eslint --init
 
 [选项配置信息](https://blog.csdn.net/Gabriel_wei/article/details/90269165)
 
-### shortcut
+## shortcut
 
-#### 代码操作
+### 代码操作
 
-##### 光标
+#### 光标
 
 | 快捷键                 | 作用                  |
 | :------------------ | :------------------ |
@@ -64,14 +35,14 @@ eslint --init
 | Shift + Alt + i     | （所选区域）每一行的末尾都创建一个光标 |
 | Esc                 | 取消多选光标              |
 
-##### 删除
+#### 删除
 
 | 快捷键                       | 作用                |
 | :------------------------ | :---------------- |
 | Ctrl + Backspace / Delete | 删除光标之 前 / 后 的一个单词 |
 | Ctrl + Shift + K          | 删除整行              |
 
-##### 编辑
+#### 编辑
 
 | 快捷键                  | 作用          |
 | :------------------- | :---------- |
@@ -81,7 +52,7 @@ eslint --init
 | Shift + Alt + ↑ / ↓  | 将代码向上 / 下复制 |
 | Ctrl + J             | 合并行         |
 
-##### 折叠代码
+#### 折叠代码
 
 | 快捷键                  | 作用              |
 | :------------------- | :-------------- |
@@ -89,22 +60,22 @@ eslint --init
 | Ctrl + K Ctrl + 3    | 折叠所有 （html）     |
 | Ctrl + K Ctrl + J    | 展开 所有           |
 
-##### F 键
+#### F 键
 
 | 快捷键 | 作用          |
 | --- | ----------- |
 | F4  | 匹配下一个       |
 | F12 | html 跳转 css |
 
-##### 终端
+#### 终端
 
 | 快捷键               | 作用  |
 | ----------------- | --- |
 | Ctrl + \` \| 打开终端 |     |
 
-#### 编辑器
+### 编辑器
 
-##### 基本操作
+#### 基本操作
 
 | 快捷键                              | 作用               |
 | -------------------------------- | ---------------- |
@@ -114,7 +85,7 @@ eslint --init
 | Ctrl + G                         | 跳转到指定行           |
 | Ctrl + shift + O                 | 在当前文件的各种方法之间进行跳转 |
 
-##### 分屏
+#### 分屏
 
 | 快捷键                         | 作用    |
 | --------------------------- | ----- |
@@ -123,9 +94,9 @@ eslint --init
 | Ctrl + 1 / 2                | 切换分屏  |
 | Ctrl + W                    | 关闭编辑器 |
 
-#### 插件
+### 插件
 
-##### quokka （ JS TS 辅助 ）
+#### quokka （ JS TS 辅助 ）
 
 | 快捷键        | 作用                           |
 | ---------- | ---------------------------- |
@@ -133,14 +104,14 @@ eslint --init
 | Ctrl + K J | 打开新的 quokka 文件 => TypeScript |
 | Ctrl + K T | 在现有文件重新启动                    |
 
-##### Settings Sync（ 配置同步 ）
+#### Settings Sync（ 配置同步 ）
 
 | 快捷键             | 作用   |
 | --------------- | ---- |
 | Shift + Alt + U | 上传配置 |
 | Shift + Alt + D | 下载配置 |
 
-### VS Code settings.json 的配置备份
+## VS Code settings.json 的配置备份
 
 ```js
 {
