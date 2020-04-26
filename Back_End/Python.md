@@ -223,7 +223,9 @@ ontinue: 跳过本次循环，继续下次循环。
 
 ### 容器
 
-#### 字符串
+#### 字符串 str
+
+> 由一系列字符组成的**不可变序列**容器，存储的是字符编码值。
 
 ##### 编码
 
@@ -325,4 +327,88 @@ ontinue: 跳过本次循环，继续下次循环。
 "abcde"[::] # "abcde"
 "abcde"[::-1] # "edcba"
 "abcde"[-2:-5:-1] # "dcb"
+"abcde"[3:1] # 空
+"abcde"[3:1:-1] # "dc"
+"abcde"[-2:] # "de"
+"abcde"[1:1] # 空
 ```
+
+##### 内建函数
+
+-   len(容器)  返回容器长度
+-   sum(容器)  返回容器所有元素的累加和（元素必须是数值）
+-   max(容器)  返回容器中最大的元素
+-   min(容器)  返回容器中最小的元素
+
+
+#### 列表 list
+
+> 由一系列变量组成的**可变序列**容器。
+
+-   创建：
+    -   [元素]   
+    -   list(可迭代对象)
+-   添加元素
+    -   追加：list01.append(元素)
+    -   插入：list01.inset(index, 元素)
+-   删除元素
+    -   移除指定元素：list01.remove(元素)
+    -   删除指定索引元素：del list01[0]
+-   修改元素、获取元素 => 使用 索引、切片 定位到元素操作
+
+```python
+listtext = [1, 2, 3, "a", True, "d"]
+listtext[:3] = ["x", "y", "z", "z", "f"] # ['x', 'y', 'z', 'z', 'f', 'a', True, 'd']
+listtext[:3] = ["x"] # ['x', 'a', True, 'd']
+
+# 正
+for i in range(len(listtext)):
+    print(listtext[i])
+# 跳
+for i in range(0, len(listtext), 2):
+    print(listtext[i])
+# 倒
+for i in range(len(listtext) - 1, -1, -1):
+    print(listtext[i])
+```
+
+**经典案例：找最大/小值**
+
+```python
+list_num = [23, 123, 44, 1, 4, 2, 55, 234, 123, 532, 23]
+
+max_num = list_num[0]
+
+for i in range(1, len(list_num)):
+    if list_num[i] > max_num:
+        max_num = list_num[i]
+print(max_num)
+```
+
+##### 与字符串联系
+
+1.  列表和字符串都是序列，元素之间有先后顺序。
+2.  字符串时不可变的序列，列表可变。
+3.  字符串中每个元素存储字符，而列表可以存储任意类型对象。
+4.  列表和字符串都属于可迭代对象。
+5.  关联：
+
+    -   将多个字符串拼接为一个。
+        -   result = "连接符".join(列表)
+    -   将一个字符串拆分为多个。
+        -   列表 = "a-b-c-d".split("分隔符")
+    
+    ```python
+    # 此方式耗内存,耗能
+    result = ""
+    for item in range(10):
+        result += str(item)
+    print(result)
+
+    # 最优解
+    list_result = []
+    for item in range(10):
+        list_result.append(str(item))
+    str_result = "-".join(list_result)
+    print(str_result)
+    ```
