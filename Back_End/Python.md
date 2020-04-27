@@ -355,6 +355,14 @@ ontinue: 跳过本次循环，继续下次循环。
     -   移除指定元素：list01.remove(元素)
     -   删除指定索引元素：del list01[0]
 -   修改元素、获取元素 => 使用 索引、切片 定位到元素操作
+-   遍历使用 for 循环结合 range
+-   排序：list01.sort()
+    -   指定范围排序：
+    ```python
+    temp = list01[:4]
+    temp.sort()
+    list01[:4] = temp
+    ```
 
 ```python
 listtext = [1, 2, 3, "a", True, "d"]
@@ -412,3 +420,77 @@ print(max_num)
     str_result = "-".join(list_result)
     print(str_result)
     ```
+
+##### 列表操作原理（内存图）
+
+```python
+list01 = [0, 1]
+list02 = list01
+list01[0] = 100
+print(list02[0])
+```
+
+**内存图**
+
+![Python-MemoryAllocationMap-_List01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List01.jpg)
+
+```python
+list01 = [0, 1]
+list02 = list01
+list01 = [100]
+print(list02[0])
+```
+
+**内存图**
+
+![Python-MemoryAllocationMap-_List02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List02.jpg)
+
+```python
+list01 = [0, 1]
+list02 = list01[:] # list02 = list01.copy()
+list01[0] = 100
+print(list02[0])
+```
+
+**内存图**
+
+![Python-MemoryAllocationMap-_List03](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List03.jpg)
+
+##### 深拷贝和浅拷贝
+
+>   浅拷贝：在复制过程中，只复制一层变量。不会复制深层变量绑定的对象。
+>   深拷贝：复制整个依赖的变量。
+
+**浅拷贝内存图**
+
+![Python-MemoryAllocationMap-_List04](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List04.jpg)
+
+**深拷贝使用**
+
+```python
+import copy
+
+list01 = [1, [2, 3]]
+list02 = copy.deepcopy(list01)
+list01[1][0] = 200
+print(list02[1][0])
+
+```
+
+##### 列表推导式
+
+1.  语法：
+    -   变量 = [表达式 for 变量 in 可迭代对象]
+    -   变量 = [表达式 for 变量 in 可迭代对象 if 条件]
+
+2.	作用：使用简易方法，将可迭代对象转生成为列表
+
+```python
+# 示例
+list01 = [2, 5, 6, 7, 8, 9]
+# list02 = []
+# for item in list01:
+#     if not item % 2:
+#         list02.append(item**2)
+list03 = [item**2 for item in list01 if not item % 2]
+```
