@@ -346,8 +346,10 @@ ontinue: 跳过本次循环，继续下次循环。
 > 由一系列变量组成的**可变序列**容器。
 
 -   创建：
-    -   [元素]   
-    -   list(可迭代对象)
+    -   创建空元组：list01 = [] / list()  
+    -   创建有默认值的元组：list01 = [1,2,3] / list("agasdg")
+        -   [元素]   
+        -   list(可迭代对象)
 -   添加元素
     -   追加：list01.append(元素)
     -   插入：list01.inset(index, 元素)
@@ -493,4 +495,79 @@ list01 = [2, 5, 6, 7, 8, 9]
 #     if not item % 2:
 #         list02.append(item**2)
 list03 = [item**2 for item in list01 if not item % 2]
+```
+
+##### 列表扩容原理
+
+-   开辟更大的空间
+-   将原数据拷贝过来
+-   替换表头地址
+
+![Python-MemoryAllocationMap-_List05](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List05.jpg)
+
+#### 元组 tuple
+
+> 由一系列变量组成的**不可变序列**容器。
+
+1.  创建空元组：t01 = () / tuple()
+2.  创建有默认值的元组：t01 = (1,2,3) / tuple("agasdg")
+    -   (元素)   
+    -   tuple(可迭代对象)
+3.  作用
+    -   元组与列表都可以存储一系列变量。
+    -   列表会预留内存空间，所以可以增加。
+    -   元组会按需分配内存，建议变量数据固定时使用元组，因为通常占用空间小。
+4.  如果元组只有一个元素必须在元素后加一个","，否则视为普通对象不是元组对象。
+
+#### 字典 dict
+
+1.  定义
+-   由一系列键值对组成的可变映射容器。
+-   映射(哈希算法)：通过键对应值，每条记录无序。
+-   键必须唯一且不可变对象(字符串、数字、元组)，值没有限制。
+2.  创建
+-   创建空字典：d01 = {} / dict()
+-   创建有默认值的字典：d01 = {"a": "A", "b": "B"} / dict([(1, 2), (3, 4)])
+    -   {键1：值1，键2：值2}   
+    -   dict(可迭代对象)
+3.   添加/修改：
+-   字典[键] = 表达式
+-   说明：键不存在则创建，键存在则修改。
+4.  获取值：
+-   字典[键]
+-   说明：如果不存在键，则错误。
+    -   在字典中读取元素，先判断存在，再读取
+5.  删除：
+-   del 字典[键]
+6.  获取字典所有记录
+```python
+# for item in d01.items():
+#     print(item[0]) # key
+#     print(item[1]) # value
+
+# 获取字典所有记录
+for k, v in d01.items():
+    print(k) # key
+    print(v) # value
+
+# 获取字典所有键
+for k in d01.keys():
+    print(k) # key
+
+# 获取字典所有值
+for v in d01.values():
+    print(k) # key
+```
+
+7.  示例：
+
+```python
+input_string = input("")
+d01 = {}
+for item in input_string:
+    if item not in d01:
+        d01[item] = 1
+    else:
+        d01[item] += 1
+print(d01)
 ```
