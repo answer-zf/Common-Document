@@ -542,6 +542,7 @@ list03 = [item**2 for item in list01 if not item % 2]
 5.  删除：
 -   del 字典[键]
 6.  获取字典所有记录
+
 ```python
 # for item in d01.items():
 #     print(item[0]) # key
