@@ -571,3 +571,14 @@ for item in input_string:
         d01[item] += 1
 print(d01)
 ```
+
+8.  字典推导式
+
+```python
+dic01 = {}
+# for item in range(10):
+#     if not item % 2:
+#         dic01[item] = item**2
+
+dic01 = {item: item**2 for item in range(10) if not item % 2}
+```

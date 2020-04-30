@@ -47,8 +47,7 @@ git init 项目名称
 git config --global user.name "answer-zf"
 
 # 配置用户邮箱
-git config --global user.email "feng18255163789@gmail"
-
+git config --global user.email "feng18255163789@gmail.com"
 # 设置 gitk 图形查看工具中文显示默认编码（防止乱码）
 git config --global gui.encoding utf-8
 
