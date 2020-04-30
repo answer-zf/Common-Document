@@ -281,7 +281,7 @@ ontinue: 跳过本次循环，继续下次循环。
             -   与 round() 的区别 功能相同
             -   round() 改变数值
 
-    -   类型码: s(字符串) d(整数) f(fudia)
+    -   类型码: s(字符串) d(整数) f(float)
 
 #### 通用操作
 
@@ -521,6 +521,8 @@ list03 = [item**2 for item in list01 if not item % 2]
 
 #### 字典 dict
 
+![Python-MemoryAllocationMap-_List06](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List06.jpg)
+
 1.  定义
 -   由一系列键值对组成的可变映射容器。
 -   映射(哈希算法)：通过键对应值，每条记录无序。
@@ -581,4 +583,8 @@ dic01 = {}
 #         dic01[item] = item**2
 
 dic01 = {item: item**2 for item in range(10) if not item % 2}
+# 键值反转，值不重复
+dic02 = {values: keys for keys, values in dic01.items()}
+# 键值反转，值重复，不希望被覆盖
+dic03 = [(values, keys) for keys, values in dic01.items()]
 ```
