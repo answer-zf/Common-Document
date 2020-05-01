@@ -485,7 +485,7 @@ print(list02[1][0])
     -   变量 = [表达式 for 变量 in 可迭代对象]
     -   变量 = [表达式 for 变量 in 可迭代对象 if 条件]
 
-2.	作用：使用简易方法，将可迭代对象转生成为列表
+2.  作用：使用简易方法，将可迭代对象转生成为列表
 
 ```python
 # 示例
@@ -495,6 +495,20 @@ list01 = [2, 5, 6, 7, 8, 9]
 #     if not item % 2:
 #         list02.append(item**2)
 list03 = [item**2 for item in list01 if not item % 2]
+```
+
+3. 列表推导式嵌套
+
+```python
+list01 = ["a", "b", "c"]
+list02 = ["A", "B", "C"]
+list03 = []
+# 全排列
+# for i in list01:
+#     for j in list02:
+#         list03.append(i + j)
+list03 = [i + j for i in list01 for j in list02]
+print(list03)
 ```
 
 ##### 列表扩容原理
@@ -624,3 +638,32 @@ dic03 = [(values, keys) for keys, values in dic01.items()]
 
 -   创建空集合：frozenset()
 -   创建具有默认值的集合：frozenset(可迭代对象)
+
+#### 双层 for 循环
+
+```python
+for row in range(3):
+    for column in range(5):
+        print("*", end="")  # 在一行输出
+    print()  # 换行
+
+# ------- 提升
+num = input("")
+status = False
+for i in range(len(num) - 1):
+    for j in range(i + 1, len(num)):
+        if num[i] == num[j]:
+            status = True
+if status:
+    print("no")
+else:
+    print("yes")
+
+# ------- 排序
+list01 = [4, 2, 5, 1, 22, 59, 21, 42, 20]
+for i in range(len(list01) - 1):
+    for j in range(i + 1, len(list01)):
+        if list01[i] < list01[j]:
+            list01[i], list01[j] = list01[j], list01[i]
+print(list01)
+```
