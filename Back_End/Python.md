@@ -667,3 +667,110 @@ for i in range(len(list01) - 1):
             list01[i], list01[j] = list01[j], list01[i]
 print(list01)
 ```
+
+### 函数 function
+
+1.  定义：用于封装一个特定的功能，表示一个功能或行为
+
+    -   函数是可以重复执行的语句块，可以重复调用。
+
+2.  作用：
+
+    -   提高代码的可重用性，可维护性（代码层次结构更清晰）
+
+3.  定义函数：
+
+    1.  语法：
+
+        ```python
+        def 函数名(形参列表):
+		函数体
+        ```
+    
+    2.  说明：
+
+        -   def 关键字，全称 define ，意为”定义”。
+        -   函数名：对函数体中语句的描述，命名规则与变量相同，建议使用动词。
+        -   形参列表：形式参数
+            -   方法定义者 要求 调用者提供 的信息
+        -   函数体：完成该功能的语句。
+
+    3.  函数的第一行语句可以选择性的使用文档字符串存储函数与参数的说明。
+
+4.  函数调用：
+
+    -   语法：函数名(实参列表)
+    -   说明：根据形参传递内容。
+
+5.  返回值：
+
+    1.  定义：方法定义者告诉调用者的结果。
+    2.  语法：在方法体中，通过return关键字指明结果。
+        -   return 结果
+    3.  说明：
+        -   不写 return 关键字，相当于返回 None
+        -   return 还意味着方法结束。
+
+6.  内存图：
+
+```python
+def func01(num01):
+    num01 = 2
+    print("num01: " + str(num01))
+
+
+number01 = 1
+# 调用方法在内存中开辟空间（栈帧）
+# 栈帧中定义该方法内部创建的变量
+# 方法执行完毕后，栈帧立即释放
+func01(number01)
+print("number01: " + str(number01))
+```
+
+![Python-MemoryAllocationMap-_Fun01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun01.jpg)
+
+```python
+def func02(list_target):
+    list_target[0] = 2
+    print("list_target[0]: " + str(list_target[0]))
+
+
+list_number = [1, 2]
+func02(list_number)
+print("list_number[0]: " + str(list_number[0]))
+```
+
+![Python-MemoryAllocationMap-_Fun02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun02.jpg)
+
+**实例以及规范写法**
+```python
+def get_prime_number(star_num, end_num):
+    """
+        生成指定范围内的所有素数
+    :param star_num: 开始
+    :param end_num: 结束
+    :return: 范围内的所有素数
+    """
+    list_prime_number = []
+    for number in range(star_num, end_num + 1):
+        if is_prime(number):
+            list_prime_number.append(number)
+    return list_prime_number
+
+
+def is_prime(number):
+    """
+        判断是否为素数
+    :param number: 需要判断的数
+    :return: bool
+    """
+    if number < 2:
+        return False
+    for i in range(2, number):
+        if number % i == 0:
+            return False
+    return True
+
+
+print(get_prime_number(1, 101))
+```
