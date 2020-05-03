@@ -44,3 +44,7 @@
 | 显示函数信息        | Ctrl + Q           |
 | 函数内显示参数信息  | Ctrl + P           |
 | 提取方法            | Ctrl + Alt + M     |
+
+-   代码显示延迟设置：
+
+    -   `File > settings > Editor > General > Code Completion > Parameter info > show the parameter info popup in 0 ms`

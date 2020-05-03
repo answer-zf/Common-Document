@@ -711,37 +711,6 @@ print(list01)
         -   不写 return 关键字，相当于返回 None
         -   return 还意味着方法结束。
 
-6.  内存图：
-
-```python
-def func01(num01):
-    num01 = 2
-    print("num01: " + str(num01))
-
-
-number01 = 1
-# 调用方法在内存中开辟空间（栈帧）
-# 栈帧中定义该方法内部创建的变量
-# 方法执行完毕后，栈帧立即释放
-func01(number01)
-print("number01: " + str(number01))
-```
-
-![Python-MemoryAllocationMap-_Fun01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun01.jpg)
-
-```python
-def func02(list_target):
-    list_target[0] = 2
-    print("list_target[0]: " + str(list_target[0]))
-
-
-list_number = [1, 2]
-func02(list_number)
-print("list_number[0]: " + str(list_number[0]))
-```
-
-![Python-MemoryAllocationMap-_Fun02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun02.jpg)
-
 **实例以及规范写法**
 ```python
 def get_prime_number(star_num, end_num):
@@ -774,3 +743,176 @@ def is_prime(number):
 
 print(get_prime_number(1, 101))
 ```
+
+#### 函数传参：
+
+1.  实参传递方式 argument
+
+    1.  位置传参:
+        -   实参与形参的位置依次对应
+        -   序列传参
+            -   实参用 * 将序列拆解后与形参的位置依次对应
+            -   可以在运行时，根据某些逻辑决定传入的数据（列表）
+    2.  关键字传参：
+        -   实参根据形参的名字进行对应 `fun01(a=1, b=2, c=3)`
+        -   字典传参
+            -   实参用 ** 将字典拆解与形参的名字进行对应。
+            -   可以在运行时，根据某些逻辑决定传入的数据（字典）
+
+2.  形参传递方式 parameter
+    
+    -   默认(缺省)参数：让调用者可以有选择性的传递需要的信息
+        1.  语法：
+            def 函数名(参数1 = 默认值1):
+                函数体
+        2.  说明：
+            -   缺省参数必须自右至左依次存在，如果一个参数有默认值，则右侧所有参数必须都有默认值。
+            -   缺省参数可以有0个或多个
+
+    -   位置形参
+        -   星号元组形参
+            1.  语法：
+                def 函数名(*args):
+                    函数体
+            2.  作用：收集多余的位置形参
+            3.  说明：
+                -   一般命名为 *args
+                -   形参列表最多只能有一个
+                -   在方法内部，就是元组
+                -   对调用者而言，**可以传递数量无限的位置实参**
+
+    -   命名关键字形参
+        1.  语法：
+            def 函数名(*,参数名):
+                函数体
+            def 函数名(*args,参数名):
+                函数体
+        2.  作用：强制实参使用关键字传递
+        3.  双星号字典形参
+            1.  语法：
+                def 函数名(**kwargs):
+                    函数体
+            2.  作用：收集多余的关键字传参
+            3.  说明：
+                -   一般命名 kwargs
+                -   形参列表中最多只能有一个
+                -   在方法内部，就是字典
+                -   对调用者而言，**可以传递数量无限的关键字实参**
+            ```python
+            def keywords(**kwargs):
+                print(kwargs)
+
+
+            keywords(a="c", b=1, c=23)
+            ```
+
+3.  参数自左至右的顺序
+
+    位置形参 --> 星号元组形参 --> 命名关键字形参 --> 双星号字典形参
+
+4.  可变/不可变类型在传参时的区别：
+
+    1.  不可变类型参数：
+        -   数值型：整数、浮点数、复数 
+        -   布尔值 bool
+        -   空值 None
+        -   字符串 str
+        -   元组  tuple
+        -   固定集合 frozenset
+    2.  可变类型参数：
+        -   列表 list
+        -   字典 dict
+        -   集合 set
+        -   字节数组 bytearray
+    3.  传参说明：
+        -   不可变类型的数据传参时，函数内部不会改变原数据的值。
+        -   可变类型的数据传参时，函数内部可能改变原数据的值。
+    4.  内存图：
+
+        **不可变对象传参**
+
+        ```python
+        def func01(num01):
+            num01 = 2
+            print("num01: " + str(num01))
+
+
+        number01 = 1
+        # 调用方法在内存中开辟空间（栈帧）
+        # 栈帧中定义该方法内部创建的变量
+        # 方法执行完毕后，栈帧立即释放
+        func01(number01)
+        print("number01: " + str(number01))
+        ```
+
+        ![Python-MemoryAllocationMap-_Fun01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun01.jpg)
+
+        **可变对象传参**
+
+        ```python
+        def func02(list_target):
+            list_target[0] = 2
+            print("list_target[0]: " + str(list_target[0]))
+
+
+        list_number = [1, 2]
+        func02(list_number)
+        print("list_number[0]: " + str(list_number[0]))
+        ```
+
+        ![Python-MemoryAllocationMap-_Fun02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun02.jpg)
+
+#### 作用域 LEGB
+
+1.  作用域：变量起作用的范围
+    -   Local 局部作用域：函数内部。
+    -   Encolsing 外部嵌套作用域：函数嵌套
+    -   Global 全局作用域：模块(.py)文件内部
+    -   Builtins 内建模块作用域：builtins.py
+
+2.  变量名查找规则：L -> E -> G -> B
+
+3.  全局变量：
+
+    -   定义在函数外部，模块(.py文件)内部的变量
+    -   函数体内部可以访问，但是不能直接修改（需使用global语句声明才能修改）
+    -   global 语句
+        1.  作用：
+            -  在函数内部修改全局变量
+            -  在函数内部定义全局变量（全局声明）
+        2.  语法：global 变量1，变量2
+        3.  说明：
+            -  在函数内部直接为全局变量赋值，视为创建新的局部变量
+            -  不能先声明局部变量，再用 global 声明为全局变量
+
+        ```python
+        g01 = 100
+
+
+        def fun():
+            # 方法内部可以读取全局变量
+            # print(g01)
+
+            # 在方法内部创建了局部变量 g01,没有修改全局变量 g01
+            # g01 = 300
+            # print(g01)
+
+            # 若需要在方法内部，修改全局变量
+            global g01
+            g01 = 400
+
+            # 在局部作用域中，创建全局变量 
+            global g02
+            g02 = 500
+
+
+        fun()
+        print(g01)
+        print(g02)
+        ```
+
+4.  局部变量
+
+    -   在方法体内部定义的变量
+    -   调用函数时才被创建，函数结束后自动销毁
+    -   在方法内部创建的变量，只能在方法内部使用
