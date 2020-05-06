@@ -996,20 +996,20 @@ print(get_prime_number(1, 101))
                 -   作用：表示对象的行为。 
     3.  内存图
 
-    ```python
-    class Car:
-        # self 调用当前方法的对象
-        def __init__(self, name, model, price):
-            self.name = name
-            self.model = model
-            self.price = price
+```python
+class Car:
+    # self 调用当前方法的对象
+    def __init__(self, name, model, price):
+        self.name = name
+        self.model = model
+        self.price = price
 
-        def travel(self):
-            print(self.name, "travel")
+    def travel(self):
+        print(self.name, "travel")
 
 
-    w01 = Car("bm", 12, 10000)
-    w01.travel()
-    ```
+w01 = Car("bm", 12, 10000)
+w01.travel()
+```
 
-    ![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
+![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
