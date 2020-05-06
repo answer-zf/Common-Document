@@ -942,7 +942,7 @@ print(get_prime_number(1, 101))
     ```python
     class 类名: 
 
-    “””文档说明””” 
+    """文档说明"""
 
     def  __init__(self,参数列表): 
 
@@ -971,20 +971,23 @@ print(get_prime_number(1, 101))
         -   说明 
             -   首次通过对象赋值为创建变量，再次赋值为修改。 
                 ```python
-                w01 = Wife() 
-                w01.name = “丽丽” # 创建 
-                w01.name = “莉莉” # 修改 
+                w01 = Car() 
+                w01.name = "bm" # 创建 
+                w01.name = "bc" # 修改 
                 ```
             -   通常在构造函数(__init__)中创建. 
                 ```python
-                w01 = Wife(“丽丽”) 
-                w01.name = “丽丽” # 修改 
+                w01 = Car("bm") 
+                w01.name = "bc" # 修改 
                 ```
             -   每个对象存储一份，通过对象地址访问。 
     2.  实例方法 
         -   语法： 
-            -   定义：def 方法名称(self,参数): 
-                        方法体 
+            -   定义：
+                ```python
+                def 方法名称(self,参数): 
+                    方法体                
+                ```
             -   调用：
                 -   对象地址.实例方法名称(参数) 
                 -   不建议的用法： 
@@ -1013,4 +1016,3 @@ w01.travel()
 ```
 
 ![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
- 
