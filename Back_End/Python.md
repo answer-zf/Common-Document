@@ -1013,3 +1013,4 @@ w01.travel()
 ```
 
 ![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
+ 
