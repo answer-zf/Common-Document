@@ -981,6 +981,8 @@ print(get_prime_number(1, 101))
                 w01.name = "bc" # 修改 
                 ```
             -   每个对象存储一份，通过对象地址访问。 
+            -   __dict__: 对象的属性，用于存储自身是实例变量的字典
+                -   `w01.__dict__`
     2.  实例方法 
         -   语法： 
             -   定义：
@@ -990,12 +992,14 @@ print(get_prime_number(1, 101))
                 ```
             -   调用：
                 -   对象地址.实例方法名称(参数) 
+                    -   通过对象地址调用实例方法，会自动传递对象地址
                 -   不建议的用法： 
                      -   可以通过类名访问，并传递对象地址。 
                      -   类名.实例方法名(对象地址,参数) 
+                     -   通过类名调用实例方法，需手动传递
             -   说明： 
                 -   至少有一个形参，用于绑定调用该方法的对象，一般命名为"self"。 
-                -   **实例方法被所有对象共享.** 
+                -   无论创建多少个对象，方法只有一份，且**实例方法被所有对象共享.** 
                 -   作用：表示对象的行为。 
     3.  内存图
 
@@ -1017,3 +1021,63 @@ w01.travel()
 ```
 
 ![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
+
+3.  类成员
+
+    1.  类变量 
+        -   语法 
+            -   定义：在类中，方法外定义变量 
+            ```py
+            class 类名:
+                类变量名 = 数据
+            ```
+            -   调用：类名.类变量名
+                -   不建议使用对象.类变量名.
+            -   说明 
+                -   存储在类中。
+                -   只有一份，被所有对象共享。
+                -   描述所有对象的共有数据。
+
+    2.  类方法
+        -   语法
+            -   定义
+            ```py
+            @classmethod 
+            def 方法名称(cls,参数): 
+                方法体 
+            ```
+            -   调用：类名.方法名(参数)
+                -   不建议使用对象.类方法名
+            -   说明
+                -   至少有一个形参，用于绑定调用该方法的类，一般命名为” cls”。
+                -   使用@classmethod修饰的目的是调用方法时隐式传递类。
+                -   类方法不能访问实例成员，实例方法可以访问类成员。
+            -   作用：操作类变量
+
+    3.  内存图
+
+```py
+class ICBC:
+    moneys = 9999999
+
+    @classmethod
+    def print_total_money(cls):
+        print(cls.moneys)
+
+    def __init__(self, name, money):
+        self.name = name
+        self.money = money
+        ICBC.moneys -= money
+
+
+i01 = ICBC("zfzhihang", 100000)
+# 调用类变量
+# print(ICBC.moneys)
+# 调用类方法，此时会自动传递类名进入方法
+ICBC.print_total_money()
+
+i02 = ICBC("cfzhihang", 100000)
+ICBC.print_total_money()
+```
+
+![Python-MemoryAllocationMap-_OOP02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP02.jpg)
