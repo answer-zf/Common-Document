@@ -919,7 +919,7 @@ print(get_prime_number(1, 101))
 
 ## 面向对象 Object Oriented
 
-### 类和对象浅析
+### 类和对象的浅析
 
 1.  类：一个抽象的概念，即生活中的”类别” 
     -   例如：学生、水果。 
@@ -1081,3 +1081,75 @@ ICBC.print_total_money()
 ```
 
 ![Python-MemoryAllocationMap-_OOP02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP02.jpg)
+
+4.  静态方法 
+
+    1.  语法 
+        -   定义：
+            ```py
+            @staticmethod
+            def 方法名称(参数):
+                方法体
+            ```
+        -   调用：类名.方法名称(参数) 
+            -   不建议使用对象.静态方法名. 
+        -   说明：
+            -   使用 @staticmethod 修饰的目的是该方法不需要隐式传递参数。 
+            -   静态方法不能访问实例成员和类成员 
+        -   作用：
+            -   统一管理函数(定义在 .py 文件中的函数)  
+            -   表达不需要使用实例成员和类成员时，使用静态方法。
+            -   将函数转移到类中，即静态方法
+    2.  实例
+    ```python
+    class Vector2:
+        """
+            向量
+        """
+
+        def __init__(self, x=0, y=0):
+            self.x = x
+            self.y = y
+
+        @staticmethod
+        def right():
+            return Vector2(0, 1)
+
+        @staticmethod
+        def up():
+            return Vector2(-1, 0)
+
+
+    class DoubleListHelper:
+        """
+            二维列表助手:
+                在开发过程中，所有对二维列表的常用操作
+        """
+
+        @staticmethod
+        def get_elements(list_target, v_pos, v_dir, count):
+            get_list = []
+            for i in range(count):
+                v_pos.x += v_dir.x
+                v_pos.y += v_dir.y
+                get_list.append(list_target[v_pos.x][v_pos.y])
+            return get_list
+
+
+    # 测试
+    # list01 = [
+    #     ["00", "01", "02", "03"],
+    #     ["10", "11", "12", "13"],
+    #     ["20", "21", "22", "23"],
+    #     ["30", "31", "32", "33"],
+    # ]
+    # 
+    # re = DoubleListHelper.get_elements(list01, Vector2(1, 0), Vector2.right(), 3)
+    # print(re)
+    ```
+
+### 封装
+
+封装数据的优势：
+    -   符合人类的思考方式，将数据与对数据的操作封装起来。
+    -   
