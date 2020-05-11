@@ -1320,29 +1320,38 @@ class Enemy:
 
 7.  拓展（只读属性返回可变对象时）
 
-```python
-class Person:
-    def __init__(self, name):
-        self.name = name
-        self.__skills = []
+    ```python
+    class Person:
+        def __init__(self, name):
+            self.name = name
+            self.__skills = []
 
-    def teach(self, person_other, str_skill):
-        person_other.__skills.append(str_skill)
-        print(self.name, person_other.name, str_skill)
+        def teach(self, person_other, str_skill):
+            person_other.__skills.append(str_skill)
+            print(self.name, person_other.name, str_skill)
 
-    @property
-    def name(self):
-        return self.__name
+        @property
+        def name(self):
+            return self.__name
 
-    @name.setter
-    def name(self, value):
-        self.__name = value
+        @name.setter
+        def name(self, value):
+            self.__name = value
 
-    @property
-    def skills(self):
-        # 返回可变对象地址，意味着在类外仍可以操作可变对象
-        # return self.__skills
-        # 返回新的可变对象，意味着在类外操作的是新可变对象，不影响原对象
-        return self.__skills[:]
-        # 备注：每次通过切片返回的新对象，都会另外开辟空间创建新对象，占用过多内存
-```
+        @property
+        def skills(self):
+            # 返回可变对象地址，意味着在类外仍可以操作可变对象
+            # return self.__skills
+            # 返回新的可变对象，意味着在类外操作的是新可变对象，不影响原对象
+            return self.__skills[:]
+            # 备注：每次通过切片返回的新对象，都会另外开辟空间创建新对象，占用过多内存
+    ```
+
+8.  `__slots__`
+
+    -   作用：限制一个类创建的对象只能有固定的实例变量，不能再额外添加。
+    -   语法：在类中定义 `__slots__ = (“变量名1”,”变量名2”)`
+    -   说明
+        -   含有`__slots__`属性的类所创建的对象没有`__dict__`属性。
+        -   优点：防止因写错属性名称而发生的错误。
+        -   缺点：丧失了动态语言可以在运行时为对象添加变量的灵活性。
