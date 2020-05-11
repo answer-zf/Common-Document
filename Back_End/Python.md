@@ -1151,5 +1151,198 @@ ICBC.print_total_money()
 ### 封装
 
 封装数据的优势：
-    -   符合人类的思考方式，将数据与对数据的操作封装起来。
-    -     
+    -   符合人类的思考方式，
+    -   将数据与对数据的操作封装起来。
+
+#### 封装的定义
+
+    1.  从数据角度讲：
+        -   将一些基础变量复合为一个自定义类型。
+        -   不但可以准确的描述事物，还可以体现该事物的行为。
+
+    2.  从行为角度讲：
+        -   向类外提供必要的功能，隐藏实现的细节。
+        -   使用者可以不必操心实现过程。
+
+    3.  从设计角度讲：
+
+        -   分而治之
+            -   将一个大的需求分解为许多类，让每个类处理一个独立的功能。
+            -   优点：便于分工，便于复用，可扩展性强。
+        -   封装变化
+            -   需求可能会变化的功能要单独封装，避免影响其他类。
+        -   高内聚
+            -   类中各个方法都在完成一项任务
+        -   低耦合
+            -   类与类的关联性与依赖度要低，让一个类变化，尽少影响其他的类。
+
+#### 私有成员
+
+1.  语法：命名使用双下划线开头
+2.  作用：修改变量名，让外界”不能直接访问”
+3.  本质：障眼法，也可以访问：`_类名__成员名`
+
+```python
+class Enemy:
+    def __init__(self, name="", atk_speed=0):
+        self.set_name(name)
+        self.set_atk_speed(atk_speed)
+
+    def get_name(self):
+        return self.__name
+
+    def set_name(self, value):
+        self.__name = value
+
+    def get_atk_speed(self):
+        return self.__atk_speed
+
+    def set_atk_speed(self, value):
+        if 0 <= value <= 10:
+            self.__atk_speed = value
+        else:
+            print("err")
+```
+
+#### 属性
+
+> 公开的实例变量，缺少逻辑验证。私有的实例变量与两个公开的方法相结合，又显得调用者的操作略显复杂。而属性可以将两个方法的使用方式像操作变量一样方便
+
+1.  定义
+
+    ```python
+    @property  # 读取数据时执行 
+    def 属性名(self): 
+    return  self.__ 属性名    # 私有的实例变量 
+
+    @属性名.setter  # 写入数据时执行 
+    def 属性名(self,参数): 
+    self.__ 属性名 = 参数 
+    ```
+
+2.  调用：
+
+    -   对象地址.属性名 = 数据
+    -   变量 = 对象地址.属性名
+
+3.  说明：
+
+    -   通常两个公开属性，保护一个私有的变量。
+    -   @property  负责处理读取逻辑
+    -   @属性名.setter 负责处理写入逻辑
+
+    ```python
+    class Student:
+        def __init__(self, name="", age=0):
+            # self.set_name(name)
+            self.name = name  # 调用 @name.setter 修饰的方法
+            # self.set_age(age)
+            self.age = age  # 调用 @age.setter 修饰的方法
+
+        # def get_name(self):
+        #     return self.__name
+
+        # 本质：创建 property 对象， name 存储对象地址
+        # 注意：创建对象时，会指定读取方法
+        # 相当于：name = property(get_name， None)
+        @property  # 拦截读取变量的操作
+        def name(self):  # get_name()
+            return self.__name
+
+        @name.setter  # 拦截写入变量的操作 本质：name.setter(写入方法)
+        def name(self, value):  # set_name()
+            self.__name = value
+
+        @property
+        def age(self):
+            return self.__age
+
+        @age.setter
+        def age(self, value):
+            if 7 <= value <= 22:
+                self.__age = value
+            else:
+                self.__age = 0
+                print("err")
+    ```
+
+4.  属性本质
+
+    ```python
+    class Student:
+        def __init__(self, name=""):
+            self.name = name
+
+        def get_name(self):
+            print("get")
+            return self.__name
+
+        def set_name(self, value):
+            print("set")
+            self.__name = value
+        # 拦截对变量 name 的读写操作
+        # 创建 property 对象， name 存储的是对象地址
+        # 注意：创建对象时，需要传递读写方法
+        name = property(get_name, set_name)
+    ```
+
+5.  只读属性
+
+    ```python
+    class Student:
+        def __init__(self, name=""):
+            self.__name = name
+
+        # 只读属性
+        # 本质：创建 property 对象， name 存储对象地址
+        # 注意：创建对象时，会指定读取方法
+        # 相当于：name = property(get_name， None)
+        @property
+        def name(self):
+            return self.__name
+    ```
+
+6.  只写属性
+
+    ```python
+    class Student:
+        def __init__(self, name=""):
+            self.name = name
+
+        def set_name(self, value):
+            self.__name = value
+
+        name = property(None, set_name)
+
+    s01 = Student("zfzf")
+    print(s01._Student__name)
+    ```
+
+7.  拓展（只读属性返回可变对象时）
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+        self.__skills = []
+
+    def teach(self, person_other, str_skill):
+        person_other.__skills.append(str_skill)
+        print(self.name, person_other.name, str_skill)
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, value):
+        self.__name = value
+
+    @property
+    def skills(self):
+        # 返回可变对象地址，意味着在类外仍可以操作可变对象
+        # return self.__skills
+        # 返回新的可变对象，意味着在类外操作的是新可变对象，不影响原对象
+        return self.__skills[:]
+        # 备注：每次通过切片返回的新对象，都会另外开辟空间创建新对象，占用过多内存
+```
