@@ -97,18 +97,35 @@ class StudentManagerView:
 
     def __input_students(self):
         """
-
+            输入学生
         :return:
         """
-        while True:
-            stu = StudentModel()
-            stu.name = input("student name : ")
-            stu.age = int(input("student age : "))
-            stu.score = int(input("student score : "))
-            self.__manager.add_student(stu)
-            is_continue = input("is continue print y")
-            if is_continue != "y":
-                break
+        stu = StudentModel()
+        stu.name = input("student name : ")
+        stu.age = int(input("student age : "))
+        stu.score = int(input("student score : "))
+        self.__manager.add_student(stu)
+
+    def __output_students(self, list_target):
+        """
+            显示学生列表信息
+        @param list_target:
+        @return:
+        """
+        for item in list_target:
+            print("id:%d, name:%s, age:%d, score:%d" % (item.id, item.name, item.age, item.score))
+
+    def __output_students_by_score(self):
+        """
+            按成绩升序排列学生列表
+        @return: 按成绩升序排列的新学生列表
+        """
+        new_list = self.__manager.list_stu[:]
+        for i in range(len(new_list) - 1):
+            for j in range(i + 1, len(new_list)):
+                if new_list[i].score >= new_list[j].score:
+                    new_list[i], new_list[j] = new_list[j], new_list[i]
+        return new_list
 
     def __display_menu(self):
         """
@@ -129,17 +146,15 @@ class StudentManagerView:
         str_number = input("pl. input option")
         if str_number == "1":
             self.__input_students()
-            for item in self.__manager.list_stu:
-                print(item.__dict__)
-
         elif str_number == "2":
-            pass
+            self.__output_students(self.__manager.list_stu)
         elif str_number == "3":
             pass
         elif str_number == "4":
             pass
         elif str_number == "5":
-            pass
+            list_target = self.__output_students_by_score()
+            self.__output_students(list_target)
 
     def main(self):
         """
