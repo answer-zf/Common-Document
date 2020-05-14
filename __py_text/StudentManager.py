@@ -86,6 +86,27 @@ class StudentManagerController:
         #     id = 1
         return self.__list_stu[-1].id + 1 if len(self.__list_stu) > 0 else 1
 
+    def order_by_score(self):
+        """
+            按成绩升序排列
+        @return: 升序排列新学生列表
+        """
+        new_list = self.__list_stu[:]
+        for i in range(len(new_list) - 1):
+            for j in range(i + 1, len(new_list)):
+                if new_list[i].score >= new_list[j].score:
+                    new_list[i], new_list[j] = new_list[j], new_list[i]
+        return new_list
+
+    def remove_student(self, id):
+        for i in range(len(self.__list_stu)):
+            if self.__list_stu[i].id == id:
+                del self.__list_stu[i]
+                print("del complete")
+                break
+        else:
+            print("id: error")
+
 
 class StudentManagerView:
     """
@@ -120,12 +141,8 @@ class StudentManagerView:
             按成绩升序排列学生列表
         @return: 按成绩升序排列的新学生列表
         """
-        new_list = self.__manager.list_stu[:]
-        for i in range(len(new_list) - 1):
-            for j in range(i + 1, len(new_list)):
-                if new_list[i].score >= new_list[j].score:
-                    new_list[i], new_list[j] = new_list[j], new_list[i]
-        return new_list
+        list_target = self.__manager.order_by_score()
+        self.__output_students(list_target)
 
     def __display_menu(self):
         """
@@ -151,10 +168,10 @@ class StudentManagerView:
         elif str_number == "3":
             pass
         elif str_number == "4":
-            pass
+            id = int(input("pl. input id for del stu"))
+            self.__manager.remove_student(id)
         elif str_number == "5":
-            list_target = self.__output_students_by_score()
-            self.__output_students(list_target)
+            self.__output_students_by_score()
 
     def main(self):
         """
