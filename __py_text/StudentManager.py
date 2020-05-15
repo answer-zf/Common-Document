@@ -99,13 +99,24 @@ class StudentManagerController:
         return new_list
 
     def remove_student(self, id):
-        for i in range(len(self.__list_stu)):
-            if self.__list_stu[i].id == id:
-                del self.__list_stu[i]
-                print("del complete")
-                break
-        else:
-            print("id: error")
+        """
+            删除学生
+        @param id: 要删除的学生 id
+        @return:
+        """
+        # for i in range(len(self.__list_stu)):
+        #     if self.__list_stu[i].id == id:
+        #         # del self.__list_stu[i]
+        #         # print("del complete")
+        #         # break
+        #         self.__list_stu.remove(self.__list_stu[i])
+        # else:
+        #     print("id: error")
+        for item in self.__list_stu:
+            if item.id == id:
+                self.__list_stu.remove(item)
+                return True
+        return False
 
 
 class StudentManagerView:
@@ -144,6 +155,13 @@ class StudentManagerView:
         list_target = self.__manager.order_by_score()
         self.__output_students(list_target)
 
+    def __delete_student(self):
+        id = int(input("pl. input id for del stu"))
+        if self.__manager.remove_student(id):
+            print("del complete")
+        else:
+            print("del error")
+
     def __display_menu(self):
         """
             显示菜单
@@ -166,10 +184,9 @@ class StudentManagerView:
         elif str_number == "2":
             self.__output_students(self.__manager.list_stu)
         elif str_number == "3":
-            pass
+            self.__delete_student()
         elif str_number == "4":
-            id = int(input("pl. input id for del stu"))
-            self.__manager.remove_student(id)
+            pass
         elif str_number == "5":
             self.__output_students_by_score()
 
