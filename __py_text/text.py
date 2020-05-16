@@ -3,29 +3,38 @@
 """
 
 
-class Person:
-    def __init__(self, name):
-        self.name = name
+class Weapon:
+    def __init__(self, atk):
+        self.atk = atk
 
-    def go_to(self, verhical, str_pos):
-        verhical.transport(str_pos)
+    def attack(self, *args):
+        for item in args:
+            item.damaged(self.atk)
 
 
-class Verhical:
-    def transport(self, str_pos):
+class Damageable:
+    def __init__(self, hp):
+        self.hp = hp
+
+    def damaged(self, value):
         raise NotImplementedError
 
 
-class Car(Verhical):
-    def transport(self, str_pos):
-        print("drive", str_pos)
+class Player(Damageable):
+
+    def damaged(self, value):
+        self.hp -= value
+        print("player damage")
 
 
-class Airplane(Verhical):
-    def transport(self, str_pos):
-        print("fly", str_pos)
+class Enemy(Damageable):
+
+    def damaged(self, value):
+        self.hp -= value
+        print("enemy damage")
 
 
-p01 = Person("zf")
-p01.go_to(Car(), "db")
-p01.go_to(Airplane(), "db")
+w01 = Weapon(10)
+p01 = Player(100)
+e01 = Enemy(100)
+w01.attack(p01, e01)
