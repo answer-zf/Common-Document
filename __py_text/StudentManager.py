@@ -118,6 +118,21 @@ class StudentManagerController:
                 return True
         return False
 
+    def update_student(self, id, name, age, score):
+        """
+            更新学生
+        @param id: 要更新的学生 id
+        @return:
+        """
+        for item in self.__list_stu:
+            if item.id == id:
+                item.name = name
+                item.age = age
+                item.score = score
+            return True
+        else:
+            return False
+
 
 class StudentManagerView:
     """
@@ -145,7 +160,8 @@ class StudentManagerView:
         @return:
         """
         for item in list_target:
-            print("id:%d, name:%s, age:%d, score:%d" % (item.id, item.name, item.age, item.score))
+            print("id:%d, name:%s, age:%d, score:%d" %
+                  (item.id, item.name, item.age, item.score))
 
     def __output_students_by_score(self):
         """
@@ -161,6 +177,16 @@ class StudentManagerView:
             print("del complete")
         else:
             print("del error")
+
+    def __update_student(self):
+        id = int(input("pl. input id for update stu"))
+        name = input("name:")
+        age = int(input("age:"))
+        score = int(input("score:"))
+        if self.__manager.update_student(id, name, age, score):
+            print("update complete")
+        else:
+            print("update error")
 
     def __display_menu(self):
         """
@@ -186,7 +212,7 @@ class StudentManagerView:
         elif str_number == "3":
             self.__delete_student()
         elif str_number == "4":
-            pass
+            self.__update_student()
         elif str_number == "5":
             self.__output_students_by_score()
 

@@ -1391,3 +1391,44 @@ class Enemy:
 > 2.  依赖倒置：
 >     -   使用抽象（父类），而不使用具体（子类）
 >     -   隔离 调用 与 定义
+
+**父类的方法有逻辑时，子类可使用super().方法名继承**
+
+```python
+class Weapon:
+    def __init__(self, atk):
+        self.atk = atk
+
+    def attack(self, *args):
+        for item in args:
+            item.damaged(self.atk)
+
+
+class Damageable:
+    def __init__(self, hp):
+        self.hp = hp
+
+    def damaged(self, value):
+        # raise NotImplementedError
+        self.hp -= value
+
+
+class Player(Damageable):
+
+    def damaged(self, value):
+        super().damaged(value)
+        print("player damage")
+
+
+class Enemy(Damageable):
+
+    def damaged(self, value):
+        super().damaged(value)
+        print("enemy damage")
+
+
+w01 = Weapon(10)
+p01 = Player(100)
+e01 = Enemy(100)
+w01.attack(p01, e01)
+```

@@ -1,2 +1,2 @@
-    # def __init__(self, hp):
-    #     super().__init__(hp)
+for item in f04.all_figure:
+#     print(item.__dict__)
