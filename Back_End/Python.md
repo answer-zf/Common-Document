@@ -1371,17 +1371,35 @@ class Enemy:
             self.自身实例变量 =自身参数 
     ```
 
-2.  说明：
+    1.  说明：
+        -   子类如果没有构造函数，将自动执行父类的，但如果有构造函数将覆盖父类的。
+        -   此时必须通过super()函数调用父类的构造函数，以确保父类数据成员被正常创建。
 
-    -   子类拥有父类所有成员.
-    -   子类如果没有构造函数，将自动执行父类的，但如果有构造函数将覆盖父类的。
-    -   此时必须通过super()函数调用父类的构造函数，以确保父类数据成员被正常创建。
+    2.  内置函数：
 
-3.  内置函数：
-    -   isisntance（对象，类型）函数:返回对象是否兼容类型。
-    -   issubclass（类型，类型元组）函数:返回类型是否兼容类型元组。
-        -   第二个参数只有一个，不需要使用元组，直接写类型即可
-        -   类型元组只要有一个兼容该类型即返回 True
+        -   isisntance（对象，类型）函数:返回对象是否兼容类型。
+        -   issubclass（类型，类型元组）函数:返回类型是否兼容类型元组。
+            -   第二个参数只有一个，不需要使用元组，直接写类型即可
+            -   类型元组只要有一个兼容该类型即返回 True
+
+2.  定义：重用现有类的功能与概念，并在此基础上进行扩展。
+
+    -   重用现有类的功能，并在此基础上进行扩展 => 代码的复用
+
+3.  说明：
+
+    -   子类拥有父类所有成员：子类直接具有父类的成员，还可以具有自己的功能。
+    -   事物具有一定的层次、渊源，继承可以统一概念。 
+
+4.  优势：
+
+    -   一种代码的复用方式。
+    -   以层次化的方式管理类。
+
+5.  劣势：
+
+    -   子类与父类耦合度高(父类构造函数/成员的变化，直接影响所有子类)
+    -   切换不灵活
 
 
 > 面向对象的设计原则
@@ -1392,43 +1410,118 @@ class Enemy:
 >     -   使用抽象（父类），而不使用具体（子类）
 >     -   隔离 调用 与 定义
 
-**父类的方法有逻辑时，子类可使用super().方法名继承**
+
+### 类与类的关系
+
+1.  泛化(继承)
+
+    -   子类与父类的关系，概念的复用，耦合度最高；
+
+    -   B类泛化A类，意味着B类是A类的子类。
+
+    -   做法：B类继承A类。
+  
+    -   > 父类 向 子类 的演变 => 特化
+
+2.  关联(聚合/组合)
+
+    -   部分与这个整体的关系，耦合度要低于泛化。
+
+    -   A类关联B类，意味着B是A的一部分。
+
+    -   做法：在A类中包含B类的成员。
+
+3.  依赖
+
+    -   合作关系，耦合度最低。
+
+    -   A类依赖B类，意味着A类的某个功能以依靠B类实现。
+
+    -   做法：在A类的某个方法中，将B类作为参数。
+
+**综合实例**
 
 ```python
-class Weapon:
-    def __init__(self, atk):
-        self.atk = atk
+class Employee:
+    """
+        普通员工类 即 父类
+    """
 
-    def attack(self, *args):
-        for item in args:
-            item.damaged(self.atk)
+    def __init__(self, name, job):  # Employee 关联 job
+        self.name = name
+        self.job = job
 
-
-class Damageable:
-    def __init__(self, hp):
-        self.hp = hp
-
-    def damaged(self, value):
-        # raise NotImplementedError
-        self.hp -= value
+    def calcular_salary(self):
+        return self.job.get_salary()
 
 
-class Player(Damageable):
+class Job:
+    def __init__(self, basic_salary):
+        self.basic_salary = basic_salary
 
-    def damaged(self, value):
-        super().damaged(value)
-        print("player damage")
-
-
-class Enemy(Damageable):
-
-    def damaged(self, value):
-        super().damaged(value)
-        print("enemy damage")
+    def get_salary(self):
+        return self.basic_salary
 
 
-w01 = Weapon(10)
-p01 = Player(100)
-e01 = Enemy(100)
-w01.attack(p01, e01)
+class Programer(Job):  # Programer 泛化 Job（隔离变化）
+    """
+        程序员类
+    """
+
+    def __init__(self, basic_salary, extra):
+        super().__init__(basic_salary)
+        self.extra = extra
+
+    def get_salary(self):
+        return super().get_salary() + self.extra
+
+
+class salesmen(Job):
+    """
+        销售类
+    """
+
+    def __init__(self, basic_salary, extra):
+        super().__init__(basic_salary)
+        self.extra = extra
+
+    def get_salary(self):
+        return super().get_salary() + self.extra
+
+
+lw = Employee("lw", Programer(100, 10))
+print(lw.calcular_salary())
+lw.job = salesmen(100, 1)
+print(lw.calcular_salary())
+
 ```
+
+### 设计原则
+
+1.  开闭原则(目标) 
+
+    -   对扩展开放，对修改关闭。
+    -   允许增加新功能，不修改客户端(使用者)代码。
+
+2.  类的单一职责(类的定义)
+
+    -   一个类有且只有一个改变的原因。
+    -   外界一个需求的变化，内部一个改变的类。
+
+3.  依赖倒置
+
+    -   客户端代码尽量依赖(使用)抽象(父)的组件。
+    -   抽象的是稳定的，实现是多变的。
+    -   使用抽象（父类），而不使用具体（子类）
+    -   隔离 调用 与 定义
+
+4.  组合复用原则(少用继承)
+
+    -   如果仅仅为了代码复用优先选择组合关系，而非继承关系。
+    -   组合的耦合度低于继承，灵活度高于继承。
+
+5.  里氏替换(重写注意事项) 
+
+    -   父类出现的地方可以被子类替换，在替换后依然保持原有功能。
+    -   从内存角度解释：父类(成员少)   子类(成员多)
+    -   子类在重写父类方法时，尽量选择扩展重写(先调父类同名方法)，不要改变原有功能。
