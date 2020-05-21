@@ -340,15 +340,14 @@ ontinue: 跳过本次循环，继续下次循环。
 -   max(容器)  返回容器中最大的元素
 -   min(容器)  返回容器中最小的元素
 
-
 #### 列表 list
 
 > 由一系列变量组成的**可变序列**容器。
 
 -   创建：
-    -   创建空元组：list01 = [] / list()  
+    -   创建空元组：list01 = \[] / list()
     -   创建有默认值的元组：list01 = [1,2,3] / list("agasdg")
-        -   [元素]   
+        -   [元素]
         -   list(可迭代对象)
 -   添加元素
     -   追加：list01.append(元素)
@@ -410,7 +409,7 @@ print(max_num)
         -   result = "连接符".join(列表)
     -   将一个字符串拆分为多个。
         -   列表 = "a-b-c-d".split("分隔符")
-    
+
     ```python
     # 此方式耗内存,耗能
     result = ""
@@ -437,7 +436,7 @@ print(list02[0])
 
 **内存图**
 
-![Python-MemoryAllocationMap-_List01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List01.jpg)
+![Python-MemoryAllocationMap-\_List01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List01.jpg)
 
 ```python
 list01 = [0, 1]
@@ -448,7 +447,7 @@ print(list02[0])
 
 **内存图**
 
-![Python-MemoryAllocationMap-_List02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List02.jpg)
+![Python-MemoryAllocationMap-\_List02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List02.jpg)
 
 ```python
 list01 = [0, 1]
@@ -459,7 +458,7 @@ print(list02[0])
 
 **内存图**
 
-![Python-MemoryAllocationMap-_List03](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List03.jpg)
+![Python-MemoryAllocationMap-\_List03](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List03.jpg)
 
 ##### 深拷贝和浅拷贝
 
@@ -468,7 +467,7 @@ print(list02[0])
 
 **浅拷贝内存图**
 
-![Python-MemoryAllocationMap-_List04](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List04.jpg)
+![Python-MemoryAllocationMap-\_List04](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List04.jpg)
 
 **深拷贝使用**
 
@@ -479,12 +478,12 @@ list01 = [1, [2, 3]]
 list02 = copy.deepcopy(list01)
 list01[1][0] = 200
 print(list02[1][0])
-
 ```
 
 ##### 列表推导式
 
 1.  语法：
+
     -   变量 = [表达式 for 变量 in 可迭代对象]
     -   变量 = [表达式 for 变量 in 可迭代对象 if 条件]
 
@@ -500,7 +499,7 @@ list01 = [2, 5, 6, 7, 8, 9]
 list03 = [item**2 for item in list01 if not item % 2]
 ```
 
-3. 列表推导式嵌套
+3.  列表推导式嵌套
 
 ```python
 list01 = ["a", "b", "c"]
@@ -520,7 +519,7 @@ print(list03)
 -   将原数据拷贝过来
 -   替换表头地址
 
-![Python-MemoryAllocationMap-_List05](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List05.jpg)
+![Python-MemoryAllocationMap-\_List05](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List05.jpg)
 
 #### 元组 tuple
 
@@ -528,7 +527,7 @@ print(list03)
 
 1.  创建空元组：t01 = () / tuple()
 2.  创建有默认值的元组：t01 = (1,2,3) / tuple("agasdg")
-    -   (元素)   
+    -   (元素)
     -   tuple(可迭代对象)
 3.  作用
     -   元组与列表都可以存储一系列变量。
@@ -538,26 +537,36 @@ print(list03)
 
 #### 字典 dict
 
-![Python-MemoryAllocationMap-_List06](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List06.jpg)
+![Python-MemoryAllocationMap-\_List06](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_List06.jpg)
 
 1.  定义
+
 -   由一系列键值对组成的可变映射容器。
 -   映射(哈希算法)：通过键对应值，每条记录无序。
 -   键必须唯一且不可变对象(字符串、数字、元组)，值没有限制。
+
 2.  创建
+
 -   创建空字典：d01 = {} / dict()
 -   创建有默认值的字典：d01 = {"a": "A", "b": "B"} / dict([(1, 2), (3, 4)])
-    -   {键1：值1，键2：值2}   
+    -   {键1：值1，键2：值2}
     -   dict(可迭代对象)
-3.   添加/修改：
+
+3.  添加/修改：
+
 -   字典[键] = 表达式
 -   说明：键不存在则创建，键存在则修改。
+
 4.  获取值：
+
 -   字典[键]
 -   说明：如果不存在键，则错误。
     -   在字典中读取元素，先判断存在，再读取
+
 5.  删除：
+
 -   del 字典[键]
+
 6.  获取字典所有记录
 
 ```python
@@ -613,10 +622,12 @@ dic03 = [(values, keys) for keys, values in dic01.items()]
 > 相当于只有键没有值的字典
 
 1.  创建
+
 -   创建空集合：s01 = set()
 -   创建有默认值的集合：s01 = {"a", "b"} / set("abcde")
-    -   {元素1, 元素2}   
+    -   {元素1, 元素2}
     -   set(可迭代对象) => 其他容器 -> 集合 （去重）
+
 2.  增：
     s01.add(元素)
 3.  删：
@@ -630,7 +641,7 @@ dic03 = [(values, keys) for keys, values in dic01.items()]
     -   并集: s01 | s02
     -   补集: s01 ^ s02
     -   对称补集: s01 - s02
-    -   子集: s02 < s01
+    -   子集: s02 &lt; s01
     -   超集: s01 > s02
 6.  集合推导式：
     -   {表达式 for item in s01 if 条件}
@@ -687,9 +698,9 @@ print(list01)
 
         ```python
         def 函数名(形参列表):
-		函数体
+        函数体
         ```
-    
+
     2.  说明：
 
         -   def 关键字，全称 define ，意为”定义”。
@@ -715,6 +726,7 @@ print(list01)
         -   return 还意味着方法结束。
 
 **实例以及规范写法**
+
 ```python
 def get_prime_number(star_num, end_num):
     """
@@ -754,17 +766,18 @@ print(get_prime_number(1, 101))
     1.  位置传参:
         -   实参与形参的位置依次对应
         -   序列传参
-            -   实参用 * 将序列拆解后与形参的位置依次对应
+            -   实参用 \* 将序列拆解后与形参的位置依次对应
             -   可以在运行时，根据某些逻辑决定传入的数据（列表）
     2.  关键字传参：
         -   实参根据形参的名字进行对应 `fun01(a=1, b=2, c=3)`
         -   字典传参
-            -   实参用 ** 将字典拆解与形参的名字进行对应。
+            -   实参用 \*\* 将字典拆解与形参的名字进行对应。
             -   可以在运行时，根据某些逻辑决定传入的数据（字典）
 
 2.  形参传递方式 parameter
-    
+
     -   默认(缺省)参数：让调用者可以有选择性的传递需要的信息
+
         1.  语法：
             def 函数名(参数1 = 默认值1):
                 函数体
@@ -773,27 +786,28 @@ print(get_prime_number(1, 101))
             -   缺省参数可以有0个或多个
 
     -   位置形参
+
         -   星号元组形参
             1.  语法：
-                def 函数名(*args):
+                def 函数名(\*args):
                     函数体
             2.  作用：收集多余的位置形参
             3.  说明：
-                -   一般命名为 *args
+                -   一般命名为 \*args
                 -   形参列表最多只能有一个
                 -   在方法内部，就是元组
                 -   对调用者而言，**可以传递数量无限的位置实参**
 
     -   命名关键字形参
         1.  语法：
-            def 函数名(*,参数名):
+            def 函数名(\_,参数名):
                 函数体
-            def 函数名(*args,参数名):
+            def 函数名(\_args,参数名):
                 函数体
         2.  作用：强制实参使用关键字传递
         3.  双星号字典形参
             1.  语法：
-                def 函数名(**kwargs):
+                def 函数名(\*\*kwargs):
                     函数体
             2.  作用：收集多余的关键字传参
             3.  说明：
@@ -804,6 +818,7 @@ print(get_prime_number(1, 101))
             ```python
             def keywords(**kwargs):
                 print(kwargs)
+            ```
 
 
             keywords(a="c", b=1, c=23)
@@ -816,7 +831,7 @@ print(get_prime_number(1, 101))
 4.  可变/不可变类型在传参时的区别：
 
     1.  不可变类型参数：
-        -   数值型：整数、浮点数、复数 
+        -   数值型：整数、浮点数、复数
         -   布尔值 bool
         -   空值 None
         -   字符串 str
@@ -838,6 +853,7 @@ print(get_prime_number(1, 101))
         def func01(num01):
             num01 = 2
             print("num01: " + str(num01))
+        ```
 
 
         number01 = 1
@@ -868,6 +884,7 @@ print(get_prime_number(1, 101))
 #### 作用域 LEGB
 
 1.  作用域：变量起作用的范围
+
     -   Local 局部作用域：函数内部。
     -   Encolsing 外部嵌套作用域：函数嵌套
     -   Global 全局作用域：模块(.py)文件内部
@@ -880,16 +897,18 @@ print(get_prime_number(1, 101))
     -   定义在函数外部，模块(.py文件)内部的变量
     -   函数体内部可以访问，但是不能直接修改（需使用global语句声明才能修改）
     -   global 语句
+
         1.  作用：
-            -  在函数内部修改全局变量
-            -  在函数内部定义全局变量（全局声明）
+            -   在函数内部修改全局变量
+            -   在函数内部定义全局变量（全局声明）
         2.  语法：global 变量1，变量2
         3.  说明：
-            -  在函数内部直接为全局变量赋值，视为创建新的局部变量
-            -  不能先声明局部变量，再用 global 声明为全局变量
+            -   在函数内部直接为全局变量赋值，视为创建新的局部变量
+            -   不能先声明局部变量，再用 global 声明为全局变量
 
         ```python
         g01 = 100
+        ```
 
 
         def fun():
@@ -904,7 +923,7 @@ print(get_prime_number(1, 101))
             global g01
             g01 = 400
 
-            # 在局部作用域中，创建全局变量 
+            # 在局部作用域中，创建全局变量
             global g02
             g02 = 500
 
@@ -924,86 +943,88 @@ print(get_prime_number(1, 101))
 
 ### 类和对象的浅析
 
-1.  类：一个抽象的概念，即生活中的”类别” 
-    -   例如：学生、水果。 
+1.  类：一个抽象的概念，即生活中的”类别”
 
-2.  对象：类的具体实例，即归属于某个类别的”个体” 
+    -   例如：学生、水果。
 
-    -   例如：张三同学、苹果 
+2.  对象：类的具体实例，即归属于某个类别的”个体”
 
-3.  类是创建对象的”模板”. 
+    -   例如：张三同学、苹果
 
-    -   数据成员：名词性的状态。例如：姓名 
-    -   方法成员：动词性的行为。例如：学习 
+3.  类是创建对象的”模板”.
 
-4.  类与类的行为不同，对象与对象的数据不同。 
+    -   数据成员：名词性的状态。例如：姓名
+    -   方法成员：动词性的行为。例如：学习
+
+4.  类与类的行为不同，对象与对象的数据不同。
 
 ### 类和对象的用法
 
 1.  定义类
 
     ```python
-    class 类名: 
+    class 类名:
 
     """文档说明"""
 
-    def  __init__(self,参数列表): 
+    def  __init__(self,参数列表):
 
-    self.实例变量 = 参数 
+    self.实例变量 = 参数
     ```
 
 2.  方法成员
 
-    -   类名所有单词首字母大写 
+    -   类名所有单词首字母大写
 
-    -   __init__叫做构造函数,创建对象时被调用，也可以省略。 
+    -   **init**叫做构造函数,创建对象时被调用，也可以省略。
 
-    -   self变量绑定的是被创建的对象，名字通常叫做”self”。 
+    -   self变量绑定的是被创建的对象，名字通常叫做”self”。
 
 ### 类和对象的语法
 
-1.  创建对象(实例化对象) 
-    -   变量 = 构造函数(参数列表) 
+1.  创建对象(实例化对象)
+
+    -   变量 = 构造函数(参数列表)
     -   构造函数的self参数会自动绑定对象地址，不用传递
 
 2.  实例成员：
     1.  实例变量：
-        -   语法： 
-            -   定义：对象地址.变量名称 
-            -   调用：对象地址.变量名称 
-        -   说明 
-            -   首次通过对象赋值为创建变量，再次赋值为修改。 
+        -   语法：
+            -   定义：对象地址.变量名称
+            -   调用：对象地址.变量名称
+        -   说明
+            -   首次通过对象赋值为创建变量，再次赋值为修改。
                 ```python
-                w01 = Car() 
-                w01.name = "bm" # 创建 
-                w01.name = "bc" # 修改 
+                w01 = Car()
+                w01.name = "bm" # 创建
+                w01.name = "bc" # 修改
                 ```
-            -   通常在构造函数(__init__)中创建. 
+            -   通常在构造函数(**init**)中创建.
                 ```python
-                w01 = Car("bm") 
-                w01.name = "bc" # 修改 
+                w01 = Car("bm")
+                w01.name = "bc" # 修改
                 ```
-            -   每个对象存储一份，通过对象地址访问。 
-            -   __dict__: 对象的属性，用于存储自身是实例变量的字典
+            -   每个对象存储一份，通过对象地址访问。
+            -   **dict**: 对象的属性，用于存储自身是实例变量的字典
                 -   `w01.__dict__`
-    2.  实例方法 
-        -   语法： 
+    2.  实例方法
+        -   语法：
             -   定义：
                 ```python
-                def 方法名称(self,参数): 
-                    方法体                
+                def 方法名称(self,参数):
+                    方法体
                 ```
             -   调用：
-                -   对象地址.实例方法名称(参数) 
+                -   对象地址.实例方法名称(参数)
                     -   通过对象地址调用实例方法，会自动传递对象地址
-                -   不建议的用法： 
-                     -   可以通过类名访问，并传递对象地址。 
-                     -   类名.实例方法名(对象地址,参数) 
-                     -   通过类名调用实例方法，需手动传递
-            -   说明： 
-                -   至少有一个形参，用于绑定调用该方法的对象，一般命名为"self"。 
-                -   无论创建多少个对象，方法只有一份，且**实例方法被所有对象共享.** 
-                -   作用：表示对象的行为。 
+                -   不建议的用法：
+                    -   可以通过类名访问，并传递对象地址。
+                    -   类名.实例方法名(对象地址,参数)
+                    -   通过类名调用实例方法，需手动传递
+            -   说明：
+                -   至少有一个形参，用于绑定调用该方法的对象，一般命名为"self"。
+                -   无论创建多少个对象，方法只有一份，且**实例方法被所有对象共享.**
+                -   作用：表示对象的行为。
     3.  内存图
 
 ```python
@@ -1023,31 +1044,33 @@ w01 = Car("bm", 12, 10000)
 w01.travel()
 ```
 
-![Python-MemoryAllocationMap-_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
+![Python-MemoryAllocationMap-\_OOP01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP01.jpg)
 
 3.  类成员
 
-    1.  类变量 
-        -   语法 
-            -   定义：在类中，方法外定义变量 
+    1.  类变量
+
+        -   语法
+            -   定义：在类中，方法外定义变量
             ```py
             class 类名:
                 类变量名 = 数据
             ```
             -   调用：类名.类变量名
                 -   不建议使用对象.类变量名.
-            -   说明 
+            -   说明
                 -   存储在类中。
                 -   只有一份，被所有对象共享。
                 -   描述所有对象的共有数据。
 
     2.  类方法
+
         -   语法
             -   定义
             ```py
-            @classmethod 
-            def 方法名称(cls,参数): 
-                方法体 
+            @classmethod
+            def 方法名称(cls,参数):
+                方法体
             ```
             -   调用：类名.方法名(参数)
                 -   不建议使用对象.类方法名
@@ -1083,27 +1106,28 @@ i02 = ICBC("cfzhihang", 100000)
 ICBC.print_total_money()
 ```
 
-![Python-MemoryAllocationMap-_OOP02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP02.jpg)
+![Python-MemoryAllocationMap-\_OOP02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP02.jpg)
 
-4.  静态方法 
+4.  静态方法
 
-    1.  语法 
+    1.  语法
         -   定义：
             ```py
             @staticmethod
             def 方法名称(参数):
                 方法体
             ```
-        -   调用：类名.方法名称(参数) 
-            -   不建议使用对象.静态方法名. 
+        -   调用：类名.方法名称(参数)
+            -   不建议使用对象.静态方法名.
         -   说明：
-            -   使用 @staticmethod 修饰的目的是该方法不需要隐式传递参数。 
-            -   静态方法不能访问实例成员和类成员 
+            -   使用 @staticmethod 修饰的目的是该方法不需要隐式传递参数。
+            -   静态方法不能访问实例成员和类成员
         -   作用：
-            -   统一管理函数(定义在 .py 文件中的函数)  
+            -   统一管理函数(定义在 .py 文件中的函数)
             -   表达不需要使用实例成员和类成员时，使用静态方法。
             -   将函数转移到类中，即静态方法
     2.  实例
+
     ```python
     class Vector2:
         """
@@ -1121,6 +1145,7 @@ ICBC.print_total_money()
         @staticmethod
         def up():
             return Vector2(-1, 0)
+    ```
 
 
     class DoubleListHelper:
@@ -1146,7 +1171,7 @@ ICBC.print_total_money()
     #     ["20", "21", "22", "23"],
     #     ["30", "31", "32", "33"],
     # ]
-    # 
+    #
     # re = DoubleListHelper.get_elements(list01, Vector2(1, 0), Vector2.right(), 3)
     # print(re)
     ```
@@ -1154,8 +1179,8 @@ ICBC.print_total_money()
 ### 封装
 
 封装数据的优势：
-    -   符合人类的思考方式，
-    -   将数据与对数据的操作封装起来。
+    \-   符合人类的思考方式，
+    \-   将数据与对数据的操作封装起来。
 
 #### 封装的定义
 
@@ -1215,13 +1240,13 @@ class Enemy:
 1.  定义
 
     ```python
-    @property  # 读取数据时执行 
-    def 属性名(self): 
-    return  self.__ 属性名    # 私有的实例变量 
+    @property  # 读取数据时执行
+    def 属性名(self):
+    return  self.__ 属性名    # 私有的实例变量
 
-    @属性名.setter  # 写入数据时执行 
-    def 属性名(self,参数): 
-    self.__ 属性名 = 参数 
+    @属性名.setter  # 写入数据时执行
+    def 属性名(self,参数):
+    self.__ 属性名 = 参数
     ```
 
 2.  调用：
@@ -1367,11 +1392,12 @@ class Enemy:
     ```python
     class 子类名称(父类名称):
         def __init__(self,父类参数,自身参数):
-            super().__init__(父类参数) 
-            self.自身实例变量 =自身参数 
+            super().__init__(父类参数)
+            self.自身实例变量 =自身参数
     ```
 
     1.  说明：
+
         -   子类如果没有构造函数，将自动执行父类的，但如果有构造函数将覆盖父类的。
         -   此时必须通过super()函数调用父类的构造函数，以确保父类数据成员被正常创建。
 
@@ -1389,7 +1415,7 @@ class Enemy:
 3.  说明：
 
     -   子类拥有父类所有成员：子类直接具有父类的成员，还可以具有自己的功能。
-    -   事物具有一定的层次、渊源，继承可以统一概念。 
+    -   事物具有一定的层次、渊源，继承可以统一概念。
 
 4.  优势：
 
@@ -1402,12 +1428,14 @@ class Enemy:
     -   切换不灵活
 
 6.  作用：
+
     -   隔离客户端代码与功能的实现方式
 
 7.  适用性
+
     -   多个类在概念上是一致的，且需要进行统一的处理。
 
-8.  相关概念 
+8.  相关概念
 
     -   父类(基类/超类)、子类(派生类).
 
@@ -1420,7 +1448,6 @@ class Enemy:
     -   多继承：父类有多个(例如：python、c++)
 
     -   Object类(万类之祖)：任何类都直接或者间接继承自Object类。
-
 
 ### 多态
 
@@ -1438,19 +1465,83 @@ class Enemy:
     -   子类实现了父类中相同(名称、参数)的方法，在调用该方法时，实际执行的是子类的方法。
 
 4.  内置可重写函数
-    -   在python中，以双下划线开头和结尾的函数--系统定义的成员。可以在自定义类中对其重写，从而改变其行为。
-    1.  对象转换为字符串：
-        -   __str__:重写的时候，返回给人看的友好的支持。
+
+> 在python中，以双下划线开头和结尾的函数--内建函数（系统定义的成员）。可以在自定义类中对其重写，从而改变其行为。
+
+1.  对象转换为字符串：
+    -   `__str__`:重写的时候，返回给人看的友好的支持。
             ```python
             def __str__(self):
                 return "id is %d, name is %s, age is %d, score is %d" % (self.id, self.name, self.age, self.score)
             ```
-        -   __repr__:重写的时候，返回解释器可以识别(eval)的字符串。
+    -   `__repr__`:重写的时候，返回解释器可以识别(eval)的字符串。
             ```python
             def __repr__(self):
                 return 'StudentModel("%s", %d, %d)' % (self.name, self.age, self.score)
             ```
+2.  算数运算符重载：让自定义类生成的对象（实例）能够使用运算符进行操作，本质就是调用内建函数
 
+    ```py
+      def __add__(self, other):
+          return Vector(self.x + other)
+
+      v01 = Vector(10)
+      v02 = v01 + 5
+      print(v02)
+    ```
+
+**算数运算符重载：(仅支持 对象在左边)**
+
+| 方法名                      | 运算符和表达式       | 说明  |
+| :----------------------- | :------------ | :-- |
+| `__add__`(self,rhs)      | self + rhs    | 加   |
+| `__sub__`(self,rhs)      | self - rhs    | 减   |
+| `__mul__`(self,rhs)      | self \* rhs   | 乘   |
+| `__truediv__`(self,rhs)  | self / rhs    | 除   |
+| `__floordiv__`(self,rhs) | self // rhs   | 地板除 |
+| `__mod__`(self,rhs)      | self % rhs    | 取余  |
+| `__pow__`(self,rhs)      | self \*\* rhs | 幂   |
+
+**反向算数运算符重载：(仅支持 对象在右边)**
+
+| 方法名                       | 运算符和表达式       | 说明  |
+| :------------------------ | :------------ | :-- |
+| `__radd__`(self,lhs)      | lhs + self    | 加   |
+| `__rsub__`(self,lhs)      | lhs - self    | 减   |
+| `__rmul__`(self,lhs)      | lhs \* self   | 乘   |
+| `__rtruediv__`(self,lhs)  | lhs / self    | 除   |
+| `__rfloordiv__`(self,lhs) | lhs // self   | 地板除 |
+| `__rmod__`(self,lhs)      | lhs % self    | 取余  |
+| `__rpow__`(self,lhs)      | lhs \*\* self | 幂   |
+
+**复合运算符重载：**
+
+| 方法名                       | 运算符和表达式        | 说明  |
+| :------------------------ | :------------- | :-- |
+| `__iadd__`(self,rhs)      | self += rhs    | 加   |
+| `__isub__`(self,rhs)      | self -= rhs    | 减   |
+| `__imul__`(self,rhs)      | self \*= rhs   | 乘   |
+| `__itruediv__`(self,rhs)  | self /= rhs    | 除   |
+| `__ifloordiv__`(self,rhs) | self //= rhs   | 地板除 |
+| `__imod__`(self,rhs)      | self %= rhs    | 取余  |
+| `__ipow__`(self,rhs)      | self \*\*= rhs | 幂   |
+
+```py
+def __iadd__(self, other):
+    self.x += other
+    return self
+```
+
+**比较运算符重载：**
+
+| 方法名                | 运算符和表达式        | 说明   |
+| :----------------- | :------------- | :--- |
+| `__lt__`(self,rhs) | self &lt; rhs  | 小于   |
+| `__le__`(self,rhs) | self &lt;= rhs | 小于等于 |
+| `__gt__`(self,rhs) | self > rhs     | 大于   |
+| `__ge__`(self,rhs) | self >= rhs    | 大于等于 |
+| `__eq__`(self,rhs) | self == rhs    | 等于   |
+| `__ne__`(self,rhs) | self != rhs    | 不等于  |
 
 ### 类与类的关系
 
@@ -1461,7 +1552,7 @@ class Enemy:
     -   B类泛化A类，意味着B类是A类的子类。
 
     -   做法：B类继承A类。
-  
+
     -   > 父类 向 子类 的演变 => 特化
 
 2.  关联(聚合/组合)
@@ -1483,63 +1574,62 @@ class Enemy:
 **综合实例**
 
 ```python
-class Employee:
-    """
-        普通员工类 即 父类
-    """
+  class Employee:
+      """
+          普通员工类 即 父类
+      """
 
-    def __init__(self, name, job):  # Employee 关联 job
-        self.name = name
-        self.job = job
+      def __init__(self, name, job):  # Employee 关联 job
+          self.name = name
+          self.job = job
 
-    def calcular_salary(self):
-        return self.job.get_salary()
-
-
-class Job:
-    def __init__(self, basic_salary):
-        self.basic_salary = basic_salary
-
-    def get_salary(self):
-        return self.basic_salary
+      def calcular_salary(self):
+          return self.job.get_salary()
 
 
-class Programer(Job):  # Programer 泛化 Job（隔离变化）
-    """
-        程序员类
-    """
+  class Job:
+      def __init__(self, basic_salary):
+          self.basic_salary = basic_salary
 
-    def __init__(self, basic_salary, extra):
-        super().__init__(basic_salary)
-        self.extra = extra
-
-    def get_salary(self):
-        return super().get_salary() + self.extra
+      def get_salary(self):
+          return self.basic_salary
 
 
-class salesmen(Job):
-    """
-        销售类
-    """
+  class Programer(Job):  # Programer 泛化 Job（隔离变化）
+      """
+          程序员类
+      """
 
-    def __init__(self, basic_salary, extra):
-        super().__init__(basic_salary)
-        self.extra = extra
+      def __init__(self, basic_salary, extra):
+          super().__init__(basic_salary)
+          self.extra = extra
 
-    def get_salary(self):
-        return super().get_salary() + self.extra
+      def get_salary(self):
+          return super().get_salary() + self.extra
 
 
-lw = Employee("lw", Programer(100, 10))
-print(lw.calcular_salary())
-lw.job = salesmen(100, 1)
-print(lw.calcular_salary())
+  class salesmen(Job):
+      """
+          销售类
+      """
 
+      def __init__(self, basic_salary, extra):
+          super().__init__(basic_salary)
+          self.extra = extra
+
+      def get_salary(self):
+          return super().get_salary() + self.extra
+
+
+  lw = Employee("lw", Programer(100, 10))
+  print(lw.calcular_salary())
+  lw.job = salesmen(100, 1)
+  print(lw.calcular_salary())
 ```
 
 ### 设计原则
 
-1.  开闭原则(目标) 
+1.  开闭原则(目标)
 
     -   对扩展开放，对修改关闭。
     -   允许增加新功能，不修改客户端(使用者)代码。
@@ -1561,7 +1651,7 @@ print(lw.calcular_salary())
     -   如果仅仅为了代码复用优先选择组合关系，而非继承关系。
     -   组合的耦合度低于继承，灵活度高于继承。
 
-5.  里氏替换(重写注意事项) 
+5.  里氏替换(重写注意事项)
 
     -   父类出现的地方可以被子类替换，在替换后依然保持原有功能。
     -   从内存角度解释：父类(成员少)   子类(成员多)
