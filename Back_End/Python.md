@@ -7,6 +7,10 @@ $ touch ['文件名'] # 创建文件
 
 # python 基础
 
+> python执行过程：
+> 	源代码 –编译--> 字节码(特定python的表现形式.pyc) –解释--> 机器码
+> 	|—————————————————— 1 次 ————————————————|
+
 ## 基础语法
 
 ### 变量
@@ -799,6 +803,7 @@ print(get_prime_number(1, 101))
                 -   对调用者而言，**可以传递数量无限的位置实参**
 
     -   命名关键字形参
+
         1.  语法：
             def 函数名(\_,参数名):
                 函数体
@@ -806,6 +811,7 @@ print(get_prime_number(1, 101))
                 函数体
         2.  作用：强制实参使用关键字传递
         3.  双星号字典形参
+
             1.  语法：
                 def 函数名(\*\*kwargs):
                     函数体
@@ -815,11 +821,10 @@ print(get_prime_number(1, 101))
                 -   形参列表中最多只能有一个
                 -   在方法内部，就是字典
                 -   对调用者而言，**可以传递数量无限的关键字实参**
+
             ```python
             def keywords(**kwargs):
                 print(kwargs)
-            ```
-
 
             keywords(a="c", b=1, c=23)
             ```
@@ -853,8 +858,6 @@ print(get_prime_number(1, 101))
         def func01(num01):
             num01 = 2
             print("num01: " + str(num01))
-        ```
-
 
         number01 = 1
         # 调用方法在内存中开辟空间（栈帧）
@@ -864,7 +867,7 @@ print(get_prime_number(1, 101))
         print("number01: " + str(number01))
         ```
 
-        ![Python-MemoryAllocationMap-_Fun01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun01.jpg)
+        ![Python-MemoryAllocationMap-\_Fun01](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun01.jpg)
 
         **可变对象传参**
 
@@ -873,13 +876,12 @@ print(get_prime_number(1, 101))
             list_target[0] = 2
             print("list_target[0]: " + str(list_target[0]))
 
-
         list_number = [1, 2]
         func02(list_number)
         print("list_number[0]: " + str(list_number[0]))
         ```
 
-        ![Python-MemoryAllocationMap-_Fun02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun02.jpg)
+        ![Python-MemoryAllocationMap-\_Fun02](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_Fun02.jpg)
 
 #### 作用域 LEGB
 
@@ -908,8 +910,6 @@ print(get_prime_number(1, 101))
 
         ```python
         g01 = 100
-        ```
-
 
         def fun():
             # 方法内部可以读取全局变量
@@ -927,7 +927,6 @@ print(get_prime_number(1, 101))
             global g02
             g02 = 500
 
-
         fun()
         print(g01)
         print(g02)
@@ -941,7 +940,9 @@ print(get_prime_number(1, 101))
 
 ## 面向对象 Object Oriented
 
-### 类和对象的浅析
+### 类和对象
+
+#### 类和对象的浅析
 
 1.  类：一个抽象的概念，即生活中的”类别”
 
@@ -958,7 +959,7 @@ print(get_prime_number(1, 101))
 
 4.  类与类的行为不同，对象与对象的数据不同。
 
-### 类和对象的用法
+#### 类和对象的用法
 
 1.  定义类
 
@@ -980,7 +981,7 @@ print(get_prime_number(1, 101))
 
     -   self变量绑定的是被创建的对象，名字通常叫做”self”。
 
-### 类和对象的语法
+#### 类和对象的语法
 
 1.  创建对象(实例化对象)
 
@@ -1128,52 +1129,49 @@ ICBC.print_total_money()
             -   将函数转移到类中，即静态方法
     2.  实例
 
-    ```python
-    class Vector2:
-        """
-            向量
-        """
+    ```py
+        class Vector2:
+            """
+                向量
+            """
 
-        def __init__(self, x=0, y=0):
-            self.x = x
-            self.y = y
+            def __init__(self, x=0, y=0):
+                self.x = x
+                self.y = y
 
-        @staticmethod
-        def right():
-            return Vector2(0, 1)
+            @staticmethod
+            def right():
+                return Vector2(0, 1)
 
-        @staticmethod
-        def up():
-            return Vector2(-1, 0)
-    ```
+            @staticmethod
+            def up():
+                return Vector2(-1, 0)
 
+        class DoubleListHelper:
+            """
+                二维列表助手:
+                    在开发过程中，所有对二维列表的常用操作
+            """
 
-    class DoubleListHelper:
-        """
-            二维列表助手:
-                在开发过程中，所有对二维列表的常用操作
-        """
-
-        @staticmethod
-        def get_elements(list_target, v_pos, v_dir, count):
-            get_list = []
-            for i in range(count):
-                v_pos.x += v_dir.x
-                v_pos.y += v_dir.y
-                get_list.append(list_target[v_pos.x][v_pos.y])
-            return get_list
-
-
-    # 测试
-    # list01 = [
-    #     ["00", "01", "02", "03"],
-    #     ["10", "11", "12", "13"],
-    #     ["20", "21", "22", "23"],
-    #     ["30", "31", "32", "33"],
-    # ]
-    #
-    # re = DoubleListHelper.get_elements(list01, Vector2(1, 0), Vector2.right(), 3)
-    # print(re)
+            @staticmethod
+            def get_elements(list_target, v_pos, v_dir, count):
+                get_list = []
+                for i in range(count):
+                    v_pos.x += v_dir.x
+                    v_pos.y += v_dir.y
+                    get_list.append(list_target[v_pos.x][v_pos.y])
+                return get_list
+        #
+        # 测试
+        # list01 = [
+        #     ["00", "01", "02", "03"],
+        #     ["10", "11", "12", "13"],
+        #     ["20", "21", "22", "23"],
+        #     ["30", "31", "32", "33"],
+        # ]
+        #
+        # re = DoubleListHelper.get_elements(list01, Vector2(1, 0), Vector2.right(), 3)
+        # print(re)
     ```
 
 ### 封装
@@ -1449,6 +1447,42 @@ class Enemy:
 
     -   Object类(万类之祖)：任何类都直接或者间接继承自Object类。
 
+#### 多继承
+
+> 定义：一个子类继承两个或两个以上的基类，父类中的成员同时被子类继承下来。
+
+**同名方法的解析顺序（MRO）：C3算法模拟的广度优先。**
+
+-   类自身 --> 父类继承列表(由左至右)  --> 再上层父类
+
+```py
+    class A:
+        def m(self):
+            print("a--m")
+
+
+    class B(A):
+        def m(self):
+            print("b--m")
+
+
+    class C(A):
+        def m(self):
+            print("c--m")
+
+
+    class D(B, C):
+        def m(self):
+            super().m()
+            C.m(self) # 通过类名调用实例方法，传递对象地址
+            print("d--m")
+
+
+    d01 = D()
+    d01.m()
+    print(D.mro())
+```
+
 ### 多态
 
 1.  定义：
@@ -1470,15 +1504,15 @@ class Enemy:
 
 1.  对象转换为字符串：
     -   `__str__`:重写的时候，返回给人看的友好的支持。
-            ```python
+        ```python
             def __str__(self):
                 return "id is %d, name is %s, age is %d, score is %d" % (self.id, self.name, self.age, self.score)
-            ```
+        ```
     -   `__repr__`:重写的时候，返回解释器可以识别(eval)的字符串。
-            ```python
+        ```python
             def __repr__(self):
                 return 'StudentModel("%s", %d, %d)' % (self.name, self.age, self.score)
-            ```
+        ```
 2.  算数运算符重载：让自定义类生成的对象（实例）能够使用运算符进行操作，本质就是调用内建函数
 
     ```py
@@ -1684,3 +1718,60 @@ def __iadd__(self, other):
     -   高复用：没有重复的代码。
     -   高扩展：开闭原则。
     -   高维护：逻辑清晰，结构规整。
+
+## 模块 Module
+
+1.  定义：包含一系列代码(数据/函数/类/语句)的文件，通常以.py结尾。
+2.  作用：让一些相关的代码，有逻辑的组织在一起，使结构更加清晰，有利于团队开发。
+3.  导入：
+
+    -   import
+
+        1.  语法：`import 模块名 [as 别名]`
+            -   将该模块作用域 赋值给 变量：模块名
+        2.  作用：将某个模块整体导入到当前模块
+        3.  本质：使用变量名(模块名)关联指定模块代码。
+        4.  使用：模块名.成员
+
+    -   from import
+
+        1.  语法：`from 模块名 import 成员 [as 别名]`
+            -   将该模块指定成员 赋值给 变量：成员（多个成员逗号隔开）
+        2.  作用：将模块内的指定的成员导入到当前模块作用域中。
+        3.  使用：成员
+
+    -   from import \*
+
+        1.  语法：`from 模块名 import *`
+        2.  作用：将模块内的所有成员导入到当前模块作用域中。
+        3.  注意：
+            -   小心重名
+            -   模块中以下划线(\_)开头的属性，不会被导入，通常称这些成员为隐藏成员。
+
+### 模块变量
+
+-   `__all__`变量：定义可导出成员，仅对 `from xxx import *` 语句有效
+    -   `__all__ = ["fun01", "Class01"]`
+-   `__doc__`变量：读取文档字符串（`"""`注释是文档字符串）
+    -   使用：第一种导入语法 可以用 该模块变量 导出 文档字符串
+-   `__file__`变量：模块对应的文件路径名
+-   `__name__`变量：模块自身名字，可以判断是否为主模块。
+    -   当此模块作为主模块（第一个运行的模块）运行时，`__name__`绑定`__main__`,不是主模块，而是被其他模块导入时，存储模块名。
+    -   作用：在if代码块中定义只能从当前模块开始执行，才调用的代码。
+    -   `if __name__ == "__main__":`
+    -   `测试代码`
+
+### 加载过程
+
+> 在模块导入时，模块的所有语句都会执行。
+> 如果一个模块已经导入，则再次导入时不再重复执行语句。
+
+### 分类
+
+1.  内置模块(builtins): 在解释器内部可以直接使用。
+
+2.  标准库模块：安装python时自带的，经过导入后可直接使用。
+
+3.  第三方模块：需要自行下载，再导入使用。
+
+4.  自定义模块：经过导入后可直接使用。
