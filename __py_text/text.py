@@ -18,3 +18,6 @@ class Class01:
 def fun03():
     print("fun03")
 
+import time
+
+time.strftime()
