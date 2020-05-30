@@ -1,8 +1,8 @@
 """
     ui界面（表示层）
 """
-from model import *
-from bll import *
+from StudentManager.model import *
+from StudentManager.bll import *
 
 
 class StudentManagerView:
@@ -12,6 +12,16 @@ class StudentManagerView:
 
     def __init__(self):
         self.__manager = StudentManagerController()
+
+    def __get_student_item(self,student_item,start_num,end_num):
+        try:
+            int_student_item = int(input("student %s : "%student_item))
+        except ValueError:
+            print("err: input int")
+        if start_num <= int_student_item <= end_num:
+            return int_student_item
+        else:
+            print("error")
 
     def __input_students(self):
         """
