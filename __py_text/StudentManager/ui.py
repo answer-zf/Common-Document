@@ -1,8 +1,8 @@
 """
     ui界面（表示层）
 """
-from StudentManager.model import *
-from StudentManager.bll import *
+from model import *
+from bll import *
 
 
 class StudentManagerView:
@@ -13,15 +13,30 @@ class StudentManagerView:
     def __init__(self):
         self.__manager = StudentManagerController()
 
-    def __get_student_item(self,student_item,start_num,end_num):
-        try:
-            int_student_item = int(input("student %s : "%student_item))
-        except ValueError:
-            print("err: input int")
-        if start_num <= int_student_item <= end_num:
-            return int_student_item
-        else:
-            print("error")
+    def __get_student_item(self, student_item, start_num, end_num=0):
+        """
+            获取学生信息各个整形分项
+        @param student_item: 各个分项的提示信息
+        @param start_num: 整形分项最小范围
+        @param end_num: 整形分项最大范围，不填则不限
+        @return:
+        """
+        while True:
+            try:
+                int_student_item = int(input("student %s : " % student_item))
+            except ValueError:
+                print("err: input int")
+                continue
+            if end_num == 0:
+                if start_num <= int_student_item:
+                    return int_student_item
+                else:
+                    print("error")
+            else:
+                if start_num <= int_student_item <= end_num:
+                    return int_student_item
+                else:
+                    print("error")
 
     def __input_students(self):
         """
@@ -29,9 +44,12 @@ class StudentManagerView:
         :return:
         """
         stu = StudentModel()
+        # stu.name = input("student name : ")
+        # stu.age = int(input("student age : "))
+        # stu.score = int(input("student score : "))
         stu.name = input("student name : ")
-        stu.age = int(input("student age : "))
-        stu.score = int(input("student score : "))
+        stu.age = self.__get_student_item("student age", 18, 24)
+        stu.score = self.__get_student_item("student score", 0, 100)
         self.__manager.add_student(stu)
 
     def __output_students(self, list_target):
@@ -53,7 +71,8 @@ class StudentManagerView:
         self.__output_students(list_target)
 
     def __delete_student(self):
-        id = int(input("pl. input id for del stu"))
+        id = self.__get_student_item("pl. input id for del stu", 1)
+        # id = int(input("pl. input id for del stu"))
         if self.__manager.remove_student(id):
             print("del complete")
         else:
@@ -65,10 +84,14 @@ class StudentManagerView:
         @return:
         """
         stu = StudentModel()
-        stu.id = int(input("pl. input id for update stu"))
+        # stu.id = int(input("pl. input id for update stu"))
+        # stu.age = int(input("age:"))
+        # stu.score = int(input("score:"))
         stu.name = input("name:")
-        stu.age = int(input("age:"))
-        stu.score = int(input("score:"))
+        stu.id = self.__get_student_item("pl. input id for update stu", 1)
+        stu.age = self.__get_student_item("student age", 18, 24)
+        stu.score = self.__get_student_item("student score", 0, 100)
+
         if self.__manager.update_student(stu):
             print("update complete")
         else:

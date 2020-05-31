@@ -2,7 +2,7 @@
     程序入口
 """
 
-from StudentManager.ui import *
+from ui import *
 
 if __name__ == "__main__":
     view = StudentManagerView()
