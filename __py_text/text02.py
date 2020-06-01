@@ -3,34 +3,33 @@
 """
 
 
-class Skill:
+class Employee:
     pass
 
 
-class SkillManager:
-    def __init__(self, skills):
-        self.skills = skills
+class EmployeeManager:
+    def __init__(self, employees):
+        self.all_employee = employees
 
     def __iter__(self):
-        pass
+        for item in self.all_employee:
+            yield item
 
 
-class SkillIterator:
-    def __next__(self):
+# class EmployeeIterator:
+#     def __init__(self, target):
+#         self.target = target
+#         self.index = 0
+
+#     def __next__(self):
+#         if self.index > len(self.target) - 1:
+#             raise StopIteration()
+#         item = self.target[self.index]
+#         self.index += 1
+#         return item
 
 
-manager = SkillManager([Skill(), Skill(), Skill()])
+manager = EmployeeManager([Employee(), Employee()])
 
-
-# for item in manager.skills:
-# for item in manager:
-#     print(item)
-
-iterator = manager.__iter__()
-
-while True:
-    try:
-        item = iterator.__next__()
-        print(item)
-    except:
-        break
+for item in manager:
+    print(item)

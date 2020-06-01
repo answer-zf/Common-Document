@@ -1940,7 +1940,7 @@ def __iadd__(self, other):
 #### 可迭代对象 iterable
 
 > 可迭代对象：具有 `__iter__()`方法，可以返回迭代器的对象
-> 能被for循环的条件：可迭代对象（具有**iter**方法的对象）
+> 能被for循环的条件：可迭代对象（具有`__iter__()`方法的对象）
 
 1.  语法：
 
@@ -1956,6 +1956,8 @@ def __iadd__(self, other):
                 语句
         ```
 
+2.  原理：
+
 ```py
     # for 循环原理
     # 1.  获取迭代器对象
@@ -1969,3 +1971,69 @@ def __iadd__(self, other):
         except StopIteration:
             break  # 跳出循环
 ```
+
+#### 迭代器 iterator
+
+> 能够被`__next__()`方法的调用并返回下一个值的对象（具有`__next__()`函数的对象，可以获取下一个元素。 ）
+
+1.  语法：
+
+    ```py
+        class 迭代器名称:
+            def __init__(self,聚合对象):
+                self.聚合对象 = 聚合对象
+            def __next__():
+                if 没有元素:
+                    raise StopIteration()  # 停止迭代
+                return 聚合对象元素  #聚合对象通常是容器对象
+    ```
+
+2.  作用：使用者只需要通过一种方式(`__next__`)，便可简单明了的获取聚合对象中的各个元素，无需了解其内部结构。
+
+3.  原理：
+
+    ```py
+        class Skill:
+            pass
+
+        class SkillIterator:
+            def __init__(self, target):
+                self.target = target
+                self.index = 0
+
+            def __next__(self):
+                # 索引越界抛出异常
+                if self.index >= len(self.target):
+                    raise StopIteration()
+
+                # 返回下一个元素
+                item = self.target[self.index]
+                self.index += 1
+                return item
+
+        class SkillManager:
+            def __init__(self, skills):
+                self.skills = skills
+
+            def __iter__(self):
+                # 创建迭代器对象 传递 需要迭代的数据
+                return SkillIterator(self.skills)
+
+        manager = SkillManager([Skill(), Skill(), Skill()])
+
+        for item in manager:  # 获取 manager 对象中集合（聚合）类型对象元素
+            print(item)
+
+        # iterator = manager.__iter__()
+
+        # while True:
+        #     try:
+        #         item = iterator.__next__()
+        #         print(item)
+        #     except:
+        #         break
+    ```
+
+4.  设计思想：
+
+    ![Python-MemoryAllocationMap-\_OOP03](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP03.jpg)
