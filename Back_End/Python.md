@@ -2037,3 +2037,108 @@ def __iadd__(self, other):
 4.  设计思想：
 
     ![Python-MemoryAllocationMap-\_OOP03](http://images.dorc.top/blog/Python/Python-MemoryAllocationMap-_OOP03.jpg)
+
+### 生成器 generator
+
+1.  定义：能够动态(循环一次计算一次返回一次)提供数据的可迭代对象。
+
+2.  作用：在循环过程中，按照某种算法推算数据，不必创建容器存储完整的结果，从而节省内存空间。数据量越大，优势越明显。
+
+3.  惰性(延迟)操作：通俗的讲在需要的时候才计算结果。
+
+#### 生成器函数
+
+1.  定义：含有 yield 关键字的函数，返回值是生成器对象。
+
+2.  语法：
+
+    -   创建
+
+        ```py
+            def 方法名():
+             …
+             yield 数据
+             …
+        ```
+
+    -   使用
+
+        ```py
+            for 变量名 in 方法名():
+
+                语句
+        ```
+
+3.  本质
+
+    -   创建
+
+        ```py
+        class 生成器名称:
+            def __iter__(self):
+                return 迭代器对象
+        ```
+
+    -   使用
+
+        ```py
+            生成器变量名 = 生成器名称()
+
+            迭代器变量名 =变量名.__iter__()
+
+            while True:
+
+                try:
+
+                    print(迭代器变量名.__next__())
+
+                except:
+
+                    break
+        ```
+
+4.  语法说明：
+
+    -   调用生成器函数返回迭代器对象，不执行函数体。
+    -   执行过程：
+        1.  调用生成器函数，自动创建迭代器对象。
+        2.  调用迭代器对象的`__next__()`方法才执行生成器函数体。
+        3.  每次执行到yield关键字时返回数据，暂时离开。
+        4.  待下次调用`__next__()`方法继续执行。
+        5.  再次调用 next 方法时，从上次离开的代码开始执行，到 yield 语句暂时离开
+        6.  待执行完方法体，抛出 StopIteration 异常
+
+5.  生成迭代器对象原理：
+
+    -   将yield关键字以前的代码放到`__next__()`方法中。
+    -   将yield关键字以后的数据作为`__next__()`方法返回值。
+
+```py
+    # class MyRange:
+    #     def __init__(self, stop):
+    #         self.stop = stop
+
+    #     def __iter__(self):
+    #         index = 0
+    #         while True:
+    #             if index < self.stop:
+    #                 yield index
+    #                 index += 1
+
+    def my_range(stop):
+    index = 0
+    while True:
+        if index < stop:
+            yield index
+            index += 1
+
+
+    for item in my_range(5):
+    print(item)
+```
+
+#### 生成器表达式
+
+1.  语法：(表达式 for 变量 in 可迭代对象 [if 条件])
+
+2.  定义：用推导式语法创建的生成器对象。

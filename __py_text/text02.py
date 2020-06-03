@@ -2,34 +2,14 @@
     
 """
 
-
-class Employee:
-    pass
+list01 = [123, 2342, 54, 6546, 9, 46546, 23476, 7]
 
 
-class EmployeeManager:
-    def __init__(self, employees):
-        self.all_employee = employees
-
-    def __iter__(self):
-        for item in self.all_employee:
+def get_even(list_target):
+    for item in list_target:
+        if item % 2 == 0:
             yield item
 
 
-# class EmployeeIterator:
-#     def __init__(self, target):
-#         self.target = target
-#         self.index = 0
-
-#     def __next__(self):
-#         if self.index > len(self.target) - 1:
-#             raise StopIteration()
-#         item = self.target[self.index]
-#         self.index += 1
-#         return item
-
-
-manager = EmployeeManager([Employee(), Employee()])
-
-for item in manager:
+for item in get_even(list01):
     print(item)
