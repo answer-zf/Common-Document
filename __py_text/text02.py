@@ -2,14 +2,10 @@
     
 """
 
-list01 = [123, 2342, 54, 6546, 9, 46546, 23476, 7]
+list01 = [2, 34, 67, 8, 90]
 
+list02 = (item for item in list01 if item > 10)
+list03 = [item for item in list01 if item > 10]
 
-def get_even(list_target):
-    for item in list_target:
-        if item % 2 == 0:
-            yield item
-
-
-for item in get_even(list01):
+for item in list02:
     print(item)

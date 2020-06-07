@@ -2132,13 +2132,96 @@ def __iadd__(self, other):
             yield index
             index += 1
 
-
     for item in my_range(5):
     print(item)
 ```
 
+```py
+    def get_even(list_target):
+        for item in list_target:
+            if item % 2 == 0:
+                yield item
+
+    for item in get_even(list01):
+        print(item)
+    # 方法/函数需要向外返回多个结果时，使用生成器函数
+```
+
+#### 内置生成器
+
+1.  枚举函数
+
+    -   语法：
+
+        ```py
+            for 变量 in enumerate(可迭代对象)：
+                语句
+            for (索引，元素) in enumerate(可迭代对象)：
+                语句
+        ```
+
+    -   作用：遍历可迭代对象时，可以将索引与元素组合为一个元组。
+
+2.  zip
+
+    -   语法：
+
+        ```py
+            for item in zip(可迭代对象1,可迭代对象2 ...):
+                语句
+        ```
+
+    -   作用：将多个可迭代对象中对应的元素组合成一个个元组，生成元组的个数由长度最短的可迭代对象决定
+
 #### 生成器表达式
 
-1.  语法：(表达式 for 变量 in 可迭代对象 [if 条件])
+    1.  语法：(表达式 for 变量 in 可迭代对象 [if 真值表达式])
 
-2.  定义：用推导式语法创建的生成器对象。
+    2.  定义：用推导式语法创建的生成器对象。
+
+    ```py
+        # def fun(list01):
+        #     for item in list01:
+        #         yield item ** 2
+
+        # for item in fun(list01):
+        #     print(item)
+
+        list02 = (item ** 2 for item in list01)
+        for item in list02:
+            print(item)
+    ```
+
+### 函数式编程
+
+1.  定义：用一系列函数解决问题。
+    -   函数可以赋值给变量，赋值后变量绑定函数。
+    -   允许将函数作为参数传入另一个函数。
+    -   允许函数返回一个函数。
+2.  高阶函数：将函数作为参数或返回值的函数。
+
+```py
+    def fun01():
+        print("fun01")
+
+    # 将方法作为方法的参数进行传递
+
+    def fun02(func):
+        # 对于 fun02 的定义者而言，不知道也不需要知道func的具体逻辑
+        print("fun02")
+        func()
+
+    # 调用 fun01 ，并将返回值 赋值给 变量a
+    # a = fun01()
+    # 将函数赋值给 变量a（没有执行函数）
+    # a = fun01
+    # a()  # 调用变量a，间接执行 函数fun01
+
+    fun02(fun01)
+
+    def find_list(target, condition):
+        for item in target:
+            # 使用形参 condition 将不变与变化隔离开
+            if condition(item):
+                yield item
+```

@@ -1,2 +1,2 @@
-for item in f04.all_figure:
-#     print(item.__dict__)
+
+# a()  # 调用变量a，间接执行 函数fun01
