@@ -41,6 +41,21 @@ class DoubleListHelper:
 
     @staticmethod
     def get_elements(list_target, v_pos, v_dir, count):
+        """
+            按指定方位获取二维数组
+        @param list_target: 二维数组
+                type: list
+        @param v_pos: 二维数组参照位置
+                type: function
+                ex. Vector2(x, y)
+        @param v_dir: 二维数组移动方位
+                Vector2 类中定义相应的移动方向的方法
+                type: function
+                ex. Vector2.direction()
+        @param count: 获取的个数
+                type: int
+        @return:
+        """
         get_list = []
         for i in range(count):
             v_pos.x += v_dir.x
