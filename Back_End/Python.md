@@ -2228,6 +2228,9 @@ def __iadd__(self, other):
             # 使用形参 condition 将不变与变化隔离开
             if condition(item):
                 yield item
+
+    print(list(find_list(list01, lambda item: item > 5)))
+    # 生成器直接转换成列表 使用 set() 可以去重...
 ```
 
 ##### lambda 表达式

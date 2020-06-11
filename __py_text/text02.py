@@ -37,8 +37,8 @@ from common.custom_list_tools import ListHelper
 # for item in ListHelper.find_all(list_enemies, lambda item: 5 < item.speed <= 10 ):
 #     print(item.name)
 #
-# for item in ListHelper.select(list_enemies, lambda item: item.name):
-#     print(item)
+# print(list(ListHelper.select(list_enemies, lambda item: item.name)))
+
 
 # last_enemy_hp = ListHelper.last(list_enemies, lambda item: item.hp != 0)
 # print(last_enemy_hp.name)
@@ -46,8 +46,15 @@ from common.custom_list_tools import ListHelper
 # last_enemy_attack = ListHelper.last(list_enemies, lambda item: item.attack > 5 )
 # print(last_enemy_attack.name)
 
-class Demo:
-    def __init__(self):
-        pass
+# class Demo:
+#     def __init__(self):
+#         pass
+#
+# print(type(Demo))
 
-print(type(Demo))
+# print(ListHelper.get_count(list_enemies, lambda item: item.hp > 0))
+# print(ListHelper.get_count(list_enemies, lambda item: item.speed < 7))
+# print(ListHelper.exist(list_enemies, lambda e: e.name == "xlsbz34"))
+print(ListHelper.delete_all(list_enemies, lambda e: e.hp == 0))
+for item in list_enemies:
+    print(item.name)
