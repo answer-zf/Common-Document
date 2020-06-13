@@ -3,6 +3,9 @@
 """
 
 
+from common.custom_list_tools import ListHelper
+
+
 class Enemy:
     def __init__(self, id, name, attack, hp, speed):
         self.id = id
@@ -20,10 +23,8 @@ list_enemies = [
     Enemy(105, "slbw", 70, 0, 7),
 ]
 
-from common.custom_list_tools import ListHelper
-
-# for item in ListHelper.find_all(list_enemies, lambda item: item.hp == 0 ):
-#     print(item.name)
+for item in ListHelper.find_all(list_enemies, lambda item: item.hp == 0):
+    print(item.name)
 #
 # enemy_by_id = ListHelper.first(list_enemies, lambda item: item.id == 101)
 # print(enemy_by_id.name)
@@ -55,6 +56,12 @@ from common.custom_list_tools import ListHelper
 # print(ListHelper.get_count(list_enemies, lambda item: item.hp > 0))
 # print(ListHelper.get_count(list_enemies, lambda item: item.speed < 7))
 # print(ListHelper.exist(list_enemies, lambda e: e.name == "xlsbz34"))
-print(ListHelper.delete_all(list_enemies, lambda e: e.hp == 0))
-for item in list_enemies:
-    print(item.name)
+# print(ListHelper.delete_all(list_enemies, lambda e: e.hp == 0))
+# for item in list_enemies:
+#     print(item.name)
+
+# print(ListHelper.get_max(list_enemies, lambda item: item.attack).name)
+
+# ListHelper.find_all()
+
+find_all
