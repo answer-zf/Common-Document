@@ -143,6 +143,22 @@ class ListHelper:
         return max_value
 
     @staticmethod
+    def get_min(target, func_condition):
+        """
+            获取符合指定条件的最小元素（第一个）
+        @param target: 列表
+        @param func_condition: 回调函数
+            参数：列表中的元素
+            返回值： 元素中的某个指定成员
+        @return: 元素
+        """
+        min_value = target[0]
+        for i in range(1, len(target)):
+            if func_condition(min_value) > func_condition(target[i]):
+                min_value = target[i]
+        return min_value
+
+    @staticmethod
     def order_by(target, func_condition):
         """
             根据指定条件升序排列
@@ -157,3 +173,37 @@ class ListHelper:
                 if func_condition(target[i]) > func_condition(target[j]):
                     target[i], target[j] = target[j], target[i]
         return True
+
+    @staticmethod
+    def order_by_descending(target, func_condition):
+        """
+            根据指定条件降序排列
+        @param target: 列表
+        @param func_condition: 回调函数
+            参数：列表中的元素
+            返回值： 元素中的某个指定成员
+        @return: True
+        """
+        for i in range(len(target) - 1):
+            for j in range(i + 1, len(target)):
+                if func_condition(target[i]) < func_condition(target[j]):
+                    target[i], target[j] = target[j], target[i]
+        return True
+
+    @staticmethod
+    def sort(target, func_condition, order_dire=False):
+        """
+            根据指定条件排列（万能）
+        @param target: 列表
+        @param func_condition: 回调函数
+            参数：列表中的两个需要对比的元素
+            方法体：
+                若第一个参数 大于 第二个参数 即升序
+                若第一个参数 小于 第二个参数 即降序
+            返回值： bool
+        @return:
+        """
+        for i in range(len(target) - 1):
+            for j in range(i + 1, len(target)):
+                if func_condition(target[i], target[j]):
+                    target[i], target[j] = target[j], target[i]

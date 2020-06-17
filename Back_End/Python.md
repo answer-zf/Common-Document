@@ -937,6 +937,28 @@ print(get_prime_number(1, 101))
     -   在方法体内部定义的变量
     -   调用函数时才被创建，函数结束后自动销毁
     -   在方法内部创建的变量，只能在方法内部使用
+    -   局部变量可以访问外部嵌套变量,修改需要使用 `nonlocal` 关键字
+
+    ```py
+        def fun01():
+            # 外部嵌套作用域
+            a = 1
+
+            def fun02():
+                b = 2
+                # 可以访问外部嵌套变量 a
+                # 没有修改外部嵌套变量，而是创建了新的局部变量
+                # a = 3
+                # print(a)
+                nonlocal a  # 生命外部嵌套变量 a
+                a = 3
+                print(a)
+
+            fun02()
+            print(a)
+
+        fun01()
+    ```
 
 ## 面向对象 Object Oriented
 
@@ -1207,7 +1229,7 @@ ICBC.print_total_money()
 
 1.  语法：命名使用双下划线开头
 2.  作用：修改变量名，让外界”不能直接访问”
-3.  本质：障眼法，也可以访问：`_类名__成员名`
+3.  本质：障眼法，也可以访问：`对象._类名__成员名`
 
 ```python
 class Enemy:
@@ -2265,3 +2287,115 @@ def __iadd__(self, other):
 -   max(可迭代对象，key = 函数)：根据函数获取可迭代对象的最大值。
 
 -   min(可迭代对象，key = 函数)：根据函数获取可迭代对象的最小值。
+
+#### 函数作为返回值
+
+> 逻辑连续，当内部函数被调用时，不脱离当前的逻辑。
+
+##### 闭包
+
+1.  三要素：
+
+    -   必须有一个内嵌函数。
+
+    -   内嵌函数必须引用外部函数中变量。
+
+    -   外部函数返回值必须是内嵌函数。
+
+2.  定义： 在一个函数内部的函数,同时内部函数又引用了外部函数的变量。
+
+3.  本质： 闭包是将内部函数和外部函数的执行环境绑定在一起的对象。
+
+4.  优点：
+
+    -   内部函数可以使用外部变量。
+    -   闭包使逻辑连续
+
+5.  缺点： 外部变量一直存在于内存中，不会在调用结束后释放，占用内存。
+
+6.  作用：实现python装饰器
+
+```py
+    def fun01():
+        print("fun01")
+        a = 1
+
+        def fun02():
+            print("fun02")
+            print(a)
+
+        return fun02
+
+    result = fun01()
+    # 调用内部函数（内部函数使用了外部变量 - 闭包）
+    result()  # 可以使用外部函数说明外部函数在调用后，没有释放
+```
+
+##### 函数装饰器 decorators
+
+1.  定义： 在不改变原函数的调用以及内部代码情况下，为其添加新功能的函数。
+
+2.  语法：
+
+    ```py
+        def 函数装饰器名称(func):
+
+            def 内嵌函数(*args, **kwargs):
+
+                需要添加的新功能
+
+                return func(*args, **kwargs)
+
+        return 内嵌函数
+    ```
+
+```py
+    def print_func_name(func):
+        # 包装修旧功能
+        def wrapper(*args, **kwargs):
+            # 增加新功能
+            print(func.__name__)
+            # 旧功能
+            return func(*args, **kwargs)
+
+        return wrapper  # 返回包装器
+
+    @print_func_name  # 原理 say_hello = print_func_name(say_hello)
+    def say_hello():
+        print("say hello")
+        return 123
+
+    print(say_hello())
+```
+
+3.  本质： 使用 `@函数装饰器名称` 修饰原函数，等同于： `原函数名称 = 函数装饰器名称（原函数名称）` 创建与原函数名称相同的变量，关联内嵌函数；故调用原函数时执行内嵌函数。
+
+4.  装饰器链： 一个函数可以被多个装饰器修饰，执行顺序为从近到远
+
+5.  实战
+
+    ```py
+        import time
+
+        def print_execute_time(func):
+            def wrapper(*args, **kwargs):
+                old_time = time.time()
+                result = func(*args, **kwargs)
+                time.time() - old_time
+                print(time.time() - old_time)
+                return result
+
+            return wrapper
+
+        class Student:
+            def __init__(self, name):
+                self.name = name
+
+            @print_execute_time
+            def study(self):
+                print("study")
+                time.sleep(2)
+
+        s01 = Student("zf")
+        s01.study()
+    ```

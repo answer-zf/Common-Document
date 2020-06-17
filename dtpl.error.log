@@ -1,4 +1,4 @@
-Error: EBUSY: resource busy or locked, open 'd:\web2\mine\blog\docs\__py_text\text02.py~'
+Error: EBUSY: resource busy or locked, open 'd:\web2\mine\blog\docs\__py_text\project\game_2048\bll.py~'
     at Object.openSync (fs.js:447:3)
     at Object.func (electron/js2c/asar.js:140:31)
     at Object.func [as openSync] (electron/js2c/asar.js:140:31)

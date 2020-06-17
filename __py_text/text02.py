@@ -1,67 +1,29 @@
 """
-    
+
 """
+import time
 
 
-from common.custom_list_tools import ListHelper
+def print_execute_time(func):
+    def wrapper(*args, **kwargs):
+        old_time = time.time()
+        result = func(*args, **kwargs)
+        time.time() - old_time
+        print(time.time() - old_time)
+        return result
+
+    return wrapper
 
 
-class Enemy:
-    def __init__(self, id, name, attack, hp, speed):
-        self.id = id
+class Student:
+    def __init__(self, name):
         self.name = name
-        self.attack = attack
-        self.hp = hp
-        self.speed = speed
+
+    @print_execute_time
+    def study(self):
+        print("study")
+        time.sleep(2)
 
 
-list_enemies = [
-    Enemy(101, "xlsbz", 60, 10, 9),
-    Enemy(102, "jyzj", 100, 0, 6),
-    Enemy(103, "lmsj", 40, 9, 5),
-    Enemy(104, "rlsz", 80, 0, 2),
-    Enemy(105, "slbw", 70, 0, 7),
-]
-
-for item in ListHelper.find_all(list_enemies, lambda item: item.hp == 0):
-    print(item.name)
-#
-# enemy_by_id = ListHelper.first(list_enemies, lambda item: item.id == 101)
-# print(enemy_by_id.name)
-#
-# for item in ListHelper.find_all(list_enemies, lambda item: item.hp != 0 ):
-#     print(item.name)
-#
-# sum_attack = ListHelper.sum(list_enemies, lambda item: item.attack)
-# print(sum_attack)
-#
-# for item in ListHelper.find_all(list_enemies, lambda item: 5 < item.speed <= 10 ):
-#     print(item.name)
-#
-# print(list(ListHelper.select(list_enemies, lambda item: item.name)))
-
-
-# last_enemy_hp = ListHelper.last(list_enemies, lambda item: item.hp != 0)
-# print(last_enemy_hp.name)
-#
-# last_enemy_attack = ListHelper.last(list_enemies, lambda item: item.attack > 5 )
-# print(last_enemy_attack.name)
-
-# class Demo:
-#     def __init__(self):
-#         pass
-#
-# print(type(Demo))
-
-# print(ListHelper.get_count(list_enemies, lambda item: item.hp > 0))
-# print(ListHelper.get_count(list_enemies, lambda item: item.speed < 7))
-# print(ListHelper.exist(list_enemies, lambda e: e.name == "xlsbz34"))
-# print(ListHelper.delete_all(list_enemies, lambda e: e.hp == 0))
-# for item in list_enemies:
-#     print(item.name)
-
-# print(ListHelper.get_max(list_enemies, lambda item: item.attack).name)
-
-# ListHelper.find_all()
-
-find_all
+s01 = Student("zf")
+s01.study()
