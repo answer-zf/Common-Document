@@ -2480,3 +2480,151 @@ def __iadd__(self, other):
     -   存储稀疏，不必开辟整块存储空间。
     -   对表的 插入/删除 等的运算效率较高
     -   逻辑结构复杂不利于遍历
+3.  程序实现:
+
+```py
+    class Node(object):
+        def __init__(self, val, next=None):
+            self.val = val
+            self.next = next
+
+    class LinkList(object):
+
+        def __init__(self):
+            self.head = Node(None)
+
+        def init_link(self, data):
+            """
+                初始化链式表
+            @param data:
+            @return:
+            """
+            p = self.head  # 可移动变量
+            for i in data:
+                p.next = Node(i)
+                p = p.next
+
+        def show(self):
+            """
+                控制台输出链表
+            @return:
+            """
+            p = self.head.next
+            while p:
+                print(p.val, end=" ")
+                p = p.next
+            print()
+
+        def append(self, val):
+            """
+                尾部插入新结点
+            @param val:
+            @return:
+            """
+            p = self.head
+            while p.next:
+                p = p.next
+            p.next = Node(val)
+
+        def get_length(self):
+            """
+                获取链表长度
+            @return:
+            """
+            n = 0
+            p = self.head
+            while p.next:
+                n += 1
+                p = p.next
+            return n
+
+        def is_empty(self):
+            """
+                链表是否为空
+            @return:
+            """
+            if self.get_length():
+                return False
+            return True
+
+        def clear(self):
+            """
+                清空链表
+            @return:
+            """
+            self.head.next = None
+
+        def get_item(self, index):
+            """
+                获取索引值
+            @param index:
+            @return:
+            """
+            p = self.head.next
+            n = 0
+
+            while p:
+                if index >= self.get_length() or index < 0:
+                    raise IndexError("list index out of range")
+                elif index == n:
+                    return p
+                p = p.next
+                n += 1
+            # while n < index and p:
+            #     n += 1
+            #     p = p.next
+            # if not p:
+            #     raise IndexError("list index out of range")
+            # return p
+
+        def insert(self, index, val):
+            """
+                根据索引位置插入数据(前插)
+            @param index:需要插入的索引位置
+            @param val:需要插入的数值
+            @return:
+            """
+            if index < 0 or index > self.get_length():
+                raise IndexError("list index out of range")
+            p = self.head
+            i = 0
+            while i < index:
+                p = p.next
+                i += 1
+            node_val = Node(val)
+            node_val.next = p.next
+            p.next = node_val
+            # node_val = Node(val)
+            # node_val.next = self.get_item(index) if index != self.get_length() else None
+            # if index == 0:
+            #     self.head.next = node_val
+            # else:
+            #     self.get_item(index - 1).next = node_val
+
+        def delete(self, val):
+            p = self.head
+            # while p.next.val != val:
+            #     if not p.next:
+            #         raise IndexError("list index out of range")
+            #     p = p.next
+            # p.next = p.next.next
+            while p.next:
+                if p.next.val == val:
+                    p.next = p.next.next
+                    break
+                p = p.next
+            else:
+                raise ValueError("x not in list")
+```
+
+### 栈和队列
+
+#### 栈
+
+1.  定义：栈是限制在一端进行插入操作和删除操作的线性表（堆栈），允许进行操作的一端栈顶，另一固定端为栈底，栈中没有元素称之为 空栈。
+
+2.  特点：
+    -   只能在一端进行数据操作
+    -   栈模型具有后进先出（的规律）
+
+![Python-Net_stack](http://images.dorc.top/blog/Python/Python-Net_stack.jpg)
