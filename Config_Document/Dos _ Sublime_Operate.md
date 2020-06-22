@@ -2,27 +2,22 @@
 
 ### Firefox
 
-| 作用      | 快捷键                                         |
-| :------ | :------------------------------------------ |
-| 前进/退后   | Atl + ←/→ (Backspace/ Shift Backspace)      |
+| 作用          | 快捷键                                      |
+| :------------ | :------------------------------------------ |
+| 前进/退后     | Atl + ←/→ (Backspace/ Shift Backspace)      |
 | 刷新/强制刷新 | Ctrl + R / Ctrl + Shift + R (F5/ Ctrl + F5) |
-| 新标签页    | Ctrl + T                                    |
-| 书签      | Ctrl + B                                    |
-| 历史      | Ctrl + H                                    |
-| 下载      | Ctrl + J                                    |
-| 清除数据    | Ctrl + Shift + Del                          |
-| 选中地址    | Alt + D / F6 / Ctrl + L                     |
-| setting | 地址栏输入：about:preferences                     |
+| 新标签页      | Ctrl + T                                    |
+| 书签          | Ctrl + B                                    |
+| 历史          | Ctrl + H                                    |
+| 下载          | Ctrl + J                                    |
+| 清除数据      | Ctrl + Shift + Del                          |
+| 选中地址      | Alt + D / F6 / Ctrl + L                     |
+| setting       | 地址栏输入：about:preferences               |
 
-### Chrome
 
-```shell
-# console 命令行截图    ==>     Capture node screenshot
-```
+## CMD 常用命令
 
-## Dos 常用命令
-
-### CMD 操作类
+### 操作类
 
 ```shell
 # 切盘
@@ -103,49 +98,6 @@ $ sc delete MySQL
 
 # 查询端口情况
 $ netstat -ano
-```
-
-## Linux
-
-Git Bash / Cmder 可以模拟 Linux 环境，在 Windows 操作
-
-```bash
-# 清屏
-clear
-
-# 显示文件夹列表 （显示不隐藏的文件与文件夹）
-ls
-ls -a  # (显示当前目录下的所有文件及文件夹包括隐藏的.和..等)
-
-# 显示工作目录
-pwd
-
-# 删除一个文件或者目录
-rm 文件名
-# 删除非空目录，以及一些比较顽固的文件或者目录
-rm -rf 目录名
-
-# 创建目录
-touch 文件名
-
-# 查看文件（完整输出）
-cat 文件名
-# 向文件添加内容 （覆盖）
-cat > a.txt （回车后 添加内容）
-# 向文件添加内容 （向后追加）
-cat >> a.txt （回车后 添加内容）
-
-# 查看文件（分页输出）-- 适用于查看大文本文件
-less 文件名 		# b 向上翻一页    空格 向下翻一页    鼠标滚轮翻页
-
-# visual interface 编辑文本
-vi 文件名		# 进去vi编辑模式
-Esc         # 退出到命令模式
-i 					# 进入插入模式
-:q 					# 退出vi
-:w 					# 保存编辑
-:wq 				# 保存并退出
-:q! 				# 强制退出不保存修改
 ```
 
 ## Window

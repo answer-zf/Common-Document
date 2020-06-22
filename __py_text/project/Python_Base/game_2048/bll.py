@@ -1,5 +1,5 @@
 """
-    游戏逻辑
+    逻辑处理模块
 """
 from model import Location
 import random
@@ -121,10 +121,19 @@ class GameCoreController:
         self.__list_empty_location.remove(loc)
 
     def is_game_over(self):
-        if len(self.__list_empty_location) == 0 and not self.is_change:
-            return True
-        return False
+        """
+            游戏是否结束
+        @return: bool
+        """
+        if len(self.__list_empty_location) > 0:
+            return False
 
+        for r in range(4):
+            for c in range(3):
+                if self.__map[r][c] == self.__map[r][c + 1] or self.__map[c][r] == self.__map[c + 1][r]:
+                    return False
+
+        return True
 
 
 class Direction:

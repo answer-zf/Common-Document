@@ -3,6 +3,7 @@
 """
 from bll import GameCoreController
 from bll import Direction
+import os
 
 class GameConsoleView:
     """
@@ -23,12 +24,15 @@ class GameConsoleView:
         @return:
         """
         while True:
-            self.move_map()
+            self.__move_map()
             if self.__game_controller.is_change:
                 self.__game_controller.generate_new_num()
                 self.__print_interface()
+                if self.__game_controller.is_game_over():
+                    print("Game Over")
+                    break
 
-    def move_map(self):
+    def __move_map(self):
         str_dire = input("up: w, down: s, left: a, right: d")
         if str_dire == "w":
             self.__game_controller.move(Direction.up)
@@ -44,8 +48,9 @@ class GameConsoleView:
             打印界面
         @return:
         """
-        print("------------------")
+        # 清空控制台
+        os.system("clear")
         for r in range(len(self.__game_controller.map)):
             for column in range(len(self.__game_controller.map[r])):
-                print(self.__game_controller.map[r][column], end=" ")
+                print(self.__game_controller.map[r][column], end="\t ")
             print()
