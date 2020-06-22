@@ -100,27 +100,54 @@ class LinkList(object):
 
     def insert(self, index, val):
         """
-            根据索引位置插入数据
-        @param index:
-        @param val:
+            根据索引位置插入数据(前插)
+        @param index:需要插入的索引位置
+        @param val:需要插入的数值
         @return:
         """
+        if index < 0 or index > self.get_length():
+            raise IndexError("list index out of range")
+        p = self.head
+        i = 0
+        while i < index:
+            p = p.next
+            i += 1
         node_val = Node(val)
-        if index == 0:
-            node_val.next = self.get_item(0)
-            self.head.next = node_val
+        node_val.next = p.next
+        p.next = node_val
+        # node_val = Node(val)
+        # node_val.next = self.get_item(index) if index != self.get_length() else None
+        # if index == 0:
+        #     self.head.next = node_val
+        # else:
+        #     self.get_item(index - 1).next = node_val
+
+    def delete(self, val):
+        p = self.head
+        # while p.next.val != val:
+        #     if not p.next:
+        #         raise IndexError("list index out of range")
+        #     p = p.next
+        # p.next = p.next.next
+        while p.next:
+            if p.next.val == val:
+                p.next = p.next.next
+                break
+            p = p.next
         else:
-            node_val.next = self.get_item(index - 1).next
-            self.get_item(index - 1).next = node_val
+            raise ValueError("x not in list")
 
-
+# text code =================================
 if __name__ == "__main__":
-    data = [1, 2, 3, 4, 5, 6]
+    data = [1, 2, 3, 4, 5, 3, 6]
     link = LinkList()
     link.init_link(data)
     # link.append(7)
     # print(link.get_length())
     # print(link.is_empty())
-    link.insert(4, 999)
+    # link.insert(0, 999)
+    link.show()
+    link.delete(3)
+    # link.insert(6, 999)
     # print(link.get_item(3).val)
     link.show()
