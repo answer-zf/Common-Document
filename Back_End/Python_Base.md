@@ -2482,140 +2482,140 @@ def __iadd__(self, other):
     -   逻辑结构复杂不利于遍历
 3.  程序实现:
 
-```py
-    class Node(object):
-        def __init__(self, val, next=None):
-            self.val = val
-            self.next = next
+    ```py
+        class Node(object):
+            def __init__(self, val, next=None):
+                self.val = val
+                self.next = next
 
-    class LinkList(object):
+        class LinkList(object):
 
-        def __init__(self):
-            self.head = Node(None)
+            def __init__(self):
+                self.head = Node(None)
 
-        def init_link(self, data):
-            """
-                初始化链式表
-            @param data:
-            @return:
-            """
-            p = self.head  # 可移动变量
-            for i in data:
-                p.next = Node(i)
-                p = p.next
+            def init_link(self, data):
+                """
+                    初始化链式表
+                @param data:
+                @return:
+                """
+                p = self.head  # 可移动变量
+                for i in data:
+                    p.next = Node(i)
+                    p = p.next
 
-        def show(self):
-            """
-                控制台输出链表
-            @return:
-            """
-            p = self.head.next
-            while p:
-                print(p.val, end=" ")
-                p = p.next
-            print()
+            def show(self):
+                """
+                    控制台输出链表
+                @return:
+                """
+                p = self.head.next
+                while p:
+                    print(p.val, end=" ")
+                    p = p.next
+                print()
 
-        def append(self, val):
-            """
-                尾部插入新结点
-            @param val:
-            @return:
-            """
-            p = self.head
-            while p.next:
-                p = p.next
-            p.next = Node(val)
+            def append(self, val):
+                """
+                    尾部插入新结点
+                @param val:
+                @return:
+                """
+                p = self.head
+                while p.next:
+                    p = p.next
+                p.next = Node(val)
 
-        def get_length(self):
-            """
-                获取链表长度
-            @return:
-            """
-            n = 0
-            p = self.head
-            while p.next:
-                n += 1
-                p = p.next
-            return n
+            def get_length(self):
+                """
+                    获取链表长度
+                @return:
+                """
+                n = 0
+                p = self.head
+                while p.next:
+                    n += 1
+                    p = p.next
+                return n
 
-        def is_empty(self):
-            """
-                链表是否为空
-            @return:
-            """
-            if self.get_length():
-                return False
-            return True
+            def is_empty(self):
+                """
+                    链表是否为空
+                @return:
+                """
+                if self.get_length():
+                    return False
+                return True
 
-        def clear(self):
-            """
-                清空链表
-            @return:
-            """
-            self.head.next = None
+            def clear(self):
+                """
+                    清空链表
+                @return:
+                """
+                self.head.next = None
 
-        def get_item(self, index):
-            """
-                获取索引值
-            @param index:
-            @return:
-            """
-            p = self.head.next
-            n = 0
+            def get_item(self, index):
+                """
+                    获取索引值
+                @param index:
+                @return:
+                """
+                p = self.head.next
+                n = 0
 
-            while p:
-                if index >= self.get_length() or index < 0:
+                while p:
+                    if index >= self.get_length() or index < 0:
+                        raise IndexError("list index out of range")
+                    elif index == n:
+                        return p
+                    p = p.next
+                    n += 1
+                # while n < index and p:
+                #     n += 1
+                #     p = p.next
+                # if not p:
+                #     raise IndexError("list index out of range")
+                # return p
+
+            def insert(self, index, val):
+                """
+                    根据索引位置插入数据(前插)
+                @param index:需要插入的索引位置
+                @param val:需要插入的数值
+                @return:
+                """
+                if index < 0 or index > self.get_length():
                     raise IndexError("list index out of range")
-                elif index == n:
-                    return p
-                p = p.next
-                n += 1
-            # while n < index and p:
-            #     n += 1
-            #     p = p.next
-            # if not p:
-            #     raise IndexError("list index out of range")
-            # return p
+                p = self.head
+                i = 0
+                while i < index:
+                    p = p.next
+                    i += 1
+                node_val = Node(val)
+                node_val.next = p.next
+                p.next = node_val
+                # node_val = Node(val)
+                # node_val.next = self.get_item(index) if index != self.get_length() else None
+                # if index == 0:
+                #     self.head.next = node_val
+                # else:
+                #     self.get_item(index - 1).next = node_val
 
-        def insert(self, index, val):
-            """
-                根据索引位置插入数据(前插)
-            @param index:需要插入的索引位置
-            @param val:需要插入的数值
-            @return:
-            """
-            if index < 0 or index > self.get_length():
-                raise IndexError("list index out of range")
-            p = self.head
-            i = 0
-            while i < index:
-                p = p.next
-                i += 1
-            node_val = Node(val)
-            node_val.next = p.next
-            p.next = node_val
-            # node_val = Node(val)
-            # node_val.next = self.get_item(index) if index != self.get_length() else None
-            # if index == 0:
-            #     self.head.next = node_val
-            # else:
-            #     self.get_item(index - 1).next = node_val
-
-        def delete(self, val):
-            p = self.head
-            # while p.next.val != val:
-            #     if not p.next:
-            #         raise IndexError("list index out of range")
-            #     p = p.next
-            # p.next = p.next.next
-            while p.next:
-                if p.next.val == val:
-                    p.next = p.next.next
-                    break
-                p = p.next
-            else:
-                raise ValueError("x not in list")
-```
+            def delete(self, val):
+                p = self.head
+                # while p.next.val != val:
+                #     if not p.next:
+                #         raise IndexError("list index out of range")
+                #     p = p.next
+                # p.next = p.next.next
+                while p.next:
+                    if p.next.val == val:
+                        p.next = p.next.next
+                        break
+                    p = p.next
+                else:
+                    raise ValueError("x not in list")
+    ```
 
 ### 栈和队列
 
@@ -2624,7 +2624,332 @@ def __iadd__(self, other):
 1.  定义：栈是限制在一端进行插入操作和删除操作的线性表（堆栈），允许进行操作的一端栈顶，另一固定端为栈底，栈中没有元素称之为 空栈。
 
 2.  特点：
+
     -   只能在一端进行数据操作
     -   栈模型具有后进先出（的规律）
 
-![Python-Net_stack](http://images.dorc.top/blog/Python/Python-Net_stack.jpg)
+        ![Python-Net_stack](http://images.dorc.top/blog/Python/Python-Net_stack.jpg)
+
+3.  程序实现：
+
+    -   栈的顺序存储结构
+
+        ```py
+            class StackError(Exception):
+                pass
+
+            class SequenceStack(object):
+                """
+                    栈的顺序存储结构
+                """
+
+                def __init__(self):
+                    self._elements = []
+
+                def top(self):
+                    if not self._elements:
+                        raise StackError("Stack is empty")
+                    return self._elements[-1]
+
+                def is_empty(self):
+                    return self._elements == []
+
+                def push(self, val):
+                    """
+                        入栈
+                    @param val:
+                    @return:
+                    """
+                    self._elements.append(val)
+
+                def pop(self):
+                    """
+                        出栈
+                    @return:
+                    """
+                    if not self._elements:
+                        raise StackError("Stack is empty")
+                    return self._elements.pop()
+        ```
+
+        -   应用：一段文字的括号是否匹配
+
+            ```py
+                parens = "()[]{}"
+                left_paren = "([{"
+                # 使用字典做判断的介质
+                opposite = {")": "(", "]": "[", "}": "{"}
+
+                def match_parent(text):
+                    i, text_len = 0, len(text)
+                    while True:
+                        while i < text_len and text[i] not in parens:
+                            i += 1
+                        if i >= text_len:
+                            return
+                        else:
+                            yield text[i], i
+                            i += 1
+
+                def verify(data):
+                    stack = SequenceStack()
+                    for item, index in match_parent(data):
+                        if item in left_paren:
+                            stack.push((item, index))
+                        elif stack.is_empty() or opposite[item] != stack.pop()[0]:
+                            return "Unmatching is found at %d for %s" % (index, item)
+                    else:
+                        if stack.is_empty():
+                            return "All parentheses are matched"
+                        else:
+                            e = stack.pop()
+                            return "Unmatching is found at %d for %s" % (e[1], e[0])
+
+                # def is_match(left_bracket, right_bracket):
+                #     if left_bracket == "(" and right_bracket == ")":
+                #         return True
+                #     elif left_bracket == "[" and right_bracket == "]":
+                #         return True
+                #     elif left_bracket == "{" and right_bracket == "}":
+                #         return True
+                #     else:
+                #         return False
+                #
+                # def detection(data):
+                #     stack = SequenceStack()
+                #     left_brackets = ["(", "[", "{"]
+                #     right_brackets = [")", "]", "}"]
+                #     for item in data:
+                #         if item in left_brackets:
+                #             stack.push(item)
+                #         if item in right_brackets:
+                #             if not is_match(stack.pop(), item):
+                #                 return "error"
+                #     if stack.is_empty():
+                #         return "ok"
+                #     return "error"
+            ```
+
+    -   栈的链式存储结构
+
+        ```py
+            class LinkStack(object):
+                """
+                    栈的链式存储结构
+                """
+
+                def __init__(self):
+                    # 标记栈顶位置
+                    self._top = None
+
+                def is_empty(self):
+                    """
+                        非空验证
+                    @return:
+                    """
+                    return not self._top
+
+                def push(self, val):
+                    """
+                        入栈
+                    @param val:
+                    @return:
+                    """
+                    self._top = Node(val, self._top)
+                    # node_val = Node(val)
+                    # node_val.next = self._top
+                    # self._top = node_val
+
+                def pop(self):
+                    """
+                        弹栈
+                    @return:
+                    """
+                    if not self._top:
+                        raise StackError("stack is empty")
+                    p = self._top
+                    self._top = p.next
+                    return p.val
+
+                def get_top(self):
+                    """
+                        获取栈顶元素值
+                    @return:
+                    """
+                    if self.is_empty():
+                        raise StackError("stack is empty")
+                    return self._top.val
+        ```
+
+        -   应用：逆波兰表达式
+
+            ```py
+                while True:
+                    str_expression = input("dc: ")
+                    list_exp_element = str_expression.split(" ")
+                    for item in list_exp_element:
+                        if item == "p":
+                            break
+                        elif item not in "+-":
+                            stack.push(item)
+                        else:
+                            first_pop = stack.pop()
+                            last_pop = stack.pop()
+                            stack.push(str(eval("%s%s%s" % (last_pop, item, first_pop))))
+
+                    print(stack.get_top())
+                    stack.clear()
+            ```
+
+#### 队列
+
+1.  定义：队列是限制在两端进行插入操作和删除操作的线性表，允许进行存入操作的一端称为"队尾"， 允许进行删除操作的一端称为"队头"。
+
+2.  特点：
+
+    -   队列只能在队头和队尾进行数据操作。
+    -   栈模型具有先进先出/后进后出的规律
+
+        ![Python-Net_queue](http://images.dorc.top/blog/Python/Python-Net_queue.jpg)
+
+3.  程序实现
+
+    -   队列的顺序存储结构
+
+        ```py
+            class SequenceQueue:
+                """
+                    队列的顺序存储结构
+                """
+
+                def __init__(self):
+                    self._element = []
+
+                def is_empty(self):
+                    return self._element == []
+
+                def append(self, val):
+                    self._element.append(val)
+
+                def pop(self):
+                    if not self._element:
+                        raise QueueError("Queue is empty")
+                    return self._element.pop(0)
+        ```
+
+    -   队列的链式存储结构
+
+        ```py
+            class LinkQueue:
+                """
+                    队列的链式存储结构
+                        左侧对头，右侧队尾
+                """
+
+                def __init__(self):
+                    # Node(None) 可以是任意结点（无任何作用），一整条队列
+                    # front 的作用 类似一个指针，指向队尾的前一个结点
+                    self._front = self._rear = Node(None)
+
+                def is_empty(self):
+                    """
+                        非空验证
+                    @return:
+                    """
+                    return self._front is self._rear
+
+                def append(self, val):
+                    """
+                        入队
+                    @param val:
+                    @return:
+                    """
+                    self._rear.next = Node(val)
+                    self._rear = self._rear.next
+
+                def pop(self):
+                    """
+                        出队
+                    @return:
+                    """
+                    if self._front is self._rear:
+                        raise QueueError("Queue is empty")
+                    self._front = self._front.next
+                    return self._front.val
+
+                def clear(self):
+                    self._front = self._rear
+        ```
+
+### 树形结构
+
+1.  定义：
+
+    -   树（Tree）是n（n>=0）个节点的有限集合T，它满足两个条件：有且仅有一个特定的称为根（Root）的节点，其余的节点可以分为m（m>=0）个互不相交的有限集合T1.T2 ... .Tm,其中每一个集合又是一棵树，并称为其根的子树（Subtree）。
+
+        ![Python-Net_tree01](http://images.dorc.top/blog/Python/Python-Net_tree01.jpg)
+
+2.  基本概念：
+
+    -   一个节点的子树的个数称为该节点的度数（多少个分叉），一棵树的度数是指该树中节点的最大度数。
+    -   度数为零的节点称为树叶或终端节点，度数不为零的节点称为分支节点，除根节点外的分支节点称为内部节点。
+    -   一个节点的子树之根节点称为该节点的子节点，该节点称为它们的父节点，同一节点的各个子节点之间称为兄弟节点。一棵树的根节点没有父节点，叶节点没有子节点。
+    -   一个节点系列k1,k2,...ki,ki+1,...kj，并满足ki是ki+1的父节点，就称为一条从k1到kj的路径，路径的长度为j-1，即路径中的边数，路径中前面的节点是最后节点的祖先，后面的节点是前面节点的子孙。
+    -   节点的层数等于父节点的层数加一，根节点的层数定义为一，树中节点层数的最大值称为该树的高度或深度。
+    -   m(m>=0)棵互不相交的树的集合称为森林，树去掉根节点就成为森林，森林加上一个新的根节点就成为树。
+
+        ![Python-Net_tree02](http://images.dorc.top/blog/Python/Python-Net_tree02.jpg)
+
+#### 二叉树
+
+1.  定义：
+
+    -   二叉树（Binary Tree）是n(n>=0)个节点的有限集合，它或者是空集(n=0),或是由一个根节点以及两棵互不相交的，分别称为左子树和右子树的二叉树组成。二叉树与普通有序树不同，二叉树严格区分左孩子和右孩子，即使只有一个子节点也要区分左右。
+
+2.  特点：
+
+    -   特殊的树形结构
+    -   度数最多为2
+    -   严格区分左子树，右子树
+
+3.  特征：
+
+    -   二叉树第i(i>=1)层上的节点最多为 2 的 i-1 次方个。
+    -   深度为k(k>=1)的二叉树最多有 2 的 k 次方 -1 个节点。
+    -   在任意一棵二叉树中，树叶的数目比度数为2的节点的数目多一。
+    -   满二叉树： 深度为k(k>=1)时有 2 的 k 次方 -1 个节点的二叉树。
+    -   完全二叉树：只有最下面两层有度数小于2的节点，且最下面一层的叶节点集中在最左边的若干位置上。
+
+        ![Python-Net_tree03](http://images.dorc.top/blog/Python/Python-Net_tree03.jpg)
+
+4.  遍历：沿某条搜索路径周游二叉树，对树中的每个节点访问一次且仅访问一次。
+
+    -   先序遍历：先访问树根，再访问左子树，最后访问右子树；
+    -   中序遍历：先访问左子树，再访问树根，最后访问右子树；
+    -   后序遍历：先访问左子树，再访问右子树，最后访问树根；
+    -   层次遍历：从根节点开始，逐层从左向右进行遍历。
+
+        ```bash
+            # 遇到没有遍历过的节点当作根看待
+            # 遍历过程中遍历到根即写出根的值
+
+            树形结构：
+                    1
+                 2     3
+               4     5   6
+                      7
+
+            先根 1 2 4 3 5 7 6
+            中根 4 2 1 5 7 3 6
+            后根 4 2 7 5 6 3 1
+
+            树形结构：
+                    1
+                 2     3
+               4  5      6
+                    7
+
+            先根 1 2 4 5 7 3 6
+            中根 4 2 5 7 1 3 6
+            后根 4 7 5 2 6 3 1
+        ```

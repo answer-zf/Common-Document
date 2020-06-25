@@ -2,8 +2,13 @@
     栈
 """
 
+from link_list import Node
+
 
 class StackError(Exception):
+    """
+        栈的异常
+    """
     pass
 
 
@@ -41,44 +46,67 @@ class SequenceStack(object):
         return self._elements.pop()
 
 
-# if __name__ == "__main__":
-#     stack = SequenceStack()
-#     stack.push(12)
-#     stack.push(22)
-#     stack.push(33)
-#     while not stack.is_empty():
-#         print(stack.pop())
+class LinkStack(object):
+    """
+        栈的链式存储结构
+    """
 
-data = """Lorem ipsum dolor (sit) amet consectetur adipisicing elit. Corrupti aut (ducimus neque [in mollitia maxime, excepturi impedit, adipisci, veritatis ipsam alias] libero) necessitatibus quidem rem quod tempora? {Tempore, blanditiis vitae}!"""
+    def __init__(self):
+        # 标记栈顶位置
+        self._top = None
+
+    def is_empty(self):
+        """
+            非空验证
+        @return:
+        """
+        return not self._top
+
+    def push(self, val):
+        """
+            入栈
+        @param val:
+        @return:
+        """
+        self._top = Node(val, self._top)
+        # node_val = Node(val)
+        # node_val.next = self._top
+        # self._top = node_val
+
+    def pop(self):
+        """
+            弹栈
+        @return:
+        """
+        if not self._top:
+            raise StackError("stack is empty")
+        p = self._top
+        self._top = p.next
+        return p.val
+
+    def get_top(self):
+        """
+            获取栈顶元素值
+        @return:
+        """
+        if self.is_empty():
+            raise StackError("stack is empty")
+        return self._top.val
+
+    def clear(self):
+        """
+            清栈
+        @return:
+        """
+        self._top = None
 
 
-# for item in data:
-#     print(item)
-
-def is_match(left_bracket, right_bracket):
-    if left_bracket == "(" and right_bracket == ")":
-        return True
-    elif left_bracket == "[" and right_bracket == "]":
-        return True
-    elif left_bracket == "{" and right_bracket == "}":
-        return True
-    else:
-        return False
-
-
-def detection(data):
-    stack = SequenceStack()
-    left_brackets = ["(", "[", "{"]
-    right_brackets = [")", "]", "}"]
-    for item in data:
-        if item in left_brackets:
-            stack.push(item)
-        if item in right_brackets:
-            if not is_match(stack.pop(),item):
-                return "error"
-    if stack.is_empty():
-        return "ok"
-    return "error"
-
-
-print(detection(data))
+if __name__ == "__main__":
+    stack = LinkStack()
+    print(stack.is_empty())
+    stack.push(10)
+    stack.push(20)
+    stack.push(30)
+    print(stack.get_top(),"-----")
+    while not stack.is_empty():
+        print(stack.pop())
