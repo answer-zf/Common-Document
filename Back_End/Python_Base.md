@@ -2393,8 +2393,6 @@ def __iadd__(self, other):
         s01.study()
     ```
 
-# 网络编程
-
 ## 数据结构
 
 1.  数据：信息的载体，能输入到计算机中并且能被计算机识别/存储/处理的符号总称。
@@ -2952,4 +2950,488 @@ def __iadd__(self, other):
             先根 1 2 4 5 7 3 6
             中根 4 2 5 7 1 3 6
             后根 4 7 5 2 6 3 1
+
+            先根 F C A D B E H G M
+            中根 A C B D F H E M G
+
+            树形结构
+
+                     F
+                 C        E
+               A   D   H    G
+                  B        M
+            后根 A B D C H M G E F
         ```
+
+#### 递归思想
+
+1.  定义
+
+    -   所谓递归函数是指一个函数的函数体中直接调用或间接调用了该函数自身的函数。这里的直接调用指一个函数的函数体中含有调用自身的语句。间接调用是指一个函数在函数体里有调用了其他函数而其他函数又反过来调用了该函数的情况。
+
+2.  递归函数调用的执行过程分为两个阶段
+
+    -   递推阶段：从原问题出发，按递归公式递推从未知到已知，最终达到递归终止条件
+    -   回归阶段：按递归终止条件求出结果，逆向逐步代入递归公式，回归到原问题求解
+
+3.  优缺点
+
+    -   优：递归可以把问题简单化，让思路更为清晰，代码更清洁。
+    -   缺：递归因系统环境影响大，当递归深度太大时，可能会得到不可预知的结果。
+
+4.  补充：
+
+    -   递归函数要有终止条件，且终止条件要在调用自身之前。
+
+    ```py
+        def recursion(n):
+            if n <= 1:  # 终止条件，一定在函数的调用之前
+                return 1
+            return n * recursion(n - 1)
+        # 递归思想：
+        # 5 * r(4)                      ↓  递推
+        #       4 * r(3)
+        #           3 * r(2)
+        #               2 * r(1) >>> 1  ↑  回归
+    ```
+
+#### 二叉树的代码实现
+
+1.  二叉树顺序存储
+
+    -   使用列表，如果二叉树比较稀疏，比较浪费空间
+
+        ```py
+            """
+                    A
+                B      C
+                     D   E
+                   F G  H I
+            """
+
+            # None 为空节点
+            # [根，左，右]
+            list_binary_tree = [
+                "A",
+                ["B", None, None],
+                ["C", ["D", ["F", None, None], ["G", None, None]], ["E", ["H", None, None], ["I", None, None]]]
+            ]
+        ```
+
+2.  二叉树链式存储
+
+**程序实现：**
+
+```py
+    class TreeNode:
+        """
+            二叉树节点类
+        """
+
+        def __init__(self, root_node=None, left_subtree=None, right_subtree=None):
+            self.root_node = root_node
+            self.left_subtree = left_subtree
+            self.right_subtree = right_subtree
+
+    class BinaryTree:
+        """
+            二叉树类
+        """
+
+        def __init__(self, root_node=None):
+            self.root_node = root_node
+
+        def is_empty(self):
+            if not self.root_node:
+                return True
+            return False
+
+        def pre_order(self, node):
+            """
+                先序遍历
+            @param node:
+            @return:
+            """
+            if not node:
+                return
+            print(node.root_node, end=" ")
+            self.pre_order(node.left_subtree)
+            self.pre_order(node.right_subtree)
+
+        def infix_order(self, node):
+            """
+                中序遍历
+            @param node:
+            @return:
+            """
+            if not node:
+                return
+            self.infix_order(node.left_subtree)
+            print(node.root_node, end=" ")
+            self.infix_order(node.right_subtree)
+
+        def post_order(self, node):
+            """
+                后续遍历
+            @param node:
+            @return:
+            """
+            if not node:
+                return
+            self.post_order(node.left_subtree)
+            self.post_order(node.right_subtree)
+            print(node.root_node, end=" ")
+
+        def level_order(self):
+            """
+                层次遍历
+            @param node:
+            @return:
+            """
+            queue = SequenceQueue()
+            queue.enqueue(self.node)
+            while not queue.is_empty():
+                node = queue.dequeue()
+                print(node.root_node, end=" ")
+                if node.left_subtree:
+                    queue.enqueue(node.left_subtree)
+                if node.right_subtree:
+                    queue.enqueue(node.right_subtree)
+
+    """
+            A
+        B      C
+             D   E
+           F G  H I
+    """
+
+    if __name__ == "__main__":
+        # 后序遍历增加节点 b f g d h i e c a
+        b = TreeNode("B")
+        f = TreeNode("F")
+        g = TreeNode("G")
+        d = TreeNode("D", f, g)
+        h = TreeNode("H")
+        i = TreeNode("I")
+        e = TreeNode("E", h, i)
+        c = TreeNode("C", d, e)
+        a = TreeNode("A", b, c)
+        binary = BinaryTree(a)
+        print(binary.is_empty())
+        binary.pre_order(binary.root_node)
+        print("==========")
+        binary.infix_order(binary.root_node)
+        print("==========")
+        binary.post_order(binary.root_node)
+        print("==========")
+        binary.level_order()
+```
+
+## 算法基础
+
+### 基础概念特征
+
+1.  定义
+
+    -   算法（algorithm）是一个有穷规则（或语句/指令）的有序集合，它确定了解决某一问题的一个运算序列，对于问题的初始输入，通过算法有限步的运行，产生一个或多个输出。
+
+2.  数据的逻辑结构与存储结构密切相关
+
+    -   算法设计：取决于选定的逻辑结构。
+    -   算法实现：依赖于采用的存储结构。
+
+3.  算法的特性
+
+    -   有穷性 —— 算法执行的步骤（或规则）是有限的
+    -   确定性 —— 每个计算步骤无二义性
+    -   可行性 —— 每个计算步骤能在有限的时间内完成
+    -   输入/输出 —— 存在数据的输入和输出
+
+4.  评价算法好坏的方法
+
+    -   正确性：运行正确是一个算法的前提
+    -   可读性：容易理解/容易编程和调试/容易维护
+    -   健壮性：考虑情况全面，不容易出现运行错误
+    -   时间效率高：算法消耗的时间少
+    -   存储量低：占用较少的存储空间。
+
+### 时间复杂度计算
+
+算法效率 —— 用依据该算法编制的程序在计算机上执行所消耗的时间来度量。“O” 表示一个数量级的概念。根据算法中的语句执行的最大次数（频度）来估算一个算法执行时间的数量级。
+
+-   计算方法：
+
+    -   写出程序中所有运算语句执行的次数，进行加和。
+    -   如果得到的结果是常量则时间复杂度为1
+    -   如果得到的结果中存在变量n ，则取n 的最高次幂作为时间复杂度。
+
+        **随着问题规模n 增大，算法执行时间增长率**
+
+        ![Python-Net_algorithm](http://images.dorc.top/blog/Python/Python-Net_algorithm.png)
+
+### 排序和查找
+
+#### 排序
+
+> 排序（sort）是将无序的记录序列（或称文件）调整成有序的序列
+
+-   常见排序方法
+
+    -   冒泡排序(Bubble Sort)：它重复地走访过要排序的元素列，依次比较两个相邻的元素，如果顺序（如从大到小、首字母从Z到A）错误就把他们交换过来。走访元素的工作是重复地进行直到没有相邻元素需要交换，也就是说该元素列已经排序完成。
+
+        ![Python-Net_Sort_Bubble](http://images.dorc.top/blog/Python/Python-Net_Sort_Bubble.gif)
+
+    -   选择排序(Selection Sort)：首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。
+
+        ![Python-Net_Sort_Selection](http://images.dorc.top/blog/Python/Python-Net_Sort_Selection.gif)
+
+    -   插入排序(Insertion Sort)：在待排序的元素中，假设前面n-1(其中n>=2)个数已经是排好顺序的，现将第n个数插到前面已经排好的序列中，然后找到合适自己的位置，使得插入第n个数的这个序列也是排好顺序的。按照此法对所有元素进行插入，直到整个序列排为有序的过程，称为插入排序
+
+        ![Python-Net_Sort_Insertion](http://images.dorc.top/blog/Python/Python-Net_Sort_Insertion.gif)
+
+    -   快速排序（Quick Sort）：从数列中挑出一个元素，称为“基准”（pivot），重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以摆在任一边）.在这个分区退出之后，该基准就处于数列的中间位置，这个称为分区（partition）操作。递归的把小于基准值元素的子数列和大于基准值元素的子数列排序。
+
+        ![Python-Net_Sort_Quick](http://images.dorc.top/blog/Python/Python-Net_Sort_Quick.gif)
+
+        ```py
+            class Sort:
+                def __init__(self, list_target):
+                    self.list_target = list_target
+
+                def bubble(self):
+                    """
+                        冒泡排序
+                    @return:
+                    """
+                    for i in range(len(self.list_target) - 1):  # 比较多少轮
+                        for j in range(len(self.list_target) - i - 1):  # 每轮比较多少次
+                            if self.list_target[j] > self.list_target[j + 1]:
+                                self.list_target[j], self.list_target[j + 1] = self.list_target[j + 1], self.list_target[j]
+
+                def selection(self):
+                    """
+                        选择排序
+                    @return:
+                    """
+                    for i in range(len(self.list_target) - 1):
+                        target_min = i
+                        for j in range(i + 1, len(self.list_target)):
+                            if self.list_target[i] > self.list_target[j]:
+                                # self.list_target[i], self.list_target[j] = self.list_target[j], self.list_target[i]
+                                target_min = j
+                        if target_min != i:
+                            self.list_target[i], self.list_target[target_min] = self.list_target[target_min], self.list_target[i]
+
+                def insertion(self):
+                    """
+                        插入排序
+                    @return:
+                    """
+                    for i in range(1, len(self.list_target)):
+                        mark = self.list_target[i]
+                        j = i
+                        while j > 0 and self.list_target[j - 1] > mark:
+                            self.list_target[j] = self.list_target[j - 1]
+                            j -= 1
+                            self.list_target[j] = mark
+
+                def quick(self, low, high):
+                    """
+                        快速排序
+                            low 列表开头元素索引
+                            high 列表结尾元素索引
+                    @return:
+                    """
+                    if low < high:
+                        key = self.sub_quick(low, high)
+                        self.quick(0, key - 1)
+                        self.quick(key + 1, high)
+
+                def sub_quick(self, low, high):
+                    """
+                        单次快速排序
+                    @param low:
+                    @param high:
+                    @return:
+                    """
+                    key = self.list_target[low]
+                    while low < high:
+                        while low < high and self.list_target[high] >= key:
+                            high -= 1
+                        self.list_target[low] = self.list_target[high]
+                        while low < high and self.list_target[low] < key:
+                            low += 1
+                        self.list_target[high] = self.list_target[low]
+                    self.list_target[low] = key
+                    return low
+        ```
+
+#### 查找
+
+> 查找（或检索）是在给定信息集上寻找特定信息元素的过程。
+
+-   二分法查找
+
+    -   当数据量很大适宜采用该方法。采用二分法查找时，数据需是排好序的。
+
+        ```py
+            def search(target, key):
+                low = 0
+                high = len(target) - 1
+                while low <= high:
+                    mid = (high + low) // 2
+                    if target[mid] < key:
+                        low = mid + 1
+                    elif target[mid] > key:
+                        high = mid - 1
+                    else:
+                        return mid
+                return
+        ```
+
+# 网络编程
+
+## 网络IO
+
+### IO
+
+1.  定义：
+
+> 在内存中存在数据交换的操作认为是IO操作，比如和终端交互，和磁盘交互，和网络交互等。
+
+_ps. 磁盘：能够长久保持数据的存储器统称为磁盘_
+
+_存储器分为寄存器，主存储器，外存储器_
+_寄存器：辅助cpu 运行/计算_
+_主存储器：内存，程序运行过程中进行数据临时存储，空间分配_
+_外存储器：硬盘_
+
+2.  程序分类
+
+    -   IO密集型程序：在程序执行中有大量的IO操作，而cpu运算较少，消耗cpu较少，耗时长
+    -   计算密集型程序：程序运行中计算较多，IO操作相对较少，cpu消耗多，执行速度块，几乎没有阻塞。
+
+#### 文件
+
+> 文件是保存在持久化存储设备（硬盘/U盘/光盘）上的一段数据，从功能角度分为文本文件（打开后会自动解码为字符）/二进制文件（视频/音频等）。在 Python 中把文件视作一种类型的对象，类似 其他类型。
+
+##### 字节串（bytes）
+
+> 在 Python 3 中引入了字节串的概念，与 str 不同，字节串以字节序列值表达数据，更方便用来处理二进制数据。在 Python3 中字节串是常见的二进制数据展现方式。
+
+-   普通的ASCII编码字符串可以在前面加 b 转换为字节串。`ex. b"hello"`
+-   通过 字节串转换函数 将 数据类型 强转 字节串 `bytes(num_)`
+    -   参数：整数(n 初始化一个长度为n的列表序列)/字符串/可迭代对象
+
+**常用函数**
+
+-   字符串转换为字节串方法：`str_.encode()`
+-   字节串转化为字符串方法：`bytes_.decode()`
+
+##### 打开文件
+
+`file_object = open(file_name, access_mode = "r",buffering = -1)`
+
+-   功能：打开一个文件，返回一个文件对象。
+-   参数：
+    -   file_name —— 路径+文件名
+    -   access_mode —— 打开文件的方式，如果不写默认为“r”
+        -   r ：以读方式打开，文件必须存在
+        -   w ：以写方式打开，如果待打开文件已存在，会先清空，不存在则创建
+        -   a ：以追加模式打开，如果文件已存在，不会清空，接着往后追加
+        -   r+：读写，文件必须存在
+        -   w+：读写，如果待打开文件已存在，会先清空，不存在则创建
+        -   a+：读写，如果文件已存在，不会清空，接着往后追加
+        -   rb ：以二进制读模式打开
+        -   wb ：以二进制写模式打开
+        -   ab ：以二进制追加模式打开
+        -   rb+：以二进制读写模式打开
+        -   wb+：以二进制读写模式打开
+        -   ab+：以二进制读写模式打开
+    -   buffering —— 参数 0 表示无缓冲，1 表示有行缓冲，如果是大于1 标识直接指明缓冲区大小。如果不写或为负数，则采用系统自己指定的缓冲.返回值:成功返回文件流对象，失败得到 IOError.
+
+> 缓冲：系统自动的在内存中为每一个正在使用的文件开辟一个缓冲区，从内存向磁盘输出数据必须先送到内存缓冲区，装满缓冲区在一起送到磁盘中去，从磁盘中读数据，则一次从磁盘文件将一批数据读入到内存缓冲区中，然后再从缓冲区逐个的将数据送到程序的数据区。
+
+_缓冲区作用：减少磁盘的交互次数，提高磁盘的读写效率_
+
+_文件流：_
+_流(stream):所有的 I/O 操作仅是简单的从程序移进或者移出，这种字节流，就称为流。所以打开一个文件有时也称为打开一个文件流对象。_
+_系统已经默认为我们打开了三个流，在sys模块中：_
+_标准输入 —— sys.stdin_
+_标准输出 —— sys.stdout_
+_标准错误 —— sys.stderr_
+
+##### 文件读写
+
+1.  读取文件
+
+    -   read([size])
+
+        -   定义：用来直接读取字节到字符串中，最多读取给定数目个字节，如果没有给定size参数（默认值为-1）或者size值为负，文件将被读取直至末尾，文件过大时候建议在 non-blocking(非阻塞模式) 模式下使用。
+        -   读取到文件结尾在读取，得到空字符串
+        -   实际读取的内容可以小于等于指定 size 大小
+
+    -   readline([size])
+
+        -   定义：读取打开文件的一行(读取下个行结束符(换行符)之前的所有字节）整行(包括行结束符，作为字符串返回。)和 read() 相同,它也有一个可选的 size 参数，默认为-1，代表读至行结束符。如里提供了该参数，则只读取size 大小的内容。
+
+    -   readlines([size])
+
+        -   定义：该方法并不像其它两个输入方法一样返回一个字符串。它会读取所有(剩余的)行然后把它们作为一个字符串列表返回。它的可选参数 size 代表返回的最大字节大小，
+
+    -   文件对象本身也是一个迭代器，在 for 循环中可以迭代文件的每一行。
+
+2.  写入文件
+
+    -   write(string)
+        -   功能与read0和 readline0)相反,它把含有文本数据或二进制数据块的字符串写入到文件中去。
+        -   若需要换行需人为添加换行符（"\\n"）
+        -   open() 使用 "wb" 打开的文件、写入内容时必须用字节串。
+    -   writelines(str_list)
+        -   和 readlines()一样, writelines(方法是针对列表的操作,它接受一个字符串列表作为参数,将它们写入文件。行结束符并不会被自动加入,所以如果需要的话,你必须在调用 writelines0前给每行结尾加上行结束符
+
+3.  关闭文件
+
+    -   打开一个文件后我们就可以通过文件对象对文件进行操作了,当操作结束后使用close()关闭这个对象可以防止一些误操作,也可以节省资源
+        -   `file_object.close()`
+
+4.  with 操作
+
+> python 中的 with 语句使用于对资源进行访问的场合,保证不管处理过程中是否发生错误或者异常都会执行规定的"清理"操作,释放被访问的资源,比如有文件读写后自动关闭、线程中锁的自动获取和释放等
+
+**with语句的语法格式如下**
+
+```py
+    with context_expression [as target(s)]:
+        with-body  # 语句块
+```
+
+_通过with方法可以不用close().因为with生成的对象在语句块结束后会自动处理，所以也就不需要close(),但是这个文件对象只能在with 语句块内使用_
+
+```py
+    with open("file", "r+") as f:
+        f.read()
+```
+
+**实例**
+
+```py
+    def copy_rename_file(file_rename):
+        file_name = input("file name: ")
+        try:
+            file_obj = open(file_name, "rb")
+        except FileNotFoundError as e:
+            print(e)
+        else:
+            target_obj = open(file_rename, "wb")
+            while True:
+                data = file_obj.read(1024)
+                if not data:
+                    break
+                target_obj.write(data)
+
+            file_obj.close()
+            target_obj.close()
+
+    copy_rename_file("zf")
+```

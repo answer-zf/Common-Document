@@ -2,7 +2,7 @@
     栈
 """
 
-from link_list import Node
+from Data_Structure.link_list import Node
 
 
 class StackError(Exception):

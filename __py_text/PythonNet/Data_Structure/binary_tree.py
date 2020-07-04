@@ -2,7 +2,7 @@
     二叉树的构建与遍历
 """
 
-from queue import SequenceQueue
+from Data_Structure.queue import SequenceQueue
 
 
 class TreeNode:

@@ -2,7 +2,7 @@
     队列
 """
 
-from link_list import Node
+from Data_Structure.link_list import Node
 
 
 class QueueError(Exception):
