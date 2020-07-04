@@ -23,10 +23,10 @@ class SequenceQueue:
     def is_empty(self):
         return self._element == []
 
-    def append(self, val):
+    def enqueue(self, val):
         self._element.append(val)
 
-    def pop(self):
+    def dequeue(self):
         if not self._element:
             raise QueueError("Queue is empty")
         return self._element.pop(0)
@@ -50,7 +50,7 @@ class LinkQueue:
         """
         return self._front is self._rear
 
-    def append(self, val):
+    def enqueue(self, val):
         """
             入队
         @param val:
@@ -59,7 +59,7 @@ class LinkQueue:
         self._rear.next = Node(val)
         self._rear = self._rear.next
 
-    def pop(self):
+    def dequeue(self):
         """
             出队
         @return:
@@ -72,10 +72,11 @@ class LinkQueue:
     def clear(self):
         self._front = self._rear
 
+
 if __name__ == "__main__":
     queue = LinkQueue()
-    queue.append(10)
-    queue.append(20)
-    queue.append(30)
+    queue.enqueue(10)
+    queue.enqueue(20)
+    queue.enqueue(30)
     while not queue.is_empty():
-        print(queue.pop())
+        print(queue.dequeue())
