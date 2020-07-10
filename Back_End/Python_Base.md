@@ -3484,7 +3484,7 @@ _通过with方法可以不用close().因为with生成的对象在语句块结束
 
 6.  os.remove(str_url)：删除文件
 
-### 网络编程
+### 网络编程基础
 
 >   计算机网络功能主要包括实现资源共享，实现数据信息的快速传递。
 
@@ -3732,3 +3732,503 @@ _通过with方法可以不用close().因为with生成的对象在语句块结束
 
     sockfd.close()
 ```
+
+##### tcp套接字数据传输特点
+
+1.  tcp连接中当一端退出，另一端如果阻塞在recv，则recv会立即返回一个空字串
+
+2.  tcp连接中如果另一端已经不存在，再试图使用send向其发送内容时会出现 BrokenPipeError
+
+##### 网络收发缓冲区
+
+1.  缓冲区有效的协调了消息的收发速度
+2.  send，recv实际是向缓冲区发送接收消息，当缓冲区不为空的时候recv就不会阻塞
+
+##### 粘包问题
+
+-   原因：tcp以字节流方式传输数据，没有消息边界，多次发送的内容如果被一次接收就会形成粘包
+-   影响：如果每次发送的内容是需要独立解析的含义，此时粘包会对消息的解析产生影响
+-   处理：
+    1.  人为添加消息边界
+    2.  控制发送速度
+
+```py
+    ################### tcp_server ###################
+
+    import socket
+
+    sockfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sockfd.bind(("0.0.0.0", 12016))
+    sockfd.listen(3)
+
+    while True:
+        print("waiting for connect...")
+        try:
+            connfd, addr = sockfd.accept()
+            print(addr)
+        except KeyboardInterrupt:
+            break
+        while True:
+            data = connfd.recv(5)
+            if not data:
+                break
+            print("receive message", data.decode())
+            n = connfd.send(b"Receive message")
+            print("send", n)
+        connfd.close()
+    sockfd.close()
+
+    ################### tcp_client ###################
+
+    from socket import *
+
+    sockfd = socket()
+    server_addr = ("127.0.0.1", 12016)
+    sockfd.connect(server_addr)
+
+    while True:
+        message_client = input("message: ")
+        if not message_client:
+            break
+        sockfd.send(message_client.encode())
+        data = sockfd.recv(1024)
+        print(data.decode())
+
+    sockfd.close()
+```
+
+##### UDP套接字编程/通信（udp、不可靠、面向无连接）
+
+###### 服务端流程
+
+1.  创建套接字: `sockfd = socket(AF_INET,SOCK_DGRAM)`
+
+2.  绑定地址：`sockfd.bind(addr)`
+
+3.  收发消息:
+
+    -   `data,addr = sockfd.recvfrom(buffersize)`
+        -   功能: 接收UDP消息
+        -   参数： 每次最多接收多少字节内容
+        -   返回值：
+            -   data 接收到的消息
+            -   addr 消息发送方地址
+    -   `n = sockfd.sendto(data,addr)`
+        -   功能: 发送UDP消息
+        -   参数：
+            -   data 发送的内容  bytes格式
+            -   addr 目标地址
+
+4.  关闭套接字:`sockfd.close()`
+
+###### 客户端流程
+
+1.  创建udp套接字
+2.  发送接收消息
+3.  关闭套接字
+
+```py
+    ################### udp_server ###################
+    from socket import *
+
+    sockfd = socket(AF_INET, SOCK_DGRAM)
+
+    server_addr = ("0.0.0.0", 12016)
+    sockfd.bind(server_addr)
+
+    while True:
+        data, addr = sockfd.recvfrom(1024)
+        print("receive: ", data.decode())
+        sockfd.sendto(b"answer-zf", addr)
+    sockfd.close()
+
+    ################### udp_client ###################
+
+    from socket import *
+
+    HOST = "127.0.0.1"
+    POST = 12016
+    ADDR = (HOST, POST)
+
+    sockfd = socket(AF_INET,SOCK_DGRAM)
+
+    while True:
+        input_message = input(">>>")
+        if not input_message:
+            break
+        n = sockfd.sendto(input_message.encode(), ADDR)
+        data, addr = sockfd.recvfrom(1024)
+        print("receive", data.decode())
+
+    sockfd.close()
+```
+
+##### tcp套接字和udp套接字编程区别
+
+1.  流式套接字式以字节流方式传输数据，数据报套接字以数据报形式传输
+2.  tcp套接字会有粘包问题，udp套接字有消息边界不会粘包
+3.  tcp套接字保证消息的完整性，udp不保障
+4.  tcp套接字依赖listen accept完成连接才能进行数据收发，udp套接字不需要
+5.  tcp使用send recv收发消息，udp使用sendto,recvfrom
+
+##### socket模块方法和socket套接字属性
+
+1.  部分socket模块方法
+
+    -   获取计算机名： `socket.gethostname()`
+
+    -   通过主机名获取ip地址： `socket.gethostbyname('www.baidu.com')`
+
+    -   通过服务名称获取监听端口： `socket.getservbyname('mysql')`
+
+    -   通过端口获取服务名称： `socket.getservbyport(3306)`
+
+    -   将IP地址转换为字节串： `socket.inet_aton('192.168.1.2')`
+
+    -   将字节串转换为IP： `socket.inet_ntoa(b'\xc0\xa8\x01\x02')`
+
+2.  套接字属性
+
+    1.  sockfd.family  地址类型
+    2.  sockfd.type  套接字类型
+    3.  sockfd.getsockname() 获取套接字绑定地址
+    4.  sockfd.fileno() 获取文件描述符
+        -   文件描述符：系统中每一个IO操作都会分配一个整数作为编号，该整数即这个IO的文件描述符。
+        -   特点：每个IO的文件描述符不会重复
+    5.  getpeername() 获取连接套接字客户端地址
+    6.  setsockopt(level,option,value)
+
+        -   功能：设置套接字选项
+        -   参数：
+            -   level 选项类别  SOL_SOCKET
+            -   option  具体选项内容
+            -   value  选项值
+
+        _SOL_SOCKET option 属性_
+
+        ![Python-Net_setsockopt](http://images.dorc.top/blog/Python/Python-Net_setsockopt.png)
+
+_应用：上传文件_
+
+```py
+    ################### TCP server file upload ###################
+
+    from socket import *
+
+    sockfd = socket()
+
+    sockfd.bind(("0.0.0.0", 12016))
+    sockfd.listen(3)
+    connfd, addr = sockfd.accept()
+    print("connect >>>  ", addr)
+
+    fd = open("zf.jpg", "wb")
+    while True:
+        data = connfd.recv(1024)
+        if not data:
+            break
+        fd.write(data)
+    fd.close()
+    connfd.close()
+    sockfd.close()
+
+    ################### TCP client file upload ###################
+
+    from socket import *
+
+    sockfd = socket()
+
+    sockfd.connect(("127.0.0.1", 12016))
+
+    fd = open("text.jpg", "rb")
+    while True:
+        data = fd.read(1024)
+        if not data:
+            break
+        sockfd.send(data)
+    fd.close()
+    sockfd.close()
+```
+
+##### UDP套接字广播
+
+-   广播定义：一端发送，多端接收
+-   广播地址：每个网段内的最大地址，向该地址发送则网段内所有的主机都能接收。
+
+```py
+    ################### UDP BROADCAST client ###################
+    from socket import *
+
+    sockfd = socket(AF_INET, SOCK_DGRAM)
+
+    # 设置套接字 允许接受广播
+    sockfd.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+    sockfd.bind(("0.0.0.0", 9999))
+
+    while True:
+        try:
+            data, addr = sockfd.recvfrom(1024)
+        except KeyboardInterrupt:
+            break
+        else:
+            print(data.decode())
+
+    sockfd.close()
+
+    ################### UDP BROADCAST server ###################
+
+    from socket import *
+    from time import sleep
+
+    dest = ("192.168.1.255", 9999)
+
+    sockfd = socket(AF_INET, SOCK_DGRAM)
+    sockfd.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+
+    data = """
+        *******************
+        this.is.test broadcast ......
+        *******************
+    """
+
+    while True:
+        sleep(2)
+        sockfd.sendto(data.encode(),dest)
+    sockfd.close()
+```
+
+##### TCP套接字之HTTP传输
+
+1.  HTTP协议（超文本传输协议）
+
+    -   用途：网页获取，数据传输
+    -   特点:
+        -   应用层协议，传输层使用tcp服务
+        -   简单，灵活，无状态(协议不记录传输内容)
+        -   http1.1 支持持久连接，丰富请求类型。
+
+2.  网页请求过程
+
+    1.  客户端(浏览器)通过tcp传输,发送http请求给服务端
+    2.  服务端接收到http请求后进行解析
+    3.  服务端处理请求内容,组织响应内容
+    4.  服务端将响应内容以http响应格式发送给浏览器
+    5.  浏览器接收到响应内容,解析展示
+
+    ![Python-Net_Web_Access](http://images.dorc.top/blog/Python/Python-Net_Web_Access.jpg)
+
+###### HTTP请求 request
+
+1.  请求行 ： 具体的请求类别和请求内容
+    -   格式：`GET    /    HTTP/1.1`
+        -   `GET`:请求类别
+        -   `/`:请求内容 （`/` 代表主页）
+        -   `HTTP/1.1`:协议版本
+    -   请求类别：每个请求类别表达不同的请求方式和行为
+        -   GET  : 获取网络资源
+        -   POST ：提交一定的信息，得到反馈
+        -   HEAD ：只获取网络资源响应头
+        -   PUT  ：更新服务器资源
+        -   DELETE ： 删除服务器资源
+        -   CONNECT
+        -   TRACE ： 测试
+        -   OPTIONS ： 获取服务器性能信息
+2.  请求头 ： 对请求的进一步描述和解释
+    -   `Accept-Encoding: gzip`
+3.  空行
+4.  请求体: 请求参数或者提交内容
+
+###### HTTP响应 response
+
+1.  响应行：反馈基本的响应情况
+    -   `HTTP/1.1    200    OK`
+        -   `HTTP/1.1`:协议版本
+        -   `200`:响应码
+            -   1xx 提示信息，请求被接受
+            -   2xx 响应成功
+            -   3xx 响应需要进一步操作，重定向
+            -   4xx 客户端错误
+            -   5xx 服务端错误
+        -   `OK`:附加信息
+2.  响应头 ： 对响应内容的描述
+    -   `Content-Type:text/html`
+3.  空行
+4.  响应体：响应的主体内容信息
+
+_http server_
+
+```py
+    from socket import *
+
+    def handle(conn_fd):
+        print("request from ", conn_fd.getpeername())
+        request = conn_fd.recv(4096)
+        # 防止客户端断开
+        if not request:
+            return
+        request_line = request.splitlines()[0].decode()  # 将请求按行分割取第一行
+        info = request_line.split(" ")[1]
+        if info == "/":
+            fd = open("index.html", "r")
+            response_msg = "HTTP/1.1 200 OK\r\n"
+            response_msg += "Content-Type: text/html\r\n"
+            response_msg += "\r\n"
+            response_msg += fd.read()
+        else:
+            response_msg = "HTTP/1.1 200 OK\r\n"
+            response_msg += "Content-Type: text/html\r\n"
+            response_msg += "\r\n"
+            response_msg += "<h1> 404 </h1>"
+        conn_fd.send(response_msg.encode())
+
+    def main():
+        sock_fd = socket()
+        sock_fd.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        sock_fd.bind(("0.0.0.0", 12016))
+        sock_fd.listen(3)
+        print("Listen the port 12016")
+        while True:
+            conn_fd, addr = sock_fd.accept()
+            handle(conn_fd)
+            conn_fd.close()
+```
+
+#### struct 模块的使用(打包、解包)
+
+1.  原理：将一组简单数据进行打包，转换为 bytes 格式，或者将一组 bytes格式数据进行解析。
+
+2.  接口使用：
+
+        -   Structural(format)
+            -   功能：生成结构化对象
+            -   参数：format 定制的数据结构
+
+                ![Python-Net_Struct](http://images.dorc.top/blog/Python/Python-Net_Struct.png)
+
+        -   st.pack(v1,v2,v3...)
+            -   功能：将一组数据按照指定格式打包转换为 bytes
+            -   参数：要打包的数据
+            -   返回值： bytes 字节串
+        -   st.unpack(bytes_data)
+            -   功能：将 bytes字节串按照指定的格式解析
+            -   参数：要解析的字节串
+            -   返回值：解析后的内容
+
+        ```py
+            import struct
+            st = struct.Struct("i8sif")
+            data = st.pack(1,b"zhangsan",16,78.5)
+            d = st.unpack(data)
+            # 也可以使用 struct 模块直接调用
+            # struct.pack(format,v1,v2,v3...)
+            # struct.unpack(format,bytes_data)
+            zf_data = struct.pack("i18sif",1,b"zhangsan",16,22.3)
+            un_zf_data = struct.unpack("i18sif", zf_data)
+        ```
+
+```py
+    ################### UDP struct server ###################
+
+    import struct
+    from socket import *
+
+    sock_fd = socket(AF_INET, SOCK_DGRAM)
+
+    sock_fd.bind(("0.0.0.0", 12016))
+
+    st = struct.Struct("i32sif")
+    file_desc = open("struct.txt", "a")
+
+    while True:
+        data, addr = sock_fd.recvfrom(1024)
+        tuple_write_msg = st.unpack(data)
+        write_msg = "%d %s %d %.2f\n" % (tuple_write_msg[0],
+                                         tuple_write_msg[1].decode(),
+                                         tuple_write_msg[2],
+                                         tuple_write_msg[3])
+        file_desc.write(write_msg)
+        file_desc.flush()
+
+    file_desc.close()
+    sock_fd.close()
+
+    ################### UDP struct client ###################
+
+    from socket import *
+    import struct
+
+    sock_fd = socket(AF_INET, SOCK_DGRAM)
+
+    ADDR = ("127.0.0.1", 12016)
+    st = struct.Struct("i32sif")
+
+    while True:
+        print("====================")
+        input_id = int(input("user id: "))
+        input_name = input("user name: ").encode()
+        input_age = int(input("user age: "))
+        input_score = float(input("user score: "))
+        send_msg = st.pack(input_id, input_name, input_age, input_score)
+        sock_fd.sendto(send_msg, ADDR)
+
+    sock_fd.close()
+```
+
+### 并发编程
+
+#### 多任务并发编程
+
+1.  意义： 充分利用计算机资源，同时处理多个任务，提高程序的运行效率
+
+2.  并行和并发
+
+    -   并行：多个任务利用计算机多核资源在同时执行，此时多个任务间是并行关系
+    -   并发：同时处理多个任务，内核在任务间不断的切换达到很多任务都被同时处理的效果，实际每个时刻只有一个任务在被执行（占有内核）。
+
+3.  实现方法：多进程，多线程
+
+#### 进程 （process）
+
+1.  定义： 程序在计算机中的一次运行过程
+
+    -   程序是一个可行行的文件，是静态的只占磁盘
+    -   进程是一个动态的过程，占有计算机运行资源，有一定的生命周期
+
+2.  如何产生一个进程
+
+    1.  用户空间通过调用程序接口或者命令发起请求
+    2.  操作系统接收请求，开始调用系统接口创建进程
+    3.  操作系统调配计算机硬件资源，整合进程状态等进程创建工作
+    4.  操作系统将创建的进程提供给用户使用
+
+3.  进程概念
+
+-   cpu时间片：如果一个进程占有cpu则称这个进程在cpu时间片上
+
+-   PCB(进程控制块)：在内存中开辟的一块空间，用于存放进程信息，也用于操作系统对进程的调配（查找识别）
+
+-   进程ID（PID）：系统为每个进程分配的一个大于0的整数，作为进程的ID标志
+
+    -   Linux命令 ： ps  -aux
+
+-   父子进程：系统中每一个进程（除了初始进程）都有唯一的父进程，可以有0个或者多个子进程
+
+    -   命令 ： pstree
+
+-   进程状态
+
+    -   三态：
+
+        -   就绪态： 进程具备执行条件，等待分配cpu资源
+        -   运行态： 进程占有cpu时间片正在运行
+        -   阻塞态： 进程处理阻塞暂停状态，让出cpu
+
+        ![Python-Net_3State](http://images.dorc.top/blog/Python/Python-Net_3State.png)
+
+    -   五态 （增加新建和终止）：
+
+        -   新建：创建进程获取资源
+        -   终止：进程结束释放资源
+
+        ![Python-Net_5State](http://images.dorc.top/blog/Python/Python-Net_5State.png)
