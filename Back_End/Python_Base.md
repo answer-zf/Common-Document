@@ -4232,3 +4232,17 @@ _http server_
         -   终止：进程结束释放资源
 
         ![Python-Net_5State](http://images.dorc.top/blog/Python/Python-Net_5State.png)
+
+    -   查看状态命令 ： ps  -aux => STAT 列
+
+        > S 等待态
+        > R 执行态
+        > D 等待态
+        > T 等待态
+        > Z 僵尸
+        >
+        > \\&lt; 有较高优先级
+        > N 优先级较低
+        > \+ 前台进程
+        > s 会话组组长
+        > l 有多线程的
