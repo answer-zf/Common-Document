@@ -4368,3 +4368,68 @@ _http server_
                         while True:
                             pass
                 ```
+
+    2.  创建二级子进程（缺点浪费进程）
+
+        1.  父进程创建子进程wait等待回收
+        2.  子进程创建二级子进程后退出
+        3.  二级子进程成为孤儿，和父进程一起完成事件
+
+        ```py
+            def f1():
+                for i in range(4):
+                    sleep(2)
+                    print("answer-zf")
+
+            def f2():
+                for i in range(5):
+                    sleep(1)
+                    print("zzzzzzzzzzzzzz")
+
+            pid = os.fork()
+
+            if pid < 0:
+                print("Error")
+            elif pid == 0:
+                pid_c = os.fork()
+                if pid_c == 0:
+                    f2()
+                else:
+                    os._exit(0)
+            else:
+                os.wait()
+                f1()
+        ```
+
+    3.  信号处理
+
+        -   原理 ： 子进程退出会发送信号给父进程，如果父进程忽略子进程信号，则系统会自动处理子进程退出
+
+        -   方法：
+
+            -   `import  signal`
+            -   `signal.signal(signal.SIGCHLD,signal.SIG_IGN)`
+                -   参数：
+                    -   信号类型：子进程退出信号
+                    -   信号处理方法：子进程发出退出信号后，父进程进行忽略
+
+        -   特点：
+            -   非阻塞
+            -   使用该方法，可以处理所有子进程退出
+
+        ```py
+            import os
+            import signal
+
+            signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+
+            pid = os.fork()
+
+            if pid < 0:
+                pass
+            elif pid == 0:
+                print(os.getpid())
+            else:
+                while True:
+                    pass
+        ```

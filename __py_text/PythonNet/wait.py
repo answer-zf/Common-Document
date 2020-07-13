@@ -3,17 +3,16 @@
 """
 
 import os
+import signal
+
+signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 pid = os.fork()
 
 if pid < 0:
-    print("error")
+    pass
 elif pid == 0:
-    print("child pid", os.getpid())
-    os._exit(2)
+    print(os.getpid())
 else:
-    pid, status = os.wait()
-    print("pid", pid)
-    print("status", status)  # 2 x 256 / os.WEXITSTATUS() => 2
     while True:
         pass
