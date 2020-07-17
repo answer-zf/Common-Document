@@ -4433,3 +4433,365 @@ _http server_
                 while True:
                     pass
         ```
+
+##### 基于 fork 的 聊天室 实例
+
+```py
+    ################### Chat Room Client ###################
+
+    from socket import *
+    import os, sys
+
+    # 服务端地址
+    ADDR = ("127.0.0.1", 12017)
+
+    def send_message(sock_fd, name):
+        while True:
+            try:
+                str_input_msg = input("pl. input message: ")
+            except KeyboardInterrupt:
+                str_input_msg = "quit"
+            if str_input_msg == "quit":
+                str_send_msg = "Q " + name
+                sock_fd.sendto(str_send_msg.encode(), ADDR)
+                sys.exit()
+            str_send_msg = "C %s %s" % (name, str_input_msg)
+            # print(str_send_msg)
+            sock_fd.sendto(str_send_msg.encode(), ADDR)
+
+    def recv_message(sock_fd):
+        while True:
+            data, addr = sock_fd.recvfrom(1024)
+            if data.decode() == "quit":
+                sys.exit()
+            print(data.decode() + "\npl. input message: ", end="")
+
+    def main():
+        sock_fd = socket(AF_INET, SOCK_DGRAM)
+        while True:
+            str_name = input("pl. input your name: ")
+            str_send_info = "L " + str_name
+            sock_fd.sendto(str_send_info.encode(), ADDR)
+            data, addr = sock_fd.recvfrom(2048)
+
+            if data.decode() == "OK":
+                break
+            else:
+                print(data.decode())
+
+        print("Now You Have Entered Chat Room")
+
+        pid = os.fork()
+        if pid < 0:
+            sys.exit("Error!")
+        elif pid == 0:
+            send_message(sock_fd, str_name)
+        else:
+            recv_message(sock_fd)
+
+    if __name__ == "__main__":
+        main()
+
+    ################### Chat Room Server ###################
+
+    from socket import *
+    import os, sys
+
+    # 地址
+    ADDR = ("0.0.0.0", 12017)
+
+    # 用户信息
+    dict_user_info = {}
+
+    def do_quit(sock_fd, name):
+        str_msg = "%s out chat room" % name
+        for item in dict_user_info:
+            if item != name:
+                sock_fd.sendto(str_msg.encode(), dict_user_info[item])
+            else:
+                sock_fd.sendto(b"quit", dict_user_info[item])
+        # 删除用户信息
+        del dict_user_info[name]
+
+    def do_chat(sock_fd, name, msg):
+        str_send_msg = "\n%s : %s" % (name, msg)
+        for item in dict_user_info:
+            if item != name:
+                sock_fd.sendto(str_send_msg.encode(), dict_user_info[item])
+
+    def do_login(sock_fd, name, addr):
+        if name in dict_user_info or "admin" in name:
+            sock_fd.sendto(b"\nNAME EXIST", addr)
+            return
+
+        # 发送返回信息
+        sock_fd.sendto(b"OK", addr)
+        # 记录用户信息
+        dict_user_info[name] = addr
+
+        # 向其他用户发送通知
+        send_msg = "\nWelcome to %s enter chat room" % name
+        for item in dict_user_info:
+            if item != name:
+                sock_fd.sendto(send_msg.encode(), dict_user_info[item])
+
+    def do_request(sock_fd):
+        while True:
+            data, addr = sock_fd.recvfrom(1024)
+            list_recv_info = data.decode().split(" ")
+            if list_recv_info[0] == "L":
+                do_login(sock_fd, list_recv_info[1], addr)
+            elif list_recv_info[0] == "C":
+                chat_msg = " ".join(list_recv_info[2:])
+                do_chat(sock_fd, list_recv_info[1], chat_msg)
+            elif list_recv_info[0] == "Q":
+                if list_recv_info[1] not in dict_user_info:
+                    sock_fd.sendto(b"quit", addr)
+                    continue
+                do_quit(sock_fd, list_recv_info[1])
+
+    def super_admin_rights(sock_fd):
+        """
+            超级管理员发言
+                核心：由于子进程的数据 父进程不能共享
+                    采用 父进程像客户端一样，向子进程发送消息，
+                        子进程统一处理请求的方案解决
+        :param sock_fd:
+        :return:
+        """
+        while True:
+            str_msg = input("admin message: ")
+            str_admin_msg = "C admin " + str_msg
+            sock_fd.sendto(str_admin_msg.encode(), ADDR)
+
+    def main():
+        sock_fd = socket(AF_INET, SOCK_DGRAM)
+        # 绑定地址
+        sock_fd.bind(ADDR)
+
+        pid = os.fork()
+        if pid < 0:
+            sys.exit("Error!")
+        elif pid == 0:
+            # 处理请求
+            do_request(sock_fd)
+        else:
+            super_admin_rights(sock_fd)
+
+    if __name__ == "__main__":
+        main()
+```
+
+##### 基于 multiprocessing 模块创建进程
+
+1.  创建流程
+
+    -   将需要子进程处理的事件封装为函数
+    -   通过Process类创建进程对象，关联函数
+    -   可以通过进程对象对进程进行属性设置
+    -   通过start启动进程
+    -   通过join回收进程
+
+2.  接口使用
+
+    1.  Process()
+
+        -   功能: 创建进程对象
+        -   参数：
+            -   target 绑定要执行的目标函数
+            -   args 元组 给target函数位置传参
+            -   kwargs 字典  给target函数关键字传参
+
+    2.  p.start()
+
+        -   功能 : 启动进程
+            -   此时进程产生，将p绑定函数作为新进程的执行内容。
+
+    3.  p.join([timeout])
+
+        -   功能 ：阻塞等待回收进程
+        -   参数 : 超时时间
+
+    ```py
+       # 基本使用
+       import multiprocessing
+       from time import sleep
+
+       def func(sec,name):
+           print("%s start"%name)
+           sleep(sec)
+           print("%s complete"%name)
+
+       # p = multiprocessing.Process(target=func,args=(2,"zf"))
+       p = multiprocessing.Process(target=func,kwargs={"name":"zf","sec":2})
+
+       p.start()
+
+       sleep(2)
+       print("parent process")
+
+       p.join()
+
+       # 等价于 fork()
+       # if pid == 0:
+       #     func()
+       #     os._exit()
+       # else:
+       # sleep(2)
+       # print("parent process")
+       #     wait()
+    ```
+
+3.  总结：
+
+    -   multiprocessing创建进程同样是复制父进程的空间代码段，父子进程运行互不影响
+    -   子进程只执行target绑定函数，其余均父进程执行
+    -   Process创建进程中，往往父进程只用来创建和回收进程，具体事件由子进程完成
+    -   multiprocessing创建的子进程中不能使用标准输入（无法使用 input... ）
+
+    ```py
+        # 同时开辟多个子进程
+        from multiprocessing import Process
+        from time import sleep
+        import os
+
+        def th1/2/3():
+            sleep(3/2/4)
+            print("th1/2/3")
+            print(os.getppid(), "------------", os.getpid())
+
+        things = [th1, th2, th3]
+        jobs = []
+        for th in things:
+            p = Process(target=th)
+            jobs.append(p)
+            p.start()
+
+        for i in jobs:
+            i.join()
+    ```
+
+4.  进程对象属性
+
+    -   p.name   获取进程名称
+        -   `Process(..,name="..")` 可以在创建时传递name参数设置进程名称
+    -   p.pid   进程PID号
+    -   p.is_alive()  进程是否在生命周期
+    -   p.daemon  设置父子进程的退出关系
+        -   将该属性设置为True则父进程退出，其子进程也会退出
+        -   要求必须在start()前设置
+        -   不会和join一起使用
+
+###### 进程池技术
+
+1.  必要性
+
+    -   进程的创建和销毁过程消耗的计算机资源较多
+    -   当任务量众多，每个任务又比较小的时候，需要频繁创建销毁进程，对计算机压力较大
+    -   进程池技术很好的解决了上述问题
+
+2.  原理： 创建一定数量的进程来处理事件，事件处理完进程不退出而是继续处理其他事件，直到所有事件都处理完毕再一同销毁。增加进程的复用性，降低资源消耗。
+
+3.  进程池实现
+
+    -   from  multiprocessing  import  Pool
+
+    -   pool = Pool(processes)
+
+        -   功能： 创建进程池对象
+        -   参数： 指定创建进程数量，默认根据系统自动判定
+
+    -   pool.apply_async(func,args,kwds):
+
+        -   功能 ： 将进程事件加入进程池
+        -   参数 ：
+            -   func 进程事件函数
+            -   args  给进程事件元组传参
+            -   kwds  给进程事件字典传参
+
+    -   pool.close()
+
+        -   功能: 关闭进程池
+            -   不能将进程事件加入进程池
+
+    -   pool.join()
+        -   功能：回收进程池
+            -   阻塞等待现有的进程池事件执行完毕
+
+    ```py
+        from multiprocessing import Pool
+        from time import ctime, sleep
+
+        def worker(msg):
+            sleep(2)
+            print(msg)
+
+        # 主进程结束，子进程直接销毁 与 Process 不同
+        pool = Pool()
+
+        for i in range(20):
+            msg = "this is %d" % i
+            pool.apply_async(func=worker, args=(msg,))
+
+        pool.close()
+        pool.join()
+    ```
+
+###### 进程间通信（IPC）
+
+1.  必要性： 进程空间独立，资源不共享，此时在进程间数据传输时，需要一定的方法手段
+
+2.  进程间通信方法:
+
+    -   管道  消息队列  共享内存  信号  信号量  套接字
+
+3.  管道通信
+
+    1.  通信原理：在内存中开辟管道空间，生成管道对象，多个进程使用同一管道进行读写操作
+
+    2.  实现方法
+
+        -   from  multiprocessing import Pipe
+
+        -   fd1,fd2 = Pipe(duplex = True)
+
+            -   功能: 创建管道
+            -   参数：默认表示双向管道，False表示单向管道
+            -   返回值：
+
+                -   表示管道两端读写对象
+                -   如果双向管道均可读写
+                -   单向管道fd1只读，fd2只写
+
+        -   fd.recv()
+
+            -   功能: 从管道读取内容
+            -   返回值：读取到的内容
+
+        -   fd.send(data)
+            -   功能：向管道写入内容
+            -   参数： 要写入的数据
+
+    ```py
+        from multiprocessing import Pipe, Process
+        import os, time
+
+        fd1, fd2 = Pipe()
+
+        def fun(name):
+            time.sleep(2)
+            fd1.send({name: os.getpid()})
+
+        jobs = []
+        for i in range(5):
+            p = Process(target=fun, args=(i,))
+            jobs.append(p)
+            p.start()
+
+        for i in range(5):
+            data = fd2.recv()
+            print(data)
+
+        for i in jobs:
+            i.join()
+    ```
