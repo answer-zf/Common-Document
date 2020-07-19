@@ -3484,6 +3484,7 @@ _通过with方法可以不用close().因为with生成的对象在语句块结束
 5.  os.path.isdir(str_url)：判断文件类型
 
     -   `ls -l` 第一个字母 `-`：普通文件，`d`：目录
+        -   Linux 文件分类：b(块设备)、c(字符设备)、d(目录)、-(普通文件)、l(链接文件)、s(套接字文件)、p(管道文件)
 
 6.  os.remove(str_url)：删除文件
 
@@ -4761,7 +4762,7 @@ _http server_
 
                 -   表示管道两端读写对象
                 -   如果双向管道均可读写
-                -   单向管道fd1只读，fd2只写
+                -   单向管道fd1只读(recv())，fd2只写(send())
 
         -   fd.recv()
 
@@ -4795,3 +4796,241 @@ _http server_
         for i in jobs:
             i.join()
     ```
+
+4.  消息队列
+
+    1.  通信原理：在内存中建立队列模型，进程通过队列存取消息实现通信
+
+    2.  实现方法
+
+        -   `from multiprocessing import Queue`
+
+        -   q = Queue(maxsize = 0)
+
+            -   功能 ： 创建消息队列
+            -   参数 ： 最多存放多少个消息
+
+        -   q.put(data,[block,timeout])
+
+            -   功能： 向队列存入消息
+            -   参数：
+                -   data  要存入的内容
+                -   block
+                    -   False 为非阻塞
+                    -   timeout  超时时间
+
+        -   data = q.get([block,timeout])
+
+            -   功能: 从队列中取出消息
+            -   参数：
+                -   block
+                    -   False 为非阻塞
+                    -   timeout  超时时间
+
+        -   q.full() 判断队列是否为满
+        -   q.empty()  判断队列是否为空
+        -   q.qsize()  获取队列中消息个数
+        -   q.close()  关闭队列
+
+    ```py
+        from multiprocessing import Queue, Process
+        from random import randint
+        from time import sleep
+
+        q = Queue(5)
+
+        def request():
+            for i in range(20):
+                x = randint(0, 100)
+                y = randint(0, 100)
+                q.put((x, y))
+
+        def handle():
+            while True:
+                sleep(0.5)
+                try:
+                    x, y = q.get(timeout=3)
+                except:
+                    break
+                else:
+                    print("%d + %d = %d" % (x, y, x + y))
+
+        p1 = Process(target=request)
+        p2 = Process(target=handle)
+
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
+    ```
+
+5.  共享内存
+
+    1.  通信原理：在内存中开辟一块空间，进程可以写入和读取内容，但是每次写入内容都会覆盖之前内容
+
+    2.  实现方法
+
+        -   `from multiprocessing import Value,Array`
+
+        -   obj = Value(ctype,data)
+
+            -   功能: 创建共享内存
+            -   参数:
+
+                -   ctype  共享内存类型  'i'  'f'  'c'(字符，只能存字节串)
+                -   data   共享内存初始数据
+
+                ![Python-Net_Ctype](http://images.dorc.top/blog/Python/Python-Net_Ctype.png)
+
+            -   obj.value 对该属性修改查看即共享内存读写
+
+
+        -   obj = Array(ctype,data)
+            -   功能： 创建共享内存
+            -   参数：
+                -   ctype 共享内存类型
+                -   data  其他数据类型表示开辟空间存放的初始化数据，整数表示共享内存开辟数据元素个数
+
+            -   obj进行遍历或者索引方式获取值，也可以通过索引直接赋值
+            -   obj.value 用于整体打印共享内存中字节串
+
+            ```py
+                from multiprocessing import Process, Array
+                import time
+                import random
+
+                shall_mer = Array("i", 5 )
+
+                def fun1():
+                    for i in shall_mer:
+                        print(i)
+
+                p = Process(target=fun1)
+
+                g.start()
+                p.join()
+
+                print(money.value)
+            ```
+
+6.  本地套接字
+
+    1.  功能:用于本地两个程序之间进行数据的收发
+    2.  套接字文件:用于本地套接字之间通信时,进行数据传输的介质。
+    3.  创建本地套接字流程
+        1.  创建本地套接字：`sock_fd = socket(AF_UNIX, SOCK_STREAM)`
+        2.  绑定套接字文件：`sock_fd.bind(url_file)`
+        3.  监听、接收客户端连接，收发消息
+            -   `listen() -> accept() -> recv() / send()`
+
+    ```py
+        ################### recv ###################
+
+        from socket import *
+        import os
+
+        sock_file = "./sock"
+
+        if os.path.exists(sock_file):
+            os.remove(sock_file)
+
+        sock_fd = socket(AF_UNIX, SOCK_STREAM)
+        sock_fd.bind(sock_file)
+
+        sock_fd.listen(3)
+
+        while True:
+            conn_fd, addr = sock_fd.accept()
+            while True:
+                data = conn_fd.recv(1024)
+                if not data:
+                    break
+                print(data.decode())
+            conn_fd.close()
+        sock_fd.close()
+
+        ################### send ###################
+
+        from socket import *
+
+        sock_file = "./sock"
+        sock_fd = socket(AF_UNIX, SOCK_STREAM)
+        sock_fd.connect(sock_file)
+
+        while True:
+            msg = input(">>>")
+            if not msg:
+                break
+            sock_fd.send(msg.encode())
+        sock_fd.close()
+    ```
+
+7.  信号量（信号灯集）
+
+    1.  通信原理：给定一个数量对多个进程可见，多个进程都可以操作数量的增减，并根据数量决定行为
+
+    2.  实现方法
+
+        -   from multiprocessing import  Semaphore
+
+        -   sem = Semaphore(num)
+
+            -   功能：创建信号量对象
+            -   参数： 信号量初始值
+            -   返回值： 信号量对象
+
+        -   sem.acquire()  消耗一个信号量，当信号量为0时会阻塞
+
+        -   sem.release()  增加一个信号量
+
+        -   sem.get_value()  获取信号量值
+
+    ```py
+        from multiprocessing import Semaphore, Process
+        from time import sleep
+        import os
+        # 服务器程序最多允许三个进程同时执行事件
+        sem = Semaphore(3)
+
+        def fun():
+            print("%d ready" % os.getpid())
+            sem.acquire()
+            print("%d start" % os.getpid())
+            sleep(3)
+            print("%d end" % os.getpid())
+            sem.release()
+
+        jobs = []
+
+        for i in range(5):
+            p = Process(target=fun)
+            jobs.append(p)
+            p.start()
+
+        for i in jobs:
+            i.join()
+    ```
+
+8.  注意：当在父进程中创建对象（文件对象，套接字对象，进程间通信对象），子进程从父进程中拷贝对象时父子进程对该对象的使用会有属性的相互影响。如果在父子进程中各自创建，则无影响。
+
+    -   如果父进程中打开文件,创建进程通信对象或者创建套接字,子进程从父进程内存空间获取这些内容,那么父子进程对该对象的操作会有一定的属性关联。
+
+* * *
+
+#### 线程(Thread)
+
+1.  什么是线程
+
+    1.  线程被称为轻量级的进程
+    2.  线程也是多任务编程方法，可以使用计算机多核资源
+    3.  线程是系统分配内核的最小单元
+    4.  线程可以理解为进程中的任务分支程序
+
+2.  线程特征
+
+    1.  一个进程可以包含多个线程
+    2.  线程也是一个运行过程，消耗计算机资源
+    3.  一个进程中的所有线程共享这个进程资源
+    4.  多个线程运行互不影响，各自执行
+    5.  线程的创建和消耗消耗资源远小于进程
+    6.  线程也有自己的特有属性特征命令集，id等
