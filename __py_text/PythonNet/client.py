@@ -3,20 +3,17 @@
 """
 
 from socket import *
-import struct
 
-sock_fd = socket(AF_INET, SOCK_DGRAM)
-
-ADDR = ("127.0.0.1", 12016)
-st = struct.Struct("i32sif")
+sockfd = socket()
+server_addr = ("127.0.0.1", 12016)
+sockfd.connect(server_addr)
 
 while True:
-    print("====================")
-    input_id = int(input("user id: "))
-    input_name = input("user name: ").encode()
-    input_age = int(input("user age: "))
-    input_score = float(input("user score: "))
-    send_msg = st.pack(input_id, input_name, input_age, input_score)
-    sock_fd.sendto(send_msg, ADDR)
+    message_client = input("message: ")
+    if not message_client:
+        break
+    sockfd.send(message_client.encode())
+    data = sockfd.recv(1024)
+    print(data.decode())
 
-sock_fd.close()
+sockfd.close()
