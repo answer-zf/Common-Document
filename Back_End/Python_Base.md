@@ -5731,3 +5731,189 @@ _http server_
     if __name__ == '__main__':
         main()
 ```
+
+#### IO 并发
+
+1.  IO 分类
+
+    -   阻塞IO ，非阻塞IO，IO多路复用 ，异步IO
+
+2.  阻塞IO
+
+    -   定义： 在执行IO操作时由于不满足某些条件形成的阻塞形态。阻塞IO时IO的默认行为。
+    -   效率：阻塞IO是一种效率很低的IO。逻辑简单
+
+    -   阻塞情况
+
+        -   因为某种条件没有达到造成的函数阻塞
+
+            -   e.g.  accept   input   recv
+
+        -   处理IO的时间较长产生的阻塞情况
+            -   e.g. 网络传输，大文件的读写过程
+
+3.  非阻塞IO
+
+    -   定义 ： 通过修改IO的属性行为，使原本阻塞的IO变为非阻塞的状态(一般指的第一种阻塞情况)
+
+    -   设置套接字为非阻塞IO
+
+        -   sockfd.setblocking(bool)
+        -   功能: 设置套接字为非阻塞IO
+        -   参数：True表示套接字IO阻塞，False表示非阻塞
+
+    -   设置超时检测 ： 设置一个最长阻塞时间,超过该时间后则不再阻塞等待。
+
+        -   sockfd.settimeout(sec)
+        -   功能: 设置套接字超时时间
+        -   参数：超时时间
+
+        ```py
+            from socket import *
+            from time import sleep, ctime
+
+            fd = open("log.txt", "a")
+
+            sock_fd = socket()
+            sock_fd.bind(("0.0.0.0", 12016))
+            sock_fd.listen(3)
+
+            # sock_fd.setblocking(False)
+            sock_fd.settimeout(3)
+
+            while True:
+                print("Waiting For Connect ...")
+                try:
+                    conn_fd, addr = sock_fd.accept()
+                except (BlockingIOError, timeout) as e:
+                    sleep(2)
+                    fd.write("%s: %s\n" % (ctime(), e))
+                    fd.flush()
+                else:
+                    data = conn_fd.recv(1024).decode()
+                    print(data)
+        ```
+
+4.  IO多路复用
+
+    -   定义：同时监控多个IO事件，当哪个IO事件准备就绪就执行哪个IO。以此形成可以同时处理多个IO的行为，避免一个IO阻塞造成的其他IO无法执行，提高IO执行效率。
+
+    -   具体方案：
+
+        -   select : windows  linux   unix
+        -   poll : linux  unix
+        -   epoll : linux
+
+    -   python实现 ： import  select
+
+        -   rs,ws,xs=select(rlist, wlist, xlist[, timeout])
+        -   功能 ：监控多个IO事件，阻塞等待IO发生
+        -   参数 ：
+            -   rlist 列表  存放关注的等待发生的IO事件
+            -   wlist 列表  存放要主动处理的IO事件
+            -   xlist 列表  存入发生异常时要处理的IO
+            -   timeout : 超时时间
+        -   返回值 ：
+
+            -   rs 列表  rlist 中准备就绪的IO
+            -   ws 列表  wlist 中准备就绪的IO
+            -   xs 列表  xlist 中准备就绪的IO
+
+        -   步骤：
+
+            1.  将关注的IO放入对应的监控类别列表
+            2.  通过 select函数进行监控
+            3.  遍历 select返回值列表,确定就绪IO事件
+            4.  处理发生的IO事件
+
+        -   注意：
+            -   wlist中如果有IO事件，则select会立即返回给ws
+            -   处理IO事件过程中不要出现死循环等长期占有服务端情况
+            -   IO多路复用消耗资源较少，效率较高
+
+        ```py
+            from socket import *
+            from select import select
+
+            sock_fd = socket()
+            sock_fd.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            sock_fd.bind(("0.0.0.0", 12016))
+            sock_fd.listen(3)
+
+            rlist = [sock_fd]
+            wlist = []
+            xlist = []
+
+            while True:
+                rs, ws, xs = select(rlist, wlist, xlist)
+                for r in rs:
+                    if r is sock_fd:
+                        conn_fd, addr = sock_fd.accept()
+                        print("Connect From", addr)
+
+                        rlist.append(conn_fd)  # 加入新的关注IO
+                    else:
+                        data = r.recv(1024)
+                        if not data:
+                            rlist.remove(r)
+                            r.close()
+                            continue
+                        print(data)
+                        # r.send(b"OK")
+                        wlist.append(r)
+
+                for w in ws:
+                    w.send(b"OK")
+                    wlist.remove(w)
+                for x in xs:
+                    pass
+        ```
+
+    -   python实现 ： import  poll
+
+        -   位运算：
+
+            -   定义 ：将整数转换为二进制，按二进制位进行运算
+            -   运算符号：低位 -> 高 两两进行运算  0假，1真
+                -   `&`   按位与 （一假则假）
+                    -   某属性是否有某特性（`xx & 固定值`）
+                -   `|`   按位或 （一真则真）
+                    -   增加属性（`xx | 固定值`）
+                -   `^`   按位异或 （相同为0不同为1）
+                -   `<<`  左移
+                -   `>>`  右移
+            -   e.g.
+
+                -   14  -->  01110
+                -   19  -->  10011
+
+                -   `14 & 19` = 00010 = 2    一0则0
+                -   `14 | 19` = 11111 = 31   一1则1
+                -   `14 ^ 19` = 11101 = 29  相同为0不同为1
+                -   `14 << 2` = 111000 = 56  向左移动右侧补0
+                -   `19 >> 2` = 100 = 4   向右移动去掉低位
+
+        -   p = select.poll()
+
+            -   功能： 创建 poll 对象
+            -   返回： poll 对象
+
+        -   p = register(fd,event)
+            -   功能：注册关注的IO事件（对象）
+            -   参数：
+                -   fd 要关注的IO
+                -   event 要关注的IO事件类型
+                    -   常用类型：
+                        -   POLLIN 读IO事件（rlist）
+                        -   POLLOUT 读IO事件（wlist）
+                        -   POLLERR 异常IO （xlist）
+                        -   POLLHUP 断开连接
+                        -   e.g.: p.register(sock_fd,POLLIN|POLLERR)
+        -   p.unregister(fd)
+            -   功能：取消对IO的关注
+            -   参数：IO对象或者IO对象的fileno（文件描述符）
+        -   events = p.poll()
+            -   功能：阻塞等待监控的IO事件发生
+            -   返回值：返回发生的IO
+                -   格式：[(fileno,event),()...]
+                -   每个元组为一个就绪IO,元组第一项是该 IO 的fileno，第二项就绪IO的就绪事件。
