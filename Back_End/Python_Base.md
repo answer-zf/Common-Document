@@ -5804,7 +5804,7 @@ _http server_
         -   poll : linux  unix
         -   epoll : linux
 
-    -   python实现 ： import  select
+    -   python实现 ： select
 
         -   rs,ws,xs=select(rlist, wlist, xlist[, timeout])
         -   功能 ：监控多个IO事件，阻塞等待IO发生
@@ -5869,7 +5869,7 @@ _http server_
                     pass
         ```
 
-    -   python实现 ： import  poll
+    -   python实现 ： poll
 
         -   位运算：
 
@@ -5898,7 +5898,7 @@ _http server_
             -   功能： 创建 poll 对象
             -   返回： poll 对象
 
-        -   p = register(fd,event)
+        -   p.register(fd,event)
             -   功能：注册关注的IO事件（对象）
             -   参数：
                 -   fd 要关注的IO
@@ -5917,3 +5917,226 @@ _http server_
             -   返回值：返回发生的IO
                 -   格式：[(fileno,event),()...]
                 -   每个元组为一个就绪IO,元组第一项是该 IO 的fileno，第二项就绪IO的就绪事件。
+
+        ```py
+            from socket import *
+            from select import *
+
+            sock_fd = socket()
+            sock_fd.bind(("0.0.0.0", 12016))
+            sock_fd.listen(3)
+
+            p = poll()
+
+            fd_map = {
+                sock_fd.fileno(): sock_fd
+            }
+
+            p.register(sock_fd, POLLIN | POLLERR)
+
+            while True:
+                events = p.poll()
+                for fd, event in events:
+                    if fd == sock_fd.fileno():
+                        conn_fd, addr = fd_map[fd].accept()
+                        print("connect from ", addr)
+                        p.register(conn_fd, POLLIN | POLLHUP)
+                        fd_map[conn_fd.fileno()] = conn_fd
+                    # elif event & POLLHUP:  # 断开事件发生, POLLIN 也会就绪
+                    #     print("client exit")
+                    #     p.unregister(fd)
+                    #     fd_map[fd].close()
+                    #     del fd_map[fd]
+                    elif event & POLLIN:
+                        data = fd_map[fd].recv(1024)
+                        if not data:
+                            p.unregister(fd)
+                            fd_map[fd].close()
+                            del fd_map[fd]
+                            continue
+                        print(data.decode())
+                        fd_map[fd].send(b"OK")
+        ```
+
+    -   python实现 ： epoll
+        -   使用方法：与 poll 基本相同
+            -   生成对象 改为 epoll()
+            -   所有事件类型改为 EPOLL 类型
+            -   p.poll()不需要改
+        -   epoll特点
+            -   epoll 效率比 select poll 要高
+            -   epoll 监控 IO 数量 比 selec poll 要多
+            -   epoll 的触发方式比 poll 要多（EPOLLET边缘触发）
+
+#### 协程技术
+
+> 在应用层 通过函数间的暂停跳转实现多任务“同时”操作,消耗较少的资源
+
+1.  定义：纤程，微线程。是为非抢占式多任务产生子程序的计算机组件。协程允许不同入口点在不同位置开始或者暂停，简单来说，协程就是可以暂停执行的函数
+2.  协程本质就是记录一个函数的上下文栈帧,协程调度切换时会将记录的上下文保存,在切换回来时进行调取,恢复原有的执行内容,以便从上一次执行位置继续执行
+    -   yield 在python中时实现原生协程的关键字
+3.  协程优缺点
+
+    -   优点
+        -   协程完成多任务占用计算资源很少
+        -   由于协程的多任务切换在应用层完成,因此切换开销少
+        -   协程为单线程程序,无需进行共享资源同步互斥处理
+    -   缺点
+        -   协程的本质是一个单线程,无法利用计算机多核资源
+
+4.  标准库协程的实现
+
+    -   python3.5以后,使用标准库 asyncio和 async/await语法来编写并发代码。 asyncio库通过对异步IO行为的支持完成 python的协成调用
+
+    -   同步是指完成事务的逻辑,先执行第一个事务,如果阻塞了,会一直等待,直到这个事务完成,再执行第二个事务,顺序执行
+    -   异步是和同步相对的,异步是指在处理调用这个事务的之后,不会等待这个事务的处理结果,直接处理第二个事务去了,通过状态、通知、回调来通知调用者处理结果。
+
+    -   虽然官方说 asencio是未来的开发方向,但是由于其生态不够丰富,大量的客户端不支持 awaitable需要自己去封装,所以在使用上存在缺陷。更多时候只能使用已有的异步库( asyncio等),功能有限
+
+    ```py
+        import asyncio
+        import time
+
+        now = lambda: time.time()
+
+        async def do_work(x):
+            print("waiting", x)
+            await asyncio.sleep(x)  # time.sleep() 不能自动阻塞调整，不够丰富
+            return "Done after %s" % x
+
+        start = now()
+
+        cor1 = do_work(1)
+        cor2 = do_work(2)
+        cor3 = do_work(3)
+
+        # 将协程对象生成一个可轮寻操作的对象列表
+        tasks = [
+            asyncio.ensure_future(cor1),
+            asyncio.ensure_future(cor2),
+            asyncio.ensure_future(cor3),
+        ]
+        # 得到 轮寻对象，调用 run 启动协程 执行
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(asyncio.wait(tasks))
+
+        print("Time : ", now() - start)
+    ```
+
+5.  协程模块
+
+    -   greenlet  （day9/greelet_test）
+
+        -   sudo  pip3 install  greenlet
+        -   函数
+            -   greenlet.greenlet(func)
+                -   功能: 创建协程对象
+                -   参数：协程函数
+            -   g.switch()
+            -   功能: 选择执行的协程
+
+        ```py
+            from greenlet import greenlet
+
+            def fun1():
+                print("start fun1")
+                gr2.switch()
+                print("end fun1")
+                gr2.switch()
+
+            def fun2():
+                print("start fun2")
+                gr1.switch()
+                print("end fun2")
+
+            gr1 = greenlet(fun1)
+            gr2 = greenlet(fun2)
+
+            gr1.switch()
+        ```
+
+    -   gevent  （day9/gevent_test）
+
+        1.  安装：  sudo  pip3 install gevent
+
+        2.  函数
+
+        -   gevent.spawn(func,argv,...)
+
+            -   功能 ： 生成协程对象（将函数封装成协程）
+            -   参数 ：
+                -   func  协程函数
+                -   argv  协程函数参数(不定参)
+            -   返回值： 协程对象
+
+        -   gevent.joinall(list,[timeout])
+
+            -   功能: 阻塞等待协程执行完毕
+            -   参数: list  协程对象列表
+
+        -   gevent.sleep(sec)
+
+            -   功能： gevent睡眠阻塞
+
+            -   gevent协程只有遇到gevent标记的阻塞行为才会自动跳转
+
+        ```py
+            import gevent
+
+            def foo(a, b):
+                print("foo running ", a, "----", b)
+                gevent.sleep(2)
+                print("Foo again")
+
+            def bar():
+                print("bar running ")
+                gevent.sleep(3)
+                print("Bar again")
+
+            f = gevent.spawn(foo, 1, "hello")
+            g = gevent.spawn(bar)
+
+            gevent.joinall([f, g])
+        ```
+
+        3.  monkey插件
+
+        -   功能：在 gevent协程中,协程只有遇到 gevent指定类型的阻塞才能跳转到其他协程,因此,我们希望将普通的lO阻塞行为转换为可以触发 gevent协程跳转的阻塞,以提高执行效率。
+        -   转换方法: gevent提供了一个脚本程序 monkey,可以修改底层解释O阻塞的行为,将很多普通阻塞转换为 gevent阻塞
+
+        -   使用： from  gevent  import  monkey
+
+        -   在模块导入前，运行响应的monkey插件函数
+            -   e.g. monkey.patch_all() monkey.patch_socket()
+
+        ```py
+            # gevent 协程 TCP
+
+            import gevent
+            from gevent import monkey
+
+            monkey.patch_all()
+            from socket import *
+
+            sock_fd = socket()
+            sock_fd.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            sock_fd.bind(("0.0.0.0", 12016))
+            sock_fd.listen(3)
+
+            def handle(conn_fd):
+                while True:
+                    data = conn_fd.recv(1024)
+                    if not data:
+                        break
+                    print(data.decode())
+                    conn_fd.send(b"OK")
+                conn_fd.close()
+
+            while True:
+                conn_fd, addr = sock_fd.accept()  # accept 阻塞才能触发协程
+                print("connect ... ", addr)
+                # handle(conn_fd)  # 循环方案
+                gevent.spawn(handle, conn_fd)  # 协程方案
+
+            sock_fd.close()
+        ```
