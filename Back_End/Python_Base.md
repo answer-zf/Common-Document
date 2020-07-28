@@ -6140,3 +6140,300 @@ _http server_
 
             sock_fd.close()
         ```
+
+#### HTTP_Server
+
+-   核心技术点：
+    -   TCP 连接
+    -   SELECT IO 多路复用
+    -   类封装，让用户传递属性 + 重写功能达到 http 实现
+
+```py
+    from select import select
+    from socket import *
+
+    class HttpServer:
+        def __init__(self, server_address, static_dir):
+            self.server_address = server_address
+            self.static_dir = static_dir
+            self.rlist = self.wlist = self.xlist = []
+            self.create_socket()
+            self.bind()
+
+        def create_socket(self):
+            self.sock_fd = socket()
+            self.sock_fd.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+
+        def bind(self):
+            self.sock_fd.bind(self.server_address)
+            self.ip = self.server_address[0]
+            self.port = self.server_address[1]
+
+        def get_html(self, conn_fd, info):
+            """
+                网页处理
+            :param conn_fd:
+            :param info:
+            :return:
+            """
+            if info == "/":
+                file_name = self.static_dir + "/index.html"
+            else:
+                file_name = self.static_dir + info
+            try:
+                fd = open(file_name)
+            except Exception:
+                response_header = "HTTP/1.1 404 Not Found\r\n"
+                response_header += "Content-Type: text/html\r\n"
+                response_header += "\r\n"
+                response_body = "<h1> Not Found </h1>"
+            else:
+                response_header = "HTTP/1.1 200 OK \r\n"
+                response_header += "Content-Type: text/html\r\n"
+                response_header += "\r\n"
+                response_body = fd.read()
+            finally:
+                response_msg = response_header + response_body
+                conn_fd.send(response_msg.encode())
+
+        def get_data(self, conn_fd, info):
+            response_header = "HTTP/1.1 200 OK\r\n"
+            response_header += "Content-Type: text/html\r\n"
+            response_header += "\r\n"
+            response_body = "<h1> Waiting ... </h1>"
+            response_msg = response_header + response_body
+            conn_fd.send(response_msg.encode())
+
+        def handle(self, conn_fd):
+            """
+                http 请求处理
+            :param conn_fd: 连接套接字
+            :return:
+            """
+            request = conn_fd.recv(4096)
+            # 防止断开
+            if not request:
+                self.rlist.remove(conn_fd)
+                conn_fd.close()
+                return
+            # 请求解析
+            request_line = request.splitlines()[0]
+            info = request_line.decode().split(" ")[1]
+            if info == "/" or info[-5:] == ".html":
+                self.get_html(conn_fd, info)
+            else:
+                self.get_data(conn_fd, info)
+
+            self.rlist.remove(conn_fd)
+            conn_fd.close()
+
+        def server_forever(self):
+            self.sock_fd.listen(5)
+            print("listen port %d" % self.port)
+
+            self.rlist.append(self.sock_fd)
+            while True:
+                rs, ws, xs = select(self.rlist, self.wlist, self.xlist)
+                for r in rs:
+                    if r == self.sock_fd:
+                        conn_fd, addr = r.accept()
+                        print("connect addr: ", addr)
+                        self.rlist.append(conn_fd)
+                    else:
+                        self.handle(r)
+
+                for w in ws:
+                    pass
+
+    if __name__ == '__main__':
+        server_address = ("0.0.0.0", 12016)  # 服务器地址
+        static_dir = "./static"  # 网页存放位置
+
+        httpd = HttpServer(server_address, static_dir)  # 生成实例化对象
+        httpd.server_forever()  # 启动服务
+```
+
+## 正则
+
+### 动机
+
+    1. 文本处理已经成为计算机常见工作之一
+    2. 对文本内容的搜索,定位,提取是逻辑比较复杂的工作
+    3. 为了快速方便的解决上述问题,产生了正则表达式技术
+
+### 简介
+
+-   定义：
+
+    -   即文本的高级匹配模式,提供搜索,替换等功能,其本质是由一系列字符和特殊符号构成的字符串,这个字符串即正则表达式
+
+-   原理：通过普通字符和有特定含义的字符,来组成字符串,用以描述一定的字符串规则，比如：重复，位置等,来表达某类特定的字符串,进而匹配。
+
+### 元字符的使用
+
+1.  普通字符
+
+    -   匹配规则: 每个普通字符匹配其对应的字符
+
+    -   In : re.findall("ab","abcda")
+    -   Out: ['ab']
+
+    -   注意：可以匹配utf-8字符
+
+2.  或 --- 元字符： `|`
+
+    -   匹配规则： 匹配 | 两侧任意正则表达式规则
+
+    -   In ： re.findall("ab|cd","abcdefgh")
+    -   Out： ['ab', 'cd']
+
+3.  匹配单个字符 --- 元字符：  `.`
+
+    -   匹配规则: 匹配除换行外任意一个字符
+
+    -   In :  re.findall("张.丰","张三丰，张四丰，张五丰")
+    -   Out:  ['张三丰', '张四丰', '张五丰']
+
+4.  匹配字符集
+
+    -   元字符 : `[字符集]`
+    -   匹配规则 ： 匹配字符集中任意一个字符
+    -   表达形式:
+
+        -   `[abc#!好]` 匹配其中任意一个
+        -   `[0-9],[a-z],[A-Z]` 匹配区间中任意一个
+        -   `[_#?0-9a-z]` 混合书写，区间写在后边
+
+    -   In : re.findall("[aeiou]","hello world")
+    -   Out: ['e', 'o', 'o']
+
+5.  匹配字符集取反
+
+    -   元字符：`[^字符集]`
+    -   匹配规则：匹配除了字符集以外的任意一个字符
+
+    -   In : re.findall("[^0-9]","27017 port")
+    -   Out: [' ', 'p', 'o', 'r', 't']
+
+6.  匹配字符串开始位置
+
+    -   元字符: `^`
+
+    -   匹配规则: 匹配字符串的开始位置
+
+    -   In : re.findall("^Jame","Jame,hello")
+    -   Out: ['Jame']
+
+7.  匹配字符串结束位置
+
+    -   元字符: `$`
+    -   匹配规则: 匹配目标字符串的结尾位置
+
+    -   In : re.findall("Jame$","hi,Jame")
+    -   Out: ['Jame']
+
+    -   使用技巧: ^ 和 $表示开头结尾位置，这两个元字符一定在正则表达式开始和结尾处。中间的部分必须匹配目标字符串的全部内容
+
+8.  匹配字符重复
+
+    -   元字符 :  `*`
+
+    -   匹配规则: 匹配前面的字符出现0次或多次
+
+    -   In : `re.findall("wo*","wooooo~~w!")`
+    -   Out: ['wooooo', 'w']
+
+
+    -   元字符 ： `+`
+
+    -   匹配规则： 匹配前面的字符出现1次或多次
+
+    -   In : `re.findall("wo+","wooooo~~w!")`
+    -   Out: ['wooooo']
+
+    -   元字符：?
+
+    -   匹配规则： 匹配前面的字符出现0次或1次
+
+    -   In : `re.findall("-?[0-9]+","age:19,score:-60,00087")`
+    -   Out: ['19', '-60', '00087']
+
+
+    -   元字符 ： {n}
+    -   匹配规则 ： 匹配前面的字符出现n次(指定重复次数)
+
+    -   In : `re.findall("1[0-9]{10}","tel: 18866889928")`
+    -   Out: ['18866889928']
+
+
+    -   元字符： {m,n}
+    -   匹配规则 ： 匹配前面的字符出现m-n次
+
+    -   In : `re.findall("[1-9][0-9]{5,10}","qq:798119")`
+    -   Out: ['798119']
+
+9.  匹配任意（非）数字字符
+
+    -   元字符 ： `\d`    `\D`
+
+    -   匹配规则:
+
+        -   `\d` 匹配任意数字字符  [0-9]
+        -   `\D` 匹配任意非数字字符 [^0-9]
+
+    -   In : `re.findall("\d{1,5}","mysql:3306,mongo:27017")`
+    -   Out: ['3306', '27017']
+
+10. 匹配任意（非）普通字符
+
+    -   元字符: `\w`   `\W`
+
+    -   匹配规则:
+
+        -   `\w` 匹配普通字符
+        -   `\W` 匹配非普通字符
+
+    -   说明: 普通字符指，数字，字母，下划线，汉字
+
+    -   In : `re.findall("\w+","server_addr=('127.0.0.1',8888)")`
+    -   Out: ['server_addr', '127', '0', '0', '1', '8888']
+
+11. 匹配任意（非）空字符
+
+    -   元字符： `\s`   `\S`
+
+    -   匹配规则： `\s` 匹配任意空字符
+         						`\S` 匹配任意非空字符
+
+    -   说明： 空字符指， 空格 `\r` `\n` `\t` `\v` `\f`
+
+    -   In : `re.findall("\w+\s+\w+","hello     world")`
+    -   Out: ['hello     world']
+
+12. 匹配字符串开头结尾位置
+
+    -   元字符 ： `\A`   `\Z`
+
+    -   匹配规则：
+
+        -   `\A` ===> `^`
+        -   `\Z` ===> `$`
+
+    -   In : `re.findall("\A\w+\Z","helloworld")`
+    -   Out: ['helloworld']
+
+    -   使用技巧:如果正则表达式中同时出现^ $,则两者之间的正则表达式需要将目标字符串内容全部匹配
+
+13. 匹配单词（非）边界位置
+
+    -   元字符：`\b`  `\B`
+
+    -   匹配规则:
+
+        -   `\b`  匹配单词边界
+        -   `\B`  匹配非单词边界
+
+    -   说明：单词边界指普通字符(`\w`代表的字符)与其他字符的交界位置
+
+    -   In : `re.findall(r"\bis\b","This is a test")`
+    -   Out: ['is']
