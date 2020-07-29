@@ -6393,7 +6393,7 @@ _http server_
         -   `\w` 匹配普通字符
         -   `\W` 匹配非普通字符
 
-    -   说明: 普通字符指，数字，字母，下划线，汉字
+    -   说明: 普通字符指，数字，字母，下划线，汉字(utf-8 字符)
 
     -   In : `re.findall("\w+","server_addr=('127.0.0.1',8888)")`
     -   Out: ['server_addr', '127', '0', '0', '1', '8888']
@@ -6402,10 +6402,12 @@ _http server_
 
     -   元字符： `\s`   `\S`
 
-    -   匹配规则： `\s` 匹配任意空字符
-         						`\S` 匹配任意非空字符
+    -   匹配规则：
 
-    -   说明： 空字符指， 空格 `\r` `\n` `\t` `\v` `\f`
+        -   `\s` 匹配任意空字符
+        -   `\S` 匹配任意非空字符
+
+    -   说明： 空字符指， 空格 `\r`(回车) `\n`(换行) `\t`(水平制表符) `\v`(垂直制表符) `\f`(换页符)
 
     -   In : `re.findall("\w+\s+\w+","hello     world")`
     -   Out: ['hello     world']
@@ -6416,8 +6418,8 @@ _http server_
 
     -   匹配规则：
 
-        -   `\A` ===> `^`
-        -   `\Z` ===> `$`
+        -   `\A` ==> `^`
+        -   `\Z` ==> `$`
 
     -   In : `re.findall("\A\w+\Z","helloworld")`
     -   Out: ['helloworld']
@@ -6437,3 +6439,248 @@ _http server_
 
     -   In : `re.findall(r"\bis\b","This is a test")`
     -   Out: ['is']
+
+* * *
+
+**总结**
+
+    -   匹配字符:  `.  [...] [^...]  \d  \D  \w  \W  \s \S`
+    -   匹配重复： `*  +  ?   {n}  {m,n}`
+    -   匹配位置:  `^   $   \A   \Z   \b   \B`
+    -   其他:  `|  ()  \`
+
+### 正则表达式的转义
+
+1.  如果使用正则表达式匹配特殊字符，需要加 `\` 表示转义。
+
+    -   特殊字符:  `.  *  + ? ^ $ [] {} () |  \`
+
+    -   In : `re.findall(r"-?\d+\.?\d*","12,-45,12.34,-12.34")`
+    -   Out: ['12', '-45', '12.34', '-12.34']
+
+2.  raw （原生）字符串的使用
+
+    -   raw字符串：在字符串前加r，表示该字符串为raw字符串，这样的字符串不会进行字符串转义处理。
+
+    -   `"\\$\\d+"` --> `\$\d+`  --> `$100`
+    -   `r"\$\d+"`
+
+### 贪婪与非贪婪
+
+-   贪婪模式： 默认情况下，匹配重复的元字符总是尽可能多的向后匹配更多内容。比如: `* + ? {m,n}`
+
+-   非贪婪模式(懒惰) ：让重复元字符尽可能少的匹配内容
+
+    -   贪婪 --> 非贪婪
+
+    -   `*` --> `*？`
+    -   `+` --> `+？`
+    -   `？`--> `？？`
+    -   `{m,n}` --> `{m,n}?`
+
+-   In : `re.findall(r"\(.+?\)","(李-白),(杜-甫),(白 居 易)")`
+-   Out: ['(李-白)', '(杜-甫)', '(白 居 易)']
+
+### 正则表达式分组
+
+1.  定义: 在正则表达式中，以()建立正则表达式内部分组，子组时正则表达式的一部分，可作为内部整体操作。
+
+2.  作用：作为内部整体，改变元字符的操作对象
+
+    -   In : `re.search(r"(ab)*","ababababababab").group()`
+    -   Out: 'ababababababab'
+    -   In : `re.search(r"(王|李)\w{1,3}","王力宏").group()`
+    -   Out: '王力宏'
+
+3.  分组
+
+    -   可以通过编程语言某些接口获取匹配内容中,子组对应的内容部分
+
+    -   In : `re.search("(ab)cd","abcdef").group(1)`
+    -   Out: 'ab'
+
+4.  捕获组
+
+    -   给正则表达式子组起一个名字，表达一定的意义，该组就是捕获组。
+
+    -   格式:  (?P<name>pattern)
+
+    -   In : `re.search(r"(?P<zf>ab)cd","abcdef").group("zf")`
+    -   Out: 'ab'
+
+5.  注意事项
+
+    -   一个正则表达式中可以有多个分组
+    -   子组可以嵌套,不要重叠/结构过于复杂
+    -   子组顺序一般由外到内，由左到右
+
+### 正则表达式匹配原则
+
+1.  正确性，能够正确的匹配出目标字符串
+2.  排他性，除了目标字符串外尽可能不匹配其他内容
+3.  全面性，尽可能考虑到目标字符串所有情况，不遗漏
+
+### Python 的 re模块
+
+![Python-Net_RE](http://images.dorc.top/blog/Python/Python-Net_RE.png)
+
+1.  regex = re.compile(pattern,flags = 0)
+
+    -   功能：生成正则表达式对象
+    -   参数：
+        -   pattern 正则表达式
+        -   flags 功能扩展标志位
+    -   返回值: 正则表达式对象
+
+2.  list = re.findall(pattern,string,flags=0)
+
+    -   功能: 通过正则匹配目标字符串
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回匹配到的内容列表，如果正则中有子组，则列表中元素为子组对应内容。
+
+3.  list = regex.findall(string,pos,endpos)
+
+    -   功能: 通过正则匹配目标字符串
+    -   参数:
+        -   string 目标字符串
+        -   pos 截取目标字符串开始位置
+        -   endpos 截取目标字符串结束位置
+    -   返回值： 返回匹配到的内容列表，如果正则中有子组，则列表中元素为子组对应内容。
+
+4.  list = re.split(pattern,string,flags=0)
+
+    -   功能: 通过正则匹配内容切割字符串
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回切割后的内容列表。
+    -   In :re.split(r"[^\w]+","hello L-zf")
+
+5.  s = re.sub(pattern,rel,string,count,flags=0)
+
+    -   功能: 使用指定字符串替换匹配到的内容
+    -   参数:
+        -   pattern  正则
+        -   rel 指定字符串
+        -   string  目标字符串
+        -   count  替换多少处，默认全部替换
+    -   返回值: 返回替换后的字符串
+
+6.  it = re.finditer(pattern,string,flags=0)
+    -   功能: 通过正则匹配目标字符串
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回匹配内容的迭代对象(迭代器)
+
+
+5.  re.fullmatch(pattern,string,flags=0)
+
+    -   功能: 通过正则匹配目标字符串全部内容
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回匹配内容的match对象
+
+6.  re.match(pattern,string,flags=0)
+
+    -   功能: 通过正则匹配目标字符串起始内容
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回匹配内容的match对象
+
+7.  re.search(pattern,string,flags=0)
+
+    -   功能: 通过正则匹配目标字符串第一处内容
+    -   参数:
+        -   pattern 正则
+        -   string 目标字符串
+    -   返回值： 返回匹配内容的match对象
+
+8.  regex对象属性：
+
+    -   flags ：  flags标志位值
+    -   pattern ： 正则表达式
+    -   groups ：  子组数量
+    -   groupindex: 捕获组与组序列号形成的字典
+
+    -   In : regex = re.compile(r"(ab)cd(?P<pig>ef)",flags=re.I)
+
+    -   In : regex.flags
+    -   Out: 34
+
+    -   In : regex.pattern
+    -   Out: '(ab)cd(?P<pig>ef)'
+
+    -   In : regex.groups
+    -   Out: 2
+
+    -   In : regex.groupindex
+    -   Out: mappingproxy({'pig': 2})
+
+
+7.  match对象属性方法
+
+    1.  属性变量
+
+        -   print(obj.pos)   #　匹配目标字符串开始位置
+        -   print(obj.endpos) # 匹配目标字符串结束位置
+        -   print(obj.re)   #　正则表达式
+        -   print(obj.string)  #　目标字符串
+        -   print(obj.lastgroup) # 最后一组的组名
+        -   print(obj.lastindex) #　最后一组序号
+
+    2.  属性方法
+
+        -   start()   获取匹配内容的开始位置
+        -   end()     获取匹配内容的结束位置
+        -   span()    获取匹配内容的起止位置
+        -   groupdict()  获取捕获组组名和对应内容的字典
+        -   groups()   获取子组对应内容
+
+        -   group()
+        -   功能: 获取match对象对应内容
+        -   参数:
+            -   默认得到全部匹配内容
+            -   组序号或者组名，则得到对应组内容
+
+8.  flags 参数扩展
+
+    1.  功能: 用于丰富正则表达式的匹配
+
+    2.  使用函数: re模块直接调用的函数
+
+        -   `re.compile(),re.findall,re.search`.....
+
+    3.  常用flags
+
+    -   A == `ASCII`  元字符只能匹配ascii码
+    -   I == `IGNORECASE`  匹配时或略字母大小写
+    -   S == `DOTALL`  使 . 可以匹配换行
+    -   M == `MULTILINE`  使 ^  $ 可匹配每一行的开头结尾位置
+    -   X == `VERBOSE`  为正则添加注释
+
+    -   同时使用多个flag： `flags = re.I | re.A`
+
+* * *
+
+**cookie:**
+
+-   import sys
+-   sys.argv : 用来从命令行获取参数，形成列表
+
+## 数据库
+
+### 数据存储阶段
+
+1.  人工管理阶段
+    -   缺点:数据无法共享不能单独保持数据存储量有限
+2.  文件管理阶段( .txt .doc .xls)
+    -   优点:数据可以长期保存可以存储大量的数据,使用简单
+    -   缺点:数据一致性差数据查找修改不方便数据冗余度可能比较大
+3.  数据库管理阶段
+    -   优点:数据组织结构化降低了冗余度提高了增刪改査的效率容易扩展方便程序调用,做自动化处理
+    -   缺点:需要使用sql或者其他特定的语句,相对比较复杂
