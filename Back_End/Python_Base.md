@@ -6684,3 +6684,325 @@ _http server_
 3.  数据库管理阶段
     -   优点:数据组织结构化降低了冗余度提高了增刪改査的效率容易扩展方便程序调用,做自动化处理
     -   缺点:需要使用sql或者其他特定的语句,相对比较复杂
+
+#### 数据库应用
+
+> 融机构、游戏网站、购物网站、论坛网站
+
+### 基础概念
+
+> 数据:能够输入到计算机中并被识别处理的信息集合
+>
+> 数据结构:研究一个数据集合中数据之间关系的
+>
+> 数据库:按照数据结构,存储管理数据的仓库。数据库是在数据库管理系统管理和控制下,在一定介质上的数据集合。
+>
+> 数据库管理系统:管理数据库的软件,用于建立和维护数据库(图数据库系统)
+>
+> 数据库系统:由数据库和数据库管理系统,开发工具等组成的集合
+
+#### 数据库分类和常见数据库
+
+-   关系型数据库和非关系型数据库
+    -   关系型:采用关系模型来组织数据结构的数据库(二维表)
+    -   非关系型:不采用关系模型组织数据结构的数据库
+-   开源数据库和非开源数据库
+    -   开源: MySQL、 SQLite、 MongoDB
+    -   非开源: Oracle、DB2、 SQL_Server
+-   常见的关系型数据库
+    -   MySQL、 Oracle、SQL_Server、DB2、SQLite
+
+##### 关系型数据库 和 MySQL
+
+1.  数据库结构(图库结构)
+
+    -   数据元素->记录->数据表->数据库
+
+2.  数据库概念解析
+
+    -   数据表:存放数据的表格(图表结构)
+    -   字段:每个列,用来表示该列数据的含义
+    -   记录:每个行,表示一组完整的数据
+
+3.  MySQL特点
+
+    -   是开源数据库,使用C和C++编写
+    -   能够工作在众多不同的平台上
+    -   提供了用于C、C++、 Python、Java、Perl、PHP、Ruby众多语言的API
+    -   存储结构优良,运行速度快
+    -   功能全面丰富
+
+4.  MySQL安装
+
+    -   Ubuntu安装 MySQL服务
+
+        -   安装服务端: sudo apt-get install mysql-server
+        -   安装客户端: sudo apt-get install mysql-client
+
+        -   配置文件: /etc/mysql
+        -   命令集: /usr/bin
+        -   数据库存储目录: /var/lib/mysql
+
+    -   Windows安装 MySQL
+        -   下载 MySQL安装包(windows)
+        -   `https://dev.mysql.com/downloads/mysql/`
+        -   `mysql-installer***5.7.***.msi`
+
+5.启动和连接 MySQL服务
+
+    -   服务端启动
+        -   查看 MySQL状态 sudo /etc/init.d/mysql status
+        -   启动服务: sudo /etc/init.d/mysql start | stop | restart
+
+    -   客户端连接
+        -   密码重置：
+            -   sudo mysql -uroot -p
+            -   用户密码
+            -   use mysql;
+            -   update mysql.user set authentication_string=PASSWORD('××××'),plugin='mysql_native_password' where user='root';
+            -   flush privileges;
+        -   命令格式
+            -   进入 mysql
+                -   mysql -h主机地址 -u用户名 -p密码
+                -   mysql -hlocalhost -uroot -p123456
+                -   本地连接可省略 -h 选项:mysql -uroot -p123456
+            -   退出 mysql：Ctrl + D / quit / exit
+
+### SQL语句
+
+-   什么是SQL
+    -   结构化查询语言( Structured Query Language),一种特殊目的的编程语言,是一种数据库查询和程序设计语言,用于存取数据以及查询、更新和管理关系数据库系统
+-   SQL语句使用特点
+    -   SQL语言基本上独立于数据库本身
+    -   各种不同的数据库对SQL语言的支持与标准存在着细微的不同
+    -   每条命令必须以;结尾
+    -   SQL命令关键字不区分字母大小写
+
+### MySQL 数据库操作
+
+1.  查看已有数据库：`show databases;`
+2.  创建库（指定字符集）：（默认 ASCII 码）
+
+    -   `create database 库名 [charset=utf8];`
+
+3.  查看数据库的 创建语句
+
+    -   `show create database 库名;`
+
+4.  查看当前使用的数据库：`select database();`
+5.  切换数据库：`use 库名;`
+6.  删除数据库：`drop database 库名;`
+
+7.  库名的命名规则
+
+    -   数字、字母、下划线,但不能使用纯数字
+    -   库名区分字母大小写
+    -   不能使用特殊字符和mysql关键字
+
+#### 数据表的管理
+
+1.  表结构设计初步
+
+    1.  确定存储内容
+    2.  确定字段构成
+    3.  确定字段类型
+
+2.  数据类型支持
+
+    -   数字类型
+
+        -   整数类型（精确值）- INTEGER, INT, SMALLINT, TINYINT, MEDIUMINT, BIGINT
+        -   定点类型（精确值）- DECIMAL
+        -   浮点类型（近似值）- FLOAT，DOUBLE
+        -   比特值类型 - BIT
+
+        ![Python-\_MySQL_Number](http://images.dorc.top/blog/Python/Python-MySQL_Number.png)
+
+        -   对于精度比较高的东西,比如 money,用 decimal类型提高精度减少误差。列的声明语法是 DECIMAL(M,D)。
+            -   M是数字的最大位数(精度)。其范围为1~65,M的默认值是10
+            -   D是小数点右侧数字的数目(标度)。其范围是0~30,但不得超过M。
+            -   比如 DECIMALI(6,2)最多存6位数字,小数点后占2位,取值范围-9999.99到9999.99。
+        -   比特值类型指0,1值表达2种情况,如真,假。
+
+    -   字符串类型:
+
+        -   CHAR 和 VARCHAR 类型
+        -   BINARY 和 VARBINARY 类型
+        -   BLOB 和 TEXT 类型
+        -   ENUM 类型和 SET 类型
+
+        ![Python-\_MySQL_String](http://images.dorc.top/blog/Python/Python-MySQL_String.png)
+
+        -   char 和 varchar
+
+            -   char:定长,效率高,一般用于固定长度的表单提交数据存储,默认1字符
+
+                -   ex. char(32) 不到32位，也开辟32位数据大小的空间，可省略括号内容，省略则是 1字符
+
+            -   varchar:不定长,效率偏低
+
+                -   ex. varchar(32) 不到32位，开辟实际存储数据大小的空间,必须写位数（括号内容）
+
+        -   text 和 blob
+
+            -   text 用来存储非二进制文本
+            -   blob 用来存储二进制字节串
+
+        -   enum 和 set
+
+            -   enum 用来存储给出的一个值
+                -   ex. enum("1","2","3") 值只能三选一
+            -   set 用来存储给出的值中一个或多个值
+                -   ex. enum("1","2","3") 值能三选多
+
+
+    -   时间日期类型：
+        -   DATE，DATETIME,TIMESTAMP类型
+        -   TIME类型
+        -   YEAR年份类型
+
+        ![Python-_MySQL_DATA_TIME](http://images.dorc.top/blog/Python/Python-MySQL_DATA_TIME.png)
+
+##### 数据库 表的基本操作
+
+1.  创建表（指定字符集）：
+
+    ```bash
+        $ create table "表名"(
+            字段名 数据类型,
+            字段名 数据类型,
+            ...
+            字段名 数据类型,
+        );
+
+        # ex.
+        create table zf()
+    ```
+
+    -   数据类型后面可以添加修饰
+
+        -   UNSIGNED 数字类型中的无符号，默认有符号
+        -   如果不想让字段为NULL可以设置字段的属性为NOT NULL,在操作数据库时如果输入该字段的数据为NULL,就会报错。
+        -   DEFAULT表示设置一个字段的默认值
+        -   AUTO_INCREMENT定义列为自增的属性,一般用于主键,数值会自动加1。
+        -   PRIMARY KEY关键字用于定义列为主键。主键的值不能重复。
+
+    -   示例：
+
+        -   `create table class1(id int primary key auto_increment, name varchar(32) not null,age int not null, sex enum("w","m"), score float default 0.0);`
+
+        -   `create table interest(id int primary key auto_increment,name varchar(32) not null, hobby set("sing","dance","draw"), course char not null, price decimal(6,2),comment text);`
+
+2.  查看数据表
+
+    -   show tables;
+
+3.  查看已有表的创建原型
+
+    -   show create table 表名;
+
+4.  查看表结构
+
+    -   desc 表名;
+
+5.  删除表
+
+    -   drop table 表名;
+
+#### 数据库 数据的基本操作
+
+_where子句_
+
+-   where子句在sql语句中扮演了重要角色,主要通过一定的运算条件进行数据的筛选(行/记录)
+
+    -   MySQL主要有以下几种运算符:
+
+        -   算术运算符
+
+            -   加（`+`） 、 减（`-`） 、 乘（`*`） 、 除（`/` or DIV） 、 取余（`%` or MOD）
+
+        -   比较运算符
+
+            -   等于（`=`）、不等于（`<>`,`!=`）、大于（`>`）、小于（`<`）、大于等于（`>=`）、小于等于（`<=`）
+            -   [NOT] BETWEEN：(不在)两值之间（ `>= min && <= max`）
+            -   [NOT] IN：(不)在集合中
+            -   `<=>` : 严格比较两个NULL值是否相等
+                -   两个操作码均为NULL时，其所得值为1；而当一个操作码为NULL时，其所得值为0
+            -   LIKE 模糊匹配
+            -   REGEXP/RLIKE 正则匹配
+            -   IS [NOT] NULL 不为空
+
+        -   逻辑运算符
+
+            -   NOT / ! 逻辑非
+            -   AND 逻辑与
+            -   OR 逻辑或
+            -   XOR 逻辑异或 => A and not B
+
+        -   位运算符
+
+            -   `按位与（&）、按位或（|）、按位异或（^）、取反（!）、左移（<<）、右移（>>）`
+
+        -   运算符优先级
+
+            ![Python-MySQL_Operator_Level](http://images.dorc.top/blog/Python/Python-MySQL_Operator_Level.png)
+
+1.  插入（insert）
+
+    -   `insert into 表名(字段1，...) values(值1),...;`
+    -   `insert into 表名 values(值1),(值2),...;`
+
+    -   `insert into class1 values (2,"cf",12,"w",39),(3,"zd",23,"m",79);`
+    -   `insert into class1 (name,age) values ("answer", 11),("dd",33);`
+    -   `insert into interest (name,hobby,course,price,comment) values ("Levi","sing,draw","A",5555.43,"这里是一个评价");`
+
+2.  查询(select)
+
+    -   `select 字段1，字段2 from 表名 [where 条件];`
+    -   `select * from 表名 [where 条件];`
+
+        -   `*` 代表所有字段
+
+        -   `select * from class1 where age % 2 = 0;`
+        -   `select * from class1 where age between 22 and 33;`
+        -   `select * from class1 where age in (11,12,22);`
+        -   `select * from class1 where sex = "m" and age > 12;`
+
+3.  更新 (update)
+
+    -   `update 表名 set 字段1=值1,... where 条件;`
+        -   `update class1 set age = 14,score=88 where id = 1;`
+        -   `update class1 set age = 12 where age = 77 limit 1;`
+
+4.  删除 (delete)
+
+    -   `delete from 表名 where 条件`
+        -   delete 后 若不加 where，表示清空所有记录
+
+#### 数据库 表字段操作
+
+-   语法：`alter table 表名 执行动作;`
+
+    -   添加字段(add)
+
+        -   `alter table 表名 add 字段 数据类型;`
+        -   `alter table 表名 add 字段 数据类型 first;`
+        -   `alter table 表名 add 字段 数据类型 after;`
+            -   `alter table interest add tel char(15) after price;`
+
+    -   删除字段(drop)
+
+        -   `alter table 表名 drop 字段;`
+
+    -   修改数据类型(modify)
+
+        -   `alter table 表名 modify 字段 数据类型;`
+            -   `alter table interest modify name varchar(64) not null;`
+
+    -   修改字段名(change)
+
+        -   `alter table 表名 change 字段 新字段 数据类型;`
+            -   `alter table class1 change sex gender enum("w","m");`
+
+    -   表重命名(rename)
+        -   `alter table 表名 rename 新表名;`
