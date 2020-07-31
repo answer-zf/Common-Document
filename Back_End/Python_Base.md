@@ -7005,5 +7005,7 @@ _where子句_
             -   `alter table class1 change sex gender enum("w","m");`
 
     -   表重命名(rename)
+
         -   `alter table 表名 rename 新表名;`
-        -   
+
+        * * *
