@@ -7006,3 +7006,4 @@ _where子句_
 
     -   表重命名(rename)
         -   `alter table 表名 rename 新表名;`
+        -   
