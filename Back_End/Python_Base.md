@@ -6863,6 +6863,34 @@ _http server_
 
         ![Python-\_MySQL_DATA_TIME](http://images.dorc.top/blog/Python/Python-MySQL_DATA_TIME.png)
 
+        -   注意：
+
+            -   datatime：默认值 NULL
+            -   timestamp：默认值 系统当前时间
+
+        -   时间日期函数
+
+            -   now() 返回服务器当前时间
+            -   curdate() 返回当前日期
+            -   curtime() 返回当前时间
+            -   date(date) 返回指定时间的日期
+            -   time(date) 返回指定时间的时间
+
+            -   `insert into textbook (bookname,pubtime,buytime,droptime) values ("ccccccf",date("1944/1/22"),now(),2000);`
+
+        -   时间操作
+
+            -   可以做 比较 和 查找
+
+            -   时间运算
+
+                -   `select * from table_name where 字段 运算符 （时间-interval 时间间隔单位）`
+
+                    -   时间间隔单位： 1day | 2hour | 1minute | 2year | 3 month
+
+                    -   `select * from textbook where pubtime > (now()-interval 80 year);`
+                    -   当前日期的 ... 内
+
 ##### 数据库 表的基本操作
 
 1.  创建表（指定字符集）：
@@ -7008,4 +7036,186 @@ _where子句_
 
         -   `alter table 表名 rename 新表名;`
 
+#### 数据库 高级查询
+
+##### 模糊查询 正则查询
+
+1.  LIKE用于在 where子句中进行模糊查询, SQL LIKE子句中使用百分号%字符来表示任
+    意字符
+
+    -   `SELECT field1, field2.. fieldN FROM table name WHERE field1 LIKE condition1`
+    -   `select * from class_1 where name LIKE "z%";`
+
+2.  mysql中对 正则表达式 的支持有限,只支持部分正则元字符
+
+    -   `SELECT field1, field2... fieldN FROM table_name WHERE field1 REGEXP condition1`
+    -   `select * from class_1 where name REGEXP "^z.*";`
+
+##### 排序
+
+-   ORDER BY子句来设定你想按哪个字段哪种方式来进行排序,再返回搜索结果。
+
+    -   使用 ORDER BY子句将查询数据排序后再返回数据
+
+    -   `SELECT field1, field2... fieldN from table_name where condition ORDER BY field1 [ASC [DESC]]`
+
+    -   默认情况ASC表示升序,DESC表示降序
+
+    -   `select * from class_1 where gender = "m" order by age desc;`
+
+##### 分页
+
+-   LIMIT子句用于限制由 SELECT语句返回的数据数量或者 UPDATE DELETE语句的操作数量
+
+-   带有LIMIT子句的 SELECT语句的基本语法如下
+
+    -   `SELECT field1, field2... fieldN FROM table name WHERE condition LIMIT [num]`
+
+##### 联合查询
+
+-   UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中,多个SELECT语句会刪除重复的数据
+
+-   UNION 操作符语法格式
+
+    -   `SELECT field1, field2... fieldN FROM table [WHERE condition]`
+    -   `UNION [ALL | DISTINCT]`
+    -   `SELECT field1, field2... fieldN FROM table [WHERE condition]`
+
+-   `select * from class_1 where age > 23 UNION ALL select * from class_1 where id < 3;`
+
+##### 多表查询
+
+-   多个数据表可以联合查询：
+
+-   `select table_name1.field1,... from table_name1 ... where condition`
+
+-   `select class_1.name,class_1.age,class_1.gender,interest.bobby from class_1,interest where class_1.name = interest.name;`
+
+#### 数据库备份
+
+1.  备份命令
+
+    -   `mysqldump -uroot -p DB_name > url`
+
+        -   `DB_name` 可取代为
+
+            -   `--all-databases` 备份所有库
+            -   `-B DB_name1 DB_name2 DB_name3` 备份多个库
+            -   `DB_name table_name1 table_name2 table_name3` 备份指定库的多张表
+
+        -   `mysqldump -uroot -p stu > ../stu.sql`
+
+2.  恢复命令
+
+    -   `mysql -uroot -p [--one-database] DB_name < url`
+
+        -   DB_name -> 目标库名
+
+    -   指定恢复某一个数据库数据
+
 * * *
+
+### Python 操作 MySQL数据库
+
+#### pymysql的使用
+
+1.  pymysql 安装 `sudo pip3 install pymysql`
+
+2.  pymysql使用流程
+
+    -   建立数据库连接：`db= pymysql. connect(参数列表)`
+
+        -   参数列表：(host,port,user,password,database,charset)
+
+        -   提交到数据库：`db.commit()`
+        -   回滚：`db.rollback()`
+        -   断开数据库连接：`db.close()`
+
+    -   创建游标对象：`cur = db.cursor()`
+
+        -   返回游标对象，用于执行SQL语句
+
+        -   写操作（insert/delete/update）：`cur.execute("insert…")`
+
+        -   读操作（select）
+
+            -   先使用游标对象调用 execute(),将数据存入游标对象中，再调用 fetch...() 方法取值
+            -   游标对象承载数据，读取一次后，第二次读取，不包含第一次的数据
+            -   获取查询结果集的第一条记录：`cur.fetchone()`
+            -   获取n条记录：`cur.fetchmany(n)`
+            -   获取所有记录：`cur.fetchall()`
+
+        -   关闭游标对象：`cur.close()`
+
+        ```py
+            import pymysql
+
+            db = pymysql.connect(host="localhost", port=3306, user="root", password="341309", database="stu", charset="utf8")
+
+            cur = db.cursor()
+
+            while True:
+                name = input("name: ")
+                # age = int(input("age: "))
+                age = input("age: ")
+                gender = input("gender: ")
+                # score = float(input("score: "))
+                score = input("score: ")
+                # sql 必须是严格的 sql 语句
+                # sql = "INSERT INTO class_1 (name,age,gender,score) VALUES ('%s',%d,'%s',%f);" % (name, age, gender, score)
+                sql = "INSERT INTO class_1 (name,age,gender,score) VALUES (%s,%s,%s,%s);"
+                try:
+                    # cur.execute(sql)
+                    cur.execute(sql, [name, age, gender, score])  # 列表中的元素全是字符串类型，执行语句，自动识别类型
+                    db.commit()
+                except Exception as e:
+                    db.rollback()
+                    print("Faild: ", e)
+
+            cur.close()
+            db.close()
+        ```
+
+#### 存储二进制文件
+
+-   `create table Images (id int primary key auto_increment,filename varchar(16),data mediumblob);`
+
+```py
+    ################### Logged MySQL ###################
+
+    import pymysql
+
+    db = pymysql.connect(host="localhost", port=3306, user="root", password="341309", database="stu", charset="utf8")
+    cur = db.cursor()
+
+    with open("./MySQL.pdf", "rb") as fd:
+        data = fd.read()
+    try:
+        sql = "INSERT INTO Images VALUES (1,'MySQL.pdf',%s);"
+        cur.execute(sql,[data])
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        print("Faile: ", e)
+
+    cur.close()
+    db.close()
+
+    ################### READ MySQL ###################
+
+    import pymysql
+
+    db = pymysql.connect(host="localhost", port=3306, user="root", password="341309", database="stu", charset="utf8")
+    cur = db.cursor()
+
+    sql = "SELECT * FROM Images WHERE filename = 'MySQL.pdf';"
+    cur.execute(sql)
+
+    file_data = cur.fetchall()[0]
+
+    with open(file_data[1], "wb") as fd:
+        fd.write(file_data[2])
+
+    cur.close()
+    db.close()
+```
