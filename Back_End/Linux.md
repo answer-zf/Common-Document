@@ -111,6 +111,7 @@
 4.  软件管理
 
     -   升级软件包：sudo apt-get update
+        -   sudo apt-get upgrade
     -   安装软件：sudo apt-get install
     -   卸载软件：sudo apt-get remove --purge
 
