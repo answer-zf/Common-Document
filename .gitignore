@@ -1,2 +1,2 @@
-.idea/
-venv/
+/__py_text/.idea/
+.gitignore
