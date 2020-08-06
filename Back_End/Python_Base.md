@@ -6667,11 +6667,6 @@ _http server_
 
 * * *
 
-**cookie:**
-
--   import sys
--   sys.argv : 用来从命令行获取参数，形成列表
-
 ## 数据库
 
 ### 数据存储阶段
@@ -7218,4 +7213,34 @@ _where子句_
 
     cur.close()
     db.close()
+```
+
+* * *
+
+## 模块
+
+_用来从命令行获取参数，形成列表_
+
+```py
+    import sys
+    args1 = sys.argv[1]
+```
+
+_隐藏输入内容_
+
+```py
+    import getpass
+    getpass.getpass()  # 返回值：输入的字符串内容
+```
+
+_加密_
+
+```py
+    import hashlib
+    # 生成加密对象，参数为“盐”
+    hash = hashlib.md5(("zf"+"the-salt").encode())
+    # 对密码进行算法加密
+    hash.update(passwd.encode())
+    # 获取加密后的字符串
+    hash.hexdigest()
 ```
