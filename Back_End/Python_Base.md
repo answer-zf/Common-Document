@@ -7244,3 +7244,13 @@ _加密_
     # 获取加密后的字符串
     hash.hexdigest()
 ```
+
+_Json_
+
+```py
+    import json
+    # dict => json
+    json.dumps(data)
+    # json => dict
+    json.loads(data)
+```
