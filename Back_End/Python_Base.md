@@ -6696,6 +6696,18 @@ _http server_
 >
 > 数据库系统:由数据库和数据库管理系统,开发工具等组成的集合
 
+#### 数据库
+
+_存储数据的仓库、逻辑概念，非真实存在_
+
+#### 数据库软件
+
+_真是的软件用于实现数据库这个概念_
+
+#### 数据仓库
+
+_数据量更加庞大，更加侧重数据分析和数据挖掘，供企业决策分析之用，主句是数据查询，修改和删除很少_
+
 #### 数据库分类和常见数据库
 
 -   关系型数据库和非关系型数据库
@@ -6747,7 +6759,9 @@ _http server_
 
     -   服务端启动
         -   查看 MySQL状态 sudo /etc/init.d/mysql status
-        -   启动服务: sudo /etc/init.d/mysql start | stop | restart
+        -   启动服务:
+            -   `sudo /etc/init.d/mysql start | stop | restart | status`
+            -   `sudo service mysql start | stop | restart | status`
 
     -   客户端连接
         -   密码重置：
@@ -7046,6 +7060,72 @@ _where子句_
     -   `SELECT field1, field2... fieldN FROM table_name WHERE field1 REGEXP condition1`
     -   `select * from class_1 where name REGEXP "^z.*";`
 
+##### 整体结构
+
+```MySQL
+    6 select ... 聚合函数 from table_name
+    1 where ...
+    2 group by ...
+    3 having ...
+    4 order by ...
+    5 limit ...;
+```
+
+##### 聚合函数
+
+-   AVG(feild_name)
+
+    -   该字段的平均值
+
+-   MAX(feild_name)
+
+    -   该字段的最大值
+
+-   MIN(feild_name)
+
+    -   该字段的最小值
+
+-   SUM(feild_name)
+
+    -   该字段所有记录的和
+
+-   COUNT(feild_name)
+
+    -   统计该字段记录的个数
+    -   字段为 NULL 不能统计
+
+##### GROUP BY
+
+-   给查询的结果进行分组
+-   先分组再聚会
+-   GROUP BY 的字段名必须出现在 SELECT 的后面
+-   SELECT 后面的字段名没有在  GROUP BY 后面出现，必须做聚合处理
+
+    ```mysql
+        select country,avg(attack) from sanguo
+        group by country;
+
+        select country,count(id) as num from sanguo
+        where gender="M"
+        group by country
+        order by num desc
+        limit 2;
+    ```
+
+##### HAVING
+
+-   对分组聚合后的结果进行进一步筛选
+-   WHERE 只能操作表中实际存在的字段
+-   HAVING 操作的是聚合函数生成的显示列
+
+    ```mysql
+        select country,avg(attack) as atk from sanguo
+        group by country
+        having atk > 105
+        order by atk desc
+        limit 2;
+    ```
+
 ##### 排序
 
 -   ORDER BY子句来设定你想按哪个字段哪种方式来进行排序,再返回搜索结果。
@@ -7066,6 +7146,19 @@ _where子句_
 
     -   `SELECT field1, field2... fieldN FROM table name WHERE condition LIMIT [num]`
 
+##### DISTINCT
+
+-   去重 SELECT DESTINCT field_name,... FROM table_name
+-   DISTINCT 和 FROM 之间所有字段都相同才会去重
+-   DISTINCT 不能对任何字段做聚合处理
+-   ex. `select count(distinct country)from sanguo;`
+
+##### 与运算符一起使用
+
+-   `select field_name1,field_name2*2 from table_name;`
+-   `update table_name set field_name=field_name*2;`
+-   ...
+
 ##### 联合查询
 
 -   UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中,多个SELECT语句会刪除重复的数据
@@ -7085,6 +7178,29 @@ _where子句_
 -   `select table_name1.field1,... from table_name1 ... where condition`
 
 -   `select class_1.name,class_1.age,class_1.gender,interest.bobby from class_1,interest where class_1.name = interest.name;`
+
+#### 索引
+
+-   定义
+
+    -   对数据库表的一列或多列的值进行排序的一种结构( Btree方式)
+
+-   优点
+
+    -   加快数据检索速度
+
+-   缺点
+
+    1.  占用物理存储空间
+    2.  当对表中数据更新时,索引需要动态维护,降低数据维护速度
+
+-   索引示例
+    1.  开启运行时间检测
+    2.  执行查询语句
+    3.  查看执行时间
+    4.  在name字段创建索引
+    5.  再执行查询语句
+    6.  查看执行时间
 
 #### 数据库备份
 
