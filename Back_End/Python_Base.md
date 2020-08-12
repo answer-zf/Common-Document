@@ -7179,7 +7179,7 @@ _where子句_
 
 -   `select class_1.name,class_1.age,class_1.gender,interest.bobby from class_1,interest where class_1.name = interest.name;`
 
-#### 索引
+#### 索引(Btree)
 
 -   定义
 
@@ -7195,12 +7195,110 @@ _where子句_
     2.  当对表中数据更新时,索引需要动态维护,降低数据维护速度
 
 -   索引示例
-    1.  开启运行时间检测
+
+    1.  开启运行时间检测 `set profiling=1;`
     2.  执行查询语句
     3.  查看执行时间
-    4.  在name字段创建索引
+    4.  在name字段创建索引 `CREATE INDEX index_name ON table_name(field_name);`
     5.  再执行查询语句
-    6.  查看执行时间
+    6.  查看执行时间 `show profiles;`
+
+-   查询时使用 `*` 代替字段名，任何时候创建的索引都会失效
+
+-   适合创建索引的字段
+    1.  经常用来查询的字段
+    2.  经常用来做 where 条件判断的字段
+    3.  经常用来做 order by 排序的字段
+
+##### 索引分类
+
+###### 普通(MUL) and 唯一(UNI)
+
+-   使用规则
+
+    1.  可设置多个字段
+    2.  普通索引:字段值无约束,KEY 标志为 MUL
+    3.  唯一索引(unique):字段值不允许重复,但可为NULL ,KEY 标志为 UNI
+
+
+-   创建普通索引 and 唯一索引
+
+    ```MySQL
+        # 在创建表时创建
+        CREATE TABLE table_name(
+        field_name DATATYPE,
+        field_name DATATYPE,
+        index(field_name),
+        index(field_name),
+        unique(field_name)
+        )
+
+        # 在已有表创建
+        CREATE [UNIQUE] INDEX index_name ON table_name(field_name);
+    ```
+
+-   查询：
+
+    ```MySQL
+        DESC table_name; -> KEY
+        SHOW INDEX FROM table_name\G;
+            # Non_Unique:1 -> index
+            # Non_Unique:0 -> unique
+    ```
+
+-   删除:`DROP INDEX index_name on table_name;`
+
+###### 主键(PRI) and 自增长(AUTO_INCREMENT)
+
+-   使用规则
+
+    1.  只能有一个主键字段
+    2.  所带约束:不允许重复,且不能为NULL
+    3.  KEY标志:PRI
+    4.  通常设置记录编号字段id,能唯一锁定一条记录
+
+-   创建普通索引 and 唯一索引
+
+    ```MySQL
+        # 在创建表时创建
+        CREATE TABLE table_name(
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        ...,
+        # primary key(id)  第二种创建方式（不常用）
+        )CHARSET=UTF8,AUTO_INCREMENT=1000;  # 自增长起始值
+
+        # 在已有表创建
+        ALTER TABLE table_name ADD PRIMARY KEY(id);
+    ```
+
+-   已有表操作自增长属性
+
+    ```MySQL
+        # 已有表添加自增长属性
+        ALTER TABLE table_name MODIFY field_name INT AUTO_INCREMENT;
+
+        # 已有表重新指定起始值
+        ALTER TABLE table_name AUTO_INCREMENT=2000;
+    ```
+
+-   删除
+
+    1.  删除自增长属性（modify）
+    2.  删除主键索引：`ALTER TABLE table_name DROP PRIMARY KEY;`
+        -   删除组件必须先删除自增长，在删除主键，否则删除失败
+
+###### 外键（foreign key）
+
+-   定义： 让当前表(从表)字段的值在另一个表(主表)的范围内选择
+
+-   语法：
+
+    ```mysql
+    foreign key〔参考字段名)
+    references 主表 (被参考字段名)
+    on delete 级联动作
+    on update 级联动作
+    ```
 
 #### 数据库备份
 
@@ -7246,15 +7344,35 @@ _where子句_
 
         -   返回游标对象，用于执行SQL语句
 
-        -   写操作（insert/delete/update）：`cur.execute("insert…")`
+        -   `cur.execute(sql,[参数])`
 
-        -   读操作（select）
+            -   一次 IO 执行一条表记录
+            -   参数：
+                -   sql:需要进行的sql语句字符串
+                -   第二个列表类型的参数是字符串中的的变量
+            -   写操作细节使用sql语句操作即可
 
-            -   先使用游标对象调用 execute(),将数据存入游标对象中，再调用 fetch...() 方法取值
-            -   游标对象承载数据，读取一次后，第二次读取，不包含第一次的数据
-            -   获取查询结果集的第一条记录：`cur.fetchone()`
-            -   获取n条记录：`cur.fetchmany(n)`
-            -   获取所有记录：`cur.fetchall()`
+            -   读操作（select）
+
+                -   先使用游标对象调用 execute(),将数据存入游标对象中，再调用 fetch...() 方法取值
+                -   游标对象承载数据，读取一次后，第二次读取，不包含第一次的数据
+                -   获取查询结果集的第一条记录：`cur.fetchone()`
+                -   获取n条记录：`cur.fetchmany(n)`
+                -   获取所有记录：`cur.fetchall()`
+
+        -   `cur.extcutemany(sql,[参数])`
+
+            -   一次 IO 执行多条表记录，高效，节省资源
+            -   列表参数：`[(v1,v2...),(v1,v2...),(v1,v2...)]`
+                ```py
+                    data_list = []
+                    for i in range(1, 1000000):
+                        name = 'Tom{}'.format(str(i))
+                        data_list.append(name)
+                    sql = "insert into text (name) values (%s);"
+                    cur.executemany(sql, data_list)
+                    db.commit()
+                ```
 
         -   关闭游标对象：`cur.close()`
 
