@@ -7300,6 +7300,35 @@ _where子句_
     on update 级联动作
     ```
 
+-   使用规则
+
+    1.  主表、从表字段数据类型要一致
+    2.  主表的被参考字段必须是 KEY 的一种，一般为主键
+
+    ```bash
+        # 在从表中创建外键
+        CREATE TABLE slave(
+        stu_id INT,
+        name VARCHAR(20),
+        money DECIMAL(10,2),
+        FOREIGN KEY (stu_id)
+        REFERENCES master(id)
+        ON DELETE CASCADE  # 同步删除
+        ON UPDATE CASCADE  # 同步更新，只更新参考、被参考字段
+        )CHARSET=UTF8;
+    ```
+
+-   级联动作
+
+    1.  cascade
+        -   数据级联删除、更新(参考字段)
+    2.  restrict(默认)
+        -   从表有相关联记录,不允许主表操作
+    3.  set null
+        -   主表删除、更新,从表相关联记录字段值为NULL
+
+-   删除外键：`ALTER TABLE table_name DROP FOREIGN KEY foreign_name;`
+
 #### 数据库备份
 
 1.  备份命令
