@@ -7352,13 +7352,51 @@ _where子句_
         group by country
     ```
 
-##### 多表查询
+##### 多表查询（效率低）
 
 -   笛卡尔积(表记录全匹配)：
+
     -   `SELECT 字段名列表 FROM 表名列表;`
+
 -   多表查询：`SELECT 字段名列表 FROM 表名列表 WHERE 条件;`
-            select province.pname,city.cname from province,city
-            where province.pid = city.cp_id;
+
+    ```MySQL
+        select province.pname,city.cname,county.coname from province,city,county
+        where province.pid=city.cp_id and county.copid=city.cid;
+    ```
+
+##### 连接查询
+
+-   内连接
+
+    ```MySQL
+        select field_name from table_name1
+        inner join table_name2 on condition
+        inner join table_name3 on condition
+
+        # ex.
+        select province.pname,city.cname,county.coname from province
+        inner join city on province.pid=city.cp_id
+        inner join county on city.cid=county.copid;
+    ```
+
+-   外连接
+    -   左连接：left
+        -   以左边为主显示查询结果
+    -   右连接：right
+        -   以右边为主显示查询结果
+
+#### 数据导入
+
+-   作用：把文件系统的内容导入到数据库中
+
+-   语法：
+    ```MySQL
+    load data infile "文件名"
+    into table 表名
+    fields terminated by "分隔符"
+    lines terminated by "\n"
+    ```
 
 #### 数据库备份
 

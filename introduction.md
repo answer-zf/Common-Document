@@ -1,7 +1,11 @@
-Design Or Code
+<img src="http://images.dorc.top/blog/blog-logo.png" alt="Logo" align="right" height="200">
 
-我不是最完美的设计，只是一个用客户的眼光审视设计的小人物，
+#### 👋 Hey! Guys
 
-我的设计不一定是最完美的，但至少如果我是顾客，我满意这个设计。
+## I'm Zhou Feng
 
-我不是一个最完美的编码大神，错过了代码的黄金年纪，我不信命，只信 我不比任何人差，错过的时间可以用别人游戏，休闲的时光弥补，python,vue,react,angular,node...未来的时光还不止。。
+A Programer of China. Aha! 😜
+
+_Taste Life, Enjoy Life!_
+
+-   Home Page: http://www.dorc.top/
