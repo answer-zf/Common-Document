@@ -7289,7 +7289,7 @@ _where子句_
 
 ###### 外键（foreign key）
 
--   定义： 让当前表(从表)字段的值在另一个表(主表)的范围内选择
+-   定义： 让当前表(从表)字段的值在另一个表(主表)的范围内选择(参照另一张表)
 
 -   语法：
 
@@ -7320,14 +7320,45 @@ _where子句_
 
 -   级联动作
 
-    1.  cascade
+    1.  CASCADE
         -   数据级联删除、更新(参考字段)
-    2.  restrict(默认)
+    2.  RESTRICT(默认)
         -   从表有相关联记录,不允许主表操作
-    3.  set null
+    3.  SET NULL
         -   主表删除、更新,从表相关联记录字段值为NULL
 
 -   删除外键：`ALTER TABLE table_name DROP FOREIGN KEY foreign_name;`
+
+-   添加外键：
+
+    ```MySQL
+        alter table slave add
+        foreign key (stu_id)references master(id)
+        on delete SET NULL
+        on update SET NULL ;
+    ```
+
+#### 高级查询
+
+##### 嵌套查询
+
+1.  定义：把内层的查询结果作为外层的查询条件。
+2.  语法：SELECT...FROM table_name WHERE condition (SELECT...);
+
+    ```MySQL
+        select name,attack from sanguo
+        where (country,attack) in (
+        select country, max(attack) from sanguo
+        group by country
+    ```
+
+##### 多表查询
+
+-   笛卡尔积(表记录全匹配)：
+    -   `SELECT 字段名列表 FROM 表名列表;`
+-   多表查询：`SELECT 字段名列表 FROM 表名列表 WHERE 条件;`
+            select province.pname,city.cname from province,city
+            where province.pid = city.cp_id;
 
 #### 数据库备份
 
@@ -7350,6 +7381,8 @@ _where子句_
         -   DB_name -> 目标库名
 
     -   指定恢复某一个数据库数据
+
+    -   进入MySQL 后，导入 `mysql> source sql文件绝对路径`
 
 * * *
 
