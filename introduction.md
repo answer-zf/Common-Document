@@ -4,8 +4,10 @@
 
 ## I'm Zhou Feng
 
-A Programer of China. Aha! 😜
+A rookie of China. Aha! 😜
 
-_Taste Life, Enjoy Life!_
+💨 _I am what i am_
 
--   Home Page: http://www.dorc.top/
+-   Key Skill😼:  Design, Front_End, Back_End
+
+-   Code: JavaScript, Python🙈

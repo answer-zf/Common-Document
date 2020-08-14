@@ -109,6 +109,10 @@
         -   作用：作用清屏
     -   sudo -i
         -   作用：长时间切换到超级用户模式
+        -   Ctrl C 可停止当bai前正在执行的命令
+        -   Ctrl D 退出root权限
+    -   chmod 666 file_name
+        -   将文件权限设置为： rw-rw-rw-
 
 4.  软件管理
 

@@ -7391,11 +7391,34 @@ _where子句_
 -   作用：把文件系统的内容导入到数据库中
 
 -   语法：
+
     ```MySQL
     load data infile "文件名"
     into table 表名
     fields terminated by "分隔符"
     lines terminated by "\n"
+    ```
+
+-   执行步骤
+
+    1.  将 表文件 放到数据库搜索路径中（Ubuntu系统独有）
+        -   `/var/lib/mysql-files/`
+    2.  在数据库中创建对应的表
+    3.  执行数据导入语句
+
+    ```MySQL
+        create table tbl(
+        rank int,
+        name varchar(20) not null,
+        age int
+        )charset=utf8;
+
+        load data infile '/var/lib/mysql-files/mysql.csv'
+        into table tbl
+        fields terminated by ','
+        lines terminated by '\n';
+
+        alter table tbl add id int(3) zerofill primary key auto_increment first;
     ```
 
 #### 数据库备份
