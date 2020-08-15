@@ -7386,42 +7386,91 @@ _where子句_
     -   右连接：right
         -   以右边为主显示查询结果
 
-#### 数据导入
+#### 数据导入/导出
+
+##### 数据导入
 
 -   作用：把文件系统的内容导入到数据库中
+
+1.  非 .sql 文件导入
+
+    -   语法：
+
+        ```MySQL
+        LOAD DATA INFILE "文件名"
+        INTO TABLE 表名
+        FIELDS TERMINATED BY "分隔符"
+        LINES TERMINATED BY "\n"
+        ```
+
+    -   执行步骤
+
+        1.  将 表文件 放到数据库搜索路径中（Ubuntu系统独有）
+            -   show variables like "secure%";
+            -   `/var/lib/mysql-files/`
+        2.  在数据库中创建对应的表
+        3.  执行数据导入语句
+
+        ```MySQL
+            create table tbl(
+            rank int,
+            name varchar(20) not null,
+            age int
+            )charset=utf8;
+
+            load data infile '/var/lib/mysql-files/mysql.csv'
+            into table tbl
+            fields terminated by ','
+            lines terminated by '\n';
+
+            alter table tbl add id int(3) zerofill primary key auto_increment first;
+        ```
+
+2.  .sql 文件导入
+
+    -   进入MySQL 后，导入 `mysql> source sql文件绝对路径`
+
+##### 数据导出
+
+-   作用：将数据库中表的记录保存到系统文件里
 
 -   语法：
 
     ```MySQL
-    load data infile "文件名"
-    into table 表名
-    fields terminated by "分隔符"
-    lines terminated by "\n"
-    ```
+        SELECT ... FROM table_name
+        INTO OUTFILE "file_name"
+        FIELDS TERMINATED BY "separator"
+        LINES TERMINATED BY "separator";
 
--   执行步骤
-
-    1.  将 表文件 放到数据库搜索路径中（Ubuntu系统独有）
-        -   `/var/lib/mysql-files/`
-    2.  在数据库中创建对应的表
-    3.  执行数据导入语句
-
-    ```MySQL
-        create table tbl(
-        rank int,
-        name varchar(20) not null,
-        age int
-        )charset=utf8;
-
-        load data infile '/var/lib/mysql-files/mysql.csv'
-        into table tbl
+        # 示例
+        select name,attack,defense from sanguo
+        into outfile '/var/lib/mysql-files/sanguo.csv'
         fields terminated by ','
         lines terminated by '\n';
-
-        alter table tbl add id int(3) zerofill primary key auto_increment first;
     ```
 
-#### 数据库备份
+-   注意
+
+    1.  导出的内容由SQL查询语句决定
+    2.  执行导出命令时路径必须指定在对应的数据库目录下
+
+##### 复制表
+
+-   语法：`CREATE TABLE 表名 SELECT 查询命令;`
+
+    ```MySQL
+        create table country.sanguo2 select * from country.sanguo;
+    ```
+
+-   注意
+
+    -   复制表的时候不会把原有表的键属性复制过来
+
+-   复制表结构
+
+    -   `CREATE TABLE 表名 SELECT 查询命令 WHERE FALSE;`
+
+##### 数据库备份
 
 1.  备份命令
 
@@ -7443,7 +7492,21 @@ _where子句_
 
     -   指定恢复某一个数据库数据
 
-    -   进入MySQL 后，导入 `mysql> source sql文件绝对路径`
+#### 锁
+
+-   目的：解决客户端并发访问的冲突问题（MySQL 自动加锁，释放锁，不需要手动操作）
+
+-   锁类型分类
+
+    -   读锁(共享锁): select 加读锁之后别人不能更改表记录，但可以进行查询
+    -   写锁互(斥锁、排他锁):加写锁之后别人不能查、不能改
+
+-   锁粒度分类
+
+    -   表级锁: myisam
+    -   行级锁：innodb
+
+#### 存储引擎
 
 * * *
 
