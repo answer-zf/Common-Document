@@ -7183,7 +7183,7 @@ _where子句_
 
 -   定义
 
-    -   对数据库表的一列或多列的值进行排序的一种结构( Btree方式)
+    -   对数据库表的一列或多列的值进行排序的一种结构(Btree方式) ✔
 
 -   优点
 
@@ -7248,7 +7248,7 @@ _where子句_
 
 -   删除:`DROP INDEX index_name on table_name;`
 
-###### 主键(PRI) and 自增长(AUTO_INCREMENT)
+###### 主键(PRI) and 自增长(AUTO_INCREMENT) ✔
 
 -   使用规则
 
@@ -7287,7 +7287,7 @@ _where子句_
     2.  删除主键索引：`ALTER TABLE table_name DROP PRIMARY KEY;`
         -   删除组件必须先删除自增长，在删除主键，否则删除失败
 
-###### 外键（foreign key）
+###### 外键（foreign key）✔
 
 -   定义： 让当前表(从表)字段的值在另一个表(主表)的范围内选择(参照另一张表)
 
@@ -7340,21 +7340,21 @@ _where子句_
 
 #### 高级查询
 
-##### 嵌套查询
+##### 嵌套查询(子查询)
 
-1.  定义：把内层的查询结果作为外层的查询条件。
+1.  定义：把内层的查询结果作为外层的查询条件。 ✔
 2.  语法：SELECT...FROM table_name WHERE condition (SELECT...);
 
     ```MySQL
         select name,attack from sanguo
         where (country,attack) in (
         select country, max(attack) from sanguo
-        group by country
+        group by country)
     ```
 
 ##### 多表查询（效率低）
 
--   笛卡尔积(表记录全匹配)：
+-   笛卡尔积(表记录全匹配)✔
 
     -   `SELECT 字段名列表 FROM 表名列表;`
 
@@ -7365,7 +7365,7 @@ _where子句_
         where province.pid=city.cp_id and county.copid=city.cid;
     ```
 
-##### 连接查询
+##### 连接查询✔
 
 -   内连接
 
@@ -7492,7 +7492,7 @@ _where子句_
 
     -   指定恢复某一个数据库数据
 
-#### 锁
+#### 锁 ✔
 
 -   目的：解决客户端并发访问的冲突问题（MySQL 自动加锁，释放锁，不需要手动操作）
 
@@ -7508,7 +7508,148 @@ _where子句_
 
 #### 存储引擎
 
+-   定义：处理表的处理器
+
+-   操作：
+
+    1.  查看所有存储引擎：`show engines;`
+    2.  查看已有表的存储引擎:`show create table table_name;`
+    3.  创建表指定：`create table table_name(...)engine=MyISAM;`
+    4.  已有表指定：`alter table table_name engine=innoDB`
+
+-   常用存储引擎特点
+
+    1.  InnoDB
+
+        -   支持行级锁
+        -   支持外键、事务、事务回滚
+        -   表字段和索引同存储在一个文件中
+            1.  表名.frm: 表结构及索引文件
+            2.  表名.ibd: 表记录
+
+    2.  MyISAM
+
+        -   支持表级锁
+        -   表字段和索引分开存储
+            1.  表名.frm: 表结构
+            2.  表名.myi: 索引文件
+            3.  表名.myd: 表记录
+
+    3.  Memory
+
+        -   表记录存储在内存中,效率高
+        -   服务或主机重启,表记录清除
+
+-   如何选择存储引擎
+
+    1.  执行查操作多的表用 MyISAM(使用InnoDB浪费资源)
+    2.  执行写操作多的表用 InnoDB
+
+#### MySQL 的用户账户管理
+
+1.  开启MySQL 远程连接
+
+    -   更改配置文件，重启服务
+
+        1.  打开 配置文件 `/etc/mysql/mysql.conf.d/mysqld.cnf`
+        2.  更改配置
+            -   注释：`bind-address = 127.0.0.1`
+            -   添加：`character_set_serve=UTF8`
+        3.  重启：`/etc/init.d/mysql restart`
+
+2.  添加授权用户
+
+    1.  用 root 用户登录 mysql
+
+    2.  授权
+
+        -   `grant 授权列表 on 库.表 to "用户名"@"%" identified by "密码" with grand option;`
+            -   授权列表：`all privileges、select、insert ...`
+            -   库.表：`*.*` 所有库所有表
+            -   % -> 任何地址
+            -   with grand option -> 继续授权
+
+    3.  刷新权限
+        -   `flush privileges;`
+
+    ```MySQL
+        grant add privileges on *.*
+        to 'zf'@'%' identified by '111111'
+        with grant option;
+    ```
+
 * * *
+
+#### 事务和事务回滚
+
+-   事务定义: 一件事从开始发生到结束的过程
+-   作用：确保数据的一致性、准确性、有效性
+-   操作：
+    1.  开启事务
+        1.  mysql> begin; # 方法1
+        2.  mysql> start transaction; # 方法2
+    2.  开始执行事务中的1条或者n条SQL命令
+    3.  终止事务
+        1.  mysql> commit; # 事务中SQL命令都执行成功,提交到数据库执行，此事务结束。
+        2.  mysql> rollback; # 事务中有SQL命令执行失败,回滚到初始状态，此事务结束。
+
+##### 事务四大特性(ACID)
+
+1.  原子性( atomicity)
+
+    -   一个事务必须视为一个不可分割的最小工作单元,整个事务中的所有操作要么全部提交成功,要么全部失败回滚,对于一个事务来说,不可能只执行其中的部分操作
+
+2.  一致性( consistency)
+
+    -   数据库总是从一个一致性的状态转换到另一个一致性的状态
+
+3.  隔离性( isolation)
+
+    -   一个事务所做的修改在最终提交以前,对其他事务是不可见的
+
+4.  持久性( durability)
+
+    -   一旦事务提交,则其所做的修改就会永久保存到数据库中。此时即使系统崩溃,修改的数据也不会丢失
+
+**注意**
+
+    -   事务只针对于表记录操作(增删改)有效,对于库和表的操作无效
+    -   事务一旦提交结束,对数据库中数据的更改是永久性的
+
+#### ER模型( Entry- Relationship)
+
+-   定义：
+
+    1.  ER模型即实体关系数据模型,用于数据库设计
+    2.  用简单的图(E-R图)反映了现实世界中存在的事物或数据以及他们之间的关系
+
+-   实体、属性、关系
+
+    1.  实体：现实世界中任何可以被认知、区分的事物
+
+        -   矩形框（表）
+
+    2.  属性：实体具有的特征
+
+        -   椭圆框（字段）
+
+    3.  关系：实体间的联系
+
+        -   菱形框（字段）
+
+        -   一对一关联（1：1）：
+
+            -   表A中的一条表记录，在表B中只能有一条表记录和他发生关联，反之也必须是（一一对应）
+
+        -   一对多关联（1：n）：
+
+            -   表A中的一条表记录，在表B中有多条表记录和他发生关联
+            -   表B中的一条表记录，在表A中只能有一条表记录和他发生关联
+
+        -   多对多关联（m：n）：
+
+            -   表A中的一条表记录，在表B中有多条表记录和他发生关联
+            -   表B中的一条表记录，在表A中有多条表记录和他发生关联
 
 ### Python 操作 MySQL数据库
 
