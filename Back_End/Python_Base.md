@@ -7637,11 +7637,22 @@ _where子句_
 
         -   菱形框（字段）
 
-        -   一对一关联（1：1）：
+        -   一对一关联（1：1）：（主外键关联 + 外键字段添加唯一索引）
 
             -   表A中的一条表记录，在表B中只能有一条表记录和他发生关联，反之也必须是（一一对应）
 
-        -   一对多关联（1：n）：
+            ```MySQL
+                create table t1(
+                t1_id int primary key auto_increment
+                );
+
+                create table t2(
+                t2_id int unique,
+                foreign key (t2_id) references t1(t1_id)
+                );
+            ```
+
+        -   一对多关联（1：n）：（主外键关联）
 
             -   表A中的一条表记录，在表B中有多条表记录和他发生关联
             -   表B中的一条表记录，在表A中只能有一条表记录和他发生关联
@@ -7650,6 +7661,70 @@ _where子句_
 
             -   表A中的一条表记录，在表B中有多条表记录和他发生关联
             -   表B中的一条表记录，在表A中有多条表记录和他发生关联
+
+            ```mysql
+                create table teacher(
+                id int primary key,
+                tname varchar(20),
+                level varchar(20)
+                )charset=utf8;
+                insert into teacher values (1,'zf','S'),(2,'cf','D');
+
+                create table course(
+                id int primary key,
+                cname varchar(20),
+                score int
+                )charset=utf8;
+                insert into course values (1,'HTML',5),(2,'Spider',5),(3,'MySQL',3);
+
+                create table middel(
+                id int primary key auto_increment,
+                t_id int,
+                c_id int,
+                foreign key (t_id)
+                references teacher(id),
+                foreign key (c_id)
+                references course(id)
+                )charset=utf8;
+                insert into middel values(1,1,1),(2,1,3),(3,2,1),(4,2,2),(5,2,3);
+
+                select teacher.tname,course.cname from course
+                inner join middel on course.id=middel.c_id
+                inner join teacher on teacher.id=middel.t_id
+                where teacher.tname='zf';
+            ```
+
+#### MySQL调优
+
+##### 存储引擎优化
+
+1.  读操作多：MyISAM
+2.  写操作多：InnoDB
+
+##### 索引优化
+
+-   在 select、where、order by 常涉及到的字段建立索引
+
+##### SQL 语句优化
+
+1.  单条查询最后添加 `LIMIT 1`,停止全表扫描
+2.  where 子句中不使用 `!=` ,否则放弃索引全表扫描
+3.  尽量避免 NULL 值判断,否则放弃索引全表扫描
+    -   select number from t1 where number is null;
+        -   优化方案：在 number 列上设置默认值0,确保 number 列无 NULL 值
+        -   select number from t1 where number=0;
+4.  尽量避免 or 连接条件,否则放弃索引全表扫描
+
+    -   select id from tl where id=10 or id=20;
+        -   优化方案：`select id from t1 where id=10 union all select id from t1 where id=20;`
+
+5.  模糊查询尽量避免使用前置 % ,否则全表扫描
+6.  尽量避免使用in和 not in,否则全表扫描
+
+    -   select id from t1 where id in (1,2,3,4);
+        -   优化方案：`select id from t1 where id between 1 and 4;`
+
+7.  尽量避免使用 `select * ...;` 用具体字段代替 `*` ，不要返回用不到的任何字段；
 
 ### Python 操作 MySQL数据库
 

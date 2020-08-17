@@ -25,10 +25,17 @@
 
 ## 后端部分
 
-### 重点是 Python MySQL语句
+### 重点de Python
 
 -   [Python（包含 MySQL语句）](/Back_End/Python_Base.md)
--   [Git 常用操作](http://images.dorc.top/blog/Memo_Pdf./Git_For_Linux.pdf)
+
+#### 备忘
+
+-   [Git 常用操作](http://images.dorc.top/blog/Memo_Pdf/GIT_LINUX.pdf)
+
+-   [MySQL 基础](http://images.dorc.top/blog/Memo_Pdf/MySQL_BASIC.pdf)
+-   [MySQL 数据类型](http://images.dorc.top/blog/Memo_Pdf/MySQL_DATATYPE.pdf)
+-   [MySQL 进阶](http://images.dorc.top/blog/Memo_Pdf/MySQL_ADVANCE.pdf)
 
 ### 小试牛刀的 Node
 
