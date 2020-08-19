@@ -7891,3 +7891,7 @@ _Json_
     # json => dict
     json.loads(data)
 ```
+
+_format 格式化字符串_
+
+`hello {first} and {second}'.format(first='df', second='another df')`

@@ -19,10 +19,5 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^$', views.homepage),
-    url(r'^year/(\d{4})$', views.pageyear),
-    url(r'^birthday/(\d{4})/(\d{1,2})/(\d{1,2})$', views.birthday),
-    url(r'^person/(?P<name>\w+)/(?P<age>\d+)', views.person),
-    url(r'^(?P<first>\d+)/add/(?P<last>\d+)', views.add)
+    url(r'^social$', views.social),
 ]
