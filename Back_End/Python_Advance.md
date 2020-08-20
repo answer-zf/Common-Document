@@ -430,3 +430,240 @@
             else:
                 return HttpResponse("other ....")
     ```
+
+#### Django框架模式
+
+-   MVC设计模式
+
+    -   MVC代表 Model-View-Controller(模型-视图-控制器)模式
+    -   作用:降低模块间的耦合度(解耦)
+    -   MVC
+        -   M 模型层(Model),主要用于对数据库层的封装
+        -   V 视图层(View),用于向用户展示结果
+        -   C 控制 (Controller),用于处理请求、获取数据、返回结果(重要)
+
+-   MTV模式
+
+    -   MTV代表 Model-Template-View(模型-模板-视图)模式。这个模式用于应用程序的分层开发
+    -   作用：降低模块间的耦合度(解耦)
+    -   MTV
+        -   M 模型层(Model),负责与数据库交互
+        -   T 模板层(Templates),负责呈现网页内容
+        -   V 视图层(View),负责接收请求 获取数据 返回结果（核心）
+
+##### 模板 Templates
+
+-   什么是模板
+
+    1.  模板是html页面,可以根据视图中传递的数据填充值相应的√页面元素。
+    2.  模板层提供了一个对设计者友好的语法用于渲染向用户呈现的信息。
+
+-   模板的配置
+
+    -   创建模板文件夹 &lt;项目名>/templates
+    -   在 settings.py 中有一个 TEMPLATES 变量
+        1.  BACKEND: 指定模板的引擎
+        2.  DIRS：指定保存模板的目录
+        3.  APP_DIRS：是否要在应用中搜素模板版本
+        4.  OPTIONS:有关模板的选项
+
+-   默认的模板文件夹 templates
+
+-   默认settings.py 文件，设置 TEMPLATES 的 DIRS 值为
+
+    -   `'DIRS':[os.path.join(BASE_DIR,'templates')],`
+
+-   模板的加载方式
+
+    1.  通过 loader 获取模板，通过 HttpResponse 进行响应
+
+        ```py
+            # views.py
+            from django.http import HttpResponse
+            from django.template import loader
+
+            def page1_template(request):
+                t = loader.get_template('page1.html')  # 加载模板
+                html = t.render()  # 渲染成字符串
+                return HttpResponse(html)
+        ```
+
+    2.  使用 render() 直接加载并响应模板
+
+        ```py
+            # views.py
+            from django.shortcuts import render
+
+            def page1_template(request):
+                return render(request, 'page1.html')
+        ```
+
+-   模板的传参
+
+    -   模板传参是指把数据形成字典,传参给模板,由模板渲染来填充数据
+
+    1.  使用 loader 加载模板
+
+        ```py
+            t = loader.get_template('page1.html')
+            html = t.render(字典数据)
+            return HttpResponse(html)
+        ```
+
+    2.  使用 render 加载模板
+
+        ```py
+            return render(request,'xx.html',字典数据)
+        ```
+
+###### Django模板语言:( The Django template language)
+
+-   模板的变量
+
+    1.  在模板中使用变量语法：`{{ 变量名 }}`
+
+        -   后端中必须将变量封裝到字典中才允许传递到模板上dic={'变量1':'值1','变量2':'值2',}
+
+-   模板的标签
+
+    1.  作用 将一些服务器端的功能嵌入到模板中
+    2.  标签语法
+
+    ```html
+        {% 标签 %}
+        ...
+        {% 结束标签 %}
+    ```
+
+    3.  if标签
+
+        ```html
+            {% if 条件表达式 %}
+            ...
+            {% elif 条件表达式 %}
+            ...
+            {% else %}
+            ...
+            {% endif %}
+        ```
+
+        -   if 条件表达式 里可以使用的运算符
+
+            -   `== != < > <= >= in not in is is not not and or`
+
+        -   在 if 标记中使用实际括号是无效的语法，如果需要它们指定优先级，则应使用嵌套的 if 标记。
+
+    4.  for 标签
+
+        1.  语法
+
+        ```html
+            {% for 变量 in 可迭代对象 %}
+            ...
+            {% endfor %}
+
+            # ex.
+            <ul>
+                {% for i in fav %}
+                    <li>{{ i }}</li>
+                {% endfor %}
+            </ul>
+        ```
+
+        2.  内置变量 forloop
+
+|          变量         | 描述                 |
+| :-----------------: | ------------------ |
+|   forloop.counter   | 循环的当前迭代(从1开始索引)    |
+|   forloop.counter0  | 循环的当前迭代(从0开始索引)    |
+|  forloop.revcounter | 循环结束的迭代次数(从1开始索引)  |
+| forloop.revcounter0 | 循环结束的迭代次数(从0开始索引)  |
+|    forloop.first    | 如果这是第一次通过循环,则为真    |
+|     forloop.last    | 如果这是最后一次循环,则为真     |
+|  forloop.parentloop | 对于嵌套循环，这是围绕当前循环的循环 |
+
+        2.  for ... empty 标签
+
+            ```html
+            /* 可迭代对象没用任何数据时 */
+            {% for 变量 in 可迭代对象 %}
+
+            {% empty %}
+
+            {% endfor %}
+            ```
+
+    4.  cycle 标签
+
+        -   循环从 cycle 列表后的参数中进行取值，每次调用进行一次更换
+        -   这个标签经常用于循环中，ex. 处理表格的隔行变色
+        -   语法：
+
+            ```html
+                {% for o in some_list %}
+                    <tr class="{% cycle 'row1' 'row2' %}">
+                        ...
+                    </tr>
+                {% endfor %}
+
+                /* ex. */
+                {% for i in fav %}
+                    <tr class="{% cycle 'row1' 'row2' %}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i }}</td>
+                    </tr>
+                {% endfor %}
+            ```
+
+    4.  注释 和 comment 标签
+
+        -   单行注释：`{# ...注释 #}` 该范围内的文字信息会被模板的渲染系统忽略
+        -   多行注释：`{% comment %} ...注释 {% endcomment %}` 之间的内容会被忽略
+            -   comment 标签不能嵌套使用
+        -   模板级的注释，html 源码不显示
+
+###### 过滤器
+
+1.  作用：
+
+    -   在变量输出前对变量的值进行处理
+    -   您可以通过使用过滤器来改变变量的显示。
+
+2.  语法:`{{ 变量1 | 过滤器1:值1 }}`
+
+    -   ex.: `{{ string | truncatechars:9 | upper }}`
+
+3.  常用过滤器
+
+| 过滤器             | 备注                                               |
+| --------------- | ------------------------------------------------ |
+| default         | 如果 value 的计算结果为 False,则使用给定的默认值。否则使用该 value      |
+| default_if_none | 如果(且仅当) value 为 None ,则使用给定的默认值。否则,使用该 value     |
+| floatformat     | 当不使用参数时,将浮点数舍入到小数点后一位,但前提是要显示小数部分。               |
+| truncatechars   | 如果字符串字符多于指定的字符数量,那么会被截断。截断的字符串将以可翻译的省略号序列("…")结尾 |
+| truncatewords   | 在一定数量的字后截断字符串                                    |
+| lower           | 将字符串转换为全部小写                                      |
+| upper           | 将字符串转换为大写形式                                      |
+
+###### escape 转译
+
+-   escape 转义字符串的HTML。具体来说,它使这些替换:
+
+-   `<`转换为`&lt;`
+-   `>`转换为`&gt;`
+-   `'`转换为`&#39;`
+-   `"`转换为`&quot;`
+-   `&`转换为`&amp;`
+
+```html
+    {% autoescape on/off %} # 启动 / 关闭 转译
+        {{ a }}
+    {% endautoescape %}
+```
+
+###### 模板的继承
+
+-   模板继承可以使父模板的內容重用，子模板直接继承父模板的全部内容并可以覆盖父模板中相应的块
+-   定义父模板中的块 blcok 标签
+    -   标识出哪些在子模块中是允许被修改的
+    -   block 标签：在父模板中定义，可以在子模板中覆盖
