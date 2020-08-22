@@ -223,16 +223,16 @@
 -   HTTP1.1新增了五种请求方法: OPTIONS,PUT, DELETE, TRACE 和 CONNECT方法。
 -   HTTP1.1请求详述:
 
-|  序号 |    方法   | 描述                                                                    |
-| :-: | :-----: | :-------------------------------------------------------------------- |
-|  1  |   GET   | 请求指定的页面信息,并返回实体主体                                                     |
-|  2  |   HEAD  | 类似于get请求,只不过返回的响应中没有具体的内容,用于获取报头                                      |
-|  3  |   POST  | 向指定资源提交数据进行处理请求(例如提交表单或者上传文件)。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或巳有资源的修改 |
-|  4  |   PUT   | 从客户端向服务器传送的数据取代指定的文档的内容。                                              |
-|  5  |  DELETE | 请求服务器删除指定的页面。                                                         |
-|  6  | CONNECT | HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。                                      |
-|  7  | OPTIONS | 允许客户端查看服务器的性能。                                                        |
-|  8  |  TRACE  | 回显服务器收到的请求,主要用于测试或诊断。                                                 |
+| 序号  |  方法   | 描述                                                                                                                                |
+| :---: | :-----: | :---------------------------------------------------------------------------------------------------------------------------------- |
+|   1   |   GET   | 请求指定的页面信息,并返回实体主体                                                                                                   |
+|   2   |  HEAD   | 类似于get请求,只不过返回的响应中没有具体的内容,用于获取报头                                                                         |
+|   3   |  POST   | 向指定资源提交数据进行处理请求(例如提交表单或者上传文件)。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或巳有资源的修改 |
+|   4   |   PUT   | 从客户端向服务器传送的数据取代指定的文档的内容。                                                                                    |
+|   5   | DELETE  | 请求服务器删除指定的页面。                                                                                                          |
+|   6   | CONNECT | HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。                                                                            |
+|   7   | OPTIONS | 允许客户端查看服务器的性能。                                                                                                        |
+|   8   |  TRACE  | 回显服务器收到的请求,主要用于测试或诊断。                                                                                           |
 
 -   HttpRequest 对象
 
@@ -276,12 +276,12 @@
 
     -   HTTP 状态码由三个十进制数字组成,第一个十进制数字定义了状态码的类型,后两个数字具有分类的作用。HTTP状态码共分为5种类型
 
-|   分类  | 描述                      |
-| :---: | ----------------------- |
-| 1\*\* | 信息,服务器收到请求,需要请求者继续执行操作  |
-| 2\*\* | 成功,操作被成功接收井处理           |
-| 3\*\* | 重定向,需要进一步的操作以完成请求       |
-| 4\*\* | 客户端错误,请求包含语法错误或无法完成请求   |
+| 分类  | 描述                                          |
+| :---: | --------------------------------------------- |
+| 1\*\* | 信息,服务器收到请求,需要请求者继续执行操作    |
+| 2\*\* | 成功,操作被成功接收井处理                     |
+| 3\*\* | 重定向,需要进一步的操作以完成请求             |
+| 4\*\* | 客户端错误,请求包含语法错误或无法完成请求     |
 | 5\*\* | 服务器错误,服务器在处理请求的过程中发生了错误 |
 
 -   Django中的响应对象 Httpresponse
@@ -333,47 +333,54 @@
 
 -   服务端接收参数
 
-    1.  判断 request.method 的值判断请求方式是否是 get 请求
+        1.  判断 request.method 的值判断请求方式是否是 get 请求
 
-        ```py
-        if request.method == 'GET':
-            去往指定的模板进行显示
-        else：
-            接收其他请求提交的数据
-        ```
+            ```py
+            if request.method == 'GET':
+                去往指定的模板进行显示
+            else：
+                接收其他请求提交的数据
+            ```
 
-    2.  获取客户端请求 GET 请求提交的数据
+        2.  获取客户端请求 GET 请求提交的数据
 
-        1.  语法
+            1.  语法
 
-            -   `request.GET['参数名']`
-            -   `request.GET.get('参数名','默认值')`
-            -   `request.GET.getlist('参数名')`
+                -   `request.GET['参数名']`
+                -   `request.GET.get('参数名','默认值')`
+                -   `request.GET.getlist('参数名')`
 
-        2.  能产生 get 请求方式的场合
+            2.  能产生 get 请求方式的场合
 
-            1.  地址栏手动输入
-            2.  `<a href='地址?参数=值&参数=值'>`
-            3.  表单的method为get
+                1.  地址栏手动输入
+                2.  `<a href='地址?参数=值&参数=值'>`
+                3.  表单的method为get
 
-                ```html
-                    <form method="get" action="/user/login">
-                        姓名：<input type="text" name="uname">
-                    </form>
-                ```
+                    ```html
+                        <form method="get" action="/user/login">
+                            姓名：<input type="text" name="uname">
+                        </form>
+                    ```
 
-        ```py
-            urlpatterns = [
-                url(r'^get_birthday$', views.get_birthday),
-            ]
+            ```py
+                urlpatterns = [
+                    url(r'^get_birthday$', views.get_birthday),
+                ]
 
-            def get_birthday(request):
-                if request.method == 'GET':
-                    year = request.GET.get('year', '0000')
-                    month = request.GET.get('month', '00')
-                    day = request.GET.get('day', '00')
-                    return HttpResponse("birthday is %s-%s-%s" % (year, month, day))
-        ```
+                def get_birthday(request):
+                    if request.method == 'GET':
+                        year = request.GET.get('year', '0000')
+                        month = request.GET.get('month', '00')
+                        day = request.GET.get('day', '00')
+                        return HttpResponse("birthday is %s-%s-%s" % (year, month, day))
+            ```
+
+        3.  用 `request.GET` 获取的是类字典，即查询字典。
+
+            -   `{"name": ['zf']}`
+            -   `request.GET['name'] / request.GET.get('name') -> 'zf'`
+
+        4. 一键多值时使用。ex. 复选框提交使用，用get提交其他选项会被最后一个值覆盖，只显示最后一个值
 
 ##### POST方式传参
 
@@ -572,15 +579,15 @@
 
         2.  内置变量 forloop
 
-|          变量         | 描述                 |
-| :-----------------: | ------------------ |
-|   forloop.counter   | 循环的当前迭代(从1开始索引)    |
-|   forloop.counter0  | 循环的当前迭代(从0开始索引)    |
-|  forloop.revcounter | 循环结束的迭代次数(从1开始索引)  |
-| forloop.revcounter0 | 循环结束的迭代次数(从0开始索引)  |
-|    forloop.first    | 如果这是第一次通过循环,则为真    |
-|     forloop.last    | 如果这是最后一次循环,则为真     |
-|  forloop.parentloop | 对于嵌套循环，这是围绕当前循环的循环 |
+|        变量         | 描述                                 |
+| :-----------------: | ------------------------------------ |
+|   forloop.counter   | 循环的当前迭代(从1开始索引)          |
+|  forloop.counter0   | 循环的当前迭代(从0开始索引)          |
+| forloop.revcounter  | 循环结束的迭代次数(从1开始索引)      |
+| forloop.revcounter0 | 循环结束的迭代次数(从0开始索引)      |
+|    forloop.first    | 如果这是第一次通过循环,则为真        |
+|    forloop.last     | 如果这是最后一次循环,则为真          |
+| forloop.parentloop  | 对于嵌套循环，这是围绕当前循环的循环 |
 
         2.  for ... empty 标签
 
@@ -629,21 +636,21 @@
     -   在变量输出前对变量的值进行处理
     -   您可以通过使用过滤器来改变变量的显示。
 
-2.  语法:`{{ 变量1 | 过滤器1:值1 }}`
+2.  语法:`{{ 变量1 | 过滤器1:参数1 }}`
 
     -   ex.: `{{ string | truncatechars:9 | upper }}`
 
 3.  常用过滤器
 
-| 过滤器             | 备注                                               |
-| --------------- | ------------------------------------------------ |
-| default         | 如果 value 的计算结果为 False,则使用给定的默认值。否则使用该 value      |
-| default_if_none | 如果(且仅当) value 为 None ,则使用给定的默认值。否则,使用该 value     |
-| floatformat     | 当不使用参数时,将浮点数舍入到小数点后一位,但前提是要显示小数部分。               |
+| 过滤器          | 备注                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| default         | 如果 value 的计算结果为 False,则使用给定的默认值。否则使用该 value                         |
+| default_if_none | 如果(且仅当) value 为 None ,则使用给定的默认值。否则,使用该 value                          |
+| floatformat     | 当不使用参数时,将浮点数舍入到小数点后一位,但前提是要显示小数部分。                         |
 | truncatechars   | 如果字符串字符多于指定的字符数量,那么会被截断。截断的字符串将以可翻译的省略号序列("…")结尾 |
-| truncatewords   | 在一定数量的字后截断字符串                                    |
-| lower           | 将字符串转换为全部小写                                      |
-| upper           | 将字符串转换为大写形式                                      |
+| truncatewords   | 在一定数量的字后截断字符串                                                                 |
+| lower           | 将字符串转换为全部小写                                                                     |
+| upper           | 将字符串转换为大写形式                                                                     |
 
 ###### escape 转译
 
@@ -665,5 +672,245 @@
 
 -   模板继承可以使父模板的內容重用，子模板直接继承父模板的全部内容并可以覆盖父模板中相应的块
 -   定义父模板中的块 blcok 标签
+
     -   标识出哪些在子模块中是允许被修改的
     -   block 标签：在父模板中定义，可以在子模板中覆盖
+
+    ```html
+        {% block block_name %}
+        定义模板块,此模板块可以被子模板重新定义的同名块覆盖
+        {% endblock block_name %}
+    ```
+
+-   重写的覆盖规则
+
+    -   不重写,将按照父模板的效果显示
+    -   重写,则按照重写效果显示
+
+-   注意: 模板继承时服务器端的动态内容无法继承
+
+-   在 child_html 中继承父模板的全部内容
+
+    ```html
+    {% extends '父模板的名称' %}
+
+    {% block block_name %}
+    这是child_html的内容
+    {% endblock block_name %}
+    ```
+
+##### url 反向解析
+
+-   url()的name 关键字参数
+
+    -   作用
+        -   根据 url 列表中的name 关键字传参给 url 唯一确定一个名字，在模板中可以通过这个名字方向推出此url 信息。
+        -   服务端变化与客户端分离降低耦合度。服务端的url 正则匹配变化，客户端无需变化。
+        -   通俗的说正则匹配的别名
+    -   语法
+        -   url(regexp,views,kwargs=None,name='别名')
+    -   通过别名实现地址的反向解析，在模板中：
+        -   `<a href="{% url '别名' %}">页面</a>`
+        -   `<a href="{% url '别名' 参数1 %}">页面</a>`
+
+#### 静态文件
+
+1.  什么是静态文件
+
+    -   不能与服务器端做动态交互的文件都是静态文件
+    -   如图片、 CSS、JS、音频、视频、html文件(部分)
+
+2.  静态文件配置
+
+    -   在 settings.py 中配置两项内容：
+
+        1.  配置静态文件的访问路径
+
+            -   STATIC_URL='/static/' (静态文件的路由的起始位置)
+            -   说明：
+
+                -   指定访问静态文件时是需要 通过 /static/xxx 或 127.0.0.1:8000/static/xxx
+                -   xxx 表示具体的静态资源位置
+
+            -   配置静态文件的存储路径
+
+                -   静态文件的服务其端的保存位置(定义静态文件的查找路径的实际位置)
+                -   STATICFILES_DIRS=(os.path.join(BASE_DIR,'static'),)
+
+        2.  通过 `{% static %}` 标签访问静态文件，`{% static %}`表示的就是静态文件访问路径
+
+            1.  加载 static {% load static %}
+            2.  使用 静态资源时 语法 `{% static '静态资源路径' %}`
+            3.  作用：动态加载
+
+            ```xml
+                {% load static %}
+                <img src="{% static './images/pk.jpg' %}" alt="">
+
+                <!-- html 渲染后源代码 -->
+                <img src="/static/images/pk.jpg" alt="">
+            ```
+
+#### Django 中的应用 app
+
+-   什么是应用
+
+    -   应用在 Django 项目中是一个独立的业务模块,可以包含自己的路由,视图...
+    -   Django 中,主文件夹是不处理用户具体请求的，主文件夹的作用是做项目的初始化以及请求的分发(分布式请求处理)具体的请求是由应用来进行处理的
+
+-    创建应用 app
+
+     -    创建应用的指令
+
+          -    `pyhton3 manage.py startapp 应用名称`
+               -    应用名称：变量名命名规则
+
+-   Django 应用的结构组成
+
+         1.  `migrations` 文件夹
+             -   保存数据迁移的中间文件
+         2。  `__init__. py`
+             -   应用子包的初始化文件
+         2.  `admin.py`
+             -   应用的后台管理配置文件
+         2.  `apps.py`
+             -   应用的属性配置文件
+         3.  `models.py`
+             -   与数据库相关的模型映射类文件
+         4.  `tests.py`
+             -   应用的单元测试文件
+         5.  `models.py`
+             -   定义视图处理函数的文件
+
+
+
+
+
+ -   配置安装应用
+     
+     -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
+
+-   应用的分布式路由
+    
+    -   使用 include 函数让某个正则匹配后关联分支到某个app。
+    -   步骤：
+        -   主模块的 urlpatterns 中添加 `url(r'^music/', include('music.urls')),`
+        -   music 模块的 urlpatterns 中添加 `url(r'^list$', views.list),`
+        -   最后在 视图函数 添加 list 方法
+
+#### 数据库和模型
+
+##### Django 下使用 mysql 数据库
+
+1.  安装 pymysql 包
+
+    -   用作 python 和 MySQL 的接口
+        -   `sudo pip3 install pymysql`
+    -   安装 MySQL 客户端(非必须)
+        -   `sudo pip3 install mysqlclient`
+
+2.  创建和配置数据库
+
+    1.  创建数据库
+
+        -   创建 `create database 数据库名 default charset utf8 collate utf8_general_ci;`
+            -   `collate utf8_general_ci` 英文不区分大小写
+
+    2.  数据库的配置
+
+        -   sqlite 数据库配置
+
+            -   ENGINE
+
+                -   指定数据库后端引擎
+                    -   'django.db.backends.mysql'
+                    -   'django.db.backends.sqlite3'
+                    -   'django.db.backends.oracle'
+                    -   'django.db.backends.postgresql'
+
+        ```py
+            # mysql -> 将 DATABASES 中的 default 做如下替换
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'mywebdb',  # 数据库名称
+                'USER': 'root',
+                'PASSWORD': '341309',
+                'HOST': '127.0.0.1',
+                'PORT': 3306,
+            }
+        ```
+
+    3.  添加 mysql 支持
+
+        -   修改项目中 `__init__.py` 加入如下内容来提供 pymysql 引擎的支持
+
+            ```py
+            import pymysql
+
+            pymysql.install_as_MySQLdb() 
+            ```
+
+3.  数据库迁移
+
+> 数据库的迁移是 Django 同步 你对模型所做更改（添加字段，删除模型等）到数据库的方式
+
+1.  生成或更新迁移文件
+
+    -   将每个应用下的 models.py 文件生成一个中间文件，并保存在 migrations 文件夹中
+    -   `python manage.py makemigrations`
+
+2.  执行迁移脚本程序
+
+    -   执行迁移程序实现迁移。将每个应用下的 migrations 目录中的中间文件同步回数据库
+    -   `python manage.py migrate`
+
+3.  查看迁移执行的SQL语句
+
+    -   将 sqlmigrate, 显示迁移的sql 语句
+    -   `python manage.py sqlmigrate`
+
+##### 模型
+
+> 模型是提供数据信息的数据库接口模型是数据的唯一的、确定的信息源。它包含你所储存数据的必要字段和行为。
+
+-   通常,毎个模型对应数据库中唯一的一张表。毎个模型的实例对应数据表中的一条记录
+
+-   模型说明:
+    -   每个模型都是一个 Python类,每个模型都是 django.db.models.Model 的子类。
+    -   每一个模型属性都代表数据库中的一个表。
+    -   通过所有这一切, Django 为你提供一个自动生成的数据库访问API
+
+###### Python数据库模型- Models
+
+1.  ORM框架
+    
+    -   ORM(Object Relationship Mapping) **对象关系映射**， 它允许你使用类和对象对数据库进行交互(使用类和对象和使用SQL一样且更方便各种操作)。
+
+    -   三大特征
+        1.  表到类的映射
+        2.  数据类型的映射
+        3.  关系映射
+
+2.  模型示例
+
+    -   添加 bookstore 的 app: `python manage.py startapp bookstore`
+    -   添加模型类并注册app
+
+#### 配置总结
+
+```python
+# settings.py
+
+# 允许 post 提交，注释 中间件中的
+# 'django.middleware.csrf.CsrfViewMiddleware',
+
+# 设置 TEMPLATES 的 DIRS 值为
+'DIRS': [os.path.join(BASE_DIR, 'templates')],
+
+# 静态文件 配置
+STATIC_URL='/static/'  # 网络路由
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 文件路径
+
+# 添加 应用
+# 在 INSTALLED_APPS 添加应用名
+```
