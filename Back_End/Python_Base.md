@@ -1544,39 +1544,39 @@ class Enemy:
 
 **算数运算符重载：(仅支持 对象在左边)**
 
-| 方法名                      | 运算符和表达式       | 说明  |
-| :----------------------- | :------------ | :-- |
-| `__add__`(self,rhs)      | self + rhs    | 加   |
-| `__sub__`(self,rhs)      | self - rhs    | 减   |
-| `__mul__`(self,rhs)      | self \* rhs   | 乘   |
-| `__truediv__`(self,rhs)  | self / rhs    | 除   |
-| `__floordiv__`(self,rhs) | self // rhs   | 地板除 |
-| `__mod__`(self,rhs)      | self % rhs    | 取余  |
-| `__pow__`(self,rhs)      | self \*\* rhs | 幂   |
+| 方法名                   | 运算符和表达式 | 说明   |
+| :----------------------- | :------------- | :----- |
+| `__add__`(self,rhs)      | self + rhs     | 加     |
+| `__sub__`(self,rhs)      | self - rhs     | 减     |
+| `__mul__`(self,rhs)      | self \* rhs    | 乘     |
+| `__truediv__`(self,rhs)  | self / rhs     | 除     |
+| `__floordiv__`(self,rhs) | self // rhs    | 地板除 |
+| `__mod__`(self,rhs)      | self % rhs     | 取余   |
+| `__pow__`(self,rhs)      | self \*\* rhs  | 幂     |
 
 **反向算数运算符重载：(仅支持 对象在右边)**
 
-| 方法名                       | 运算符和表达式       | 说明  |
-| :------------------------ | :------------ | :-- |
-| `__radd__`(self,lhs)      | lhs + self    | 加   |
-| `__rsub__`(self,lhs)      | lhs - self    | 减   |
-| `__rmul__`(self,lhs)      | lhs \* self   | 乘   |
-| `__rtruediv__`(self,lhs)  | lhs / self    | 除   |
-| `__rfloordiv__`(self,lhs) | lhs // self   | 地板除 |
-| `__rmod__`(self,lhs)      | lhs % self    | 取余  |
-| `__rpow__`(self,lhs)      | lhs \*\* self | 幂   |
+| 方法名                    | 运算符和表达式 | 说明   |
+| :------------------------ | :------------- | :----- |
+| `__radd__`(self,lhs)      | lhs + self     | 加     |
+| `__rsub__`(self,lhs)      | lhs - self     | 减     |
+| `__rmul__`(self,lhs)      | lhs \* self    | 乘     |
+| `__rtruediv__`(self,lhs)  | lhs / self     | 除     |
+| `__rfloordiv__`(self,lhs) | lhs // self    | 地板除 |
+| `__rmod__`(self,lhs)      | lhs % self     | 取余   |
+| `__rpow__`(self,lhs)      | lhs \*\* self  | 幂     |
 
 **复合运算符重载：**
 
-| 方法名                       | 运算符和表达式        | 说明  |
-| :------------------------ | :------------- | :-- |
-| `__iadd__`(self,rhs)      | self += rhs    | 加   |
-| `__isub__`(self,rhs)      | self -= rhs    | 减   |
-| `__imul__`(self,rhs)      | self \*= rhs   | 乘   |
-| `__itruediv__`(self,rhs)  | self /= rhs    | 除   |
+| 方法名                    | 运算符和表达式 | 说明   |
+| :------------------------ | :------------- | :----- |
+| `__iadd__`(self,rhs)      | self += rhs    | 加     |
+| `__isub__`(self,rhs)      | self -= rhs    | 减     |
+| `__imul__`(self,rhs)      | self \*= rhs   | 乘     |
+| `__itruediv__`(self,rhs)  | self /= rhs    | 除     |
 | `__ifloordiv__`(self,rhs) | self //= rhs   | 地板除 |
-| `__imod__`(self,rhs)      | self %= rhs    | 取余  |
-| `__ipow__`(self,rhs)      | self \*\*= rhs | 幂   |
+| `__imod__`(self,rhs)      | self %= rhs    | 取余   |
+| `__ipow__`(self,rhs)      | self \*\*= rhs | 幂     |
 
 ```py
 def __iadd__(self, other):
@@ -1586,14 +1586,14 @@ def __iadd__(self, other):
 
 **比较运算符重载：**
 
-| 方法名                | 运算符和表达式        | 说明   |
-| :----------------- | :------------- | :--- |
-| `__lt__`(self,rhs) | self &lt; rhs  | 小于   |
+| 方法名             | 运算符和表达式 | 说明     |
+| :----------------- | :------------- | :------- |
+| `__lt__`(self,rhs) | self &lt; rhs  | 小于     |
 | `__le__`(self,rhs) | self &lt;= rhs | 小于等于 |
-| `__gt__`(self,rhs) | self > rhs     | 大于   |
+| `__gt__`(self,rhs) | self > rhs     | 大于     |
 | `__ge__`(self,rhs) | self >= rhs    | 大于等于 |
-| `__eq__`(self,rhs) | self == rhs    | 等于   |
-| `__ne__`(self,rhs) | self != rhs    | 不等于  |
+| `__eq__`(self,rhs) | self == rhs    | 等于     |
+| `__ne__`(self,rhs) | self != rhs    | 不等于   |
 
 ### 类与类的关系
 
@@ -3323,7 +3323,7 @@ _外存储器：硬盘_
 
 > 在 Python 3 中引入了字节串的概念，与 str 不同，字节串以字节序列值表达数据，更方便用来处理二进制数据。在 Python3 中字节串是常见的二进制数据展现方式。
 
--   普通的ASCII编码字符串可以在前面加 b 转换为字节串。`ex. b"hello"`
+-   普通的ASCII编码字符串可以在前面加 b 转换为字节串。`eg. b"hello"`
 -   通过 字节串转换函数 将 数据类型 强转 字节串 `bytes(num_)`
     -   参数：整数(n 初始化一个长度为n的列表序列)/字符串/可迭代对象
 
@@ -6847,11 +6847,11 @@ _数据量更加庞大，更加侧重数据分析和数据挖掘，供企业决�
 
             -   char:定长,效率高,一般用于固定长度的表单提交数据存储,默认1字符
 
-                -   ex. char(32) 不到32位，也开辟32位数据大小的空间，可省略括号内容，省略则是 1字符
+                -   eg. char(32) 不到32位，也开辟32位数据大小的空间，可省略括号内容，省略则是 1字符
 
             -   varchar:不定长,效率偏低
 
-                -   ex. varchar(32) 不到32位，开辟实际存储数据大小的空间,必须写位数（括号内容）
+                -   eg. varchar(32) 不到32位，开辟实际存储数据大小的空间,必须写位数（括号内容）
 
         -   text 和 blob
 
@@ -6861,9 +6861,9 @@ _数据量更加庞大，更加侧重数据分析和数据挖掘，供企业决�
         -   enum 和 set
 
             -   enum 用来存储给出的一个值
-                -   ex. enum("1","2","3") 值只能三选一
+                -   eg. enum("1","2","3") 值只能三选一
             -   set 用来存储给出的值中一个或多个值
-                -   ex. enum("1","2","3") 值能三选多
+                -   eg. enum("1","2","3") 值能三选多
 
     -   时间日期类型：
 
@@ -6913,7 +6913,7 @@ _数据量更加庞大，更加侧重数据分析和数据挖掘，供企业决�
             字段名 数据类型,
         );
 
-        # ex.
+        # eg.
         create table zf()
     ```
 
@@ -7152,7 +7152,7 @@ _where子句_
 -   去重 SELECT DESTINCT field_name,... FROM table_name
 -   DISTINCT 和 FROM 之间所有字段都相同才会去重
 -   DISTINCT 不能对任何字段做聚合处理
--   ex. `select count(distinct country)from sanguo;`
+-   eg. `select count(distinct country)from sanguo;`
 
 ##### 与运算符一起使用
 
@@ -7375,7 +7375,7 @@ _where子句_
         inner join table_name2 on condition
         inner join table_name3 on condition
 
-        # ex.
+        # eg.
         select province.pname,city.cname,county.coname from province
         inner join city on province.pid=city.cp_id
         inner join county on city.cid=county.copid;

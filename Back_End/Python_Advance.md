@@ -380,7 +380,7 @@
             -   `{"name": ['zf']}`
             -   `request.GET['name'] / request.GET.get('name') -> 'zf'`
 
-        4. 一键多值时使用。ex. 复选框提交使用，用get提交其他选项会被最后一个值覆盖，只显示最后一个值
+        4. 一键多值时使用。eg. 复选框提交使用，用get提交其他选项会被最后一个值覆盖，只显示最后一个值
 
 ##### POST方式传参
 
@@ -569,7 +569,7 @@
             ...
             {% endfor %}
 
-            # ex.
+            # eg.
             <ul>
                 {% for i in fav %}
                     <li>{{ i }}</li>
@@ -603,7 +603,7 @@
     4.  cycle 标签
 
         -   循环从 cycle 列表后的参数中进行取值，每次调用进行一次更换
-        -   这个标签经常用于循环中，ex. 处理表格的隔行变色
+        -   这个标签经常用于循环中，eg. 处理表格的隔行变色
         -   语法：
 
             ```html
@@ -613,7 +613,7 @@
                     </tr>
                 {% endfor %}
 
-                /* ex. */
+                /* eg. */
                 {% for i in fav %}
                     <tr class="{% cycle 'row1' 'row2' %}">
                         <td>{{ forloop.counter }}</td>
@@ -638,7 +638,7 @@
 
 2.  语法:`{{ 变量1 | 过滤器1:参数1 }}`
 
-    -   ex.: `{{ string | truncatechars:9 | upper }}`
+    -   eg.: `{{ string | truncatechars:9 | upper }}`
 
 3.  常用过滤器
 
@@ -771,24 +771,31 @@
              -   保存数据迁移的中间文件
          2。  `__init__. py`
              -   应用子包的初始化文件
-         2.  `admin.py`
+         3.  `admin.py`
              -   应用的后台管理配置文件
-         2.  `apps.py`
+         4.  `apps.py`
              -   应用的属性配置文件
-         3.  `models.py`
-             -   与数据库相关的模型映射类文件
-         4.  `tests.py`
-             -   应用的单元测试文件
          5.  `models.py`
+             -   与数据库相关的模型映射类文件
+         6.  `tests.py`
+             -   应用的单元测试文件
+         7.  `models.py`
              -   定义视图处理函数的文件
-
-
-
-
+         8.  `urls.py`
+             -   自己创建 分支路由
+         9.  `templates/`
+             -   自己创建 应用模板
 
  -   配置安装应用
      
      -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
+///////////////
+        ```python
+            INSTALLED_APPS = [
+                ...
+                'bookstore',
+            ]
+        ```
 
 -   应用的分布式路由
     
@@ -895,6 +902,201 @@
 
     -   添加 bookstore 的 app: `python manage.py startapp bookstore`
     -   添加模型类并注册app
+        
+        -   在 主模块的 settings.py 的 INSTALLED_APPS 中注册
+
+            ```python
+                INSTALLED_APPS = [
+                    ...
+                    'bookstore',
+                ]
+            ```
+
+    -   添加数据表
+        
+        -   在 bookstore app 中的 models.py 创建模型类
+
+            ```python
+                from django.db import models
+
+                class book(models.Model):
+                    title = models.CharField("书名", max_length=50)
+            ```
+
+    -   重新生成迁移文件：`python manage.py makemigrations`
+    -   更新数据库：`python manage.py migrate`
+
+_ps. 报错处理步骤_
+
+_1.  删除 migrations 文件夹中 所有的 `000?_XXXX.py`_
+_2.  删除数据表，并重新创建_
+_3.  重新生成 migrations 文件夹中 所有的 `000?_XXXX.py`，并更新数据库_
+
+3.  编写模型类
+
+    -   模型类需继承自 `django.db.models.Model`
+
+        1.  Models的语法规范
+
+            ```python
+                from django.db import models
+
+                class ClassName(models.Model):
+                    name = models.FIELD_TYPE(FIELD_OPTIONS)
+            ```
+
+        2.   CLASSNAME
+
+            -   实例类名，表名组成的一部分，首字母大写
+            -   默认表名组成规范：
+                -   应用名称_classname
+            -   NAME
+                -  属性名，映射回数据库就是字段名
+             -  FIELD_TYPE
+                -   字段类型，映射到表中的字段类型
+
+        3.  FIELD_TYPE(字段类型)
+
+            1.  BooleanField()
+
+                -   数据库类型：tinyint(1)
+                -   编程语言中：使用 True / False 来表示值
+                -   在数据库中：使用 1 / 0 表示具体的值
+
+            2.  CharField()
+
+                -   数据库类型：varchar
+                -   注意：
+                    -   必须要指定 max_length 参数值
+
+            3.  DateField()
+
+                -   数据库类型：date
+                -   作用：表示日期
+                -   编程语言中：使用 字符串 来表示具体值
+                -   参数：
+                    -   DateField.auto_now: 每次保存对象时，自动设置该字段为当前时间（取值: True / False）
+                    -   DateField.auto_now_add: 当对象第一次被创建时自动设置当前时间（取值: True / False）
+                    -   DateField.default: 设置当前时间（取值： 字符串时间格式：'2019-6-1'）
+                    -   以上三个参数只能多选一
+
+            4.  DateTimeField()
+
+                -   数据库类型：datetime(6)
+                -   作用：表示日期和时间
+                -   auto_now_add=True
+
+            5.  DecimalField()
+   
+                -   数据库类型：decimal(x,y)
+                -   编程语言中：使用 小数 表示该列的值
+                -   在数据库中：使用 小数 
+                -   参数：
+                    -   DecimalField.max_digits:总位数 / 长度，包括小数点后的位数。该值必须大于等于 decimal_places。
+                    -   DecimalField.decimal_places: 小数点后的数字长度
+                -   eg.
+                    -   `price = models.DecimalField("定价", max_digits=7, decimal_places=2, null=True)`
+
+            6.  FloatField()
+
+                -   数据库类型：double
+                -   编程语言中和数据库中都使用 小数 表示值
+
+            7.  EmailField()
+
+                -   数据库类型：varchar
+                -   编程语言中和数据库中都使用 字符串 表示值
+                -   包含邮箱的正则验证，正则匹配则存入
+
+            8.  IntegerField()
+
+                -   数据库类型：int
+                -   编程语言中和数据库中都使用 整数 表示值
+
+            9.  URLField()
+
+                -   数据库类型：varchar(200)
+                -   编程语言中和数据库中都使用 字符串 表示值
+
+            10. ImageField()
+
+                -   数据库类型：varchar(100)
+                -   作用：在数据库中保存图片的路径
+                -   编程语言中和数据库中都使用 字符串 表示值
+
+                ```python
+                    import PIL
+
+                    image=models.ImageField(
+                        upload_to="static/images"  # 指定 图片的上传路径在后台上传时会自动将文件保存在指定的目录下
+                    )
+                ```
+
+            11. TextField():
+
+                -   数据库类型：longtext
+                -   作用：不定长的字符数据
+
+        4.  FIELD_OPTIONS(字段选项)
+
+            -   指定创建的列的额外信息
+            -   允许出现多个字段选项，多个选项之间使用 ， 隔开
+            
+            1.  primary_key
+                
+                -   如果设置为True，表示该列为主键
+
+            2.  null
+                
+                -   如果设置为True，表示该列值允许为空
+
+            3.  default
+                
+                -   设置所在列的默认值
+
+            4.  db_index
+                
+                -   如果设置为True，表示为该列 添加索引
+
+            5.  unique
+                
+                -   如果设置为True，表示为该列 的值唯一
+
+            6.  db_column
+                
+                -   指明列的名称，如果不指定的话则采用属性名作为列名。
+                -   eg.`title = models.CharField("书名", max_length=50, db_column='bookname')`
+
+_[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fields.html)_
+
+###### 数据库的操作 CRUD
+
+-   CRUD 是指在做计算处理时的增加（Create）、读取查询（Read）、更新（Update）和删除（Delete）
+-   数据库的增删改查可以通过模型的管理器实现
+    -   MyModel.objects 是管理器对象
+
+**创建数据对象**
+
+    -   Django 使用一种直观的方式把数据库表中的数据表示出Python对象
+    -   创建数据中每一条记录就是创建一个数据对象
+        1.  Entry.objects.create(属性=值，属性=值)
+            -   返回值：返回创建好的实例对象，实体对象 
+        2.  创建Entry对象，并调用save()进行保存
+
+            ```python
+                obj = Entry(属性=值,属性=值)
+                obj.属性=值
+                obj.save()
+                # 无返回值，保存成功后，obj会被重新赋值
+            ```
+
+        ```python
+            Book.objects.create(title='C++'...)
+            book = Book()
+            book.title = 'C++'
+            book.save()
+        ```
+
 
 #### 配置总结
 
