@@ -789,7 +789,7 @@
  -   配置安装应用
      
      -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
-///////////////
+
         ```python
             INSTALLED_APPS = [
                 ...
@@ -849,7 +849,7 @@
 
     3.  添加 mysql 支持
 
-        -   修改项目中 `__init__.py` 加入如下内容来提供 pymysql 引擎的支持
+        -   修改项目主模块中 `__init__.py` 加入如下内容来提供 pymysql 引擎的支持
 
             ```py
             import pymysql
@@ -1072,30 +1072,146 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 ###### 数据库的操作 CRUD
 
 -   CRUD 是指在做计算处理时的增加（Create）、读取查询（Read）、更新（Update）和删除（Delete）
+
+**管理器对象**
+-   每一个继承自 models.Model 的模型类，都会有一个 objects 对象被同样继承下来。这个对象即管理器对象。
 -   数据库的增删改查可以通过模型的管理器实现
-    -   MyModel.objects 是管理器对象
+    ```python
+    class Entry(models.Model):
+        ...
+    Entry.objects.create(...) 是管理器对象
+    ```
 
 **创建数据对象**
 
-    -   Django 使用一种直观的方式把数据库表中的数据表示出Python对象
-    -   创建数据中每一条记录就是创建一个数据对象
-        1.  Entry.objects.create(属性=值，属性=值)
-            -   返回值：返回创建好的实例对象，实体对象 
-        2.  创建Entry对象，并调用save()进行保存
-
-            ```python
-                obj = Entry(属性=值,属性=值)
-                obj.属性=值
-                obj.save()
-                # 无返回值，保存成功后，obj会被重新赋值
-            ```
+-   Django 使用一种直观的方式把数据库表中的数据表示出Python对象
+-   创建数据中每一条记录就是创建一个数据对象
+    1.  Entry.objects.create(属性=值，属性=值)
+        -   成功：返回创建好的实体对象（一条记录）
+        -   失败：抛出异常
+    2.  创建Entry 实体对象，并调用save()进行保存
 
         ```python
-            Book.objects.create(title='C++'...)
-            book = Book()
-            book.title = 'C++'
-            book.save()
+            obj = Entry(属性=值,属性=值)
+            obj.属性=值
+            obj.save()
+            # 无返回值，保存成功后，obj会被重新赋值
         ```
+
+    ```python
+        from . import models    
+        # 1.
+        try:
+            models.Book.objects.create(title='C++'...)
+            print(abook)
+        except:
+            print('error..)
+        
+        # 2.
+        try:
+            abook=models.Book(title='C++'...)
+            abook.save()
+            print(abook)
+        except:
+            print('error..)
+
+        # 3.
+        book = models.Book()
+        book.title = 'C++'
+        book.save()
+    ```
+
+**Django Shell 的使用**
+
+-   在Django提供了一个交互式的操作项目叫 Django Shell它能够在交互模式用项目工程的代码执行相应的操作
+-   利用 Django Shell可以代替编写 view 的代码来进行直接操作
+-   在 Django Shell下只能进行简单的操作,不能运行远程调式
+
+**查询数据**
+
+-   数据库的查询需要使用管理器对象进行
+-   通过 Entry.objects 管理器方法调用查询接口
+
+|   方法    |                说明                |
+| :-------: | :--------------------------------: |
+|   all()   | 查询全部记录，返回QuerySet查询对象 |
+|   get()   |       查询符合条件的单一记录       |
+| filter()  |       查询符合条件的多条记录       |
+| exclude() |     查询符合条件之外的全部记录     |
+
+1.  all() 
+
+    -   用法： Entry.objects.all()
+    -   作用：查询 Entry 实体中所有的数据
+        -   等同于 `select * from table_name`
+    -   返回值：QuerySet容器对象，内部存放Entry 实例
+
+    ```python
+    from books import models
+
+    books=models.Book.objects.all()
+    for book in books:
+        print('书名'，book.title,'出版社'， book.pub)
+    ```
+
+2.  在模型类中定义 `def __str__(self)` 方法可以将自定义默认的字符串
+
+    ```python
+        class Book(models.Model):
+            title=...
+            def __str__(self):
+                return "书名：%s，出版社：%s，定价：%s"%(self.title,self.pub,self.price)
+    ```
+
+3.  查询返回指定列（字典表示）
+
+    -   方法：values('列1','列2')
+    -   用法：Entry.objects.values(...)
+    -   作用：
+        -   查询部分列的数据并返回
+        -   `select 列1，列2 from xxx;`
+    -   返回值：QuerySet
+        -   返回查询结果容器，容器内存字典，每个字典代表一条数据
+        -   格式：{'列1':值1，'列2',值2}
+
+    ```python
+    from books import models
+
+    books=models.Book.objects.values('title','pub')
+    for book in books:
+        print('书名'，book['title'],'出版社'， book['pub'])
+    ```
+
+4.  查询返回指定列（元组表示）
+
+    -   方法：values_list('列1','列2')
+    -   用法：Entry.objects.values_list(...)
+    -   作用：
+        -   返回元组形式的查询结果
+    -   返回值：QuerySet
+        -   返回查询结果容器，容器内存元组，每个字典代表一条数据
+        -   会将查询出来的数据封装到元组中再封装到查询集合 QuerySet中
+
+5.  排序查询
+
+    -   方法: order_by
+    -   用法: Entry.objects.order_by(...)
+    -   作用：
+        -   与all()方法不同,它会用 SQL 语句的 ORDER BY 子句对查询结果进行根据某个字段选择性的进行排序
+    -   返回值：QuerySet
+        -   返回查询结果容器，容器内存元组，每个字典代表一条数据
+        -   会将查询出来的数据封装到元组中再封装到查询集合 QuerySet中
+    -   默认是按升序排序，降序排序需要在列前加 `-` 表示
+
+    ```python
+        books=models.Book.objects.order_by('-price')
+    ```
+
+6.  条件查询多条记录
+
+    -   方法: filter(条件)
+    -   用法: Entry.objects.filter(属性1=值1，属性2=值2)
+
 
 
 #### 配置总结
