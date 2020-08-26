@@ -27,3 +27,5 @@
 [乌茶语](http://www.wuchayu.com/)
 
 [靓谷粥铺](http://www.liangguzhoupu.com/)
+
+[辣圈食汇](https://www.laquansc.com/)

@@ -438,7 +438,7 @@
                 return HttpResponse("other ....")
     ```
 
-#### Django框架模式
+#### Django 框架模式
 
 -   MVC设计模式
 
@@ -932,6 +932,9 @@ _1.  删除 migrations 文件夹中 所有的 `000?_XXXX.py`_
 _2.  删除数据表，并重新创建_
 _3.  重新生成 migrations 文件夹中 所有的 `000?_XXXX.py`，并更新数据库_
 
+_mysql 8.+ 以上的报错_
+_pip install cryptography_
+
 3.  编写模型类
 
     -   模型类需继承自 `django.db.models.Model`
@@ -1127,7 +1130,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   利用 Django Shell可以代替编写 view 的代码来进行直接操作
 -   在 Django Shell下只能进行简单的操作,不能运行远程调式
 
-**查询数据**
+**数据查询及数据操作**
 
 -   数据库的查询需要使用管理器对象进行
 -   通过 Entry.objects 管理器方法调用查询接口
@@ -1211,8 +1214,200 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
     -   方法: filter(条件)
     -   用法: Entry.objects.filter(属性1=值1，属性2=值2)
+    -   返回值: QuerySet 容器对象，内部存放 Entry 实例
+    -   说明:
+        -   当多个属性在一起时为 与关系(and)，即 `Books.objects.filter(price=20,pub="清华")`
 
+    -   字段查找
 
+        -   字段查询是指如何指定 SQL 语句中 WHERE 子句的内容。
+        -   字段查询需要通过 Queryset 的 filter, exclude() and get()的关键字参数指定。
+        -   非等值条件的构建,需要使用字段查询
+        -   eg.:`books = models.Book.objects.filter(price__gt=50)`
+
+    -   查询谓词
+
+        -   每一个查询谓词是一个 独立的查询功能
+
+        -   语法：xxx.filter(属性__查询谓词=值)
+
+        1.  __exact:等值匹配（默认）
+            -   Author.objects.filter(id__exact = 1)
+        2.  __gt:大于指定值
+            -   Author.objects.filter(id__gt = 1)
+            -   __gte:大于等于
+        3.  __lt:小于指定值
+            -   Author.objects.filter(id__lt = 5)
+            -   __lte:小于等于
+
+        4.  __contians:包含指定值
+            -   Author.objects.filter(name__contains = '老')
+        5.  __startswith:以指定内容开头
+            -   Author.objects.filter(name__startswith='周')
+        6.  __endswith:以指定内容结尾
+            -   Author.objects.filter(name__endswith='王')
+
+        7.  __in：查找数据在指定范围内
+            -   Author.objects.filter(age__in=[30,40,50,60,70])
+        8.  __range:查找数据在指定区间内的(包含起始和结尾)
+            -   Author.objects.filter(age__range=(30,70))
+
+        [查询谓词参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/querysets.html)     
+
+    -   不等的条件筛选
+
+        -   作用：返回不包含此 条件 的记录的数据集
+        -   exclude(条件)
+        -   eg.: `models.Book.objects.exclude(price__gt=50)`
+
+7.  查询指定的一条数据
+
+    -   作用:返回满足条件的唯一一条数据
+    -   返回值：Entry**对象**
+    -   说明
+        -   该方法只能返回一条数据
+        -   查询结果多余一条数据則抛出 Model.MultipleObjectsReturned 异常
+        -   查询结果如果没有数据则抛出 Model.DoesNotExist 异常
+
+8.  修改数据记录
+
+    1.  修改单个实体的某些字段值
+        
+        1.  查
+            -   通过 get() 得到要修收的实体对象
+        2.  改
+            -   通过 对象.属性 的方式修改数据
+        3.  保存
+            -   通过对象 save() 保存数据
+
+        ```python
+        book=models.Book.objects.get(id=5)
+        book.price=120
+        book.save()
+        ```
+
+    2.  通过 QuerySet 批量修改 对应的全部字段
+        
+        -   直接调用 Queryset的 update(属性=值)实现批量修改
+
+        ```python
+        books=models.Book.objects.filter(market_price=9999)
+        books.update(market_price=58)
+        ```
+
+9.  删除记录
+
+    -   删除记录是指删除数据库中的一条或多条记录
+    -   删除单个 Entry 对象 或 删除一个查询结果集 (Query Set) 中的全部对象都是调用 delete()方法
+
+    1.  删除单个对象
+        
+        -   步骤
+            
+            1.  查找查询结果对应的一个数据对象
+            2.  调用这个数据对象的 delete() 方法实现删除
+
+    2.  删除查询结果集
+    
+    -   步骤
+        
+        1.  查找查询结果集中满足条件的全部 Queryset查询集合对象
+        2.  调用查询集合对象的 delete() 方法实现删除
+
+        ```python
+            book=models.Book.objects.get(id=9)
+            book.delete()
+
+            books=models.Book.objects.filter(id__gte=9)
+            books.delete()
+        ```
+
+10. 聚合查询
+
+    -   聚合查询是指对一个数据表中的一个字段的数据进行部分或全部进行统计查询,查 bookstore_book数据表中的全部书的平均价格,查询所有书的总个数等都要使用聚合查询
+
+    1.  不带分组聚合
+        
+        -   不带分组的聚合查询是指导将全部数据进行集中统计查询
+        -   聚合函数
+            -   定义模块：`django.db.models`
+            -   用法：`from django.db.models import *`
+            -   聚合函数：
+                -   `Sum \ Avg \ Count \ Max \ Min`
+            -   语法：
+                -   `Entry.objects.aggregate(结果变量名=聚会函数('列'))
+            -   返回结果
+                -   由 结果变量名 和值组成的字典
+                -   格式为：
+                    -   `{"结果变量名"：值}`
+
+            ```python
+            from django.db.models import *
+
+            models.Book.objects.aggregate(myAvg=Avg("price"))
+            ```
+
+    2.  分组聚合
+
+        -   分组聚合是指通过计算查询结果中每一个对象所关联的对象集合,从而得出总计值(也可以是平均值或总和),即查询集的每一项生成聚合。
+        -   语法 `QuerySet.annotate(结果变量名=聚合函数('列'))`
+        -   用法步骤
+
+        1.  通过先用查询结果 Entry.objects.values 查找查询要 分组聚合的列
+
+            -   `pub_set=models.Book.objects.values('pub')`
+
+        2.  通过返回结果的 QuerySet.annotate 方法分组聚合得到分组结果
+            
+            -   QuerySet.annotate(名=聚合函数('列'))
+            -   返回 QuerySet 结果集，内部存储结果的字典
+            
+            -   `pub_set.annotate(myCount=Count('pub'))`
+
+11. F对象
+
+    -   一个F对象代表数据库中某个字段的信息
+    -   F对象通常是对数据库中的字段值在不加载到内存中的情况下直接在数据库服务器端进行操作
+    -   F对象在数据包 django.db.models 中。使用时需要通过如下语句进行加载
+        -   `from django.db.models import F`
+
+    1.  作用:
+        -   在执行过程中获取某列的值并对其直接进行操作
+        -   当同时对数据库中两个字段的值进行比较获取 Queryset 数据集时,可以便用F对象
+
+    2.  说明:
+        -   一个F()对象代表了一个model的字段的值
+    
+    3.  使用它就可以直接参考 model 的 field 和执行数据库操作而不用再把它们( model field)查询出来放到 python内存中。
+
+        ```python
+        from django.db.models import F
+        # 每个字段统一 升，降 值
+        models.Book.objects.all().update(market_price=F('market_price')+10)
+
+        # 两个字段进行比较
+        books = models.Book.objects.filter(market_price__gt=F('price'))
+        ```
+
+12. Q对象
+
+    -   当在获取查询结果集 使用复杂的逻辑或丨、逻辑非~ 等操作时可以借助于Q对象进行操作
+
+    1.  作用:
+        -   在条件中用来实现除 and(&) 以外的 or(|) 或 not(-) 操作
+
+    2.  运算符：
+
+        -   `&` 与操作
+        -   `|` 或操作
+        -   `~` 非操作
+
+    ```python
+
+        models.Book.objects.filter(Q(pub="清华")|Q(price__gt=50))
+
+        models.Book.objects.filter(Q(pub='清华') | Q(price__gt=50), id__lt=3)  # , 表示与关系
+    ```
 
 #### 配置总结
 
