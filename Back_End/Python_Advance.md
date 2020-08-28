@@ -1716,10 +1716,40 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
 -   HttpResponse 关于 COOKIE 的方法
     -   添加、修改 COOKIE
-        -   `HttpResponse.set_cookie(key,value='',max_age=None,expires=None)`
+        -   `HttpResponse.set_cookie(key,value='...',max_age=None,expires=None)`
             -   key: cookie 的名字
             -   value: cookie 的值
-            -   
+            -   max_age: cookie存活的时间，单位为秒
+            -   expires: 具体过期时间
+    -   删除 COOKIE
+        -   HttpResponse.delete_cookie(key)
+        -   删除指定 key 的 Cookie。如果 key 不存在则什么也不发生
+-   Django 中的 COOKIE
+    -   使用 响应对象 HttpResponse 将 cookie 保存进客户端
+        -   方法1
+            ```python
+                from django.http import HttpResponse
+                resp = HttpResponse()
+                resp.set_cookie('cookie_name', 'cookie.value', time)
+            ``` 
+        -   方法2
+            ```python
+                from django.shortcuts import render
+                resp=render(request, 'xxx.html',locals())
+                resp.set_cookie('cookie_name', 'cookie.value', time)
+            ``` 
+        -   方法3
+            ```python
+                from django.shortcuts import redirect
+                resp=redirect('/')
+                resp.set_cookie('cookie_name', 'cookie.value', time)
+            ```
+    
+    -   获取 cookie
+        -   通过 request.COOKIES 绑定的字典（dict）获取客户端的 COOKIES 数据
+            -   `value = request.COOKIES.get('cookie_name', 'no values!')`
+         
+
 
 ### 配置总结
 
