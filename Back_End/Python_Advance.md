@@ -45,7 +45,7 @@
 
 4.  卸载：`pip3 uninstall Django`
 
-### Django 框架开发
+### Django 框架简介
 
 1.  创建项目:`$ django-admin startproject project_name`
 
@@ -129,7 +129,7 @@
                 -   Linux 下文件位置
                     -   `/usr/lib/python3/dist-packages/django/conf/global_settings.py`
 
-#### 路由
+### 路由
 
 > url 即统一资源定位符 Uniform Resource Locator
 
@@ -138,7 +138,7 @@
 
 > 路由：不看域名部分
 
-##### 在Django 中的 URL 路由配置
+#### 在Django 中的 URL 路由配置
 
 1.  settings.py 中 的 ROOT_URLCONF
 
@@ -214,9 +214,9 @@
             return HttpResponse("this is %s, %s" % (name, age))
     ```
 
-#### 请求和响应
+### 请求和响应
 
-##### HTTP请求
+#### HTTP请求
 
 -   根据HTTP标准,HTTP请求可以使用多种请求方法。
 -   HTTP1.0 定义了三种请求方法: GET , POST 和 HEAD 方法(最常用)
@@ -259,7 +259,7 @@
             -   request.META['REMOTE_ADDR']&#x3A;客户端IP地址
             -   request.META['HTTP_REFERER']&#x3A;请求源地址
 
-##### HTTP响应
+#### HTTP响应
 
 -   当浏览者访问一个网页时,浏览者的浏览器会向网页所在服务器发出请求。当浏览器接收并显示网页前,此网页所在的服多器会返回一个包含HTTP状态码的信息头(server header)用以响应浏览器的请求.
 
@@ -321,11 +321,11 @@
     -   HttpresponseForbidden    请求被禁止，状态码 403
     -   HttpresponseServerError   服务器错误，状态码 500
 
-##### GET方式传参
+#### GET方式传参
 
 >  GET请求方式中可以通过查询字符串( Query String)将数据传递给服务器
 
-###### GET方式传参参数获取(查询字符串 Query String)
+##### GET方式传参参数获取(查询字符串 Query String)
 
 -   客户端传递参数给服务器端
 
@@ -382,7 +382,7 @@
 
         4. 一键多值时使用。eg. 复选框提交使用，用get提交其他选项会被最后一个值覆盖，只显示最后一个值
 
-##### POST方式传参
+#### POST方式传参
 
 -   客户端通过表单等POST 请求将数据传递给服务器端
 
@@ -458,7 +458,7 @@
         -   T 模板层(Templates),负责呈现网页内容
         -   V 视图层(View),负责接收请求 获取数据 返回结果（核心）
 
-##### 模板 Templates
+#### 模板 Templates
 
 -   什么是模板
 
@@ -523,7 +523,7 @@
             return render(request,'xx.html',字典数据)
         ```
 
-###### Django模板语言:( The Django template language)
+##### Django模板语言:( The Django template language)
 
 -   模板的变量
 
@@ -629,7 +629,7 @@
             -   comment 标签不能嵌套使用
         -   模板级的注释，html 源码不显示
 
-###### 过滤器
+##### 过滤器
 
 1.  作用：
 
@@ -652,7 +652,7 @@
 | lower           | 将字符串转换为全部小写                                                                     |
 | upper           | 将字符串转换为大写形式                                                                     |
 
-###### escape 转译
+##### escape 转译
 
 -   escape 转义字符串的HTML。具体来说,它使这些替换:
 
@@ -668,7 +668,7 @@
     {% endautoescape %}
 ```
 
-###### 模板的继承
+##### 模板的继承
 
 -   模板继承可以使父模板的內容重用，子模板直接继承父模板的全部内容并可以覆盖父模板中相应的块
 -   定义父模板中的块 blcok 标签
@@ -713,7 +713,7 @@
         -   `<a href="{% url '别名' %}">页面</a>`
         -   `<a href="{% url '别名' 参数1 %}">页面</a>`
 
-#### 静态文件
+### 静态文件
 
 1.  什么是静态文件
 
@@ -751,7 +751,7 @@
                 <img src="/static/images/pk.jpg" alt="">
             ```
 
-#### Django 中的应用 app
+### Django 中的应用 app
 
 -   什么是应用
 
@@ -805,9 +805,9 @@
         -   music 模块的 urlpatterns 中添加 `url(r'^list$', views.list),`
         -   最后在 视图函数 添加 list 方法
 
-#### 数据库和模型
+### 数据库和模型
 
-##### Django 下使用 mysql 数据库
+#### Django 下使用 mysql 数据库
 
 1.  安装 pymysql 包
 
@@ -871,12 +871,16 @@
     -   执行迁移程序实现迁移。将每个应用下的 migrations 目录中的中间文件同步回数据库
     -   `python manage.py migrate`
 
+    -   回滚
+        -   `python manage.py migrate books 000x`
+            -   books -> 应用app 名字
+
 3.  查看迁移执行的SQL语句
 
     -   将 sqlmigrate, 显示迁移的sql 语句
     -   `python manage.py sqlmigrate`
 
-##### 模型
+#### 模型
 
 > 模型是提供数据信息的数据库接口模型是数据的唯一的、确定的信息源。它包含你所储存数据的必要字段和行为。
 
@@ -887,7 +891,7 @@
     -   每一个模型属性都代表数据库中的一个表。
     -   通过所有这一切, Django 为你提供一个自动生成的数据库访问API
 
-###### Python数据库模型- Models
+### Python数据库模型 ORM
 
 1.  ORM框架
     
@@ -1072,7 +1076,7 @@ _pip install cryptography_
 
 _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fields.html)_
 
-###### 数据库的操作 CRUD
+#### 数据库的操作 CRUD
 
 -   CRUD 是指在做计算处理时的增加（Create）、读取查询（Read）、更新（Update）和删除（Delete）
 
@@ -1402,6 +1406,13 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   `|` 或操作
         -   `~` 非操作
 
+    3.  语法
+
+        -   `Q(条件1) | Q(条件2)` 
+        -   `Q(条件1) & Q(条件2)` 
+        -   `Q(条件1) &~ Q(条件2)`  # 条件1成立且条件2不成立 
+
+
     ```python
 
         models.Book.objects.filter(Q(pub="清华")|Q(price__gt=50))
@@ -1409,7 +1420,308 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         models.Book.objects.filter(Q(pub='清华') | Q(price__gt=50), id__lt=3)  # , 表示与关系
     ```
 
-#### 配置总结
+#### 原生的数据库操作方法
+
+1.  使用 Entry.objects.raw() 进行教据库查询操作查询
+
+    -   在 django 中,可以使用模型管理器的 raw 方法来执行 select 语句进行数据查
+
+    -   语法：`Entry.objects.raw('sql语句')`
+    -   返回值：QuerySet
+
+2.  使用 django中 的游标 cursor对数据库进行增删改操作
+
+    -   在 DJango 中可以使用如 UPDATE, DELETE 等 SQL 语句对数据库进行操作。
+    -   在 DJango 中使用上述非查询语句必须使用游标进行操作
+
+    -   使用步骤：
+        1.  Django 中的 cursor 游标定义在django.db.connection 中，使用前需要导入。
+            -   `from django.db impot connection`
+        2.  用创建 cursor 类的构造函数创建 cursor 对象,再使用 cursor 对象为保证在出现异常时能释放 cursor 资源通常使用 with 语句进行创建操作
+
+        ```python
+        from django.db import connection
+
+        with connection.cursor() as cur:
+             cur.execute('update books_book set pub="xxx" where id=8;')
+        ```
+
+#### admin后台数据库管理
+
+-   django 提供了比较完善的后台管理数据库的接口,可供开发过程中调用和測试使用
+-   django 会搜集所有已注册的模型类,为这些模型类提拱数据管理界面,供开发者使用
+
+    -   使用步骤：
+        
+        1.  创建后台管理帐号
+            -   `python manage.py createsuperuser`  
+        2.  据提示完成注册
+        3.  登录：127.0.0.1/admin
+
+##### 自定义后台管理数据表
+
+-   若要自己定义的模型类也能在 /admin 后台管理界中显示和管理,需要将自己的类注册到后台管理界面
+-   添加自己定义模型类的后台管理数据表的,需要用 admin.site.register(自定义模型类) 方法进行注册
+
+-   配置步骤如下:
+
+    1.  在应用app中的 admin.py 中导入注册要管理的模型 models 类
+        -   `from . import models`
+    2.  调用 admin.site.register 方法进行注册
+        -   `from django.contrib import admin`
+        -   `admin.site.register(自定义模型类) 
+
+        ```python
+            from django.contrib import admin
+            from . import models
+
+            admin.site.register(models.Book)
+        ```
+    
+    3.  修改后台 Models的展现形式
+        
+        -   后台 Models 默认的展现形式 xxx object
+        -   可以在 models.py 中重写 `__str__` 展现形式
+    
+        ```python
+            class Book(models.Model):
+                ...
+                def __str__(self):
+                    return "id：%d，书名：%s，出版社：%s，" % (self.id, self.title, self.pub)
+        ```
+
+-   模型管理器类
+    -   作用:
+        -   用后台管理界面添加便于操作的新功能
+    -   说明:
+        -   后台模型管理器类须继承自 `django.contrib.admin` 里的 ModelAdmin 类
+    -   使用
+        1.  在 应用app/admin.py 中定义 模型管理器类
+        2.  注册管理器与模型类关联
+
+    -   模型管理器类 ModelAdmin 中实现的高级管理功能
+        
+        1.   list_display 去控制哪些字段会显示在 Admin 的修改列表页面中。
+        2.   list_display_links 可以控制 list_display 中的字段是否应该链接到对象的“更改"页面
+        3.   list_filter 设置激活 Admin 修改列表页面右侧栏中的过滤器
+        4.   search_fields 设置启用 Admin 更改列表页面上的搜索框。
+        5.   list_editable 设置为模型上的字段名称列表,这将允许在更改列表页面上进行编辑。
+
+        [参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/contrib/admin/index.html)
+
+        ```python
+            class BookManager(admin.ModelAdmin):
+                list_display = ['id', 'title', 'pub', 'price', 'market_price']
+                list_display_links = ['id', 'title']
+                list_filter = ['pub']
+                search_fields = ['title', 'pub']
+                list_editable = ['market_price']
+
+            admin.site.register(models.Book, BookManager)
+        ``` 
+
+#### 数据库表管理
+
+1.  修改模型类字段的显示名字
+    
+    -   模型类各字段的第一个参数为 verbose_name,此字段显示的名字会在后台数据库管理页面显示
+
+2.  通过 Meta 内嵌类, 定义模型类的属性及展现形式
+    
+    -   模型类可以通过定义内部类 class Meta 来重新定义当前模型类和数据表的一些属性信息
+
+    ```python
+        class Book(models.Model):
+            ...
+            class Meta:
+                1.  db_table = '数据表名'
+                    -   该模型所用的数据表的名称。(设置完成后需要立马更新同步数据库)
+                2.  verbose_name = '单数名'
+                    -   给模型对象的一个易于理解的名称(单数),用于显示在 /admin 管理界面中
+                2.  verbose_name_plural = '复数名'
+                    -   该对象复数形式的名称(复数),用于显示在 /admin 管理界面中
+    ```
+
+#### 数据表关联关系映射 Relationship Map
+
+-   在关系型数据库中,通常不会把所有数据都放在同一张表中,这样做会额外占用内存空间,
+-   在关系列数据库中通常用表关联来解决数据库。
+-   常用的表关联方式有三种
+
+    1.  一对一映射: 一对一是表示现实事物间存在的一对一的对应关系。
+        
+        -   语法
+            
+            ```python
+                class A(models.Model):
+                    ...
+                
+                class B(models.Model):
+                    属性=models.OneToOneField(A)
+            ``` 
+    
+        -   示例
+
+            ```python
+            class Author(models.Model):
+                ...
+                name=models.CharField('姓名',max_length=50)
+
+            class Wife(models.Model):
+                name=models.CharField('姓名',max_length=50)
+                author=models.OneToOneField(Author)
+            ```
+
+        -   查询
+            -   在 Wife 对象中,通过 author 属性找到对应的 author 对象
+            -   在 Author 对象中,通过 wife 属性找到对应的 wife 对象
+
+        -   创建一对一数据记录
+
+            ```python
+                from . import models
+                author1=models.Author.objects.create(name='teacherW',age=22)
+                wife1=models.Wife.objects.create(name='wifeW',author=author1) # 一对一可以没有对应的数据，可略
+            ``` 
+
+        -   一对一数据的相互获取
+            1.  正向查询
+                -   直接通过关联属性（引用属性）查询即可  
+                    -   `wife = models.Wife.objects.get(name='fff')`
+                    -   `wife.name / wife.author.name`
+            2.  反向查询
+                -   通过反向引用属性查询
+                -   反向引用属性为 实例时象.引用类名(小写) 如作家的反向引用为 作家对象.wife
+                -   当反向引用不存在时,则会触发异常
+
+                ```python
+                authorW=models.Author.objects.get(name='teacherW')
+                try:
+                    print(authorW.name,authorW.wife.name)
+                except:
+                    print(authorW.name)
+                ```
+ 
+        -   作用
+            -   主要是解决常用数据不常用数据的存储问题，把经常加载的一个数据放在主表中,不常用数据放在另一个副表中,这样在访问主表数据时不需要加载副表中的数据以提高访问速度提高效率和节省内存空间，如经常把书的内容和书名建成两张表,因为在网站上经常访问书名等信息,但不需要得到书的内容。
+
+    2.  一对多映射
+        -   一对多是表示现实事物间存在的一对多的对应关系
+        -   创建：
+            -   当一个A类对象可以关联多个B类对象时
+
+                ```python
+                class A(models.Model):
+                    ...
+
+                class B(models.Model):
+                    属性 = models.ForeignKey(多对一中的'一'的模型类, ...)
+                ```
+
+                -   外键类 ForeignKey
+                    -   构造函数
+                        -   `ForeignKey(to,on_delete,**options)`
+                    -   常用参数
+                        -   on_delete
+                            1.  models.CASCADE 级联删除。Django模拟SQL约束 ON DELETE CASCADE 的行为，并删除包含 ForeignKey 的对象
+                            2.  models.PROTECT 抛出 ProtectedError 以阻止被引用的对象删除
+                            3.  SET_NULL 设置 ForeignKey null,只用 null 是 True 才有可能
+                            4.  SET_DEFAULT 将 ForeignKey 设置为其默认值，必须设置 ForeignKey 的默认值
+                            5.  ...
+                        -   **options 可以是常用的字段选项
+                            -   eg.: null,unique ...
+
+                    ```python
+                    # 创建
+                    class Publisher(models.Model):
+                        name = models.CharField('名称', max_length=50, unique=True)
+
+                    class Book(models.Model):
+                        ...
+                        publisher = models.ForeignKey(Publisher, null=True)
+                    
+                    # 添加
+                    pub1=models.Publisher.objects.get(name='清华')
+                    models.Book.objects.create(title='React',publisher=pub1)
+                    ```
+        -   查询
+            -   多对一 查询
+                ```python
+                abook = models.Book.objects.get(id=8)
+                abook.publisher.name
+                ``` 
+            -   一对多 查询
+                ```python
+                pub1=models.Publisher.objects.get(name='清华')
+                
+                # 方法1
+                books=pub1.book_set.all() # 关联类名_set：反向引用属性 -> 管理器对象 QuerySet
+
+                # 方法2
+                books = models.Book.objects.filter(publisher=pub1)
+
+                for i in books:
+                    print(i.name)
+                ``` 
+
+    3.  多对多映射：多对多表达对象之间多对多复杂关系
+        -   创建
+            ```python
+            class Publisher(models.Model):
+                ...
+
+            class Book(models.Model):
+                ...
+                authors = models.ManyToManyField(Author)
+            ```
+        -   通过 Author 查询对应的所有的 Books
+            ```python
+                author.book_set.all()
+                author.book_set.filter()
+                author.book_set.create(...)  # 创建新书并关联作者 author
+                author.book_set.add(book)  # 添加已有的书为当前作者 author
+                author.book_set.clear()  # 删除 author 所有关联的书 （所有）
+                author.book_set.remove()  # 删除 该author 所关联的书（一本）
+
+                # 示例：
+                lz = models.Author.objects.get(name='lz')
+                wj = models.Author.objects.get(name='wj')
+                angular = models.Book.objects.get(title='angular')
+                lz.book_set.add(angular)
+                wj.book_set.add(angular)
+
+                wj.book_set.create(title='vue3')
+
+                # 一对多 查询
+                books = wj.book_set.all()
+                books = models.Book.objects.filter(authors=wj)
+                for book in books:
+                    print(book.title)
+
+                # 多对一 查询
+                books = models.Book.objects.all()
+                for book in books:
+                    print(book.title,end=':')
+                    for author in book.authors.all(): # book.authors -> 查询结果集
+                        print(author.name,end='/')
+                    print()
+            ```   
+
+### Cookies / Session
+
+>  cookies 是保存在客户端测览器上的存储空间,通常用来记录浏览器端自己的信息和当前连接的确认信息
+
+-   cookies 在浏览器上是以 键-值对 的形式进行存储的,键和值都是以 ASCII 字符串的形存储(不能是中文字符串)
+-   在 Django 服务器端来 设置 浏览器的 COOKIE 必须通过 HttpResponse 对象来完成
+
+-   HttpResponse 关于 COOKIE 的方法
+    -   添加、修改 COOKIE
+        -   `HttpResponse.set_cookie(key,value='',max_age=None,expires=None)`
+            -   key: cookie 的名字
+            -   value: cookie 的值
+            -   
+
+### 配置总结
 
 ```python
 # settings.py

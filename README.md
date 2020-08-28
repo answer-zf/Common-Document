@@ -53,8 +53,6 @@
 
 -   [AJAX](/Back_End/AJAX.md)
 -   [Apache](/Back_End/Apache-PHP-MySQL_Configuration.md)
--   [COOKIE](/Back_End/COOKIE.md)
--   [HTTP](/Back_End/HTTP.md)
 
 ## 常用软件的配置
 
