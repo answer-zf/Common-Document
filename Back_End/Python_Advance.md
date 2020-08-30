@@ -787,7 +787,7 @@
              -   自己创建 应用模板
 
  -   配置安装应用
-     
+
      -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
 
         ```python
@@ -1709,6 +1709,8 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
 ### Cookies / Session
 
+#### Cookies
+
 >  cookies 是保存在客户端测览器上的存储空间,通常用来记录浏览器端自己的信息和当前连接的确认信息
 
 -   cookies 在浏览器上是以 键-值对 的形式进行存储的,键和值都是以 ASCII 字符串的形存储(不能是中文字符串)
@@ -1721,6 +1723,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             -   value: cookie 的值
             -   max_age: cookie存活的时间，单位为秒
             -   expires: 具体过期时间
+            -   eg. `resp.set_cookie('zf', '22', max_age=7*24*60*60)  # 七天`
     -   删除 COOKIE
         -   HttpResponse.delete_cookie(key)
         -   删除指定 key 的 Cookie。如果 key 不存在则什么也不发生
@@ -1749,6 +1752,59 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   通过 request.COOKIES 绑定的字典（dict）获取客户端的 COOKIES 数据
             -   `value = request.COOKIES.get('cookie_name', 'no values!')`
          
+
+#### Session
+
+-   session是在服务器上开辟一段空间用于保留浏览器和服务器交互时的重要数据
+
+-   每个客户端都可以在服务器端有一个独立的 Session
+
+-   http协议是无状态的:每次请求都是一次新的请求,不会记得之前通信的状态
+
+-   客户端与服务器端的一次通信,就是一次会话
+
+-   实现状态保持的方式:在客户端或服务器端存储与会话有关的数据
+
+-   推荐使用 session方式,所有数据存储在服务器端,在客户端 cookie中存储 session_id
+
+-   注意:不同的请求者之间不会共享这个数据,与请求者一一对应
+
+1.  定义：
+    -   在服务器上开辟一段空间用于保留浏览器和服务器交互时的重要数据
+2.  Django 下启用 Session
+    
+    -   配置：
+       
+        -   在 主模块 settings.py 中添加
+            ```python
+                INSTALLED_APPS=[
+                    ...
+                    'django.contrib.sessions',（默认已添加）
+                ]
+                MIDDLEWARE=[
+                    ...
+                    'django.contrib.sessions.middleware.SessionMiddleware',
+                ]
+            ```
+
+    -   基本操作
+
+        -   session对象是一个类似字典的 SessionStore 类型的对象,可以用类拟于字典的方式进行操作
+        -   session 只能够存储能序列化的数据，如字典、列表等
+        -   保存 session 的值到服务器
+            -   request.session['KEY'] = VALUE
+        -   获取 session 的值
+            -   `VALUE=request.session['KEY']`
+            -   或
+            -   `VALUE=request.session.get('KEY','缺省值')`
+        -   删除：`del request.session['KEY']`
+
+    -   在 settings.py 中有关 session 的设置
+        
+        1.  SESSION_COOKIE_AGE：作用 sessionid 在 cookies 中的保存时长 SESSION_COOKIE_AGE=60*30
+        2.  SESSION_EXPIRE_AT_BROWSER_CLOSE=True 设置只要浏览器关闭时，session就失效
+
+    -   注：当使用 session 时需要迁移数据库，否则会出现错误
 
 
 ### 配置总结
