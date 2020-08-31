@@ -1613,7 +1613,8 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     ...
 
                 class B(models.Model):
-                    属性 = models.ForeignKey(多对一中的'一'的模型类, ...)
+                    属性1 = models.ForeignKey(多对一中的'一'的模型类, ...)
+                    属性2 = models.ForeignKey(多对一中的'一'的模型类, ...)
                 ```
 
                 -   外键类 ForeignKey
@@ -1803,6 +1804,49 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         2.  SESSION_EXPIRE_AT_BROWSER_CLOSE=True 设置只要浏览器关闭时，session就失效
 
     -   注：当使用 session 时需要迁移数据库，否则会出现错误
+
+## 中间件
+
+> 中间件是 DJango 请求响应处理的钩子框架。它 是一个轻量级的、低级的“插件"系统,用于全局改变 DJango 的输入或输出
+
+-   每个中间件组件负责做一些特定的功能。例如, Django包含一个中间件组件 AuthenticationMiddleware ,它使用会话将用户与请求关联起来
+-   中间件被记录在 built-in middleware reference中
+
+-   中间件类
+    -   中间件类 须继承自`django.utils.deprecation.MiddlewareMixin`类
+    -   中间件类须实现下列五个方法中的一个或多个
+        1.  `def process_request(self,request):`
+            -   执行视图之前被调用,在每个请求上调用,返回 None 或 Httpresponse 对象
+        2.  `def process_view(self,request,callback,callback_args,callback_kwargs):`
+            -   调用视图之前被调用,在每个请求上调用,返回None 或 Httpresponse 对象
+        3.  `def process_response(self,request,response):`
+            -   所有响应返回浏览器之前被调用，在每个请求上调用，返回 HttpResponse 对象
+        4.  `def process_exception(self,request,exception):`
+            -   当处理过程中抛出异常时调用，返回 HttpResponse 对象
+        5.  `def process_template_response(self,request,response):`
+            -   在视图刚好执行完毕之后被调用，在每个请求上调用，返回实现 render 方法的响应对象
+
+        -   注:中间件中的大多数方法在返回 None 时表示忽略当前操作进入下一项事件,当返回 Httpresponese 对象时表示此请求结果,直接返回给客户端
+
+        ```python
+        # 注册中间件：主目录 settings.py 添加项
+        # 中间件目录 /mymiddleware/check_login.py <class MyMiddleWare>
+        MIDDLEWARE = [
+            ...
+            'mymiddleware.check_login.MyMiddleWare',
+        ]
+
+        # check_login.py 
+        # 使用
+        from django.http import HttpResponse
+        from django.utils.deprecation import MiddlewareMixin
+
+        class MyMiddleWare(MiddlewareMixin):
+            def process_request(self, request):
+                print('process request  callback')
+                # return None
+                return HttpResponse('intercept .............')
+        ```
 
 
 ## 配置总结
