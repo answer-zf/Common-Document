@@ -30,7 +30,7 @@ def myregister(request):
         password = request.POST.get('password', '')
         password2 = request.POST.get('password2', '')
 
-        # 表单验证
+        # # 表单验证
         if not username:
             username_error = 'username not null'
             return render(request, 'userinfo/register.html', locals())

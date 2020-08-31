@@ -1,8 +1,6 @@
-# Python 后端
+# Django 框架
 
-## Django 框架
-
-### 简介：
+## 简介：
 
 -   组件：
 
@@ -27,7 +25,7 @@
         -   在线语音图像识别服务器
         -   在线第三方身份验证服务器等
 
-### 安装：
+## 安装：
 
 1.  在线安装：`$ sudo pip3 install django==1.11.8`
 
@@ -45,7 +43,7 @@
 
 4.  卸载：`pip3 uninstall Django`
 
-### Django 框架简介
+## Django 框架简介
 
 1.  创建项目:`$ django-admin startproject project_name`
 
@@ -129,7 +127,7 @@
                 -   Linux 下文件位置
                     -   `/usr/lib/python3/dist-packages/django/conf/global_settings.py`
 
-### 路由
+## 路由
 
 > url 即统一资源定位符 Uniform Resource Locator
 
@@ -138,7 +136,7 @@
 
 > 路由：不看域名部分
 
-#### 在Django 中的 URL 路由配置
+### 在Django 中的 URL 路由配置
 
 1.  settings.py 中 的 ROOT_URLCONF
 
@@ -214,9 +212,9 @@
             return HttpResponse("this is %s, %s" % (name, age))
     ```
 
-### 请求和响应
+## 请求和响应
 
-#### HTTP请求
+### HTTP请求
 
 -   根据HTTP标准,HTTP请求可以使用多种请求方法。
 -   HTTP1.0 定义了三种请求方法: GET , POST 和 HEAD 方法(最常用)
@@ -259,7 +257,7 @@
             -   request.META['REMOTE_ADDR']&#x3A;客户端IP地址
             -   request.META['HTTP_REFERER']&#x3A;请求源地址
 
-#### HTTP响应
+### HTTP响应
 
 -   当浏览者访问一个网页时,浏览者的浏览器会向网页所在服务器发出请求。当浏览器接收并显示网页前,此网页所在的服多器会返回一个包含HTTP状态码的信息头(server header)用以响应浏览器的请求.
 
@@ -321,11 +319,11 @@
     -   HttpresponseForbidden    请求被禁止，状态码 403
     -   HttpresponseServerError   服务器错误，状态码 500
 
-#### GET方式传参
+### GET方式传参
 
 >  GET请求方式中可以通过查询字符串( Query String)将数据传递给服务器
 
-##### GET方式传参参数获取(查询字符串 Query String)
+#### GET方式传参参数获取(查询字符串 Query String)
 
 -   客户端传递参数给服务器端
 
@@ -382,7 +380,7 @@
 
         4. 一键多值时使用。eg. 复选框提交使用，用get提交其他选项会被最后一个值覆盖，只显示最后一个值
 
-#### POST方式传参
+### POST方式传参
 
 -   客户端通过表单等POST 请求将数据传递给服务器端
 
@@ -438,7 +436,7 @@
                 return HttpResponse("other ....")
     ```
 
-#### Django 框架模式
+### Django 框架模式
 
 -   MVC设计模式
 
@@ -458,7 +456,7 @@
         -   T 模板层(Templates),负责呈现网页内容
         -   V 视图层(View),负责接收请求 获取数据 返回结果（核心）
 
-#### 模板 Templates
+### 模板 Templates
 
 -   什么是模板
 
@@ -523,7 +521,7 @@
             return render(request,'xx.html',字典数据)
         ```
 
-##### Django模板语言:( The Django template language)
+#### Django模板语言:( The Django template language)
 
 -   模板的变量
 
@@ -629,7 +627,7 @@
             -   comment 标签不能嵌套使用
         -   模板级的注释，html 源码不显示
 
-##### 过滤器
+#### 过滤器
 
 1.  作用：
 
@@ -652,7 +650,7 @@
 | lower           | 将字符串转换为全部小写                                                                     |
 | upper           | 将字符串转换为大写形式                                                                     |
 
-##### escape 转译
+#### escape 转译
 
 -   escape 转义字符串的HTML。具体来说,它使这些替换:
 
@@ -668,7 +666,7 @@
     {% endautoescape %}
 ```
 
-##### 模板的继承
+#### 模板的继承
 
 -   模板继承可以使父模板的內容重用，子模板直接继承父模板的全部内容并可以覆盖父模板中相应的块
 -   定义父模板中的块 blcok 标签
@@ -699,7 +697,7 @@
     {% endblock block_name %}
     ```
 
-##### url 反向解析
+#### url 反向解析
 
 -   url()的name 关键字参数
 
@@ -713,7 +711,7 @@
         -   `<a href="{% url '别名' %}">页面</a>`
         -   `<a href="{% url '别名' 参数1 %}">页面</a>`
 
-### 静态文件
+## 静态文件
 
 1.  什么是静态文件
 
@@ -751,7 +749,7 @@
                 <img src="/static/images/pk.jpg" alt="">
             ```
 
-### Django 中的应用 app
+## Django 中的应用 app
 
 -   什么是应用
 
@@ -805,9 +803,9 @@
         -   music 模块的 urlpatterns 中添加 `url(r'^list$', views.list),`
         -   最后在 视图函数 添加 list 方法
 
-### 数据库和模型
+## 数据库和模型
 
-#### Django 下使用 mysql 数据库
+### Django 下使用 mysql 数据库
 
 1.  安装 pymysql 包
 
@@ -880,7 +878,7 @@
     -   将 sqlmigrate, 显示迁移的sql 语句
     -   `python manage.py sqlmigrate`
 
-#### 模型
+### 模型
 
 > 模型是提供数据信息的数据库接口模型是数据的唯一的、确定的信息源。它包含你所储存数据的必要字段和行为。
 
@@ -891,7 +889,7 @@
     -   每一个模型属性都代表数据库中的一个表。
     -   通过所有这一切, Django 为你提供一个自动生成的数据库访问API
 
-### Python数据库模型 ORM
+## Python数据库模型 ORM
 
 1.  ORM框架
     
@@ -1076,7 +1074,7 @@ _pip install cryptography_
 
 _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fields.html)_
 
-#### 数据库的操作 CRUD
+### 数据库的操作 CRUD
 
 -   CRUD 是指在做计算处理时的增加（Create）、读取查询（Read）、更新（Update）和删除（Delete）
 
@@ -1420,7 +1418,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         models.Book.objects.filter(Q(pub='清华') | Q(price__gt=50), id__lt=3)  # , 表示与关系
     ```
 
-#### 原生的数据库操作方法
+### 原生的数据库操作方法
 
 1.  使用 Entry.objects.raw() 进行教据库查询操作查询
 
@@ -1446,7 +1444,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
              cur.execute('update books_book set pub="xxx" where id=8;')
         ```
 
-#### admin后台数据库管理
+### admin后台数据库管理
 
 -   django 提供了比较完善的后台管理数据库的接口,可供开发过程中调用和測试使用
 -   django 会搜集所有已注册的模型类,为这些模型类提拱数据管理界面,供开发者使用
@@ -1458,7 +1456,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         2.  据提示完成注册
         3.  登录：127.0.0.1/admin
 
-##### 自定义后台管理数据表
+#### 自定义后台管理数据表
 
 -   若要自己定义的模型类也能在 /admin 后台管理界中显示和管理,需要将自己的类注册到后台管理界面
 -   添加自己定义模型类的后台管理数据表的,需要用 admin.site.register(自定义模型类) 方法进行注册
@@ -1520,7 +1518,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             admin.site.register(models.Book, BookManager)
         ``` 
 
-#### 数据库表管理
+### 数据库表管理
 
 1.  修改模型类字段的显示名字
     
@@ -1542,7 +1540,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     -   该对象复数形式的名称(复数),用于显示在 /admin 管理界面中
     ```
 
-#### 数据表关联关系映射 Relationship Map
+### 数据表关联关系映射 Relationship Map
 
 -   在关系型数据库中,通常不会把所有数据都放在同一张表中,这样做会额外占用内存空间,
 -   在关系列数据库中通常用表关联来解决数据库。
@@ -1707,9 +1705,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     print()
             ```   
 
-### Cookies / Session
+## Cookies / Session
 
-#### Cookies
+### Cookies
 
 >  cookies 是保存在客户端测览器上的存储空间,通常用来记录浏览器端自己的信息和当前连接的确认信息
 
@@ -1753,7 +1751,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             -   `value = request.COOKIES.get('cookie_name', 'no values!')`
          
 
-#### Session
+### Session
 
 -   session是在服务器上开辟一段空间用于保留浏览器和服务器交互时的重要数据
 
@@ -1807,7 +1805,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   注：当使用 session 时需要迁移数据库，否则会出现错误
 
 
-### 配置总结
+## 配置总结
 
 ```python
 # settings.py

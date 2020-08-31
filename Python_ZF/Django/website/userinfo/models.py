@@ -4,7 +4,7 @@ from django.db import models
 
 
 class User(models.Model):
-    name = models.CharField('username', max_length=30, unique=True)
+    username = models.CharField('username', max_length=30, unique=True)
     password = models.CharField('password', max_length=30)
 
     def __str__(self):
