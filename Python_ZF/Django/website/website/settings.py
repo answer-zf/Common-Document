@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'mymiddleware.check_login.MyMiddleWare',
+    'mymiddleware.check_login.VisitLimit',
 ]
 
 ROOT_URLCONF = 'website.urls'
