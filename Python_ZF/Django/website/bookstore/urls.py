@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^filter$', views.bookstore_filter),
     url(r'^mod/(\w+)$', views.bookstore_update),
     url(r'^del/(\w+)$', views.bookstore_delete),
+    url(r'^book$', views.bookstore_book, name='book'),
 ]

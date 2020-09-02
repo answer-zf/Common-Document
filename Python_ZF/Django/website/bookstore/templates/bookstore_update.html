@@ -18,6 +18,7 @@
     <h3 style="text-align: center;">booooooookstore</h3>
     <hr>
     <form action="/bookstore/mod/{{ abook.id }}" method="POST">
+        {% csrf_token %}
         <div>
             <span>title: </span>
             <input type="text" name="title" disabled="disabled" value="{{ abook.title }}">

@@ -51,6 +51,7 @@
         </div>
     </nav>
     <form action="/userinfo/reg" method="POST">
+        {% csrf_token %}
         <h2 class="text-center">Register</h2>
         <div class="form-group">
             <label for="username">Username</label>

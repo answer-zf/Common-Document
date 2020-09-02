@@ -50,7 +50,9 @@
             {% endif %}
         </div>
     </nav>
+
     <form action="/userinfo/login" method="POST">
+        {% csrf_token %}
         <h2 class="text-center">Login</h2>
         <div class="form-group">
             <label for="username">Username</label>

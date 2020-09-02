@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+
+from . import forms
 from . import models
 
 
@@ -69,3 +71,9 @@ def mylogout(request):
     if 'userinfo' in request.session:
         del request.session['userinfo']
     return HttpResponseRedirect('/')
+
+
+def test_form(request):
+    if request.method == 'GET':
+        myform = forms.RegForm
+        return render(request, 'userinfo/test_form.html', locals())

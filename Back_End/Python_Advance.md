@@ -506,6 +506,8 @@
 -   模板的传参
 
     -   模板传参是指把数据形成字典,传参给模板,由模板渲染来填充数据
+    -   在模板中调用函数不需要加（）
+        -   [函数传参](https://www.cnblogs.com/Python666/p/7225808.html)
 
     1.  使用 loader 加载模板
 
@@ -1812,6 +1814,8 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   每个中间件组件负责做一些特定的功能。例如, Django包含一个中间件组件 AuthenticationMiddleware ,它使用会话将用户与请求关联起来
 -   中间件被记录在 built-in middleware reference中
 
+![Python-Django_Middleware](http://images.dorc.top/blog/Python/Python-Django_Middleware.jpeg)
+
 -   中间件类
     -   中间件类 须继承自`django.utils.deprecation.MiddlewareMixin`类
     -   中间件类须实现下列五个方法中的一个或多个
@@ -1877,6 +1881,184 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 return HttpResponse('Forbidden...')
         ```
 
+### 跨站请求伪造保护 CSRF
+
+-   跨站请求伪造攻击
+    
+    -   某些恶意网站上包含链接、表单按钮或者 Javascript,它们会利用登录过的用户在浏览器中的认证信息试图在你的网站上完成某些操作,这就是跨站请求伪造
+
+-   CSRF
+    -   Cross-Site Request ForeignKey
+
+-   说明：
+    -   CSRF 中间件和模板标签提供对跨站请求伪造简单易用的防护。
+
+-   作用：
+    -   不让其他表单提交到此 Django 服务器
+
+-   解决方案
+    1.  取消 csrf （不推荐）
+        -   删除 settings.py 中 MIDDLEWARE 中的`'django.middleware.csrf.CsrfViewMiddleware',`
+    2.  开发验证
+        ```python
+            # 在视图处理函数增加：@csrf_protect z装饰器
+            @csrf_protect
+            def post_views(request):
+                pass
+        ```   
+    3.  通过验证
+
+        -   在表单中增加一个标签
+        -   `{% csrf_token %}`
+
+            ```python
+                <form action="/userinfo/login" method="POST">
+                    {% csrf_token %}
+                    ...
+                </form>
+            ```
+
+## 分页
+
+-   分页是指在 web页面 有大量数据需要显示时,当一页的内容太多不利于间读和不利于数据提取的情况下,可以分为多页进行显示
+-    Django 提供了一些类来帮助你管理分页的数据一也就是说,数据被分在不 同页面中,并带有 上一页/下一页 链接。
+-    这些类位于 `django/core/paginator.py` 中
+
+### paginator 
+
+-   paginator 对象
+
+    -   Paginator(object_list,per_page)
+    -   参数
+        -   object_list 可使用查询结果集
+        -   per_page 每页数据个数
+    -   返回值
+        -   分页对象
+
+-   Paginator 属性
+    
+    -   count: 对象总数，即查询出来的数据总条数
+    -   num_pages: 总页数
+    -   page_range: 从 1 开始的 range 对象，值即：range(1,num_pages+1)
+    -   per_page: 每页数据个数，即将创建 Paginator 时传入的per_page，设置为该属性
+  
+-   Paginator 方法
+
+    -   Paginator.page(number)
+        -   参数 number 为页码信息（从1开始）
+        -   返回当前 number 页面对应的页信息
+        -   如果提供的页面不存在，抛出 InvalidPage 异常
+
+-   Paginator 异常 exception
+
+    -   InvalidPage：当向page() 传入一个无效的页码值时抛出
+    -   PageNotAnInteger: 当向page() 传入一个不是整数的值时抛出
+    -   EmptyPage: 当向page() 提供一个有效值，但是那个页面没有任何对象时抛出
+
+### Page 对象
+
+-   创建对象 Paginator 对象的 page()方法，返回Page对象，不需要手动构造
+-   Page 对象属性
+    -   object_list: 当前页上所有对象的列表
+    -   number: 当前页的序号，从1开始
+    -   paginator: 当前page对象相关的Paginator对象
+-   Page 方法
+    -   has_next(): 如果有下一页返回 True
+    -   has_previous(): 如果有上一页返回 True
+    -   has_other_pages(): 如果有上一页或下一页返回 True
+    -   previous_page_number(): 返回下一页的页码，如果下一页不存在，抛出 InvalidPage 异常
+    -   next_page_number(): 返回上一页的页码，如果上一页不存在，抛出 InvalidPage 异常
+    -   len(): 返回当前页面对象的个数
+-   说明
+    -   Page对象是可选代对象,可以用 for 语句来访问当前页面中的每个对象
+-   示例：
+
+    ```python
+    # views.py
+    def bookstore_book(request):
+        books = models.Book.objects.all()
+        paginator = Paginator(books, 5)
+        p_count = paginator.count
+        p_num = paginator.num_pages
+        p_range = paginator.page_range
+        p_per = paginator.per_page
+
+        cur_page = request.GET.get('page', 1)
+        page = paginator.page(cur_page)  # 当前页所有信息
+        return render(request, 'bookstore_book.html', locals())
+    ```
+
+    ```html
+    <!-- 分页部分 html，数据列表部分使用 for abook in page: 遍历即可 -->
+    <!-- 模板中调用函数不加括号 -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li
+                class="page-item{% if page.has_previous %}{% else %} disabled{% endif %}"
+            >
+                <a
+                    class="page-link"
+                    href="{{ url 'book' }}?page={% if page.has_previous %}{{page.previous_page_number}}{% else %}{% endif %}"
+                    aria-label="Previous"
+                >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% for p in p_range %}
+            <li
+                class="page-item{% if p == page.number %} disabled{% else %}{% endif %}"
+            >
+                <a class="page-link" href="{{ url 'book' }}?page={{ p }}"
+                    >{{ p }}</a
+                >
+            </li>
+            {% endfor %}
+            <li
+                class="page-item{% if page.has_next %}{% else %} disabled{% endif %}"
+            >
+                <a
+                    class="page-link"
+                    href="{{ url 'book' }}?page={% if page.has_next %}{{page.next_page_number}}{% else %}{% endif %}"
+                    aria-label="Next"
+                >
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    ```
+
+## Django中的 forms 摸块
+
+-   在 Django 中提供了 forms 模块用 forms 模块可以自动生成form内部的表单控件,同时在服务器端可以用对象的形式接收并操作客户端表单元素,并能对表单的数据进行服务器端验证
+
+1.  forms 模块的作用
+
+    -   通过 forms 模块,允许将表单与 class 相结合,允许通过 class 生成表单
+
+2.  使用 forms 模块的步骤
+    1.  在应用中创建 forms.py
+    2.  导入 django 提供的 forms
+        -   from django import forms
+    3.  创建 class ,一个 class 会生成一个表单
+        -   定义表单类：`class ClassName(forms.Form):`
+    4.  在 class 中 创建类属性
+        -   一个类属性对应到表单中是一个控件
+    5.  利用 Form 类型的对象自动成表单内容
+    6.  读取 form 表单并进行验证数据
+
+3.  forms.Form 的语法
+
+    -   属性=forms.Field类型(参数)
+
+    1.  类型
+
+        ```python
+        class XXX(forms.Form):
+            forms.CharField() : 文本框 <input type="text">
+            forms.ChoiceField() : 下拉选项框 <select>
+            forms.DateField() : 日期框 <input type="date">
+        ```
 
 ## 配置总结
 

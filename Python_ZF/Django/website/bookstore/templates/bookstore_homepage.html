@@ -37,6 +37,7 @@
 
 <body>
     <div class="container">
+        {% csrf_token %}
         <ul>
             <li><a href="/bookstore/add">add books</a></li>
             <li><a href="/bookstore/list">show books</a></li>
