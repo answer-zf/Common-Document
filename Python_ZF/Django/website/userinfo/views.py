@@ -77,3 +77,10 @@ def test_form(request):
     if request.method == 'GET':
         myform = forms.RegForm
         return render(request, 'userinfo/test_form.html', locals())
+    elif request.method == 'POST':
+        myform = forms.RegForm(request.POST)
+        if myform.is_valid():
+            print(myform.cleaned_data)
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('error..')

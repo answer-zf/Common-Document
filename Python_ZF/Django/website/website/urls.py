@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^text', views.text),
     url(r'^bookstore/', include('bookstore.urls')),
     url(r'^userinfo/', include('userinfo.urls')),
+    url(r'^upload$', views.on_upload)
 ]

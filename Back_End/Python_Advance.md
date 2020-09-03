@@ -2060,6 +2060,208 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             forms.DateField() : 日期框 <input type="date">
         ```
 
+    2.  参数
+
+        1.  label  提示文本，即 label标签内的内容
+        2.  widget  指定小部件
+        3.  initial  空间初始值（针对文本框类型），表单中的 value值
+        4.  required  是否为必填项，默认值为 True
+
+        -   [参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/forms/fields.html#module-django.forms.fields)
+
+4.  在模板中解析 form 对象
+
+    -   在 视图中创建 form 对象 并发送到模板中解析
+        
+        1.  手动解析
+            ```django
+            {% for f in myform %}
+            {{f.label}} {{f}} 
+            {% endfor %}
+            ```
+        
+        2.  自动解析
+            1.  {{form.as_p}}
+                -   将 form 中的每个属性（控件/文本）都使用 p标签 包裹起来再显示
+            2.  {{form.as_ul}}
+                -   将form中的每个属性(控件/文本)都使用 li标签 包裹起来再显示
+                -   注意:必须手动提供 ol 或 ul 标签
+            3.  {{form.as_table}}
+                -   将form中的每个属性(控件/文本)都使用 tr标签 包裹起来再显示
+                -   注意:必须手动提供 tablet标记
+
+5. 通过 forms对象 获取表单数据
+
+    1.  通过 forms.Form 子类的构造器来接收post数据
+        -   `form=XXXForm(request.POST)`
+    2.  必须是form通过验证后,才能取值
+        -   form.is_valid()
+            -   返回 True : 通过验证可以取值
+            -   返回 False : 暂未通过验证则不能取值
+    3.  通过 form.cleaned_data 字典的属性接收数据
+
+6.  widget 内置小部件
+    -   表示的是生成到网页上的控件以及一些其他的 html属性
+
+|           widget值           |     对应的 type      |
+| :--------------------------: | :------------------: |
+|       forms.TextInput        |     type="text"      |
+|     forms.PasswordInput      |   type="password"    |
+|      forms.NumberInput       |    type="number"     |
+|       forms.EmailInput       |     type="email"     |
+|        forms.URLInput        |      type="url"      |
+|      forms.HiddenInput       |    type="hidden"     |
+|     forms.CheckboxInput      |   type="checkbox"    |
+| forms.CheckboxSelectMultiple |   type="checkbox"    |
+|      forms.RadioSelect       |     type="radio"     |
+|        forms.Textarea        |    textarea 标签     |
+|         forms.Select         |     select 标签      |
+|     forms.SelectMultiple     | select multiple 标签 |
+
+    -   使用：
+
+            -   在控件类型的基础之上还能指定控件的一些 html属性值
+
+            ```python
+            class RegForm(forms.Form):
+                ...
+                password = forms.CharField(
+                    label='pl. input password', widget=forms.PasswordInput(
+                        attrs={
+                            'myattr1': 'myvalue1',
+                            'myattr2': 'myvalue2',
+                        }
+                    )
+                )
+            ```
+
+### Django form 表单验证
+
+-   django form提供表单和字段验证
+-   当在创建有不同的多个表单需要提交的网站时,用表单验证比较方便验证的封装
+-   当调用 form.is.valid() 返回 True 表示当前表单合法,当返回 False 说明表单验证出现问题
+-   验证步骤
+    -   先对 form.XXXField() 参数值进行验证,比如 min_length, max_length, validators=[...] 如果不符合 form.is_valid() 返回False 
+    -   对各自 from.clean_xxx属性名(self) 方法对相应属性进行验证,如果验证失败 form.is_valid() 返回False
+    -   调用 form.clean(self) 对表单的整体结构进行验证,如果验证失败 form.is_valid() 返回False
+    -   以上验证都成功 form.is_valid() 返回 True
+-   验证方法
+    -   validators=[验证函数1,验证函数2]
+        -   验证函数验证失败抛出 forms.ValidationError
+        -   验证成功返回 None
+    -   def clean_xxx属性(self)
+        -   验证失败必须抛出 forms.ValidationError
+        -   验证成功必须返回 xxx属性的值
+    -   def clean(self)
+        -   验证失败必须抛出 forms.ValidationError
+        -   验证成功必须返回 self.cleaned_data
+
+    ```python
+        #  forms.py
+        from django import forms
+        import re
+
+        mobile_re = re.compile(
+            r'^(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$')
+
+        def mobile_validate(value):
+            if not mobile_re.match(value):
+                raise forms.ValidationError('手机号码各式错误')
+
+        class RegForm(forms.Form):
+            username = forms.CharField(label='pl. input name')
+            password = forms.CharField(
+                label='pl. input password', widget=forms.PasswordInput)
+            password2 = forms.CharField(
+                label='pl. input password2', widget=forms.PasswordInput)
+            mobile = forms.CharField(label='mobile phont', validators=[mobile_validate])
+
+            def clean(self):
+                pwd1 = self.cleaned_data['password']
+                pwd2 = self.cleaned_data['password2']
+                if pwd1 != pwd2:
+                    raise forms.ValidationError('PASSWORD INCONSISTENCY!!!')
+                return self.changed_data
+
+            def clean_username(self):
+                username = self.cleaned_data["username"]
+                if len(username) < 6:
+                    raise forms.ValidationError('username to short')
+
+                return username
+
+        # views.py
+        from . import forms
+        def test_form(request):
+            if request.method == 'GET':
+                myform = forms.RegForm
+                return render(request, 'userinfo/test_form.html', locals())
+            elif request.method == 'POST':
+                myform = forms.RegForm(request.POST)
+                if myform.is_valid():
+                    print(myform.cleaned_data)
+                    return HttpResponse('ok')
+                else:
+                    return HttpResponse('error..')
+        
+        # html
+        <form action="/userinfo/test_form" method="POST">
+            {% csrf_token %} 
+            {{ myform.as_p }}
+            <input type="submit" value="submit" />
+        </form>
+    ```
+
+    -   表单验证不是必须 使用类创建，手动创建的也能验证，属性名就是 name的值
+
+### 文件上传
+
+-   文件上传必须为 POST 提交方式
+-   表单 <form> 中文件上传时必须有带有 `enctype=" multipart/form-data"`时才会包含文件内容数据
+-   表单中 用 `<form type="file" name="xxx">` 标签上传文件
+    
+    -   名字 xxx 对应 request.FILES['xxx'] 对应的内存缓冲文件流对象，可通过 request.FILES['xxx'] 返回的对象获取上传文件数据
+    -   file=request.FILES['xxx']
+        -   file 绑定文件流对象，可以通过文件流对象的如下信息获取文件数据 
+            -   file.name 文件名 
+            -   file.file文件的字节流数据
+
+-   如下上传文件为图片类型,可以用模块类属性定义成 models.ImageField 类
+    -   `image_file=models.ImageField(upload_to='images/')`
+    -   ps. 如果属性类型为 ImageField 需要安装 Pilow
+    -   pip install Pilow==3.4.1
+    -   图片存储路径
+
+```python
+    from django.conf import settings
+    import os
+
+    def on_upload(request):
+        if request.method == 'GET':
+            return render(request, 'upload.html', locals())
+        elif request.method == 'POST':
+            myfile = request.FILES['myfile']
+            with open(os.path.join(settings.MEDIA_DIR, myfile.name), 'wb') as fd:
+                file_content = myfile.file.read()
+                fd.write(file_content)
+            return HttpResponse('ok')
+    
+    ##### settings.py
+    MEDIA_DIR = os.path.join(BASE_DIR, 'static/images')
+```
+
+## Django 中的用户认证(使用 Django 认证系统)
+
+-   Django带有一个用户认证系统。它处理用户账号、组、权限以及基于 cookie 的用户会话。
+
+-   作用
+    1.  添加普通用户和超级用户
+    2.  修改密码
+    3.  登陆和退出管理
+    4.  查看已登陆用户
+
+-   [文档](https://yiyibooks.cn/xx/Django_1.11.6/topics/auth/default.html)
+
 ## 配置总结
 
 ```python
@@ -2077,4 +2279,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 文件路径
 
 # 添加 应用
 # 在 INSTALLED_APPS 添加应用名
+
+####### 在其他模块中 导入当前项目的 settings 模块
+from django.conf import settings
 ```
