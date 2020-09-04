@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add_book</title>
+    <style>
+        form {
+            margin: auto;
+            width: 200px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h3 style="text-align: center;">booooooookstore</h3>
+    <hr>
+    <form action="/bookstore/mod/{{ abook.id }}" method="POST">
+        {% csrf_token %}
+        <div>
+            <span>title: </span>
+            <input type="text" name="title" disabled="disabled" value="{{ abook.title }}">
+        </div>
+        <div>
+            <span>pub: </span>
+            <input type="text" name="pub" disabled="disabled" value="{{ abook.pub }}">
+        </div>
+        <div>
+            <span>price: </span>
+            <input type="text" name="price" disabled="disabled" value="{{ abook.price }}">
+        </div>
+        <div>
+            <span>market_price: </span>
+            <input type="text" name="market_price" required value="{{ abook.market_price }}">
+        </div>
+        <input type="submit" value="submit">
+    </form>
+</body>
+
+</html>

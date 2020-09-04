@@ -2262,6 +2262,223 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
 -   [文档](https://yiyibooks.cn/xx/Django_1.11.6/topics/auth/default.html)
 
+-   User 模型类
+
+    -   位置：`from django.contrib.auth.models import User`
+
+    -   默认 user 的基本属性
+
+|    属性名    |                                     类型                                      | 是否必须存在 |
+| :----------: | :---------------------------------------------------------------------------: | :----------: |
+|   username   |                                    用户名                                     |      是      |
+|   password   |                                     密码                                      |      是      |
+|    email     |                                     邮箱                                      |     可选     |
+|  first_name  |                                      名                                       |      /       |
+|  last_name   |                                      姓                                       |      /       |
+| is_superuser |                          是否是管理员账户（/admin）                           |      /       |
+|   is_staff   |                           是否可访问 admin 管理界面                           |      /       |
+|  is_active   | 是否是活跃用户 默认为 True，一般不删除用户，而是将用户 is_active 设置为 False |      /       |
+|  last_login  |                                 上次登录时间                                  |      /       |
+| date_joined  |                                 用户创建时间                                  |      /       |
+
+-   auth 基本模型操作
+
+    -   创建 普通用户/超级用户
+
+        ```python
+        from django.contrib.auth import models
+
+        user=models.User.objects.create_user(username='...',password='...',email='...')
+        user=models.User.objects.create_superuser(username='...',password='...',email='...')
+
+        ...
+        user.save()
+        ```   
+
+    -   删除用户
+
+        ```python
+            try:
+                user=models.User.objects.get(username='...')
+                user.is_active=False
+                user.save()
+                print('delete user..')
+            except:
+                print('delete user error..')
+            return HttpResponseRedirect('/user/info')
+        ```
+
+    -   修改密码
+
+        ```python
+            try:
+                user = models.User.objects.get(username='...')
+                user.set_password = '...'  # 不能直接使用 user.password 设置，set_password 有加盐加密设置
+                user.save()
+                return HttpResponse('update password user..')
+            except:
+                return HttpResponse('update password user error')
+        ```
+
+    -   验证密码
+
+        ```python
+            try:
+                user = models.User.objects.get(username='待验证用户名')
+                if user.check_password('待验证密码'):
+                    return HttpResponse('yes')
+                else:
+                    return HttpResponse('no')
+            except:
+                return HttpResponse('user not exist')
+        ```
+
+### Web 请求认证
+
+-   `from django.contrib.auth import authenticate,login,logout`
+
+-   认证用户
+
+    -   函数 `authenticate(username='用户名',password='密码')`
+        -   验证用户名和密码是否存在于用户中，如果存在返回 User 对象，如果不合法返回 None
+
+-   登录用户
+
+    -   函数 login(request,user)
+    -   参数 request 为 HttpRequest 对象
+    -   参数 user 为 User对象
+    -   login() 使用 Django 的 session 框架来将用户的ID保存在 session 中
+
+-   登出用户
+
+    -   函数 logout(request)
+
+```python
+    from django.shortcuts import render
+    from django.http import HttpResponse
+    from django.contrib.auth import models
+    from django.contrib.auth import authenticate, login, logout
+
+    # Create your views here.
+
+    def mylogin2(request):
+        if request.method == 'GET':
+            return render(request, 'user/login.html', locals())
+        elif request.method == 'POST':
+            username = request.POST.get('username', '')
+            password = request.POST.get('password', '')
+
+            # try:
+            #     user = models.User.objects.get(username=username)  # 缺少 is_actice=True
+            #     if user.check_password(password):
+            #         return HttpResponse('login success')
+            #     else:
+            #         return HttpResponse('password error..')
+
+            # except:
+            #     return HttpResponse('user not exist..')
+
+            # 简化认证
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                # 登录
+                login(request, user)
+                return HttpResponse('login success')
+            else:
+                return HttpResponse('login fail')
+
+    def mylogout2(request):
+        logout(request)
+        return HttpResponse('logout')
+
+    def myregister2(request):
+        if request.method == 'GET':
+            return render(request, 'user/register.html', locals())
+        elif request.method == 'POST':
+            username = request.POST.get('username', '')
+            password = request.POST.get('password', '')
+
+            # ...
+
+            try:
+                user = models.User.objects.create_superuser(
+                    username=username,
+                    password=password,
+                    email='657829956@qq.com'
+                )
+                user.save()
+                return HttpResponse('reg success')
+            except:
+                return HttpResponse('reg fail')
+```
+
+### 自定义 user 模型
+
+-   当 django自带的 django.contrib.auth.models.User 的属性不能满足我们现有的需求时,可以自定义User模型
+-   如,向用户中加入姓别和家庭住址字段等
+-   自定义 User 类需要继承自 `django.contrib.auth.models.AbstractUser`
+-   自定义 User 类后需要再次做迁移操作
+-   [文档](https://yiyibooks.cn/xx/Django_1.11.6/topics/auth/customizing.html)
+
+```python
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    address = models.CharField("...", max_length=0)
+```
+
+## 项目部署
+
+-   项目部置在软件开发完毕后,将开发机器上运行的开发板软件实际安装到服务器上进行长期运行
+
+-   部署要分以下几个步骤进行
+
+    1.  在安装机器上安装和配置同版本的数据库
+    2.  django 项目迁移(在安裝机器上配置与开发环境相同的 python版本 及 依懒的包 )
+    3.  用 uwsgi 替代 python3 manage.py runserver 方法启动服务器
+    4.  配置 nginx 反射代理服务器
+    5.  用 nginx 配置静态文件路径,解决静态路径问题
+
+-   步骤
+
+    1.  安装同版本的数据库
+    
+    2.  django 项目迁移
+
+        1.  安装python
+            -   `sudo apt install python3`
+
+        2.  安裝相同版本的包
+
+            -   导出当前模块数据包的信息
+                -   `pip3 freeze > package_list.txt`
+
+            -   导入到另一台新主机
+                -   `pip3 install -r package_list.txt`
+
+        3.  将当前项目源代码复制到远程主机上(scp命令)
+            -  sudo scp -a 当前项目源代码远程主机地址和文件夹
+               -  eg.`scp -a /home/zf/mywebsite root@12.23.43.53/root/mydjangoproject`
+
+        4.  远程登录云主机（使用 ssh命令 远程登录）
+            -   `ssh root@12.23.43.53`
+
+### WSGI Django 工作环境部暑
+
+-   WSGI （ Web Server Gateway Interface ） Web服务器网关接口,是 Python 应用程序或框架 和 Web服务器 之间的一种的接口。
+-   他实现了 WSGI 协议、http 等 协议。Nginx 中 HttpUwsgiModule 的作用是与 uWSGI 服务器进行交换。WSGI 是一种 web服务器网关接口。
+
+### uWSGI 网关接口配置
+
+-   使用 python3 manage.py runserver 通常只在开发和测试环境中使用
+-   当开发结束后,完善的项目代码需要在一个高效稳定的环境中运行,这时可以使用 uWSGI
+-   uWSGI 是 WSGI 的一种，它可以让 Django、Flask 等开发的web站点运行其中
+-   安装 `sudo pip3 install uwsgi`
+
+
+
+
+
 ## 配置总结
 
 ```python
