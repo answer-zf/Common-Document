@@ -2468,16 +2468,109 @@ class User(AbstractUser):
 -   WSGI （ Web Server Gateway Interface ） Web服务器网关接口,是 Python 应用程序或框架 和 Web服务器 之间的一种的接口。
 -   他实现了 WSGI 协议、http 等 协议。Nginx 中 HttpUwsgiModule 的作用是与 uWSGI 服务器进行交换。WSGI 是一种 web服务器网关接口。
 
-### uWSGI 网关接口配置
+#### uWSGI 网关接口配置
 
 -   使用 python3 manage.py runserver 通常只在开发和测试环境中使用
 -   当开发结束后,完善的项目代码需要在一个高效稳定的环境中运行,这时可以使用 uWSGI
 -   uWSGI 是 WSGI 的一种，它可以让 Django、Flask 等开发的web站点运行其中
--   安装 `sudo pip3 install uwsgi`
 
+#### 安装 
 
+-   `sudo pip3 install uwsgi`
 
+#### 配置 uWSGI
 
+-   添加配置文件：项目文件夹/uwsgi.ini
+
+    -   eg. `mywebsite/uwsgi.ini`
+
+        ```ini
+            [uwsgi]
+            # 套接字的方式 IP:端口号
+            # socket=127.0.0.1:8000
+            # Http通信方式 IP:端口号
+            http=127.0.0.1:8000
+            # 项目当前工作目录
+            chdir=/home/zf/PycharmProjects/Django/website
+            # 项目中 wsgi.py 文件的目录，相对于当前工作目录
+            wsgi-file=website/wsgi.py
+            # 进程个数
+            process=4
+            # 线程个数
+            threads=2
+            # 服务 pid记录文件
+            pidfile=uwsgi.pid
+            # 服务 日志文件位置
+            daemonize=uwsgi.log
+        ```
+
+- uWSGI 运行管理
+
+    -   启动 uWSGI
+
+        -   在项目根目录下运行
+        -   `sudo uwsgi --ini website/uwsgi.ini`
+        -   查看运行状态：`ps aux | grep uwsgi` 
+
+    -   停止 uWSGI
+        -   在项目根目录下运行
+        -   `sudo uwsgi --stop uwsgi.pid`(推荐)
+        -   `sudo killall uwsgi`
+
+    -   说明：
+        -   当 uwsgi 启动后，当前 django项目 的程序已变成后台守护进程，在关闭当前终端时此进程也不会停止
+
+### Nginx 反射代理配置
+
+> Nginx 是轻量级的高性能web服努器,提供了诸如HTP代理和反向代理、负载均 存、缓存等一系列重要特性,在实践之中使用广泛
+
+-   C 语言编写 执行效率高
+-   Nginx 作用
+    -   负载均衡，多台服务器轮流处理请求
+    -   反射代理
+-   原理
+    -   客户端请求 Nginx， 再由 Nginx 请求 uwsgi ,运行 django 下的 python代码。
+-   Ubuntu下安装：`sudo apt install nginx`
+
+-   配置
+    -   修改 `sudo vi /etc/nginx/sites-available/default`
+    
+    ```
+        # 在 server 节点下添加新的 location 项，指向 uwsgi 的 ip 与端口
+        server{
+            ...
+            location / {
+                uwsgi_pass 127.0.0.1:8000; # 重定向到 127.0.0.1:8000
+                include /etc/nginx/uwsgi_params; # 将所有的参数转到 uwsgi下
+            }
+            ...
+        }
+    ```
+
+-   启动 nginx
+    -   `sudo /etc/init.d/nginx start`
+    -   `sudo service nginx restart`
+
+-   查看 nginx
+
+    -   `ps aux | grep nginx`
+    -   `sudo /etc/init.d/nginx status`
+    -   `sudo service nginx status`
+
+-   停止 nginx
+    -   `sudo /etc/init.d/nginx stop`
+    -   `sudo service nginx stop`
+
+-   重启 nginx
+    -   `sudo /etc/init.d/nginx restart`
+    -   `sudo service nginx restart`
+
+-   修改 uWSGI 配置
+    -   修改 项目文件夹 /uwsgi.ini 下的 Http通信方式改为 socket 通信方式
+        -   `socket=127.0.0.1:8000`
+    -   uwsgi 关闭并重新启动
+        -   `sudo uwsgi --stop uwsgi.pid`
+        -   `sudo uwsgi --ini website/uwsgi.ini`
 
 ## 配置总结
 
