@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+import ajax
 from django.conf.urls import include, url
 from django.contrib import admin
 
@@ -26,4 +27,5 @@ urlpatterns = [
     url(r'^bookstore/', include('bookstore.urls')),
     url(r'^userinfo/', include('userinfo.urls')),
     url(r'^user/', include('user.urls')),
+    url(r'^ajax/', include('ajax.urls')),
 ]

@@ -758,12 +758,12 @@
     -   应用在 Django 项目中是一个独立的业务模块,可以包含自己的路由,视图...
     -   Django 中,主文件夹是不处理用户具体请求的，主文件夹的作用是做项目的初始化以及请求的分发(分布式请求处理)具体的请求是由应用来进行处理的
 
--    创建应用 app
+-   创建应用 app
 
-     -    创建应用的指令
+    -   创建应用的指令
 
-          -    `pyhton3 manage.py startapp 应用名称`
-               -    应用名称：变量名命名规则
+        -   `pyhton3 manage.py startapp 应用名称`
+            -   应用名称：变量名命名规则
 
 -   Django 应用的结构组成
 
@@ -786,9 +786,9 @@
          9.  `templates/`
              -   自己创建 应用模板
 
- -   配置安装应用
+-   配置安装应用
 
-     -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
+    -   在 settings.py 中配置应用 -> 在 INSTALLED_APPS 添加应用名
 
         ```python
             INSTALLED_APPS = [
@@ -798,7 +798,7 @@
         ```
 
 -   应用的分布式路由
-    
+
     -   使用 include 函数让某个正则匹配后关联分支到某个app。
     -   步骤：
         -   主模块的 urlpatterns 中添加 `url(r'^music/', include('music.urls')),`
@@ -854,7 +854,7 @@
             ```py
             import pymysql
 
-            pymysql.install_as_MySQLdb() 
+            pymysql.install_as_MySQLdb()
             ```
 
 3.  数据库迁移
@@ -894,7 +894,7 @@
 ## Python数据库模型 ORM
 
 1.  ORM框架
-    
+
     -   ORM(Object Relationship Mapping) **对象关系映射**， 它允许你使用类和对象对数据库进行交互(使用类和对象和使用SQL一样且更方便各种操作)。
 
     -   三大特征
@@ -906,7 +906,7 @@
 
     -   添加 bookstore 的 app: `python manage.py startapp bookstore`
     -   添加模型类并注册app
-        
+
         -   在 主模块的 settings.py 的 INSTALLED_APPS 中注册
 
             ```python
@@ -917,7 +917,7 @@
             ```
 
     -   添加数据表
-        
+
         -   在 bookstore app 中的 models.py 创建模型类
 
             ```python
@@ -952,14 +952,14 @@ _pip install cryptography_
                     name = models.FIELD_TYPE(FIELD_OPTIONS)
             ```
 
-        2.   CLASSNAME
+        2.  CLASSNAME
 
             -   实例类名，表名组成的一部分，首字母大写
             -   默认表名组成规范：
-                -   应用名称_classname
+                -   应用名称\_classname
             -   NAME
-                -  属性名，映射回数据库就是字段名
-             -  FIELD_TYPE
+                -   属性名，映射回数据库就是字段名
+            -   FIELD_TYPE
                 -   字段类型，映射到表中的字段类型
 
         3.  FIELD_TYPE(字段类型)
@@ -994,10 +994,10 @@ _pip install cryptography_
                 -   auto_now_add=True
 
             5.  DecimalField()
-   
+
                 -   数据库类型：decimal(x,y)
                 -   编程语言中：使用 小数 表示该列的值
-                -   在数据库中：使用 小数 
+                -   在数据库中：使用 小数
                 -   参数：
                     -   DecimalField.max_digits:总位数 / 长度，包括小数点后的位数。该值必须大于等于 decimal_places。
                     -   DecimalField.decimal_places: 小数点后的数字长度
@@ -1048,29 +1048,29 @@ _pip install cryptography_
 
             -   指定创建的列的额外信息
             -   允许出现多个字段选项，多个选项之间使用 ， 隔开
-            
+
             1.  primary_key
-                
+
                 -   如果设置为True，表示该列为主键
 
             2.  null
-                
+
                 -   如果设置为True，表示该列值允许为空
 
             3.  default
-                
+
                 -   设置所在列的默认值
 
             4.  db_index
-                
+
                 -   如果设置为True，表示为该列 添加索引
 
             5.  unique
-                
+
                 -   如果设置为True，表示为该列 的值唯一
 
             6.  db_column
-                
+
                 -   指明列的名称，如果不指定的话则采用属性名作为列名。
                 -   eg.`title = models.CharField("书名", max_length=50, db_column='bookname')`
 
@@ -1081,6 +1081,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   CRUD 是指在做计算处理时的增加（Create）、读取查询（Read）、更新（Update）和删除（Delete）
 
 **管理器对象**
+
 -   每一个继承自 models.Model 的模型类，都会有一个 objects 对象被同样继承下来。这个对象即管理器对象。
 -   数据库的增删改查可以通过模型的管理器实现
     ```python
@@ -1093,27 +1094,28 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
 -   Django 使用一种直观的方式把数据库表中的数据表示出Python对象
 -   创建数据中每一条记录就是创建一个数据对象
-    1.  Entry.objects.create(属性=值，属性=值)
-        -   成功：返回创建好的实体对象（一条记录）
-        -   失败：抛出异常
-    2.  创建Entry 实体对象，并调用save()进行保存
 
-        ```python
-            obj = Entry(属性=值,属性=值)
-            obj.属性=值
-            obj.save()
-            # 无返回值，保存成功后，obj会被重新赋值
-        ```
+1.  Entry.objects.create(属性=值，属性=值)
 
-    ```python
-        from . import models    
+    -   成功：返回创建好的实体对象（一条记录）
+    -   失败：抛出异常
+
+2.  创建Entry 实体对象，并调用save()进行保存
+
+    -   obj = Entry(属性=值,属性=值)
+    -   obj.属性=值
+    -   obj.save()
+    -   无返回值，保存成功后，obj会被重新赋值
+
+    ```django
+        from . import models
         # 1.
         try:
             models.Book.objects.create(title='C++'...)
             print(abook)
         except:
             print('error..)
-        
+
         # 2.
         try:
             abook=models.Book(title='C++'...)
@@ -1146,7 +1148,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 | filter()  |       查询符合条件的多条记录       |
 | exclude() |     查询符合条件之外的全部记录     |
 
-1.  all() 
+1.  all()
 
     -   用法： Entry.objects.all()
     -   作用：查询 Entry 实体中所有的数据
@@ -1220,6 +1222,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   用法: Entry.objects.filter(属性1=值1，属性2=值2)
     -   返回值: QuerySet 容器对象，内部存放 Entry 实例
     -   说明:
+
         -   当多个属性在一起时为 与关系(and)，即 `Books.objects.filter(price=20,pub="清华")`
 
     -   字段查找
@@ -1233,30 +1236,32 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
         -   每一个查询谓词是一个 独立的查询功能
 
-        -   语法：xxx.filter(属性__查询谓词=值)
+        -   语法：xxx.filter(属性\_\_查询谓词=值)
 
-        1.  __exact:等值匹配（默认）
-            -   Author.objects.filter(id__exact = 1)
-        2.  __gt:大于指定值
-            -   Author.objects.filter(id__gt = 1)
-            -   __gte:大于等于
-        3.  __lt:小于指定值
-            -   Author.objects.filter(id__lt = 5)
-            -   __lte:小于等于
+        1.  `__exact`:等值匹配（默认）
+            -   `Author.objects.filter(id__exact = 1)`
+        2.  `__gt`:大于指定值
+            -   `Author.objects.filter(id__gt = 1)`
+            -   `__gte`:大于等于
+        3.  `__lt`:小于指定值
 
-        4.  __contians:包含指定值
-            -   Author.objects.filter(name__contains = '老')
-        5.  __startswith:以指定内容开头
-            -   Author.objects.filter(name__startswith='周')
-        6.  __endswith:以指定内容结尾
-            -   Author.objects.filter(name__endswith='王')
+            -   `Author.objects.filter(id__lt = 5)`
+            -   `__lte`:小于等于
 
-        7.  __in：查找数据在指定范围内
-            -   Author.objects.filter(age__in=[30,40,50,60,70])
-        8.  __range:查找数据在指定区间内的(包含起始和结尾)
-            -   Author.objects.filter(age__range=(30,70))
+        4.  `__contians`:包含指定值
+            -   `Author.objects.filter(name__contains = '老')`
+        5.  `__startswith`:以指定内容开头
+            -   `Author.objects.filter(name__startswith='周')`
+        6.  `__endswith`:以指定内容结尾
 
-        [查询谓词参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/querysets.html)     
+            -   `Author.objects.filter(name__endswith='王')`
+
+        7.  `__in：查找数据在指定范围内`
+            -   `Author.objects.filter(age__in=[30,40,50,60,70])`
+        8.  `__range`:查找数据在指定区间内的(包含起始和结尾)
+            -   `Author.objects.filter(age__range=(30,70))`
+
+        [查询谓词参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/querysets.html)
 
     -   不等的条件筛选
 
@@ -1276,7 +1281,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 8.  修改数据记录
 
     1.  修改单个实体的某些字段值
-        
+
         1.  查
             -   通过 get() 得到要修收的实体对象
         2.  改
@@ -1291,7 +1296,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         ```
 
     2.  通过 QuerySet 批量修改 对应的全部字段
-        
+
         -   直接调用 Queryset的 update(属性=值)实现批量修改
 
         ```python
@@ -1305,16 +1310,16 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   删除单个 Entry 对象 或 删除一个查询结果集 (Query Set) 中的全部对象都是调用 delete()方法
 
     1.  删除单个对象
-        
+
         -   步骤
-            
+
             1.  查找查询结果对应的一个数据对象
             2.  调用这个数据对象的 delete() 方法实现删除
 
     2.  删除查询结果集
-    
+
     -   步骤
-        
+
         1.  查找查询结果集中满足条件的全部 Queryset查询集合对象
         2.  调用查询集合对象的 delete() 方法实现删除
 
@@ -1331,15 +1336,16 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   聚合查询是指对一个数据表中的一个字段的数据进行部分或全部进行统计查询,查 bookstore_book数据表中的全部书的平均价格,查询所有书的总个数等都要使用聚合查询
 
     1.  不带分组聚合
-        
+
         -   不带分组的聚合查询是指导将全部数据进行集中统计查询
         -   聚合函数
+
             -   定义模块：`django.db.models`
             -   用法：`from django.db.models import *`
             -   聚合函数：
                 -   `Sum \ Avg \ Count \ Max \ Min`
             -   语法：
-                -   `Entry.objects.aggregate(结果变量名=聚会函数('列'))
+                -   \`Entry.objects.aggregate(结果变量名=聚会函数('列'))
             -   返回结果
                 -   由 结果变量名 和值组成的字典
                 -   格式为：
@@ -1362,10 +1368,10 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             -   `pub_set=models.Book.objects.values('pub')`
 
         2.  通过返回结果的 QuerySet.annotate 方法分组聚合得到分组结果
-            
+
             -   QuerySet.annotate(名=聚合函数('列'))
             -   返回 QuerySet 结果集，内部存储结果的字典
-            
+
             -   `pub_set.annotate(myCount=Count('pub'))`
 
 11. F对象
@@ -1376,12 +1382,14 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   `from django.db.models import F`
 
     1.  作用:
+
         -   在执行过程中获取某列的值并对其直接进行操作
         -   当同时对数据库中两个字段的值进行比较获取 Queryset 数据集时,可以便用F对象
 
     2.  说明:
+
         -   一个F()对象代表了一个model的字段的值
-    
+
     3.  使用它就可以直接参考 model 的 field 和执行数据库操作而不用再把它们( model field)查询出来放到 python内存中。
 
         ```python
@@ -1398,6 +1406,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   当在获取查询结果集 使用复杂的逻辑或丨、逻辑非~ 等操作时可以借助于Q对象进行操作
 
     1.  作用:
+
         -   在条件中用来实现除 and(&) 以外的 or(|) 或 not(-) 操作
 
     2.  运算符：
@@ -1408,9 +1417,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
     3.  语法
 
-        -   `Q(条件1) | Q(条件2)` 
-        -   `Q(条件1) & Q(条件2)` 
-        -   `Q(条件1) &~ Q(条件2)`  # 条件1成立且条件2不成立 
+        -   `Q(条件1) | Q(条件2)`
+        -   `Q(条件1) & Q(条件2)`
+        -   `Q(条件1) &~ Q(条件2)`   条件1成立且条件2不成立
 
 
     ```python
@@ -1435,6 +1444,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   在 DJango 中使用上述非查询语句必须使用游标进行操作
 
     -   使用步骤：
+
         1.  Django 中的 cursor 游标定义在django.db.connection 中，使用前需要导入。
             -   `from django.db impot connection`
         2.  用创建 cursor 类的构造函数创建 cursor 对象,再使用 cursor 对象为保证在出现异常时能释放 cursor 资源通常使用 with 语句进行创建操作
@@ -1452,9 +1462,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   django 会搜集所有已注册的模型类,为这些模型类提拱数据管理界面,供开发者使用
 
     -   使用步骤：
-        
+
         1.  创建后台管理帐号
-            -   `python manage.py createsuperuser`  
+            -   `python manage.py createsuperuser`
         2.  据提示完成注册
         3.  登录：127.0.0.1/admin
 
@@ -1468,8 +1478,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     1.  在应用app中的 admin.py 中导入注册要管理的模型 models 类
         -   `from . import models`
     2.  调用 admin.site.register 方法进行注册
+
         -   `from django.contrib import admin`
-        -   `admin.site.register(自定义模型类) 
+        -   \`admin.site.register(自定义模型类)
 
         ```python
             from django.contrib import admin
@@ -1477,12 +1488,12 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
             admin.site.register(models.Book)
         ```
-    
+
     3.  修改后台 Models的展现形式
-        
+
         -   后台 Models 默认的展现形式 xxx object
         -   可以在 models.py 中重写 `__str__` 展现形式
-    
+
         ```python
             class Book(models.Model):
                 ...
@@ -1491,21 +1502,23 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         ```
 
 -   模型管理器类
+
     -   作用:
         -   用后台管理界面添加便于操作的新功能
     -   说明:
         -   后台模型管理器类须继承自 `django.contrib.admin` 里的 ModelAdmin 类
     -   使用
+
         1.  在 应用app/admin.py 中定义 模型管理器类
         2.  注册管理器与模型类关联
 
     -   模型管理器类 ModelAdmin 中实现的高级管理功能
-        
-        1.   list_display 去控制哪些字段会显示在 Admin 的修改列表页面中。
-        2.   list_display_links 可以控制 list_display 中的字段是否应该链接到对象的“更改"页面
-        3.   list_filter 设置激活 Admin 修改列表页面右侧栏中的过滤器
-        4.   search_fields 设置启用 Admin 更改列表页面上的搜索框。
-        5.   list_editable 设置为模型上的字段名称列表,这将允许在更改列表页面上进行编辑。
+
+        1.  list_display 去控制哪些字段会显示在 Admin 的修改列表页面中。
+        2.  list_display_links 可以控制 list_display 中的字段是否应该链接到对象的“更改"页面
+        3.  list_filter 设置激活 Admin 修改列表页面右侧栏中的过滤器
+        4.  search_fields 设置启用 Admin 更改列表页面上的搜索框。
+        5.  list_editable 设置为模型上的字段名称列表,这将允许在更改列表页面上进行编辑。
 
         [参考](https://yiyibooks.cn/xx/Django_1.11.6/ref/contrib/admin/index.html)
 
@@ -1518,16 +1531,16 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 list_editable = ['market_price']
 
             admin.site.register(models.Book, BookManager)
-        ``` 
+        ```
 
 ### 数据库表管理
 
 1.  修改模型类字段的显示名字
-    
+
     -   模型类各字段的第一个参数为 verbose_name,此字段显示的名字会在后台数据库管理页面显示
 
 2.  通过 Meta 内嵌类, 定义模型类的属性及展现形式
-    
+
     -   模型类可以通过定义内部类 class Meta 来重新定义当前模型类和数据表的一些属性信息
 
     ```python
@@ -1549,17 +1562,17 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   常用的表关联方式有三种
 
     1.  一对一映射: 一对一是表示现实事物间存在的一对一的对应关系。
-        
+
         -   语法
-            
+
             ```python
                 class A(models.Model):
                     ...
-                
+
                 class B(models.Model):
                     属性=models.OneToOneField(A)
-            ``` 
-    
+            ```
+
         -   示例
 
             ```python
@@ -1573,6 +1586,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             ```
 
         -   查询
+
             -   在 Wife 对象中,通过 author 属性找到对应的 author 对象
             -   在 Author 对象中,通过 wife 属性找到对应的 wife 对象
 
@@ -1582,14 +1596,16 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 from . import models
                 author1=models.Author.objects.create(name='teacherW',age=22)
                 wife1=models.Wife.objects.create(name='wifeW',author=author1) # 一对一可以没有对应的数据，可略
-            ``` 
+            ```
 
         -   一对一数据的相互获取
+
             1.  正向查询
-                -   直接通过关联属性（引用属性）查询即可  
+                -   直接通过关联属性（引用属性）查询即可
                     -   `wife = models.Wife.objects.get(name='fff')`
                     -   `wife.name / wife.author.name`
             2.  反向查询
+
                 -   通过反向引用属性查询
                 -   反向引用属性为 实例时象.引用类名(小写) 如作家的反向引用为 作家对象.wife
                 -   当反向引用不存在时,则会触发异常
@@ -1601,13 +1617,15 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 except:
                     print(authorW.name)
                 ```
- 
+
         -   作用
             -   主要是解决常用数据不常用数据的存储问题，把经常加载的一个数据放在主表中,不常用数据放在另一个副表中,这样在访问主表数据时不需要加载副表中的数据以提高访问速度提高效率和节省内存空间，如经常把书的内容和书名建成两张表,因为在网站上经常访问书名等信息,但不需要得到书的内容。
 
     2.  一对多映射
+
         -   一对多是表示现实事物间存在的一对多的对应关系
         -   创建：
+
             -   当一个A类对象可以关联多个B类对象时
 
                 ```python
@@ -1620,6 +1638,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 ```
 
                 -   外键类 ForeignKey
+
                     -   构造函数
                         -   `ForeignKey(to,on_delete,**options)`
                     -   常用参数
@@ -1629,7 +1648,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                             3.  SET_NULL 设置 ForeignKey null,只用 null 是 True 才有可能
                             4.  SET_DEFAULT 将 ForeignKey 设置为其默认值，必须设置 ForeignKey 的默认值
                             5.  ...
-                        -   **options 可以是常用的字段选项
+                        -   \*\*options 可以是常用的字段选项
                             -   eg.: null,unique ...
 
                     ```python
@@ -1640,21 +1659,24 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     class Book(models.Model):
                         ...
                         publisher = models.ForeignKey(Publisher, null=True)
-                    
+
                     # 添加
                     pub1=models.Publisher.objects.get(name='清华')
                     models.Book.objects.create(title='React',publisher=pub1)
                     ```
+
         -   查询
+
             -   多对一 查询
                 ```python
                 abook = models.Book.objects.get(id=8)
                 abook.publisher.name
-                ``` 
+                ```
             -   一对多 查询
+
                 ```python
                 pub1=models.Publisher.objects.get(name='清华')
-                
+
                 # 方法1
                 books=pub1.book_set.all() # 关联类名_set：反向引用属性 -> 管理器对象 QuerySet
 
@@ -1663,10 +1685,12 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
                 for i in books:
                     print(i.name)
-                ``` 
+                ```
 
     3.  多对多映射：多对多表达对象之间多对多复杂关系
+
         -   创建
+
             ```python
             class Publisher(models.Model):
                 ...
@@ -1675,7 +1699,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 ...
                 authors = models.ManyToManyField(Author)
             ```
+
         -   通过 Author 查询对应的所有的 Books
+
             ```python
                 author.book_set.all()
                 author.book_set.filter()
@@ -1706,7 +1732,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     for author in book.authors.all(): # book.authors -> 查询结果集
                         print(author.name,end='/')
                     print()
-            ```   
+            ```
 
 ## Cookies / Session
 
@@ -1729,30 +1755,31 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   HttpResponse.delete_cookie(key)
         -   删除指定 key 的 Cookie。如果 key 不存在则什么也不发生
 -   Django 中的 COOKIE
+
     -   使用 响应对象 HttpResponse 将 cookie 保存进客户端
+
         -   方法1
             ```python
                 from django.http import HttpResponse
                 resp = HttpResponse()
                 resp.set_cookie('cookie_name', 'cookie.value', time)
-            ``` 
+            ```
         -   方法2
             ```python
                 from django.shortcuts import render
                 resp=render(request, 'xxx.html',locals())
                 resp.set_cookie('cookie_name', 'cookie.value', time)
-            ``` 
+            ```
         -   方法3
             ```python
                 from django.shortcuts import redirect
                 resp=redirect('/')
                 resp.set_cookie('cookie_name', 'cookie.value', time)
             ```
-    
+
     -   获取 cookie
         -   通过 request.COOKIES 绑定的字典（dict）获取客户端的 COOKIES 数据
             -   `value = request.COOKIES.get('cookie_name', 'no values!')`
-         
 
 ### Session
 
@@ -1773,9 +1800,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 1.  定义：
     -   在服务器上开辟一段空间用于保留浏览器和服务器交互时的重要数据
 2.  Django 下启用 Session
-    
+
     -   配置：
-       
+
         -   在 主模块 settings.py 中添加
             ```python
                 INSTALLED_APPS=[
@@ -1801,8 +1828,8 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   删除：`del request.session['KEY']`
 
     -   在 settings.py 中有关 session 的设置
-        
-        1.  SESSION_COOKIE_AGE：作用 sessionid 在 cookies 中的保存时长 SESSION_COOKIE_AGE=60*30
+
+        1.  SESSION_COOKIE_AGE：作用 sessionid 在 cookies 中的保存时长 SESSION_COOKIE_AGE=60\*30
         2.  SESSION_EXPIRE_AT_BROWSER_CLOSE=True 设置只要浏览器关闭时，session就失效
 
     -   注：当使用 session 时需要迁移数据库，否则会出现错误
@@ -1817,8 +1844,10 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 ![Python-Django_Middleware](http://images.dorc.top/blog/Python/Python-Django_Middleware.jpeg)
 
 -   中间件类
+
     -   中间件类 须继承自`django.utils.deprecation.MiddlewareMixin`类
     -   中间件类须实现下列五个方法中的一个或多个
+
         1.  `def process_request(self,request):`
             -   执行视图之前被调用,在每个请求上调用,返回 None 或 Httpresponse 对象
         2.  `def process_view(self,request,callback,callback_args,callback_kwargs):`
@@ -1841,7 +1870,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             'mymiddleware.check_login.VisitLimit',
         ]
 
-        # check_login.py 
+        # check_login.py
         # 使用
         from django.http import HttpResponse
         from django.http import HttpResponseRedirect
@@ -1884,19 +1913,23 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 ### 跨站请求伪造保护 CSRF
 
 -   跨站请求伪造攻击
-    
+
     -   某些恶意网站上包含链接、表单按钮或者 Javascript,它们会利用登录过的用户在浏览器中的认证信息试图在你的网站上完成某些操作,这就是跨站请求伪造
 
 -   CSRF
+
     -   Cross-Site Request ForeignKey
 
 -   说明：
+
     -   CSRF 中间件和模板标签提供对跨站请求伪造简单易用的防护。
 
 -   作用：
+
     -   不让其他表单提交到此 Django 服务器
 
 -   解决方案
+
     1.  取消 csrf （不推荐）
         -   删除 settings.py 中 MIDDLEWARE 中的`'django.middleware.csrf.CsrfViewMiddleware',`
     2.  开发验证
@@ -1905,7 +1938,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
             @csrf_protect
             def post_views(request):
                 pass
-        ```   
+        ```
     3.  通过验证
 
         -   在表单中增加一个标签
@@ -1921,10 +1954,10 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 ## 分页
 
 -   分页是指在 web页面 有大量数据需要显示时,当一页的内容太多不利于间读和不利于数据提取的情况下,可以分为多页进行显示
--    Django 提供了一些类来帮助你管理分页的数据一也就是说,数据被分在不 同页面中,并带有 上一页/下一页 链接。
--    这些类位于 `django/core/paginator.py` 中
+-   Django 提供了一些类来帮助你管理分页的数据一也就是说,数据被分在不 同页面中,并带有 上一页/下一页 链接。
+-   这些类位于 `django/core/paginator.py` 中
 
-### paginator 
+### paginator
 
 -   paginator 对象
 
@@ -1936,12 +1969,12 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         -   分页对象
 
 -   Paginator 属性
-    
+
     -   count: 对象总数，即查询出来的数据总条数
     -   num_pages: 总页数
     -   page_range: 从 1 开始的 range 对象，值即：range(1,num_pages+1)
     -   per_page: 每页数据个数，即将创建 Paginator 时传入的per_page，设置为该属性
-  
+
 -   Paginator 方法
 
     -   Paginator.page(number)
@@ -2037,6 +2070,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
     -   通过 forms 模块,允许将表单与 class 相结合,允许通过 class 生成表单
 
 2.  使用 forms 模块的步骤
+
     1.  在应用中创建 forms.py
     2.  导入 django 提供的 forms
         -   from django import forms
@@ -2072,14 +2106,15 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 4.  在模板中解析 form 对象
 
     -   在 视图中创建 form 对象 并发送到模板中解析
-        
+
         1.  手动解析
+
             ```django
             {% for f in myform %}
-            {{f.label}} {{f}} 
+            {{f.label}} {{f}}
             {% endfor %}
             ```
-        
+
         2.  自动解析
             1.  {{form.as_p}}
                 -   将 form 中的每个属性（控件/文本）都使用 p标签 包裹起来再显示
@@ -2090,7 +2125,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 -   将form中的每个属性(控件/文本)都使用 tr标签 包裹起来再显示
                 -   注意:必须手动提供 tablet标记
 
-5. 通过 forms对象 获取表单数据
+5.  通过 forms对象 获取表单数据
 
     1.  通过 forms.Form 子类的构造器来接收post数据
         -   `form=XXXForm(request.POST)`
@@ -2122,17 +2157,17 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
             -   在控件类型的基础之上还能指定控件的一些 html属性值
 
-            ```python
-            class RegForm(forms.Form):
-                ...
-                password = forms.CharField(
-                    label='pl. input password', widget=forms.PasswordInput(
-                        attrs={
-                            'myattr1': 'myvalue1',
-                            'myattr2': 'myvalue2',
-                        }
+            ```django
+                class RegForm(forms.Form):
+                    ...
+                    password = forms.CharField(
+                        label='pl. input password', widget=forms.PasswordInput(
+                            attrs={
+                                'myattr1': 'myvalue1',
+                                'myattr2': 'myvalue2',
+                            }
+                        )
                     )
-                )
             ```
 
 ### Django form 表单验证
@@ -2141,11 +2176,12 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   当在创建有不同的多个表单需要提交的网站时,用表单验证比较方便验证的封装
 -   当调用 form.is.valid() 返回 True 表示当前表单合法,当返回 False 说明表单验证出现问题
 -   验证步骤
-    -   先对 form.XXXField() 参数值进行验证,比如 min_length, max_length, validators=[...] 如果不符合 form.is_valid() 返回False 
+    -   先对 form.XXXField() 参数值进行验证,比如 min_length, max_length, validators=[...] 如果不符合 form.is_valid() 返回False
     -   对各自 from.clean_xxx属性名(self) 方法对相应属性进行验证,如果验证失败 form.is_valid() 返回False
     -   调用 form.clean(self) 对表单的整体结构进行验证,如果验证失败 form.is_valid() 返回False
     -   以上验证都成功 form.is_valid() 返回 True
 -   验证方法
+
     -   validators=[验证函数1,验证函数2]
         -   验证函数验证失败抛出 forms.ValidationError
         -   验证成功返回 None
@@ -2203,10 +2239,10 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                     return HttpResponse('ok')
                 else:
                     return HttpResponse('error..')
-        
+
         # html
         <form action="/userinfo/test_form" method="POST">
-            {% csrf_token %} 
+            {% csrf_token %}
             {{ myform.as_p }}
             <input type="submit" value="submit" />
         </form>
@@ -2219,11 +2255,11 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   文件上传必须为 POST 提交方式
 -   表单 <form> 中文件上传时必须有带有 `enctype=" multipart/form-data"`时才会包含文件内容数据
 -   表单中 用 `<form type="file" name="xxx">` 标签上传文件
-    
+
     -   名字 xxx 对应 request.FILES['xxx'] 对应的内存缓冲文件流对象，可通过 request.FILES['xxx'] 返回的对象获取上传文件数据
     -   file=request.FILES['xxx']
-        -   file 绑定文件流对象，可以通过文件流对象的如下信息获取文件数据 
-            -   file.name 文件名 
+        -   file 绑定文件流对象，可以通过文件流对象的如下信息获取文件数据
+            -   file.name 文件名
             -   file.file文件的字节流数据
 
 -   如下上传文件为图片类型,可以用模块类属性定义成 models.ImageField 类
@@ -2245,7 +2281,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
                 file_content = myfile.file.read()
                 fd.write(file_content)
             return HttpResponse('ok')
-    
+
     ##### settings.py
     MEDIA_DIR = os.path.join(BASE_DIR, 'static/images')
 ```
@@ -2255,6 +2291,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 -   Django带有一个用户认证系统。它处理用户账号、组、权限以及基于 cookie 的用户会话。
 
 -   作用
+
     1.  添加普通用户和超级用户
     2.  修改密码
     3.  登陆和退出管理
@@ -2293,7 +2330,7 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
 
         ...
         user.save()
-        ```   
+        ```
 
     -   删除用户
 
@@ -2442,23 +2479,26 @@ class User(AbstractUser):
 -   步骤
 
     1.  安装同版本的数据库
-    
+
     2.  django 项目迁移
 
         1.  安装python
+
             -   `sudo apt install python3`
 
         2.  安裝相同版本的包
 
             -   导出当前模块数据包的信息
+
                 -   `pip3 freeze > package_list.txt`
 
             -   导入到另一台新主机
                 -   `pip3 install -r package_list.txt`
 
         3.  将当前项目源代码复制到远程主机上(scp命令)
-            -  sudo scp -a 当前项目源代码远程主机地址和文件夹
-               -  eg.`scp -a /home/zf/mywebsite root@12.23.43.53/root/mydjangoproject`
+
+            -   sudo scp -a 当前项目源代码远程主机地址和文件夹
+                -   eg.`scp -a /home/zf/mywebsite root@12.23.43.53/root/mydjangoproject`
 
         4.  远程登录云主机（使用 ssh命令 远程登录）
             -   `ssh root@12.23.43.53`
@@ -2474,7 +2514,7 @@ class User(AbstractUser):
 -   当开发结束后,完善的项目代码需要在一个高效稳定的环境中运行,这时可以使用 uWSGI
 -   uWSGI 是 WSGI 的一种，它可以让 Django、Flask 等开发的web站点运行其中
 
-#### 安装 
+#### 安装
 
 -   `sudo pip3 install uwsgi`
 
@@ -2504,15 +2544,16 @@ class User(AbstractUser):
             daemonize=uwsgi.log
         ```
 
-- uWSGI 运行管理
+-   uWSGI 运行管理
 
     -   启动 uWSGI
 
         -   在项目根目录下运行
         -   `sudo uwsgi --ini website/uwsgi.ini`
-        -   查看运行状态：`ps aux | grep uwsgi` 
+        -   查看运行状态：`ps aux | grep uwsgi`
 
     -   停止 uWSGI
+
         -   在项目根目录下运行
         -   `sudo uwsgi --stop uwsgi.pid`(推荐)
         -   `sudo killall uwsgi`
@@ -2533,21 +2574,23 @@ class User(AbstractUser):
 -   Ubuntu下安装：`sudo apt install nginx`
 
 -   配置
+
     -   修改 `sudo vi /etc/nginx/sites-available/default`
-    
-    ```
-        # 在 server 节点下添加新的 location 项，指向 uwsgi 的 ip 与端口
-        server{
-            ...
-            location / {
-                uwsgi_pass 127.0.0.1:8000; # 重定向到 127.0.0.1:8000
-                include /etc/nginx/uwsgi_params; # 将所有的参数转到 uwsgi下
+
+        ```python
+            # 在 server 节点下添加新的 location 项，指向 uwsgi 的 ip 与端口
+            server{
+                ...
+                location / {
+                    uwsgi_pass 127.0.0.1:8000; # 重定向到 127.0.0.1:8000
+                    include /etc/nginx/uwsgi_params; # 将所有的参数转到 uwsgi下
+                }
+                ...
             }
-            ...
-        }
-    ```
+        ```
 
 -   启动 nginx
+
     -   `sudo /etc/init.d/nginx start`
     -   `sudo service nginx restart`
 
@@ -2558,10 +2601,12 @@ class User(AbstractUser):
     -   `sudo service nginx status`
 
 -   停止 nginx
+
     -   `sudo /etc/init.d/nginx stop`
     -   `sudo service nginx stop`
 
 -   重启 nginx
+
     -   `sudo /etc/init.d/nginx restart`
     -   `sudo service nginx restart`
 
@@ -2571,6 +2616,37 @@ class User(AbstractUser):
     -   uwsgi 关闭并重新启动
         -   `sudo uwsgi --stop uwsgi.pid`
         -   `sudo uwsgi --ini website/uwsgi.ini`
+
+### nginx 配置静态文件路径
+
+-   在 django 中 settings.py 中配置的 static 只在 `python manage.py runserver`时有效
+
+    ```conf
+        # file: /etc/nginx/sites-available/default
+        # 新添 location /static 路由配置，重定向到指定的绝对路径
+        server {
+            ...
+            location /static {
+                # root static 文件夹所在的绝对路径
+                root /home/zf/PycharmProjects/Django/website; # 必须以 ; 结尾
+            }
+            ...
+        }
+
+        # 重启 nginx 即可
+    ```
+
+### 404界面
+
+-   在模板文件夹内添加 404.html 模版,当响应返回 HttpResponseNotFound 或 raise Http404 时将会被显示
+-   404.html 仅在发布版中（即 settings.py 中 DEBUG=False）才起作用
+-   当响应处理函数触发 Http404 异常时就会跳转到 404界面
+
+```python
+from django.http import Http404
+def xxx():
+    raise Http404
+```
 
 ## 配置总结
 
@@ -2593,3 +2669,90 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 文件路径
 ####### 在其他模块中 导入当前项目的 settings 模块
 from django.conf import settings
 ```
+
+## AJAX
+
+### jq 对 ajax 的支持
+
+1.  $obj.load(url,data,callback);
+
+    -   作用：载入远程的HTML 文件到指定的元素中
+    -   参数
+        -   $obj（显示响应内容的jq元素）:通过jq选择器获取到的页面元素
+        -   url:请求地址
+        -   data:发送到服务器端的参数数据 （可省）
+            -   方式1：字符串传参
+                -   `"key1=value1&key2=value2"`
+                -   无参数 / 字符串传参 用 GET 发起请求
+            -   方式2：js对象传参
+                -   `{key1:'value1',key2:'value2'}`
+                -   js对象传参 用 POST 发起请求
+        -   callback:请求成功时的回调 （可省）
+
+    ```html
+        {% csrf_token %}
+        <button id="btnLoad">加载百度</button>
+        <div id="baidu"></div>
+        <script>
+            $(function () {
+                $('#btnLoad').click(function () {
+
+                    var params = {
+                        uname: 'maria',
+                        uage: 30,
+                        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
+                    }
+
+                    $('#baidu').load('/ajax/server/', params, function () {
+                        window.setTimeout(() => {
+                            $("#baidu").hide(3000);
+                        }, 5000);
+                    })
+                })
+            })
+        </script>
+    ```
+
+2.  $.get(url,data,callback,type)
+
+    -   作用: 通过get方式异步的向远程地址发送请求.(仅支持异步)
+    -   type: 响应回来的数据的格式
+        -   取值：json / html(默认) / text / script (js脚本执行处理)
+
+        ```javascript
+            $(function () {
+                $('#btnGet').click(function () {
+                    $.get('/ajax/get_server/', function (data) { // data 响应回来的数据
+                        console.log(data)
+                    }, 'json')
+                })
+            })
+        ```
+
+3.  $.post(url,data,callback,type)
+
+4.  $.ajax()
+    -   自定义所有 ajax 操作
+    -   语法: $.ajax({ AJAX参数对象 })
+    -   AJAX参数对象:
+        1.  url : 字符串,表示异步请求的地址
+        2.  type : 字符串,表示请求方式,'get'或'post'
+        3.  data : 传递到服务器端的参数
+            1.  字符串: "key=value&key=value"
+            2.  JS对象: {key:"value",key:"value"}
+        4.  async : 是否使用异步的方式发送请求
+            -   true:使用异步（默认值）
+            -   false:使用同步
+        5.  dataType:字符串,表示响应回来的数据的格式
+            1.  'html'
+            2.  'text'
+            3.  'xml'
+            4.  'json'
+            5.  'script'
+            6.  'jsonp':跨域时使用
+        6.  success:请求成功时的回调函数
+            -   `success:function(data){ data表示的是请求成功后的响应数据 }`
+        7.  error:请求失败时的回调函数
+        8.  beforeSend:发送请求之前的回调函数
+            -   返回true:则正常发送ajax请求
+            -   返回false:则终止本次请求的发送

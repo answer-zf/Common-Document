@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get...</title>
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+</head>
+
+<body>
+    <button id="btnGet">jq=ajax-get</button>
+    <div id="show"></div>
+    <script>
+        $(function () {
+            $('#btnGet').click(function () {
+                $.get('/ajax/get_server/', function (data) { // data 响应回来的数据
+                    console.log(data)
+                }, 'json')
+            })
+        })
+    </script>
+</body>
+
+</html>

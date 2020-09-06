@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'userinfo',
     'bookstore',
     'user',
+    'ajax',
 ]
 
 MIDDLEWARE = [

@@ -7887,9 +7887,9 @@ _Json_
 ```py
     import json
     # dict => json
-    json.dumps(data)
+    json.dumps( {...} / [...] / (...) )
     # json => dict
-    json.loads(data)
+    json.loads( json_str )
 ```
 
 _format 格式化字符串_

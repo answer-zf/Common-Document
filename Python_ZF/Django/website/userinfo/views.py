@@ -1,12 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-
-from . import forms
+from django.http import HttpResponse, HttpResponseRedirect
 from . import models
 
 
 # Create your views here.
-
 
 def mylogin(request):
     if request.method == 'GET':
@@ -19,8 +16,7 @@ def mylogin(request):
 
         # 验证用户是否注册
         try:
-            user = models.User.objects.get(
-                username=username, password=password)
+            user = models.User.objects.get(username=username, password=password)
             request.session['userinfo'] = {
                 'username': user.username,
                 'id': user.id
@@ -29,7 +25,7 @@ def mylogin(request):
             return HttpResponse('login error...')
 
         # 处理 COOKIE
-        resp = render(request, 'index.html')
+        resp = HttpResponse('login...')
         if remember:
             resp.set_cookie('username', username, 7 * 24 * 60 * 60)
         else:
@@ -71,16 +67,3 @@ def mylogout(request):
     if 'userinfo' in request.session:
         del request.session['userinfo']
     return HttpResponseRedirect('/')
-
-
-def test_form(request):
-    if request.method == 'GET':
-        myform = forms.RegForm
-        return render(request, 'userinfo/test_form.html', locals())
-    elif request.method == 'POST':
-        myform = forms.RegForm(request.POST)
-        if myform.is_valid():
-            print(myform.cleaned_data)
-            return HttpResponse('ok')
-        else:
-            return HttpResponse('error..')
