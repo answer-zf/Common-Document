@@ -21,6 +21,10 @@
             integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
             crossorigin="anonymous"
         ></script>
+
+        {% block style %}
+        <style></style>
+        {% endblock style %}
     </head>
 
     <body>
@@ -40,7 +44,7 @@
                 </li> -->
                 </ul>
                 <span class="navbar-text pr-5">
-                    {% if request.session['userinfo'] %}
+                    {% if request.session.userinfo %}
 
                     <a href="/">{{ request.session.userinfo.username }}</a>
                     <span class="px-3">|</span>
@@ -58,6 +62,6 @@
         </nav>
 
         <!-- 主页 -->
-        <section></section>
+        <section>{% block main %} {% endblock main %}</section>
     </body>
 </html>

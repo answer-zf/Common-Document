@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+<!-- 样式表 -->
+{% block style %} {% endblock style %}
+
+<!-- 主页 -->
+{% block main %}
+
+<h3 class="my-5 text-center">MyNote Register</h3>
+
+<form action="/user/reg" method="POST" class="w-50 mx-auto">
+    <div class="form-group">
+        <label for="username">User Name</label>
+        <input
+            type="text"
+            name="username"
+            class="form-control"
+            id="username"
+            aria-describedby="emailHelp"
+        />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input
+            type="password"
+            name="password"
+            class="form-control"
+            id="password"
+        />
+    </div>
+    <div class="form-group">
+        <label for="password2">Enter Again</label>
+        <input
+            type="password"
+            name="password2"
+            class="form-control"
+            id="password2"
+        />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock main %}

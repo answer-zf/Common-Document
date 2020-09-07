@@ -24,7 +24,7 @@ class RegForm(forms.Form):
         pwd2 = self.cleaned_data['password2']
         if pwd1 != pwd2:
             raise forms.ValidationError('PASSWORD INCONSISTENCY!!!')
-        return self.changed_data
+        return self.cleaned_data
 
     def clean_username(self):
         username = self.cleaned_data["username"]
