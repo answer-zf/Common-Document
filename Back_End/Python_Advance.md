@@ -1832,7 +1832,9 @@ _[模板字段 参考文档](https://yiyibooks.cn/xx/Django_1.11.6/ref/models/fi
         1.  SESSION_COOKIE_AGE：作用 sessionid 在 cookies 中的保存时长 SESSION_COOKIE_AGE=60\*30
         2.  SESSION_EXPIRE_AT_BROWSER_CLOSE=True 设置只要浏览器关闭时，session就失效
 
-    -   注：当使用 session 时需要迁移数据库，否则会出现错误
+    -   注：
+        -   当使用 session 时需要迁移数据库，否则会出现错误
+        -   在模板中使用 session 是，由于模板中默认不能传递参数，故使用 `request.session.KEY` 获取值
 
 ## 中间件
 
