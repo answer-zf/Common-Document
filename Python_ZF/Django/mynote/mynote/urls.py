@@ -25,4 +25,6 @@ urlpatterns = [
 
     url(r'^$', views.homepage),
     url(r'^user/', include('user.urls')),
+    url(r'^note/', include('note.urls')),
+
 ]
