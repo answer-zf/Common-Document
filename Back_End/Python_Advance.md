@@ -2,6 +2,8 @@
 
 ## 简介：
 
+![Python-Django](http://images.dorc.top/blog/Python/Python-Django.png)
+
 -   组件：
 
     1.  路由
@@ -2758,3 +2760,19 @@ from django.conf import settings
         8.  beforeSend:发送请求之前的回调函数
             -   返回true:则正常发送ajax请求
             -   返回false:则终止本次请求的发送
+
+## 备忘
+
+-   快速排序 并归排序
+-   剑指 offer
+
+-   产品、变现、后台架构
+
+### 前后端分离
+
+![Python_WebProject](http://images.dorc.top/blog/Python/Python_WebProject.png)
+
+-   分离弊端
+
+    -   http 无状态问题
+
