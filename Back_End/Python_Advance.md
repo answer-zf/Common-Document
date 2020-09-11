@@ -2775,4 +2775,103 @@ from django.conf import settings
 -   分离弊端
 
     -   http 无状态问题
+    -   跨域
+    -   csrf
 
+-   dict / set 实现：（位置松散 -> 稀疏数组 空间占有率不太好）
+
+    -   `dict_['A'] = 1` 根据 key A 进行一次hash计算，得到hash值
+    -   计算数组中的位置（索引）
+    -   当再存入一对 键值 时 `dict_['B'] = 2`,出现哈希碰撞（计算出的索引与之前的索引一样）,以当前位置进行二次hash（开放地址法），计算位置
+    -   再存入一对 键值 时 `dict_['C'] = 3`,两次碰撞得到位置
+    -   若直接删除 `dict_['A']` , 当需要查找 `dict_['C']`报错 KeyError
+    -   python 采用伪删除的方案解决（删除值，位置仍然被占），实现了探测链，探测链 断一条，值找不到
+
+    -   扩容：
+
+        -   一旦空闲位置少于总量的 三分之一 进行扩容（重新排座）
+
+### JWT (Json Web token)
+
+#### 前提
+
+1.  bate64:二进制转成可视字符的一种算法
+
+    ```python
+    import base64
+
+    b = base64.b64encode(b'answerzf') # 参数、返回值均为 base 类型
+    base64.b64decode(b) # 解密（没安全性） 作用：可视字符表示二进制
+    ```
+
+    -   原理
+        
+        1.  将字符串拆成每三个字符一组
+        2.  计算每一个字符对应的 ASCII码 (二进制)
+        3.  将8位的二进制码,按照毎6位一组重新分组,不足6位的在后面补0
+        
+        ![Python-Net_DeadLock](http://images.dorc.top/blog/Python/Python_WebProject_Base64.png)
+
+        ![Python-Net_DeadLock](http://images.dorc.top/blog/Python/Python_WebProject_Base64min.png)
+
+    -   注：
+        -   弊端：编码后的字串一定比编码前多，传输量有些冗余
+        -   编码后的长度被四整除
+
+2.  加密
+    -   HS256 (HMAC-SHA256)
+
+        -   SHA256（hash 算法）
+            -   哈希算法三大特点：不可逆、定长、雪崩（输入该一个字节输出就变）
+
+            ```python
+            # SHA256
+            import hashlib
+
+            s=hashlib.SHA256()
+            s.update(b'xxxx')
+            s.hexdigest()
+
+            # HMAC-SHA256
+            import hmac
+
+            h = hmac.new(key,str,digetmod='SHA256')
+            h.hexdigest()
+            ```
+
+    -   RSA256 非对称加密
+        -   两把钥匙：公钥、私钥
+        -   加密：公钥加密，私钥解密
+        -   签名：公钥验证，私钥签名
+
+#### JWT 组成
+
+-   header 元数据格式：`{'alg':'HS256','typ':'JWT'}`
+    -   alg 算法 - 默认 HS256
+    -   typ - 默认 JWT
+    -   传输前 序列化 json 字串，做 base64
+-   payload `{'exp':xxx, 'iss':xxx..}`
+    -   分为公共声明和私有声明
+        1.  公共声明
+            
+            -   'exp'(Expiration Time)
+                -   过期时间【可选】
+            -   'nbf'(Not Before Time)
+                -   生效时间，如果当前时间在 nbf 时间之前，则 Token 不被接收【可选】
+            -   'iss'(Issuer) Claim签发者【可选】
+            -   'aud'(Audience) Claim签发面向群体【可选】
+            -   'iat'(Issued At) Claim创建时间【可选】
+
+        2.  私有声明
+
+            -   用户可根据业务需求添加 标识
+
+    -   整体内容序列化 json 后做 base64
+
+-   signature 签名
+    -   将 bash64后的header + '.' + base64 后的 payload 和 自定义的key
+    -   做 hmc256 签名，将签名在做base64
+
+-   生成结果
+    
+    -   base64(header) + '.' + base64(payload) + '.' +sign
