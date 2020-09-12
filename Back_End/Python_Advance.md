@@ -2772,11 +2772,30 @@ from django.conf import settings
 
 ![Python_WebProject](http://images.dorc.top/blog/Python/Python_WebProject.png)
 
+-   前端:即客户端,负责渲染用户显示界面【如web的js动态渲染页面,安卓,ios,pc客户端等】
+-   后端:即服务器端,负责接收http请求,处理数据
+-   APl: Application Programming Interface是一些预先定义的函数,或指软件系统不同组成部分衔接的约定
+-   前后端分离完整请求过程
+    1.  前端通过http请求后端API
+    2.  后端以json形式返回前端数据
+    3.  前端生成用户显示界面【如html,ios, android】
+
+-   优点
+    1.  各司其职
+        -   前端:视觉层面,兼容性,前端性能优化
+        -   后端:并发,可用性,性能
+    2.  解耦,前端和后端均易于扩展
+    3.  后端灵活搭配各类前端·如安卓等
+    4.  提高用户体验
+    5.  前端+后端可完全并行开发,加快开发效率
+
 -   分离弊端
 
-    -   http 无状态问题
-    -   跨域
-    -   csrf
+    -   http 无状态问题 -> token
+    -   跨域   -> CORS
+    -   csrf -> token
+    -   动静分离和前后端分离区别
+        -   动静分离指的是css/js/img这类静态资源跟服务器拆开部署,典型方案-静态资源交由CDN厂商处理
 
 -   dict / set 实现：（位置松散 -> 稀疏数组 空间占有率不太好）
 
@@ -2800,8 +2819,14 @@ from django.conf import settings
     ```python
     import base64
 
-    b = base64.b64encode(b'answerzf') # 参数、返回值均为 base 类型
-    base64.b64decode(b) # 解密（没安全性） 作用：可视字符表示二进制
+    # b64 加密
+    #     参数 bytes
+    #     返回值 bytes
+    bs_ = base64.b64encode(b'answerzf')
+    # b64 解密
+    #     特点：没安全性
+    #     应用：可视字符表示二进制
+    base64.b64decode(bs_) 
     ```
 
     -   原理
@@ -2817,26 +2842,34 @@ from django.conf import settings
     -   注：
         -   弊端：编码后的字串一定比编码前多，传输量有些冗余
         -   编码后的长度被四整除
+        -   `base64.urlsafe_b64decode()`
+            -   标准的Base64并不适合直接放在URL里传输，因为URL编码器会把标准Base64中的“/”和“+”字符变为形如“%XX”的形式
+            -   为解决此问题，可采用一种用于URL的改进Base64编码，它不在末尾填充'='号，并将标准Base64中的“+”和“/”分别改成了“-”和“_”，这样就免去了在URL编解码和数据库存储时所要作的转换()
 
 2.  加密
     -   HS256 (HMAC-SHA256)
 
-        -   SHA256（hash 算法）
+        -   SHA256 - 散列(hash)算法的一种
             -   哈希算法三大特点：不可逆、定长、雪崩（输入该一个字节输出就变）
 
             ```python
             # SHA256
             import hashlib
 
-            s=hashlib.SHA256()
-            s.update(b'xxxx')
-            s.hexdigest()
+            s=hashlib.SHA256() # 创建 SHA256
+            s.update(b'xxxx') # 添加 需要 hash 的内容，参数： bytes
+            s.digest() # 获取最终结果 返回值：byte
 
             # HMAC-SHA256
             import hmac
-
-            h = hmac.new(key,str,digetmod='SHA256')
-            h.hexdigest()
+            
+            # 参数： 
+            #     key: 加密的key bytes
+            #     str: 需要加密的内容 bytes
+            #     digestmod: hmac的算法，指定为SHA256
+            h = hmac.new(key,str,digestmod='SHA256')
+            h.hexdigest() # 获取最终结果 返回值：字符串
+            h.digest() # 获取最终结果 返回值：byte
             ```
 
     -   RSA256 非对称加密
@@ -2848,30 +2881,179 @@ from django.conf import settings
 
 -   header 元数据格式：`{'alg':'HS256','typ':'JWT'}`
     -   alg 算法 - 默认 HS256
-    -   typ - 默认 JWT
+    -   typ 表明该token的类别 - 默认 JWT
     -   传输前 序列化 json 字串，做 base64
 -   payload `{'exp':xxx, 'iss':xxx..}`
-    -   分为公共声明和私有声明
-        1.  公共声明
+    -   格式为字典，分为公共声明和私有声明
+        1.  公共声明：JWT 提供了内置关键字用于描述常见的问题,此部分均为可选项,用户根据自己需求按需添加key,常见公共声明如下
             
-            -   'exp'(Expiration Time)
-                -   过期时间【可选】
-            -   'nbf'(Not Before Time)
-                -   生效时间，如果当前时间在 nbf 时间之前，则 Token 不被接收【可选】
-            -   'iss'(Issuer) Claim签发者【可选】
-            -   'aud'(Audience) Claim签发面向群体【可选】
-            -   'iat'(Issued At) Claim创建时间【可选】
-
+            -   `'exp':xxx`
+                -   Expiration Time token过期时间的时间戳
+            -   `'aud': xxx`
+                -   (Audience) Claim 指明token签发面向群体
+            -   `'iss'：xxx`
+                -   (Issuer) Claim 指明token的签发者
+            -   `'iat': xxx`
+                -   (Issued At) Claim 指明创建时间的时间戳
+            -   `'nbf':xxx`
+                -   Not Before Time 生效时间，如果当前时间在 nbf 时间之前，则 Token 不被接收
+        
         2.  私有声明
 
-            -   用户可根据业务需求添加 标识
+            -   用户可根据业务需求，添加自定义的key
 
-    -   整体内容序列化 json 后做 base64
+    -   公共声明和私有声明均在同一个字典中;转成json串并用base64加密
 
 -   signature 签名
-    -   将 bash64后的header + '.' + base64 后的 payload 和 自定义的key
+    -   根据 header 中的 agl 确定具体算法,以下用 HS256 为例
+    -   将 bash64后的header 字符串 + '.' + base64 后的 payload字符串 和 自定义的key
     -   做 hmc256 签名，将签名在做base64
 
 -   生成结果
     
-    -   base64(header) + '.' + base64(payload) + '.' +sign
+    -   base64_header + '.' + base64_payload + '.' +base64_sign
+
+**实现 JWT 协议**
+
+```python
+"""
+    JWT
+"""
+
+import base64
+import json
+import hmac
+import copy
+import time
+
+class JWT:
+
+    @staticmethod
+    def encode(payload, key, exp=300):
+        """
+            JWT 加密
+        :param payload: 自定义 json
+        :param key: 密钥  str / bytes
+        :param exp: 超时失效时间 时间戳 int
+        :return: token bytes
+        """
+        json_header = {
+            'alg': 'HS256',
+            'typ': 'JWT'
+        }
+        # separators 第一个参数：json串中 键值对以 xx 连接符相连
+        #           第二个参数：键值 以 xx 连接符相连
+        #          作用是去掉'，' '：'后面的空格，在传输数据的过程中，越精简越好，冗余的东西全部去掉。
+        # sort_keys 作用：告诉编码器按照字典key排序(a到z)输出
+        str_json_header = json.dumps(
+            json_header, separators=(',', ':'), sort_keys=True)  # json 串 紧凑有序
+        byte_base64_header = JWT.b64encode(str_json_header.encode())
+
+        # payload
+        json_payload = copy.deepcopy(payload)
+        json_payload['exp'] = int(time.time() + exp)
+        str_json_payload = json.dumps(
+            json_payload, separators=(',', ':'), sort_keys=True)
+        byte_base64_payload = JWT.b64encode(
+            str_json_payload.encode())
+
+        # sign
+        b64_ = byte_base64_header + b'.' + byte_base64_payload
+
+        if isinstance(key, str):
+            key = key.encode()
+        byte_hmac = hmac.new(key, b64_, digestmod='SHA256').digest()
+        byte_base64_sign = JWT.b64encode(byte_hmac)
+
+        return byte_base64_header + b'.' + byte_base64_payload + b'.' + byte_base64_sign
+
+    @staticmethod
+    def decode(token, key):
+        """
+            校验 token
+        :param token: 加密后的 token bytes
+        :param key: 密钥 str / bytes
+        :return: 成功 payload json ,失败 抛出异常
+        """
+
+        header_bs, payload_bs, sign = token.split(b'.')
+
+        if isinstance(key, str):
+            key = key.encode()
+
+        byte_hmac = hmac.new(key, header_bs + b'.' + payload_bs, digestmod='SHA256').digest()
+        now_sign = JWT.b64encode(byte_hmac)
+
+        if sign != now_sign:
+            raise JWTError('Token is invalid')
+
+        json_payload = json.loads(JWT.b64decode(payload_bs).decode())
+        # 过期时间戳
+        exp = json_payload['exp']
+        now_time = time.time()
+        if now_time > exp:
+            raise JWTError('Token is expired')
+
+        return json_payload
+
+    @staticmethod
+    def b64encode(byte_):
+        # 替换原生 base64 '=' -> ''
+        return base64.urlsafe_b64encode(byte_).replace(b'=', b'')
+
+    @staticmethod
+    def b64decode(byte_):
+        # 还原 base64 '=',并解码
+        rem = len(byte_) % 4
+        byte_ += b'=' * (4 - rem)
+        return base64.urlsafe_b64decode(byte_)
+
+class JWTError(Exception):
+    """
+        自定义异常
+    """
+    def __init__(self, error_msg):
+        self.error = error_msg
+
+    def __str__(self):
+        return '<JWTError error %s>' % self.error
+
+if __name__ == '__main__':
+    JWT_byte = JWT.encode({'abc': '124', 'def': 'eee'}, 'answer')
+    print(JWT.decode(JWT_byte, 'answer'))
+```
+
+#### pyjwt
+
+-   安装：`pip3 install pyjwt`
+
+```python
+import jwt
+
+# payload: 公有声明+私有声明 json
+# key: 自定义加密 key str
+# algorithm: 需要使用的加密算法 str
+# token: bytes
+jwt.encode(payload,key,algorithm) # 返回值：token bytes
+jwt.decode(token,key,algorithm) 
+    # 如果 payload 中添加了 `iss`,可针对该字段校验, 添加参数 `'issuer'='发布者'` str   异常 jwt.InvalidissuerError# 
+    # 如果 payload 中添加了 `aud`,可针对该字段校验, 添加参数 `'Audience'='xxx'` str   异常 jwt.InvalidAudienceError
+```
+
+_Ps:若 encode得时候 payload中添加了exp 字段则 exp字段得值需为 当前时间戳 + 此 token 得有效期时间,例如希望 token300秒后过期 {'exp':time.time()+300} 在执行 decode时,若检查到exp字段,且 token过期,则抛出 jwt.ExpiredSignatureError_
+
+### CORS
+
+> Cross-Origin Resource Sharing(跨域资源共享)
+
+-   同源（协议 - 域名 - 端口）
+
+1.  CORS 允许浏览器向跨源（协议 + 域名 + 端口）服务器，发出 XMLHttpRequest 请求,从而克服了AJAX只能同源使用的限制
+2.  特点:
+    1.  浏览器自动完成(在请求头中加入 特殊头 或 发送特殊请求)
+    2.  服务器需要支持(响应头中需要有特殊头)
+3.  简单请求(Simple requests) 和 预检请求(Preflighted requests)
+    1.  满足以下全部条件的请求为简单请求
+        1.  请求方法：GET or HEAD or POST
+        2.  请求头仅包含：Accept Accept-Language
+            
