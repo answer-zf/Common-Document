@@ -47,6 +47,16 @@
     -   打开同级目录下的终端 Ctrl + Shift + N
     -   切换终端 Atl + Tab
 
+4.  安装 gz 源码包
+
+    -   `tar -zxvf django-cors-headers-3.0.2.tar.gz` # 解压
+    -   `cd django-cors-headers-3.0.2.tar.gz`
+    -   `python3 setup.py install` # 安装
+
+5.  安装 whl 文件
+
+    -   `pip install django_cors_headers-3.0.2-py2.py3-none-any.whl`
+
 ## shell 命令行
 
 1.  命令行组成：

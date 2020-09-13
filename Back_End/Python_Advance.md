@@ -45,6 +45,8 @@
 
 4.  卸载：`pip3 uninstall Django`
 
+5.  版本查询：`pip3 freeze | grep 'Django'`
+
 ## Django 框架简介
 
 1.  创建项目:`$ django-admin startproject project_name`
@@ -3053,7 +3055,226 @@ _Ps:若 encode得时候 payload中添加了exp 字段则 exp字段得值需为 �
     1.  浏览器自动完成(在请求头中加入 特殊头 或 发送特殊请求)
     2.  服务器需要支持(响应头中需要有特殊头)
 3.  简单请求(Simple requests) 和 预检请求(Preflighted requests)
-    1.  满足以下全部条件的请求为简单请求
+    1.  **满足以下全部条件的请求为简单请求**
         1.  请求方法：GET or HEAD or POST
-        2.  请求头仅包含：Accept Accept-Language
-            
+        2.  请求头仅包含：Accept  Accept-Language Content-Language Content-Type
+        3.  Content-Type 仅支持三种
+            1.  application/x-www-form-urlencoded
+            2.  multipart/form-date
+            3.  text/plain
+
+    2.  **不满足以上任意一点的请求都是预检请求**
+
+4.  简单请求发送流程
+
+    1.  请求
+        -   请求头中携带 Origin ,该字段表明自己来自哪个域
+    2.  响应
+        -   如果请求头中的 Origin 在服务器接受范围内,则返回如下头
+
+            ```http
+                Access-Control-Allow-Origin
+                    # 服务器接受的域
+                Access-Control-Allow-Credentials（可选）
+                    # 是否接受Cooike
+                Access-Control-Expose-Headers（可选）# 拓展 头
+                    # 默认情况下，xhr只能拿到如下响应头：
+                    # Cache-Control
+                    # Content-Language
+                    # Content-Type
+                    # Expires
+                    # Last-Modified 
+                    # 如有需要获取其他投，需在此指定
+            ```
+
+        -   如果服务器不接受此域,则响应头中不包含 Access-Control-Allow-Origin
+
+5.  预检请求发送流程
+
+    1.  以 OPTION 方式 发起请求，携带如下请求头
+
+        ```http
+            Origin （必选）
+                # 表明 此请求来自哪个域
+            Access-Control-Request-Method （必选）
+                # 此次请求使用的方法
+            Access-Control-Request-Headers （必选）
+                # 此次请求使用的头
+        ```
+
+    2.  OPTION 接受响应阶段,携带如下响应头
+
+        ```http
+            Access-Control-Allow-Origin （必选）
+                # 当前服务器接受的域
+            Access-Control-Allow-Methods （必选）
+                # 告诉浏览器,服务器接受得跨域请求方法
+            Access-Control-Expose-Headers （必选）
+                # 返回所有支持的头部,当 request 有 Access-Control-Request-Headers ,该响应头必然回复
+            Access-Control-Allow-Credentials（可选）
+                # 是否接受Cooike
+            Access-Control-Max-Age（可选）
+                # OPTION请求缓存时间，单位s
+        ```
+
+    3.  主请求阶段
+
+       ```http
+            Origin
+                # 表明 此请求来自哪个域
+        ```
+
+    4.  主请求响应阶段
+
+       ```http
+            Access-Control-Allow-Origin
+                # 当前服务器接受的域
+        ```
+
+6.  Django 支持
+
+    django-cors-headers
+
+    -   配置流程
+
+        ```python
+        # settings.py
+
+        # 1. ALLOWED_HOSTS = ['*']
+
+        # 2. 禁用 # 'django.middleware.csrf.CsrfViewMiddleware',
+
+        # 3. 数据库 
+            # 创建数据库 `create database blog_server default charset utf8;`
+            # 配置 数据库
+            # 添加 pymysql 支持 （主模块 __init__ 下）
+
+        # 4. 其他
+            # LANGUAGE_CODE = 'zh-hans'
+            # TIME_ZONE = 'Asia/Shanghai'
+
+        # 5. cors 配置
+            # 1. INSTALLED_APPS 添加 corsheaders
+
+            # 2. MIDDLEWARE 中 添加 `'corsheaders.middleware.CorsMiddleware',`
+                # 尽量靠前 必须在 `'django.middleware.common.CommonMiddleware',` 前
+
+            # 3. 访问地址权限配置
+                # CORS_ORIGIN_ALLOW_ALL = True 白名单不启用
+                # CORS_ORIGIN_WHITELIST = [
+                #     "https://xxx.xxx"
+                # ] # 白名单配置
+
+            # 4. 允许的请求方式
+                # CORS_ALLOW_METHODS = (
+                #     'DELETE',
+                #     'GET',
+                #     'OPTIONS',
+                #     'PATCH',  # http 语义 局部跟新
+                #     'POST',  # http 语义 全量跟新
+                #     'PUT',
+                # )
+
+            # 5. 允许的 头部信息
+                # CORS_ALLOW_HEADERS = (
+                #     'accept-encoding',
+                #     'authorization',  # 传递 token
+                #     'content-type',
+                #     'dnt',  # don't catch me
+                #     'origin',
+                #     'user-agent',
+                #     'x-csrftoken',
+                #     'x-requested-with',  # 辨别是否时 ajax 请求
+                # )
+
+            # CORS_PREFLIGHT_MAX_AGE  # 默认 86400s 一天
+
+            # CORS_EXPOSE_HEADERS  # 默认 []
+
+            # CORS_ALLOW_CREDENTIALS  # bool 默认 False
+
+        # 6. APPEND_SLASH = False 
+            # 关掉 url 自动补 / 
+        ```
+
+### RESTful - Representational State Transfer
+
+1.  资源（Resource）
+
+    -   网络上的一个实体,或者说是网络上的一个具体信息,并且每个资源都有一个 独一无二的URI 与之对应
+    -   获取资源直接访问 URI 即可
+
+2.  表现层（Representation）
+
+    -   如何去表现资源
+        -   即资源得表现形式 如HTML,xml,jPG,json等
+
+3.  状态转化(State Transfer)
+
+    -   访问一个 URI 即发生了一次客户端和服务端得交互;此次交互将会涉及到数据和状态得变化
+    -   客户端需要通过某些方式触发具体得变化 Http method 如 GET , POST , PUT , PATCH , DELETE ...
+
+4.  RESTful 的特征
+    1.  每一个URI代表一种资源
+    2.  客户端和服务器端之前传递着资源的某种表现json
+    3.  客户端通过HTTP的几个动作对资源进行操作-发生状态转化
+
+#### 设计 符合 RESTful 特征的API
+
+1.  协议 http/https
+
+2.  域名
+
+    -   域名中体现 api 字样: https://api.xxx.com or https://xx.xxx.xx/api/
+
+3.  版本
+
+    -   https://api.xxx.xx/v1/
+
+4.  路径
+
+    -   路径中避免使用动词,资源用名词表示,案例如下
+
+5.  HTTP 动词语义
+
+    -   GET   (SELECT):从服务器取出资源(一项或多项)
+    -   POST  (CREATE):在服务器新建一个资源
+    -   PUT   (UPDATE):在服务器更新资源(客户端提供改变后的完整资源)
+    -   PATCH (UPDATE):在服务器更新资源(客户端提供改变的属性)
+    -   DELETE(DELETE):从服务器删除资源
+
+6.  灵活运用查询字符串
+
+7.  状态码
+
+    1.  用HTTP响应码表达此次请求结果,例如
+
+        ```http
+        1.  200 OK - [GET] : 服务器成功返回用户请求的数据
+        2.  201 CREATED - [POST/PUT/PATCH] : 用户新建或修改数据成功
+        3.  202 Accepted - [*] : 表示一个请求已经进入后台排队(异步任务)
+        4.  204 NO CONTENT - [DELETE] : 用户删除数据成功。
+        5.  400 INVALID REQUEST - [PosT/PUT/PATCH] : 用户发出的请求有错误,服务器没有进行新建或修改数据的操作,该操作是幂等的。
+        6.  401 Unauthorized - [*] : 表示用户没有权限(令牌、用户名、密码错误)
+        7.  403 Forbidden - [*] : 表示用户得到授权(与401错误相对), 但是访问是被禁止的
+        8.  404 NOT FOUND - [*] : 用户发出的请求针对的是不存在的记录, 服务器没有进行操作,该操作是幂等的。
+        9.  406 Not Acceptable - [GET] : 用户请求的格式不可得(比如用户请求json格式,但是只有XML格式)。
+        10. 410 Gone - [GET] : 用户请求的资源被永久删除,且不会再得到的
+        11. 422 Unprocesable entity - [POST/PUT/PATCH] 当创建一个对象时,发生一个验证错误
+        12. 500 INTERNAL SERVER ERROR - [*] : 服务器发生错误
+        ```
+
+    2.  自定义内部 code 进行响应
+
+        -   返回结构如下 `{'code':200,'data':{},'error':xxx}`
+    
+8.  根据HTTP动作的不同,返回结果的结构也有所不同
+
+    ```http
+    1.  GET /users : 返回资源对象的列表(数组)
+    2.  GET /users/xxx : 返回单个资源对象
+    3.  POST /users : 返回新生成的资源对象
+    4.  PUT /users/xxx : 返回完整的资源对象
+    5.  PATCH /users/xxx : 返回完整的资源对象
+    6.  DELETE /users/xxx : 逡回一个空文档
+    ```
