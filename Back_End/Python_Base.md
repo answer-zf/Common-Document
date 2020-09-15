@@ -7895,3 +7895,10 @@ _Json_
 _format 格式化字符串_
 
 `hello {first} and {second}'.format(first='df', second='another df')`
+
+_判断对象是否包含对应的属性_
+
+`hasattr(object, name)`
+
+_返回一个对象属性值_
+`getattr(object, name[, default])`

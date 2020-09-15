@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'user',
+    'btoken',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     "http://www.8090.com"
+# ]
 
 CORS_ALLOW_METHODS = (
     'DELETE',

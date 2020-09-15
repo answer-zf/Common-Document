@@ -1,10 +1,15 @@
 from flask import Flask, send_file
 
+# 初始化 Flask
 app = Flask(__name__)
 
 
+# 绑定路由 / 执行函数
 @app.route('/index')
 def index():
+    # 返回具体页面
+    # Flask 默认 静态文件目录【css ,js ,img】 在 static
+    # Flask 默认 模板目录 在 templates
     return send_file('templates/index.html')
 
 
@@ -49,4 +54,7 @@ def topic_detail(username, t_id):
 
 
 if __name__ == '__main__':
+    # 启动 Flask 服务
+    # 默认监听 5000 端口
+    # python flask_client.py 启动服务
     app.run(debug=True)
