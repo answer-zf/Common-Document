@@ -154,9 +154,9 @@ def users(request, username=None):
     elif request.method == 'PUT':
 
         # 更新数据
-        users = UserProfile.objects.filter(username=username)
+        user = UserProfile.objects.filter(username=username)
 
-        if not users:
+        if not user:
             # 用户是否存在
             result = {"code": 208, "error": "user not exist"}
             return JsonResponse(result)
@@ -179,10 +179,30 @@ def users(request, username=None):
         sign = json_obj.get('sign', '')
         info = json_obj.get('info', '')
 
-        users[0].nickname = nickname
-        users[0].sign = sign
-        users[0].info = info
-        users[0].save()
+        user[0].nickname = nickname
+        user[0].sign = sign
+        user[0].info = info
+        user[0].save()
 
         result = {"code": 200, "username": username}
+        return JsonResponse(result)
+
+
+def user_avatar(request, username):
+    """
+        处理上传文件 form 提交
+            只需 拿到 post 提交 request.FILES['avatar']
+            由于 django 获取 PUT 请求的 multipart数据 较为复杂，故采用 POST 请求处理 multipart数据
+    :param request:
+    :return:
+    """
+    if request.method != "POST":
+        # 昵称不能为空
+        result = {"code": 210, "error": "PL. USE POST"}
+        return JsonResponse(result)
+
+    if not username:
+
+        # 昵称不能为空
+        result = {"code": 210, "error": "PL. USE POST"}
         return JsonResponse(result)

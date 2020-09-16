@@ -3149,11 +3149,26 @@ _Ps:若 encode得时候 payload中添加了exp 字段则 exp字段得值需为 �
             # 配置 数据库
             # 添加 pymysql 支持 （主模块 __init__ 下）
 
-        # 4. 其他
+        # 4. 图片上传路径配置
+        
+            # 前端请求图片资源的路径
+            # MEDIA_URL = "/media/"
+            # 后端服务器 图片存储的 目录
+            # MEDIA_ROOT = os.path.join(BASE_DIR, "media/") 
+        
+            # dir_projectname/urls.py
+
+                # 添加图片的 路由映射  http://127.0.0.0:8000/media/xxx.jpg
+                # from django.conf.urls import include, url
+                # from django.conf.urls.static import static
+                #  urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+            # django 的 PUT 请求不支持 multipart/form-data 即文件上传
+        
+        # 5. 其他
             # LANGUAGE_CODE = 'zh-hans'
             # TIME_ZONE = 'Asia/Shanghai'
-
-        # 5. cors 配置
+        
+        # 6. cors 配置
             # 1. INSTALLED_APPS 添加 corsheaders
 
             # 2. MIDDLEWARE 中 添加 `'corsheaders.middleware.CorsMiddleware',`

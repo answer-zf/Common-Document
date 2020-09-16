@@ -27,6 +27,12 @@
 
 ## Pycharm
 
+### 插件
+
+-   translation
+-   Idea Vim
+-   Code Glance
+
 ### shortcut
 
 | 作用                | 快捷键             |
