@@ -29,7 +29,7 @@
 
 ### 插件
 
--   translation
+-   translation `Ctrl + Alt + o`
 -   Idea Vim
 -   Code Glance
 
@@ -52,6 +52,9 @@
 | 函数内显示参数信息  | Ctrl + P           |
 | 提取方法            | Ctrl + Alt + M     |
 | 快捷导入模块        | Alt + Enter        |
+| 开启命令行 | Alt + F12        |
+| 关闭命令行        | Shift + Esc        |
+| 切换文件        | Ctrl + Tab        |
 
 -   代码显示延迟设置：
 

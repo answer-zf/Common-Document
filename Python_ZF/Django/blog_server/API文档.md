@@ -38,6 +38,8 @@
 
 ## 数据库结构
 
+### user 表
+
 |  字段名  |      类型       |   作用   |           备注1            | 备注2 |
 | :------: | :-------------: | :------: | :------------------------: | :---: |
 | username |   varchar(11)   |  用户名  | 注册时填写用户名，不可修改 | 主键  |
@@ -48,9 +50,26 @@
 |   info   |  varchar(150)   | 个人描述 |             无             |  无   |
 |  avatar  | ImageField(100) |   头像   |             无             |  无   |
 
+### topic 表
+
+|    字段名     |    类型     |   作用   |      备注1       |       备注2        |
+| :-----------: | :---------: | :------: | :--------------: | :----------------: |
+|     id     | int |   标题   |        无        |         自增 主键         |
+|     title     | varchar(50) |   标题   |        无        |         无         |
+|    author     | foreign key |   作者   |        无        | UserProfile 的外键 |
+|   category    | varchar(20) |   分类   |   no-tec / tec   |         无         |
+|     limit     | varchar(10) |   权限   | public / private |         无         |
+|  create_time  |  datetime   | 创建时间 |        无        |         无         |
+| modified_time |  datetime   | 更改时间 |        无        |         无         |
+|    content    |    text     | 博客内容 |        无        |         无         |
+|    introduce    |    varchar(90)     | 博客摘要 |        无        |         无         |
+
+
 ## 接口说明
 
-### 注册接口
+### 用户登录注册接口
+
+#### 注册接口
 
 > URL：http://127.0.0.1:8000/v1/users
 
@@ -99,7 +118,7 @@
 
 -   异常响应示例：`{'code':203,'error':'pl. transfer username' }` 
 
-### 获取用户数据接口
+#### 获取用户数据接口
 
 > URL：http://127.0.0.1:8000/v1/users/<username>
 
@@ -137,7 +156,7 @@
 
 -   异常响应示例：`{'code':208,'error':'pl. transfer username' }` 
 
-### 修改用户个人信息接口
+#### 修改用户个人信息接口
 
 > URL：http://127.0.0.1:8000/v1/users
 
@@ -174,10 +193,107 @@
     
 -   异常码
 
-| 异常码 |     含义     | 备注  |
-| :----: | :----------: | :---: |
-|  202   | 请求无内容 |       |
-|  208   | 用户不存在 |       |
+| 异常码 |      含义      | 备注  |
+| :----: | :------------: | :---: |
+|  202   |   请求无内容   |       |
+|  208   |   用户不存在   |       |
 |  209   | 请求未提交昵称 |       |
 
 -   异常响应示例：`{'code':202,'error':'user not exist' }` 
+
+### 博客内容接口
+
+#### 发表博客
+
+> URL：http://127.0.0.1:8000/v1/topics/<username>
+
+1.  请求方式
+
+    -   POST
+
+2.  请求格式
+
+    -   json 具体参数如下
+
+|   字段    |       含义       | 类型  | 备注  |
+| :-------: | :--------------: | :---: | :---: |
+| title  |      标题      | char  | 必填  |
+|   category   |     分类     | char  | tec: 技术类别<br>no-tec：非技术类别  |
+| limit | 权限 | char  | public：公开<br>private：私有  |
+| content | 博客内容带 HTML 格式 | char  | 必填  |
+| content_text | 博客纯文本格式 | char  | 必填  |
+
+-   请求示例：
+    -   `{'title':'haha','category':'xxx','limit':'xxx','content':'xxx','content_text':'xxx'}`
+    -   该请求需要客户端 HTTP header 里添加 token, 格式如下：'Authorization:token'
+
+3.  响应格式
+
+    -   json 具体参数如下
+
+|   字段   |             含义             | 类型  |                      备注                       |
+| :------: | :--------------------------: | :---: | :---------------------------------------------: |
+|   code   |             状态             |  int  |  请求成功，code 为 200，请求失败 见 **异常码**  |
+| username |            用户名            | char  |                       无                        |
+
+-   响应示例：
+    -   `{'code':200,'username':'xxx'}`
+
+-   异常码
+
+#### 获取用户博客列表接口
+
+> URL：http://127.0.0.1:8000/v1/topics/<username>?category=[tec|no-tec]
+
+1.  请求方式
+
+    -   GET
+
+2.  请求格式
+
+    1.  http://127.0.0.1:8000/v1/topics/<username> 可获取用户全量数据
+    
+    2.  http://127.0.0.1:8000/v1/topics/<username>?category=[tec|no-tec] 可获取用户具体分类的数据
+
+3.  响应格式
+
+    -   json 具体参数如下
+
+|   字段   |             含义             | 类型  |                      备注                       |
+| :------: | :--------------------------: | :---: | :---------------------------------------------: |
+|   code   |             状态             |  int  |  请求成功，code 为 200，请求失败 见 **异常码**  |
+| data |            返回的具体数据都在 data 中            | {}   |  nickname char 昵称 <br>topics 用户文章列表 [] 具体内容详见 **响应示例**               |
+
+-   响应示例：
+
+    ```json
+        {
+        "code": 200,
+        "data": {
+            "nickname": "xxx",
+            "topics": [
+              {
+                "id": 1,
+                "title": "xxx",
+                "category": "xxx",
+                "create_time": "xxx",
+                "content": "xxx",
+                "introduce": "xxx",
+                "author": "nickname"
+              }
+            ] 
+        }
+    }
+    ```
+   
+```
+answer_zf
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFuc3dlcl96ZiIsImV4cCI6MTYwMDU4NjQxOH0.yr0YalERwb9KIeQla9aBdIiRe2bjIfNg98xebrk3czo
+cccccccc332
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImNjY2NjY2MzMzMiLCJleHAiOjE2MDA1ODY4OTd9.svdjEf0_z6jDUPSR0LLkG4VIU6NI6UeG_IT7S5izutQ
+```
+
+#### 获取用户具体博客内容接口
+    
+    
+> URL：http://127.0.0.1:8000/v1/topics/<username>?t_id=1111

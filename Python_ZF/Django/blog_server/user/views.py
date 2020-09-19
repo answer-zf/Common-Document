@@ -1,21 +1,26 @@
-import json
 import hashlib
-from django.http import JsonResponse, HttpResponse
+import json
+
+from django.http import JsonResponse
 
 from btoken.views import make_token
+from tools.login_decorator import login_check
 from user.models import UserProfile
 
 
+@login_check('PUT', 'DELETE')
 def users(request, username=None):
     """
         用户模块 路由
             GET ： 获取用户信息
             POST:  注册（创建用户信息）
             PUT :  修改用户信息
+    :param username: 通过 url 传递的用户名
     :param request: 请求
     :return: json
     """
     if request.method == 'GET':
+        print(username)
         # 取数据
         if username:
             # 具体用户数据
@@ -154,13 +159,7 @@ def users(request, username=None):
     elif request.method == 'PUT':
 
         # 更新数据
-        user = UserProfile.objects.filter(username=username)
-
-        if not user:
-            # 用户是否存在
-            result = {"code": 208, "error": "user not exist"}
-            return JsonResponse(result)
-
+        user = request.user
         json_str = request.body
 
         if not json_str:
@@ -179,20 +178,34 @@ def users(request, username=None):
         sign = json_obj.get('sign', '')
         info = json_obj.get('info', '')
 
-        user[0].nickname = nickname
-        user[0].sign = sign
-        user[0].info = info
-        user[0].save()
+        user.nickname = nickname
+        user.sign = sign
+        user.info = info
+        user.save()
 
         result = {"code": 200, "username": username}
         return JsonResponse(result)
 
+    elif request.method == 'DELETE':
 
+        user = request.user
+        user.delete()
+
+        result = {
+            "code": 200,
+            "data": "User Deleted..."
+        }
+
+        return JsonResponse(result)
+
+
+@login_check("POST")
 def user_avatar(request, username):
     """
         处理上传文件 form 提交
             只需 拿到 post 提交 request.FILES['avatar']
             由于 django 获取 PUT 请求的 multipart数据 较为复杂，故采用 POST 请求处理 multipart数据
+    :param username: 通过 url 传递的用户名
     :param request:
     :return:
     """
@@ -201,8 +214,23 @@ def user_avatar(request, username):
         result = {"code": 210, "error": "PL. USE POST"}
         return JsonResponse(result)
 
-    if not username:
+    avatar = request.FILES.get('avatar')
 
-        # 昵称不能为空
-        result = {"code": 210, "error": "PL. USE POST"}
+    if not avatar:
+        # 没用提交图片信息
+        result = {"code": 211, "error": "pl. upload avatar"}
         return JsonResponse(result)
+
+    user = request.user
+
+    try:
+        user.avatar = avatar
+        user.save()
+    except Exception as e:
+        # 修改数据库内容失败
+        print('UserProfile create error is %s' % e)
+        result = {"code": 211, "error": "pl. upload avatar......"}
+        return JsonResponse(result)
+
+    result = {"code": 200, "username": username}
+    return JsonResponse(result)
