@@ -7,55 +7,63 @@ from django.http import JsonResponse
 # Create your views here.
 from topic.models import Topic
 from user.models import UserProfile
-from tools.login_decorator import login_check
+from tools.login_decorator import login_check, get_user_by_request
 
 
-@login_check("POST")
+@login_check("POST", "DELETE")
 def topics(request, username=None):
     """
         文章模块路由
-            GET: 获取用户数据
-                /v1/topics/<username> 获取用户全部博客数据
+            GET:
+                获取用户博客列表
+                    /v1/topics/<username>
+                        访问者是博主，显示所有博客列表
+                            根据查询参数 ?category=xx, 做分类筛选
+                        访问者是其他人 或 未登录用户 只显示 limit 值为 public 的博客列表
+                获取博客内容
+                    /v1/topics/<username>?....
             POST: 发表 blog
                 /v1/topics/<username>
-    :param username:
+    :param username: 所访问的博客 博主 用户名
     :param request:
     :return:
     """
 
     if request.method == 'GET':
-        print(username)
-        # try:
-        user = UserProfile.objects.get(username=username)
-        # except UserProfile.DoesNotExist:
-        #     user = None
-        print(user)
-        if not user:
-            result = {"code": 307, "error": "user not exist"}
-            return JsonResponse(result)
 
-        user_topics = Topic.objects.filter(author=user)
+        # 获取博客作者
+        authors = UserProfile.objects.filter(username=username)
+        if not authors:
+            res = {"code": 307, "error": "The current author is not existed"}
+            return JsonResponse(res)
+        author = authors[0]
 
-        if not user_topics.exists():
-            result = {"code": 200, "data": {}}
-            return JsonResponse(result)
+        # 获取访问者
+        visitor = get_user_by_request(request)
+        visitor_name = None
+        if visitor:
+            visitor_name = visitor.username
 
-        topics_ = []
-        nickname = user.nickname
-        for topic in user_topics:
-            dict_topic = {
-                "id": topic.id,
-                "title": topic.title,
-                "category": topic.category,
-                "create_time": topic.create_time,
-                "content": topic.content,
-                "introduce": topic.introduce,
-                "author": nickname
-            }
-            topics_.append(dict_topic)
+        category = request.GET.get('category')
+        if visitor_name == username:
+            # 拿所有博客
+            #   分类筛选
+            #   /v1/topics/username?category=tec/no-tec
+            if category in ('tec', 'no-tec'):
+                view_topics = Topic.objects.filter(author_id=username, category=category)
+            else:
+                view_topics = Topic.objects.filter(author_id=username)
+        else:
+            # 拿到 public 权限的博客
+            #   分类筛选
+            if category in ('tec', 'no-tec'):
+                view_topics = Topic.objects.filter(author_id=username, limit='public', category=category)
+            else:
+                view_topics = Topic.objects.filter(author_id=username, limit='public')
 
-        result = {"code": 200, "data": {"nickname": nickname, "topics": topics_}}
-        return JsonResponse(result)
+        res = make_topics_res(author, view_topics)
+
+        return JsonResponse(res)
 
     elif request.method == "POST":
         user = request.user
@@ -118,5 +126,40 @@ def topics(request, username=None):
 
     elif request.method == "PUT":
         pass
+    elif request.method == "DELETE":
+        # /v1/topics/<username>?t_id=1111
+        id_ = request.GET.get("t_id")
+        if not id_:
+            result = {"code": 308, "error": "You can't do it !!"}
+            return JsonResponse(result)
 
-    return JsonResponse({'code': 200, 'data': 'this is text'})
+        try:
+            topic = Topic.objects.get(id=id_)
+        except Exception as e:
+            print("--delete blog -- db error...")
+            result = {"code": 309, "error": "-- delete blog - topic not exist"}
+            return JsonResponse(result)
+
+        topic.delete()
+        return JsonResponse({'code': 200})
+
+
+def make_topics_res(author, author_topics):
+    res = {"code": 200, "data": {}}
+    topics_res = []
+
+    for topic in author_topics:
+        dict_topic = dict()
+        dict_topic['id'] = topic.id
+        dict_topic['title'] = topic.title
+        dict_topic['category'] = topic.category
+        dict_topic['create_time'] = topic.create_time.strftime("%Y-%m-%d %H:%M:%S")
+        dict_topic['introduce'] = topic.introduce
+        dict_topic['author'] = author.nickname
+
+        topics_res.append(dict_topic)
+
+    res['data']['topics_res'] = topics_res
+    res['data']['nickname'] = author.nickname
+
+    return res

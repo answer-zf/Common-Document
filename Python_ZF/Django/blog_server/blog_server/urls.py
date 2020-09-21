@@ -22,7 +22,7 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^text_api$', views.text_api),
+    # url(r'^text_api$', views.text_api),
     # 添加 user 模块 url 映射
     url(r'^v1/users', include('user.urls')),
     # 添加 btoken 模块 url 映射(用于登录操作)

@@ -41,8 +41,8 @@ def login_check(*methods):
                 # 严格检查 methods 中的参数 是不是 "GET" "POST" "PUT" "DELETE" ... 此处略
                 return func(request, *args, **kwargs)
 
-            if not token:
-                # 没有传递 token
+            if not token or token == 'null':
+                # 没有传递 token 返回 null
                 result = {"code": 107, "error": "PL. OFFER TOKEN .."}
                 return JsonResponse(result)
 
@@ -55,19 +55,18 @@ def login_check(*methods):
                 return JsonResponse(result)
 
             token_username = payload.get('username')
-            # url_username = kwargs.get('username')
-            # print(url_username)
+            url_username = kwargs.get('username')
 
             # 前端 url 所提供的 username 校验
-            # if not url_username:
-            #     # 用户名不存在
-            #     result = {"code": 203, "error": "pl. transfer username"}
-            #     return JsonResponse(result)
-            #
-            # if url_username != token_username:
-            #     # 用户名 与 token 不匹配
-            #     result = {"code": 212, "error": "token / username mismatch..."}
-            #     return JsonResponse(result)
+            if not url_username:
+                # 用户名不存在
+                result = {"code": 203, "error": "pl. transfer username"}
+                return JsonResponse(result)
+
+            if url_username != token_username:
+                # 用户名 与 token 不匹配
+                result = {"code": 212, "error": "token / username mismatch..."}
+                return JsonResponse(result)
 
             user = UserProfile.objects.get(username=token_username)
 
@@ -83,3 +82,25 @@ def login_check(*methods):
         return wrapper
 
     return _login_check
+
+
+def get_user_by_request(request):
+    """
+        通过 request 获取用户
+    :param request:
+    :return: obj -> user   or   None
+    """
+
+    token = request.META.get('HTTP_AUTHORIZATION')
+    if not token or token == 'null':
+        return None
+
+    try:
+        res = jwt.decode(token, KEY, algorithms="HS256")
+    except Exception as e:
+        print("---get_user_by_request - JWT decode error is %s" % e)
+        return None
+
+    username = res['username']
+    user = UserProfile.objects.get(username=username)
+    return user

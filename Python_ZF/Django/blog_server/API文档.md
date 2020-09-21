@@ -1,16 +1,40 @@
 
 -   目录
 
-    -   [概述](##概述)
-    -   [事件定义](##事件定义)
-    -   [开发规范](##开发规范)
-    -   [数据库结构](###数据库结构)
-    -   [接口说明](##接口说明)
+    -   [概述](#概述)
+    -   [事件定义](#事件定义)
+    -   [开发规范](#开发规范)
+    -   [数据库结构](#数据库结构)
+    -   [接口说明](#接口说明)
     -   [常见问题]()
 
 ## 概述
 
-...
+### 技术要点详述
+
+####   token的声明周期
+
+1.  用户未登录
+
+    -   前端肯定 没有 token
+
+2.   用户执行注册登录
+
+    1.   一旦基础数据校验成功,后端生成 token, 并且 token 包含此次注册 / 登录用户的用户名，通过 response 返回给前端 [json]
+    2.  前端拿到 token 后,存入浏览器本地存储 window.localStorage.setItem('dnblog, token)
+
+3.  用户每次访问博客页面 [ flask 前端5000端口 ]
+    
+    1.  从本地存储中拿出 token -> window.localStorage.getItem('dnblog')
+    2.  JS 将 token 放入 request 的 Authorization 头,发送http请求向后端索要数据
+    3.  服务器 - 接到前端请求 [ 当前URL 加了 login_check 并且请求方法在 methods参数 中]
+        -   eg. login_check('POST'),则 当前URL POST 方法时 进行如下校验
+        1.  从 request 的 Authorization 头中，拿到 token
+        2.  校验
+        3.  校验不通过,返回前端异常码
+        4.  校验通过,正常热行对应URL的视图函数
+
+4.  前端一旦接到关于 token 的异常码,则删除本地存储中的 token 且将用户转至登录界面
 
 ## 事件定义
 
@@ -22,7 +46,7 @@
 
 1.  后端环境
 
-    -   python  3.8.2 + djagno 1.11.8 + mysql 8.0.21 + Ubuntu 18.04 + vim
+    -   python  3.8.2 + django 1.11.8 + mysql 8.0.21 + Ubuntu 18.04 + vim
 
 2.  通信协议
 
@@ -286,14 +310,59 @@
     }
     ```
    
-```
-answer_zf
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFuc3dlcl96ZiIsImV4cCI6MTYwMDU4NjQxOH0.yr0YalERwb9KIeQla9aBdIiRe2bjIfNg98xebrk3czo
-cccccccc332
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImNjY2NjY2MzMzMiLCJleHAiOjE2MDA1ODY4OTd9.svdjEf0_z6jDUPSR0LLkG4VIU6NI6UeG_IT7S5izutQ
-```
+#### 获取博客具体内容接口
 
-#### 获取用户具体博客内容接口
-    
+-   响应示例
+
+    ```json
+        {
+        "code": 200,
+        "data": {
+            "nickname": "xxx",
+            "title":"xxx",
+            "category": "tec",
+            "create_time": "0000-00-00",
+            "content": "xxx",
+            "introduce": "xxx",
+            "author": "xxx",
+            "next_id": 0,
+            "next_title": "xxx",
+            "last_id": 0,
+            "last_title": "xxx",
+            "message": [
+              {
+                "id": 1,
+                "content": "xxx",
+                "publisher": "xxx",
+                "publisher_avatar": "url",
+                "reply": {
+                  "publisher": "xx",
+                  "publisher_avatar": "url",
+                  "create_time": "0000-00-00 00:00:00",
+                  "content": "xx",
+                  "msg_id": 0
+                },
+                "create_time":"0000-00-00 00:00:00"
+              }
+            ],
+            "messages_count": 0
+        }
+    }
+    ```
+ 
+#### 删除博客接口
     
 > URL：http://127.0.0.1:8000/v1/topics/<username>?t_id=1111
+
+1.  请求方式
+
+    -   DELETE
+
+2.  请求格式
+
+    -   url 地址访问
+    
+3.  响应示例
+
+    -   `{"code":200}`
+
