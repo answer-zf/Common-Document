@@ -21,7 +21,7 @@ def topics(request, username=None):
                             根据查询参数 ?category=xx, 做分类筛选
                         访问者是其他人 或 未登录用户 只显示 limit 值为 public 的博客列表
                 获取博客内容
-                    /v1/topics/<username>?....
+                    /v1/topics/<username>?t_id=00
             POST: 发表 blog
                 /v1/topics/<username>
     :param username: 所访问的博客 博主 用户名
@@ -44,25 +44,51 @@ def topics(request, username=None):
         if visitor:
             visitor_name = visitor.username
 
-        category = request.GET.get('category')
+        t_id = request.GET.get('t_id')
+
+        # 获取博客列表
+        if not t_id:
+            category = request.GET.get('category')
+            if visitor_name == username:
+                # 拿所有博客
+                #   分类筛选
+                #   /v1/topics/username?category=tec/no-tec
+                if category in ('tec', 'no-tec'):
+                    view_topics = Topic.objects.filter(author_id=username, category=category)
+                else:
+                    view_topics = Topic.objects.filter(author_id=username)
+            else:
+                # 拿到 public 权限的博客
+                #   分类筛选
+                if category in ('tec', 'no-tec'):
+                    view_topics = Topic.objects.filter(author_id=username, limit='public', category=category)
+                else:
+                    view_topics = Topic.objects.filter(author_id=username, limit='public')
+
+            res = make_topics_res(author, view_topics)
+            return JsonResponse(res)
+
+        # 获取博客具体内容
+        current_id = int(t_id)
+        # 博主访问标记 默认 访客访问 值为 False
+        is_self = False
         if visitor_name == username:
-            # 拿所有博客
-            #   分类筛选
-            #   /v1/topics/username?category=tec/no-tec
-            if category in ('tec', 'no-tec'):
-                view_topics = Topic.objects.filter(author_id=username, category=category)
-            else:
-                view_topics = Topic.objects.filter(author_id=username)
+            # 博主访问
+            is_self = True
+            try:
+                current_topic = Topic.objects.get(id=current_id)
+            except Exception as e:
+                result = {"code": 310, "error": "-- get blog by id - %s" % e}
+                return JsonResponse(result)
         else:
-            # 拿到 public 权限的博客
-            #   分类筛选
-            if category in ('tec', 'no-tec'):
-                view_topics = Topic.objects.filter(author_id=username, limit='public', category=category)
-            else:
-                view_topics = Topic.objects.filter(author_id=username, limit='public')
+            # 游客访问
+            try:
+                current_topic = Topic.objects.get(id=current_id, limit="public")
+            except Exception as e:
+                result = {"code": 310, "error": "-- get blog by id - %s" % e}
+                return JsonResponse(result)
 
-        res = make_topics_res(author, view_topics)
-
+        res = make_topic_res(author, current_topic, is_self)
         return JsonResponse(res)
 
     elif request.method == "POST":
@@ -145,6 +171,12 @@ def topics(request, username=None):
 
 
 def make_topics_res(author, author_topics):
+    """
+        获取博客列表
+    :param author: 博客作者 QuerySet
+    :param author_topics: 博客列表 QuerySet
+    :return:
+    """
     res = {"code": 200, "data": {}}
     topics_res = []
 
@@ -163,3 +195,64 @@ def make_topics_res(author, author_topics):
     res['data']['nickname'] = author.nickname
 
     return res
+
+
+def make_topic_res(author, author_topic, is_self):
+    """
+        获取博客具体内容
+    :param author: 博客作者 QuerySet
+    :param author_topic: 博客内容 QuerySet
+    :param is_self: 博主访问标记
+    :return: 
+    """
+    current_id = author_topic.id
+
+    # 获取 上 / 下一个博客
+    if is_self:
+        # 博主自己访问
+        # 取出 ID 大于当前 博客ID 的第一个数据
+        # 数据库的每次查询都是新的查询，不继承任何之前的查询，每次的查询都要考虑全面
+        # 确保查询到的 博客 是作者本人
+        next_topic = Topic.objects.filter(id__gt=current_id, author_id=author.username).first()
+        # 取出 ID 小于于当前 博客ID 的最后一个数据
+        previous_topic = Topic.objects.filter(id__lt=current_id, author_id=author.username).last()
+    else:
+        # 访客访问
+        next_topic = Topic.objects.filter(id__gt=current_id, author_id=author.username, limit="public").first()
+        previous_topic = Topic.objects.filter(id__lt=current_id, author_id=author.username, limit="public").last()
+
+    # 获取 下一个博客 id / 标题
+    if next_topic:
+        next_id = next_topic.id
+        next_title = next_topic.title
+    else:
+        next_id = None
+        next_title = None  # json 返回 null
+
+    # 获取 上一个博客 id / 标题
+    if previous_topic:
+        previous_id = previous_topic.id
+        previous_title = previous_topic.title
+    else:
+        previous_id = None
+        previous_title = None
+
+    result = {"code": 200, "data": {}}
+
+    result['data']['nickname'] = author.nickname
+    result['data']['title'] = author_topic.title
+    result['data']['category'] = author_topic.category
+    result['data']['create_time'] = author_topic.create_time.strftime('%y-%m-%d')
+    result['data']['content'] = author_topic.content
+    result['data']['introduce'] = author_topic.introduce
+    result['data']['author'] = author.nickname
+    result['data']['previous_id'] = previous_id
+    result['data']['previous_title'] = previous_title
+    result['data']['next_id'] = next_id
+    result['data']['next_title'] = next_title
+
+    # 假数据填充
+    result['data']['message'] = []
+    result['data']['message_count'] = 0
+
+    return result

@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^v1/tokens', include('btoken.urls')),
     # 添加 topic 模块 url 映射
     url(r'^v1/topics', include('topic.urls')),
+    # 添加 message 模块 url 映射
+    url(r'^v1/messages', include('message.urls')),
 ]
 # 添加图片的 路由映射  http://127.0.0.0:8000/media/xxx.jpg
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

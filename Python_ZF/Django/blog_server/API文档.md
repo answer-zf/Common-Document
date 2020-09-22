@@ -310,9 +310,20 @@
     }
     ```
    
-#### 获取博客具体内容接口
+   
+#### 获取用户具体博客内容接口
 
--   响应示例
+> URL：http://127.0.0.1:8000/v1/topics/<username>?id=000
+
+1.  请求方式
+
+    -   GET
+    
+2.  请求格式
+
+    -   http://127.0.0.1:8000/v1/topics/<username> 地址后加查询字符串：t_id, 值为具体博客文章的id
+
+3.  响应示例
 
     ```json
         {
@@ -325,10 +336,10 @@
             "content": "xxx",
             "introduce": "xxx",
             "author": "xxx",
-            "next_id": 0,
-            "next_title": "xxx",
-            "last_id": 0,
-            "last_title": "xxx",
+            "next_id": null,
+            "next_title": null,
+            "previous_id": 0,
+            "previous_title": "xxx",
             "message": [
               {
                 "id": 1,
@@ -366,3 +377,8 @@
 
     -   `{"code":200}`
 
+### 用户评论接口
+
+> 有留言功能和回复功能，即留言的信息可以被回复。
+
+#### 

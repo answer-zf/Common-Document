@@ -55,18 +55,18 @@ def login_check(*methods):
                 return JsonResponse(result)
 
             token_username = payload.get('username')
-            url_username = kwargs.get('username')
-
-            # 前端 url 所提供的 username 校验
-            if not url_username:
-                # 用户名不存在
-                result = {"code": 203, "error": "pl. transfer username"}
-                return JsonResponse(result)
-
-            if url_username != token_username:
-                # 用户名 与 token 不匹配
-                result = {"code": 212, "error": "token / username mismatch..."}
-                return JsonResponse(result)
+            # url_username = kwargs.get('username')
+            #
+            # # 前端 url 所提供的 username 校验
+            # if not url_username:
+            #     # 用户名不存在
+            #     result = {"code": 203, "error": "pl. transfer username"}
+            #     return JsonResponse(result)
+            #
+            # if url_username != token_username:
+            #     # 用户名 与 token 不匹配
+            #     result = {"code": 212, "error": "token / username mismatch..."}
+            #     return JsonResponse(result)
 
             user = UserProfile.objects.get(username=token_username)
 
