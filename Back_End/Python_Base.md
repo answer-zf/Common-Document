@@ -7902,3 +7902,6 @@ _判断对象是否包含对应的属性_
 
 _返回一个对象属性值_
 `getattr(object, name[, default])`
+
+_给 字典 设置 默认值，如果没有 当前key，设置为value；有则忽略_
+`dict_.setdefault(key, value)`

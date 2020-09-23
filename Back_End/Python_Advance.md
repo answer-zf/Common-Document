@@ -1041,6 +1041,7 @@ _pip install cryptography_
                     image=models.ImageField(
                         upload_to="static/images"  # 指定 图片的上传路径在后台上传时会自动将文件保存在指定的目录下
                     )
+                    # 从数据表中获取的 image 数据需要 序列化后（str(image_data)） 传入 json
                 ```
 
             11. TextField():
