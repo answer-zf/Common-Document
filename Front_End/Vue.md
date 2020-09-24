@@ -1,4 +1,4 @@
-# Vue.js
+# Vue
 
 ## Node（后端）中的 MVC 与 前端中的 MVVM 之间的区别
 
@@ -743,34 +743,21 @@ parseInt(binding.value) + 'px' } } ···
 
   - computed 比较适合对多个变量或者对象进行处理后返回一个结果值，也就是数多个变量中的某一个值发生了变化则我们监控的这个值也就会发生变化
 
-  ```html
-  <div>{{msg.split('').reverse().join('')}}</div>
-  <!-- 当多次调用 reverseString  的时候 
-       只要里面的 msg 值不改变 他会把第一次计算的结果直接返回
-  		 直到data 中的 msg 值改变 计算属性才会重新发生计算 -->
-  <div>{{reverseString}}</div>
-  <div>{{reverseString}}</div>
-  <!-- 调用methods中的方法的时候  他每次会重新调用 -->
-  <div>{{reverseMessage()}}</div>
-  <div>{{reverseMessage()}}</div>
-  <script>
-    ...
-    data:{
-        msg:'hello'
-    },
-    methods: {
-        reverseMessage: function(){
-          console.log('methods')
-          return this.msg.split('').reverse().join('');
-        }
-    },//computed  属性 定义 和 data 已经 methods 平级
-    computed: {
-        reverseString: function(){ //  reverseString   这个是自己定义的名字
-            return this.msg.split('').reverse().join('')
-        }   // 这里一定要有return 否则 调用 reverseString 的 时候无法拿到结果
-    }
-    ...
-  </script>
+  ```js
+    // html : <p>{{total}}</p>
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                courses: ['zf', 'zf']
+            }
+        },
+        computed: {
+            total() {
+                return this.courses.length + 'eeeeeee'
+            }
+        },
+    })
   ```
 
 #### 侦听器 watch
@@ -782,41 +769,40 @@ parseInt(binding.value) + 'px' } } ···
 
 ![Snipaste_2019-12-12_08-48-43](http://images.dorc.top/blog/vue/Snipaste_2019-12-12_08-48-43.png)
 
-```html
-<span><input type="text" v-model.lazy="uname"/></span>// TODO: 4.
-改为失去焦点触发事件
-<span>{{tip}}</span>
-<script>
-  // 创建 Vue 实例，得到 ViewModel
-  var vm = new Vue({
-    el: '#app',
-    data: {
-      uname: '',
-      tip: ''
-    },
-    methods: {
-      checkName: function(uname) {
-        setTimeout(() => {
-          // TODO: 2. （模拟）调用后台接口（异步）进行用户名的验证
-          if (uname === 'admin') {
-            this.tip = '用户名存在'
-          } else {
-            this.tip = '可以使用'
-          }
-        }, 2000)
-      }
-    },
-    watch: {
-      // TODO: 1. 使用侦听器监听用户名的变化
-      uname: function(val) {
-        this.checkName(val)
-        // TODO: 3. 根据验证结果调整提示信息
-        this.tip = '正在验证。。。'
-      }
-    }
-  })
-</script>
+```js
+    // html : <p>{{totalcount}}</p>
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                courses: ['zf', 'zf'],
+                totalcount: 0
+            }
+        },
+        // watch: {
+        //     courses(newValue, oldValue) {
+        //         totalcount = newValue.length
+        //     }
+        // },
+        // 默认 不带选项的 watch 初始化时不执行
+        watch: {
+            courses: {
+                immediate: true, // 立即执行一次
+                // deep: true,
+                handler(newValue, oldValue) {
+                    this.totalcount = newValue.length
+                }
+            }
+        },
+    })
 ```
+
+_计算属性 vs 监听器_
+
+-   监听器更通用，理论上计算属性能实现的侦听器也能实现
+-   处理数据的场景不同，监听器适合一个数据影响多个数据（一个值变化以后 做很多事情），计算属性适合一个数据受多个数据影响
+-   计算属性有缓存性，计算所得的值如果没有变化不会重复执行
+-   监听器适合执行异步操作或较大开销操作的情况
 
 #### 过滤器
 
@@ -1909,12 +1895,12 @@ var vm = new Vue({
 
 - HTTP 请求方式
 
-  | 请求方式 | 作用 |
-  | :------: | :--: |
-  |   GET    | 查询 |
-  |   POST   | 添加 |
-  |   PUT    | 修改 |
-  |  DELETE  | 删除 |
+  | 请求方式 | 作用  |
+  | :------: | :---: |
+  |   GET    | 查询  |
+  |   POST   | 添加  |
+  |   PUT    | 修改  |
+  |  DELETE  | 删除  |
 
 - 符合规则的 URL 地址：
 
@@ -3456,7 +3442,7 @@ var store = new Vuex.Store({
 
 4. 如果 store 中 state 上的数据， 在对外提供的时候，需要做一层包装，那么 ，推荐使用 getters, 如果需要使用 getters ,则用 this.\$store.getters.\*\*\*
 
-##相关文档
+## 相关文档
 
 1. [vue.js 1.x 文档](https://v1-cn.vuejs.org/)
 2. [vue.js 2.x 文档](https://cn.vuejs.org/)

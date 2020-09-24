@@ -46,13 +46,13 @@ eslint --init
 
 #### 编辑
 
-| 快捷键               | 作用                   |
-| :------------------- | :--------------------- |
-| Ctrl + Enter         | 在当前行下插入新的一行 |
-| Ctrl + Shift + Enter | 在当前行上插入新的一行 |
-| Alt + ↑ / ↓          | 将代码向上 / 下移动    |
-| Shift + Alt + ↑ / ↓  | 将代码向上 / 下复制    |
-| Ctrl + J             | 合并行                 |
+| 快捷键              | 作用                   |
+| :------------------ | :--------------------- |
+| Shift + Enter       | 在当前行下插入新的一行 |
+| Ctrl + Enter        | 在当前行上插入新的一行 |
+| Alt + ↑ / ↓         | 将代码向上 / 下移动    |
+| Shift + Alt + ↑ / ↓ | 将代码向上 / 下复制    |
+| Ctrl + J            | 合并行                 |
 
 #### 折叠代码
 
@@ -113,120 +113,28 @@ eslint --init
 | Shift + Alt + U | 上传配置 |
 | Shift + Alt + D | 下载配置 |
 
-## VS Code settings.json 的配置备份
+## 插件
 
-```js
-{
-  "files.associations": {
-    "*.wxml": "wxml",
-    "*.vue": "vue",
-    "*.cjson": "jsonc",
-    "*.wxss": "css",
-    "*.wxs": "javascript"
-  },
-  "open-in-browser.default": "\"Chrome\"", // 打开浏览器 默认 Chrome
-  // "terminal.integrated.shell.windows": "E:\\soft\\cmder\\Cmder.exe", // 主题设置
-  "workbench.iconTheme": "vscode-icons", // 主题图标设置
-  "vsicons.dontShowNewVersionMessage": true, // 关闭版本消息显示
-  "editor.detectIndentation": false, // vscode默认启用了根据文件类型自动设置tabsize的选项
-  "editor.tabSize": 2, // 重新设定tabsize
-  "editor.mouseWheelZoom": true, // Ctrl 滚动缩放
-  "editor.wordWrap": "on", // 自动换行
-  "editor.formatOnSave": true, // 保存自动格式化
-  "breadcrumbs.enabled": true, // 启用导航路径
-  "javascript.updateImportsOnFileMove.enabled": "always", // 文件重命名时更新导入路径
-  "editor.selectionHighlight": false, // 关闭自带高亮效果
-  "editor.renderWhitespace": "all", // 显示空格
-  "editor.fontFamily": "'Fira Code','Source Code Pro', 'STZhongsong'", // 字体设置
-  "editor.fontLigatures": true, // 配置连体字
-  "emmet.triggerExpansionOnTab": true, // emmet 语法
-  "emmet.includeLanguages": {
-    "javascript": "javascriptreact",
-    "vue-html": "html",
-    "razor": "html",
-    "plaintext": "jade",
-    "wxml": "html"
-  },
-  "git.enableSmartCommit": true,
-  "git.autofetch": true,
-  "fileheader.Author": "answer-zf", // 注释头部信息
-  "fileheader.LastModifiedBy": "answer-zf", // 注释头部信息
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "eslint.validate": [
-    // 添加 vue 支持
-    "javascript",
-    "javascriptreact",
-    {
-      "language": "html",
-      "autoFix": true
-    },
-    {
-      "language": "vue",
-      "autoFix": true
-    }
-  ],
-  "eslint.autoFixOnSave": true, // 每次保存的时候将代码按eslint格式进行修复
-  "files.autoGuessEncoding": true, // 打开文件自检字符集编码
-  "prettier.semi": false, // 去掉代码结尾的分号
-  "prettier.singleQuote": true, // 使用单引号替代双引号
-  "vetur.format.defaultFormatter.stylus": "stylus-supremacy", // 使用单引号替代双引号
-  "vetur.format.defaultFormatter.html": "js-beautify-html", // 让vue中的js按编辑器自带的ts格式进行格式化
-  "vetur.format.defaultFormatterOptions": {
-    // vue组件中html代码格式化样式
-    "js-beautify-html": {
-      "wrap_attributes": "force-aligned" //属性强制折行对齐
-    }
-  },
-  "typescript.format.insertSpaceBeforeFunctionParenthesis": true, //让函数(名)和后面的括号之间加个空格
-  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
-  "editor.fontWeight": "500",
-  "workbench.startupEditor": "newUntitledFile",
-  "workbench.colorTheme": "Material",
-  "editor.lineHeight": 26,
-  "workbench.statusBar.visible": true,
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "window.zoomLevel": 0,
-  "editor.cursorStyle": "block",
-  "minapp-vscode.disableAutoConfig": true, // 微信小程序设置
-  "minapp-vscode.showSuggestionOnEnter": true,
-  "html.format.wrapAttributes": "force-aligned",
-  "search.followSymlinks": false,
-  "[markdown]": {
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-    // 自定义 md 代码段
-    "editor.formatOnSave": true,
-    "editor.renderWhitespace": "all",
-    "editor.quickSuggestions": {
-      "other": true,
-      "comments": true,
-      "strings": true
-    },
-    "editor.acceptSuggestionOnEnter": "on"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-  "typescript.validate.enable": false,
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "sync.gist": "42cafa1971c8eabf28258d9dd154f762"
-}
-```
+### Debugger For Chrome
+
+-   快捷键 F5 调试
+
+-   HTML 调试：
+
+    1.  安装 http-server：`npm install -g http-server`
+    2.  F5 启动、launch.json 配置
+
+    ```json
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/wwwroot"
+        }
+    ] 
+    ```
+    3.  启动 http-server，命令行 使用 `http-server`
+    4.  再使用 F5 即可
+    
