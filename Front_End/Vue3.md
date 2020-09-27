@@ -958,7 +958,7 @@ npm install -D stylus-loader stylus
 </style>
 ```
 
-#### 自动化导入样式
+##### 自动化导入样式
 
 > 自动化导入样式文件 (用于颜色、变量、mixin等)，可以使用 style-resources-loader。
 
@@ -992,7 +992,7 @@ module.exports = {
 }
 ```
 
-#### Scoped CSS
+##### Scoped CSS
 
 > 当 `<style>` 标签有 scoped 属性时，它的 CSS 只作用于当前组件中的元素。
 
@@ -1021,4 +1021,326 @@ module.exports = {
 
 -   Sass 之类的预处理器无法正确解析 >>> 。这种情况下你可以使用 /deep/ 或 ::v-deep 操作符取而代之
 
-#### 
+```css
+#app {
+    /deep/ a {
+        color: rgb(196, 50, 140)
+    }
+    ::v-deep a {
+        color: rgb(196, 50, 140)
+    }
+}
+```
+   
+##### CSS Module
+
+> 用于模块化和组合 CSS 的系统
+
+```html
+<style module lang="scss">
+    .red {
+        color: #f00;
+    }
+    .bold {
+        font-weight: bold;
+    }
+</style>
+```
+
+-   模板中通过$style.xx访问
+
+```html
+<a :class="$style.red">awesome-vue</a>
+<a :class="{[$style.red]:isRed}">awesome-vue</a>
+<a :class="[$style.red, $style.bold]">awesome-vue</a>
+```
+
+#### 数据访问相关
+
+##### 数据模拟
+
+> 使用开发服务器配置before选项，可以编写接口，提供模拟数据
+
+-   [配置](https://cli.vuejs.org/zh/config/#devserver)
+
+```javascript
+// vue.config.js
+module.exports = {
+    devServer: {
+        before(app) {  // app是 express 示例
+            app.get('/api/courses', (req, res) => {
+                setTimeout(() => {
+                    res.json([
+                        { name: 'web全栈', price: 8999 },
+                        { name: 'web高级', price: 8999 },
+                    ])
+                }, 1000);
+            })
+        },
+    },
+}
+
+// api/xx.js
+import axios from 'axios'
+// 模拟异步数据调用
+export function getCourses() {
+    return axios.get('/api/courses').then((res) => res.data)
+}
+
+// 引用
+import { getCourses } from '@/api/course.js'
+export default {
+    async created() {
+        const courses = await getCourses()
+        this.courses = courses
+    },
+}
+```
+
+##### 代理
+
+> 设置开发服务器代理选项可以有效避免调用接口时出现的跨域问题。
+
+```javascript
+// vue.config.js
+module.exports = {
+    devServer: {
+        proxy: 'http://localhost:3000', 
+        // 在 接口中用 axios 请求 '/api/courses' 地址
+        // 先尝试找 静态资源，没有相匹配的后
+        // 开发服务器代理转发 所配置的地址上 防止跨域问题的出现，相当于请求本地服务
+    },
+}
+```
+
+### vue router
+
+```html
+<div id="nav">
+    <!-- 导航链接 即 a 标签 -->
+    <!-- to 即 href -->
+    <router-link to="/">Home</router-link> |
+    <router-link to="/admin">Admin</router-link>
+</div>
+<!-- 路由出口 -->
+<!-- 路由匹配到的组件将渲染在这里 -->
+<router-view />
+```
+
+```javascript
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
+
+Vue.use(VueRouter)
+
+// 定义路由
+const routes = [
+    { path: '/', name: 'Home', component: Home, },
+    { path: '/admin', name: 'admin',
+        // 懒加载
+        component: () => import('../views/Admin.vue'),
+    },
+]
+
+// 创建 并暴露出 router 实例
+const router = new VueRouter({
+    routes,
+})
+
+export default router
+```
+
+#### 动态路由匹配
+
+-   路由设计：`{ path: '/user/:id', component: User }`
+-   参数匹配：`{{ $route.params.name }} `
+
+#### 通配符匹配
+
+> 适合做404页面路由
+
+```javascript
+{
+    // 会匹配所有路径
+    path: '*',
+    component: () => import('../views/404.vue')
+}
+
+```
+
+#### 嵌套路由
+
+```javascript
+    {
+        path: '/admin',
+        name: 'admin',
+        component: () => import('../views/Admin.vue'),
+        children: [
+            {
+                path: '/admin/course/:name',
+                name: 'detail',
+                component: () => import('../views/Detail.vue'),
+            },
+        ],
+    },
+```
+
+#### 编程导航
+
+>借助 router 的实例方法，可编写代码来实现编程式导航
+
+```html
+<div @click="$router.push(`/admin/course/${c.name}`)"></div>
+
+<!-- 等价于 -->
+<div @click="onClick(e)"></div>
+<script>
+...
+methods: {
+    onClick(e) {
+        this.$router.push(`/admin/course/${c.name}`)
+    }
+},
+</script>
+
+<!-- 等价于 -->
+<router-link :to="`/admin/course/${c.name}`"></router-link>
+
+```
+
+-   常用 路由的别人进行路由的配置
+```javascript
+// 带动态参数 ：/admin/course/:name
+// 带查询参数：使用 query：{xx:'xx'}
+this.$router.push(
+    name:'detail',
+    params: {
+        name: c.name
+    }
+)
+```
+
+-   组件复用时的路由问题
+
+    -   在嵌套式路由中，父组件跳转，在子组件 created 钩子中 axios 获取数据时，
+    -   只能获取一次数据，即在第一次跳转创建子组件的时刻 获取数据
+    -   避免该问题，使用 watch 监听 $router
+
+    ```javascript
+        export default {
+            watch: {
+                $route: {
+                    immediate: true, // created时 立即执行一次
+                    handler() {
+                        console.log('获取数据')
+                    },
+                },
+            },
+        }
+    ```
+
+#### 路由守卫
+
+##### 全局守卫
+
+```javascript
+// 判断路由是否需要守卫,在配置路由挂在 meta 数据
+// meta 数据
+router.beforeEach((to, from, next) => {
+    if (to.meta.auth) {
+        if (window.isLogin) {
+            next()
+        } else {
+             // 登录后重定向，即跳转到登录前所要跳转的位置
+            next('/login?redirect='+to.fullPath)
+        }
+    } else {
+        next()
+    }   
+})
+
+```
+
+```javascript
+{
+    path: '/admin',
+    name: 'admin',
+    meta: {
+        auth: true
+    }
+},
+{
+    path: '/login',
+    component: () => import('../views/Login.vue')
+},
+```
+
+```html
+<template>
+    <div>
+        <button @click="login" v-if="!isLogin">登录</button>
+        <button @click="logout" v-else>登出</button>
+    </div>
+</template>
+<script>
+export default {
+    methods: {
+        login() {
+            window.isLogin = true
+            this.$router.push(this.$route.query.redirect)
+        },
+        logout() {
+            window.isLogin = false
+            this.$router.push('/')
+        }
+    },
+    computed: {
+        isLogin() {
+            return window.isLogin
+        }
+    },
+}
+</script>
+
+```
+
+##### 路由独享的守卫
+
+```javascript
+{
+    path: '/admin',
+    name: 'admin',
+    // 不需要使用meta 数据的判断 直接做守卫即可
+    // 小项目使用
+    beforeEnter(to, from, next) {
+        if (window.isLogin) {
+            next()
+        } else {
+            next('/login?redirect=' + to.fullPath)
+        }
+    },
+},
+```
+
+##### 组件内守卫 （最小守卫）
+
+-   可以在路由组件内直接定义以下路由导航守卫：
+    -   beforeRouteEnter
+    -   beforeRouteUpdate
+    -   beforeRouteLeave
+
+#### 数据获取
+
+-   路由激活时，获取数据的时机有两个：
+
+    -   路由导航前
+    -   路由导航后
+
+[数据获取](https://router.vuejs.org/zh/guide/advanced/data-fetching.html)
+
+#### 动态路由
+
+> 通过router.addRoutes(routes)方式动态添加路由
+
+
