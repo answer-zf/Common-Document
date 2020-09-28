@@ -1343,4 +1343,301 @@ export default {
 
 > 通过router.addRoutes(routes)方式动态添加路由
 
+```javascript
+// 全局守卫修改为：要求用户必须登录，否则只能去登录页
+router.beforeEach((to, from, next) => {
+if (window.isLogin) {
+    if (to.path === '/login') {
+        next('/')
+    } else {
+        next()
+    }
+} else {
+    if (to.path === '/login') {
+        next()
+    } else {
+        next('/login?redirect=' + to.fullPath)
+    }
+}
+})
+```
+```javascript
+// Login.vue用户登录成功后动态 添加/admin
+login() {
+    window.isLogin = true;
+    this.$router.addRoutes([
+        {
+            path: "/admin", //...
+        }
+    ]);
+    const redirect = this.$route.query.redirect || "/";
+    this.$router.push(redirect);
+}
+```
+
+#### 路由组件缓存
+
+> 利用keepalive做组件缓存，保留组件状态，提高执行效率
+
+```html
+<keep-alive include="admin">
+    <router-view></router-view>
+</keep-alive>
+```
+
+-   使用include或exclude时要给组件设置name,**不是路由设置的 name**
+    -   可以动态使用：`:include=['admin']`
+    -   exclude: 排除 exclude 的内的组件，其余都缓存
+    -   max: 最多缓存 xx 个，多了以后需要 进一个 前要出一个
+-   两个特别的生命周期：activated、deactivated
+
+#### 路由懒加载
+
+>路由组件的懒加载能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了。
+
+`component: () => import("../views/About.vue")`
+
+### VueX
+
+> Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以可预测的方式发生变化。
+
+```javascript
+// store/index.js
+export default new Vuex.Store({
+    state: {
+        // 将应用全局状态定义在state中
+        isLogin: false,
+    },
+    mutations: {
+        // 修改state只能通过mutation
+        login(state) {
+            state.isLogin = true
+        },
+        logout(state) {
+            state.isLogin = false
+        },
+    },
+    // Action 类似于 mutation，不同在于：
+    //     Action 提交的是 mutation，而不是直接变更状态。
+    //     Action 可以包含任意异步操作。
+    actions: {
+        // 参数1. vuex 传递的上下文context：{}
+        login({ commit }, username) {
+            // 模拟登录 api调用，一秒后 如果用户名时 admin 则登录成功
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (username === 'admin') {
+                        commit('login')
+                        resolve()
+                    } else {
+                        reject()
+                    }
+                }, 1000)
+            })
+        },
+    },
+
+    modules: {},
+})
+```
+
+-   获取:使用`store.state`获取状态
+
+    -   `<button @click="login" v-if="!$store.state.isLogin"> Login </button>`
+
+-   修改状态只能通过`store.dispatch(mutation)`
+    -   `this.$store.commit('login')`
+
+-   actions 派发动作
+    
+    ```javascript
+    // 派发动作，触发 actions
+    this.$store
+        .dispatch('login', 'admin')
+        .then(() => {
+            this.$router.push(this.$route.query.redirect)
+        })
+        .catch(() => {
+            alert('error')
+        }) 
+    ```
+
+#### 实践
+
+##### 模块化
+
+-   使用modules定义多个子模块利于组件复杂状态
+
+```javascript
+import user from './user'
+export default new Vuex.Store({
+    modules: {
+        user,
+    }
+})
+```
+
+-   移动先前登录状态相关代码到user.js
+
+```javascript
+export default {
+    namespaced: true, // 设置独立命名空间，避免命名错误
+    // ...
+}
+```
+
+-   访问方式响应变化
+
+```js
+// Login.vue
+<button @click="login" v-if="!$store.state.user.isLogin">登录</button>
+
+this.$store
+    .dispatch('user/login', 'admin')
+    .then(() => {
+        const redirect = this.$route.query.redirect || '/'
+        this.$router.push(redirect)
+    })
+    .catch(() => {
+        alert('用户名或密码错误')
+    })
+```
+
+```javascript
+// router/index.js
+store.state.user.isLogin
+```
+
+##### 映射 mapState()/mapMutation()/mapAction()
+
+-   通过这些映射方法可以让大家少敲几个字，避免对$store直接访问。
+
+-   state 状态映射
+
+```javascript
+import { mapState } from 'vuex'
+computed: {
+    ...mapState('user', ['isLogin'])
+}
+
+<button @click="login" v-if="!isLogin">登录</button>
+```
+
+-   action 映射
+
+```javascript
+import { mapActions } from 'vuex'
+methods: {
+    login() {
+        this['user/login']('admin').then(...)
+    },
+    ...mapActions(['user/login', 'user/logout'])
+},
+```
+
+##### 派生状态 Getters
+
+> 可以使用getters从store的state中派生出一些状态
+
+-   换句话说就是计算属性在 vuex的迁移
+
+```javascript
+// vuex user 模块的改造
+// 嵌入 Getters
+export default {
+    namespaced: true,
+    state: {
+        isLogin: false,
+        username: '',
+    },
+    mutations: {
+        login(state, username) {
+            state.isLogin = true
+            state.username = username
+        },
+        logout(state) {
+            state.isLogin = false
+            state.username = ''
+        },
+    },
+    Getters: {
+        welcome: (state) => {
+            state.username + 'welcome...'
+        },
+    },
+    actions: {
+        login({ commit }, username) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (username === 'admin') {
+                        commit('login', username)
+                        resolve()
+                    } else {
+                        reject()
+                    }
+                }, 1000)
+            })
+        },
+    },
+}
+```
+
+```javascript
+// vuex 映射
+import { mapState, mapGetters } from 'vuex'
+
+export default {
+    name: 'app',
+    computed: {
+        ...mapState('user', ['isLogin']),
+        ...mapGetters('user', ['welcome']),
+    },
+}
+
+// 组件中直接使用即可
+<span v-if="isLogin">
+    {{ welcome }}
+    <button>logout</button>
+</span>
+
+```
+
+##### 严格模式
+
+> 严格模式下，无论何时发生了状态变更且不是由 mutation 函数引起的，将会抛出错误。这能保证所有 的状态变更都能被调试工具跟踪到。
+
+```javascript
+const store = new Vuex.Store({
+    // ...
+    strict: true
+})
+```
+
+#### 插件
+
+```javascript
+export default (store) => {
+    // store 初始化时 将 localStorage 中的状态栏还原
+    if (localStorage) {
+        const user = JSON.parse(localStorage.getItem('user'))
+        if (user) {
+            store.commit('login', user.username)
+        }
+    }
+    // 用户状态发生变化时缓存之
+    store.subscribe((mutation, state) => {
+        // {type: 'user/login'}
+        // {type: 'user/logout'}
+        if (mutation.type===('user/login')) {
+            const user = JSON.stringify(state.user)
+            localStorage.setItem('user', user)
+        } else if (mutation.type === 'user/logout') {
+            localStorage.removeItem('user')
+        }
+    })
+}}
+
+```
+
+## 组件化
 
