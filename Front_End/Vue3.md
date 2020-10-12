@@ -1,14 +1,12 @@
-# Vue 3.0
+# 总结
 
-## 回顾
-
-### MVVM
+## MVVM
 
 -   M(数据模型) 通过响应的方式 进行数据绑定到 V(视图)中
 -   在 V 中，用户通过事件反作用事件修改 M
 -   通过 vue这个中间层(VM) 做桥梁，避免用户直接接触 DOM
 
-### 生命周期
+## 生命周期
 
 -   示例：异步获取列表数据
 
@@ -78,9 +76,9 @@
 }
 ```
 
-### 组件
+## 组件
 
-#### 父组件向子组件传参
+### 父组件向子组件传参
     
     -   通过属性传参
     -   子组件通过props接收
@@ -123,7 +121,7 @@
     })
 ```
 
-#### 子组件向父组件传参(`$emit` 自定义事件)
+### 子组件向父组件传参(`$emit` 自定义事件)
 
     -   子组件 通过 $emit 自定义事件（第二个参数开始 传参） 并触发
     -   父组件 监听 $emit 自定义事件
@@ -167,11 +165,11 @@
     })
 ```
 
-#### 在组件上使用 v-model （双向绑定）
+### 在组件上使用 v-model （双向绑定）
 
 > 将数据存储在 父组件 内部 维护，子组件负责修改
 
-##### 前提 v-model 的实现
+#### 前提 v-model 的实现
 
 > v-model 即 语法糖
 
@@ -180,7 +178,7 @@ v-model="value_"
 1.  @input="value_=$event" $event 即用户输入的值
 2.  :value="value_"
 
-##### 组件实现
+#### 组件实现
 
 ```javascript
     // <course-add @add-course="addCourse" v-model="course"></course-add>
@@ -221,7 +219,7 @@ v-model="value_"
 })
 ```
 
-#### 内容分发 （插槽）
+### 内容分发 （插槽）
 
 > 通过使用vue提供的 <slot> 元素可以给组件传递内容
 
@@ -264,7 +262,7 @@ const app = new Vue({
 
 ```
 
-##### 具名插槽
+#### 具名插槽
 
 ```html
 <message :show.sync="show">
@@ -295,7 +293,7 @@ const app = new Vue({
 </script>
 ```
 
-##### 作用域插槽
+#### 作用域插槽
 
 > 插槽内容 都是由 父组件 提供 ，想要在插槽使用子组件的内容
 
@@ -326,7 +324,7 @@ const app = new Vue({
     </script>
 ```
 
-#### 组件化
+### 组件化
 
 > 组件是可复用的 Vue 实例，组件是VueComponent的实例，继承自Vue
 > 软件工程中原则的践行，高内聚，低耦合，增强程序的复用性、可维护性和可测试性
@@ -343,11 +341,11 @@ const app = new Vue({
         -   组件配置 => VueComponent实例 => render() => Virtual DOM=> DOM
     -   组件的本质是产生虚拟DOM
 
-### API
+## API
 
-#### 数据相关API
+### 数据相关API
 
-##### Vue.set / Vue.delete
+#### Vue.set / Vue.delete
 
 > 向响应式对象中 添加/删除 一个属性，并确保这个新属性同样是响应式的，且触发视图更新。
 
@@ -382,9 +380,9 @@ const app = new Vue({
 });
 ```
 
-#### 事件相关API
+### 事件相关API
 
-##### vm.$on 
+#### vm.$on 
 
 > 监听当前实例上的自定义事件。事件可以由 vm.$emit 触发。回调函数会接收所有传入事件触发函数的额外参数。
 
@@ -395,11 +393,11 @@ vm.$on('test', function (msg) { // @test=" .. "
 })
 ```
 
-##### vm.$emit
+#### vm.$emit
 
 > 触发当前实例上的事件。附加参数都会传给监听器回调。
 
-##### 事件总线
+#### 事件总线
 
 > 通过在Vue原型上添加一个Vue实例作为事件总线，实现组件间相互通信，而且不受组件间关系的影响
 
@@ -469,20 +467,20 @@ Vue.component('message', {
 </div>
 ```
 
-##### vm.$once
+#### vm.$once
 
 > 监听一个自定义事件，但是只触发一次。一旦触发之后，监听器就会被移除。 -> 与 $on 唯一的区别
 
-##### vm.$off
+#### vm.$off
 
 -   移除自定义事件监听器。
     -   如果没有提供参数，则移除所有的事件监听器；
     -   如果只提供了事件，则移除该事件所有的监听器；
     -   如果同时提供了事件与回调，则只移除这个回调的监听器。
 
-#### 组件或元素引用
+### 组件或元素引用
 
-##### ref和vm.$refs（操作 DOM）
+#### ref和vm.$refs（操作 DOM）
 
 -   ref 被用来给元素或子组件注册引用信息。
 -   引用信息将会注册在父组件的 $refs 对象上。
@@ -505,7 +503,7 @@ Vue.component('message', {
 -   $refs 不是响应式的，不要试图用它在模板中做数据绑定
 -   当 v-for 用于元素或组件时，引用信息将是包含 DOM 节点或组件实例的数组。
 
-### 动画
+## 动画
 
 > transition组件会为嵌套元素 自动添加class，可用于做css过度动画
 
@@ -542,7 +540,7 @@ Vue.component('message', {
 5.  v-leave-active ：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
 6.  v-leave-to : 定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave 被删除)，在过渡/动画完成之后移除。
 
-#### 使用CSS动画库
+### 使用CSS动画库
 
 > 通过自定义过度类名可以有效结合Animate.css这类动画库制作更精美的动画效果。
 
@@ -554,7 +552,7 @@ Vue.component('message', {
 -   使用
     -   `<transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">`
 
-#### JavaScript 钩子
+### JavaScript 钩子
 
 -   可以在<transition>属性中声明 JavaScript 钩子，使用JS实现动画。
 
@@ -591,9 +589,9 @@ src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js">
 </script>
 ```
 
-### 可复用
+## 可复用
 
-#### 过滤器
+### 过滤器
 
 > Vue.js 允许你自定义过滤器，可被用于一些常见的文本格式化。过滤器可以用在两个地方：双花括号插 值和 v-bind 表达式 (后者从 2.1.0+ 开始支持)。过滤器应该被添加在 JavaScript 表达式的尾部，由“管 道”符号指示
 
@@ -611,7 +609,7 @@ filters: {
 }
 ```
 
-#### 自定义指令
+### 自定义指令
 
 > 对普通 DOM 元素进行底层操作，用 自定义指令
 
@@ -628,7 +626,7 @@ Vue.directive('permission', {
 })
 ```
 
-#### 渲染函数
+### 渲染函数
 
 > Vue 推荐使用模板创建 HTML。然而需要 JavaScript 的 完成编程的能力，用渲染函数
 
@@ -671,7 +669,7 @@ Vue.component('heading', {
 })
 ```
 
-##### 虚拟DOM
+#### 虚拟DOM
 
 > Vue 通过建立一个虚拟 DOM 来追踪自己要如何改变真实 DOM。
 
@@ -684,7 +682,7 @@ const vnode = h(
 console.log(vnode);
 ```
 
-##### createElement 参数
+#### createElement 参数
 
 [createElement-参数](https://cn.vuejs.org/v2/guide/render-function.html#createElement-%E5%8F%82%E6%95%B0)
 
@@ -734,7 +732,7 @@ Vue.component('heading', {
 })
 ```
 
-##### 函数式组件
+#### 函数式组件
 
 > 组件没有管理任何状态，也没有监听任何传递给它的状态，也没有生命周期方法时，可以将组件标记为 functional ，这意味它无状态 (没有响应式数据)，也没有实例 (没有 this 上下文)。
 
@@ -773,13 +771,13 @@ Vue.component('heading', {
 })
 ```
 
-#### 混入
+### 混入
 
 **组件逻辑复用**
 
 [混入](https://cn.vuejs.org/v2/guide/mixins.html#ad)
 
-#### 插件
+### 插件
 
 [插件](https://cn.vuejs.org/v2/guide/plugins.html#ad)
 
@@ -852,9 +850,9 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 ```
 
-### vue-cli
+## vue-cli
 
-#### 快速原型开发
+### 快速原型开发
 
 -   安装：`npm install -g @vue/cli-service-global`
 -   使用：vue serve filename.vue
@@ -868,19 +866,19 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 ```
 
-#### 创建项目
+### 创建项目
 
 -   vue create project_name
 
-#### 添加插件
+### 添加插件
 
 -   vue add router
 
-#### 资源路径
+### 资源路径
 
 > 当你在 JavaScript、CSS 或 *.vue 文件中使用相对路径 (必须以 . 开头) 引用一个静态资源时，该资源将被webpack处理。
 
-##### 转换规则
+### 转换规则
 
 -   如果 URL 是一个绝对路径 ，它将会被保留不变(存放在 pulic 文件夹下，webpack 不会处理)
     
@@ -890,7 +888,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 -   如果 URL 以 @ 开头, Vue CLI 默认会设置一个指向 src 的别名 @ 。即根目录是 src
     -   `import CourseList from '@/components/CourseList.vue'`
 
-##### 何时使用 public 文件夹
+#### 何时使用 public 文件夹
 
 -   通过 webpack 的处理的好处（使用相对路径）：
     1.  脚本和样式表会被压缩且打包在一起，从而避免额外的网络请求。
@@ -903,7 +901,7 @@ if (typeof window !== 'undefined' && window.Vue) {
     3.  有些库可能和 webpack 不兼容，除了将其用一个独立的 `<script>` 标签引入没有别的选择。
 
 
-##### 使用public文件夹的注意事项
+#### 使用public文件夹的注意事项
 
 -   如果应用没有部署在域名的根部时，需要为 URL 配置 publicPath 前缀
 
@@ -958,7 +956,7 @@ npm install -D stylus-loader stylus
 </style>
 ```
 
-##### 自动化导入样式
+#### 自动化导入样式
 
 > 自动化导入样式文件 (用于颜色、变量、mixin等)，可以使用 style-resources-loader。
 
@@ -992,7 +990,7 @@ module.exports = {
 }
 ```
 
-##### Scoped CSS
+#### Scoped CSS
 
 > 当 `<style>` 标签有 scoped 属性时，它的 CSS 只作用于当前组件中的元素。
 
@@ -1032,7 +1030,7 @@ module.exports = {
 }
 ```
    
-##### CSS Module
+#### CSS Module
 
 > 用于模块化和组合 CSS 的系统
 
@@ -1055,9 +1053,9 @@ module.exports = {
 <a :class="[$style.red, $style.bold]">awesome-vue</a>
 ```
 
-#### 数据访问相关
+### 数据访问相关
 
-##### 数据模拟
+#### 数据模拟
 
 > 使用开发服务器配置before选项，可以编写接口，提供模拟数据
 
@@ -1097,7 +1095,7 @@ export default {
 }
 ```
 
-##### 代理
+#### 代理
 
 > 设置开发服务器代理选项可以有效避免调用接口时出现的跨域问题。
 
@@ -1113,7 +1111,7 @@ module.exports = {
 }
 ```
 
-### vue router
+## vue router
 
 ```html
 <div id="nav">
@@ -1151,12 +1149,12 @@ const router = new VueRouter({
 export default router
 ```
 
-#### 动态路由匹配
+### 动态路由匹配
 
 -   路由设计：`{ path: '/user/:id', component: User }`
 -   参数匹配：`{{ $route.params.name }} `
 
-#### 通配符匹配
+### 通配符匹配
 
 > 适合做404页面路由
 
@@ -1169,7 +1167,7 @@ export default router
 
 ```
 
-#### 嵌套路由
+### 嵌套路由
 
 ```javascript
     {
@@ -1186,7 +1184,7 @@ export default router
     },
 ```
 
-#### 编程导航
+### 编程导航
 
 >借助 router 的实例方法，可编写代码来实现编程式导航
 
@@ -1240,9 +1238,9 @@ this.$router.push(
         }
     ```
 
-#### 路由守卫
+### 路由守卫
 
-##### 全局守卫
+#### 全局守卫
 
 ```javascript
 // 判断路由是否需要守卫,在配置路由挂在 meta 数据
@@ -1305,7 +1303,7 @@ export default {
 
 ```
 
-##### 路由独享的守卫
+#### 路由独享的守卫
 
 ```javascript
 {
@@ -1323,14 +1321,14 @@ export default {
 },
 ```
 
-##### 组件内守卫 （最小守卫）
+#### 组件内守卫 （最小守卫）
 
 -   可以在路由组件内直接定义以下路由导航守卫：
     -   beforeRouteEnter
     -   beforeRouteUpdate
     -   beforeRouteLeave
 
-#### 数据获取
+### 数据获取
 
 -   路由激活时，获取数据的时机有两个：
 
@@ -1339,7 +1337,7 @@ export default {
 
 [数据获取](https://router.vuejs.org/zh/guide/advanced/data-fetching.html)
 
-#### 动态路由
+### 动态路由
 
 > 通过router.addRoutes(routes)方式动态添加路由
 
@@ -1375,7 +1373,7 @@ login() {
 }
 ```
 
-#### 路由组件缓存
+### 路由组件缓存
 
 > 利用keepalive做组件缓存，保留组件状态，提高执行效率
 
@@ -1391,13 +1389,13 @@ login() {
     -   max: 最多缓存 xx 个，多了以后需要 进一个 前要出一个
 -   两个特别的生命周期：activated、deactivated
 
-#### 路由懒加载
+### 路由懒加载
 
 >路由组件的懒加载能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了。
 
 `component: () => import("../views/About.vue")`
 
-### VueX
+## VueX
 
 > Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以可预测的方式发生变化。
 
@@ -1462,9 +1460,9 @@ export default new Vuex.Store({
         }) 
     ```
 
-#### 实践
+### 实践
 
-##### 模块化
+#### 模块化
 
 -   使用modules定义多个子模块利于组件复杂状态
 
@@ -1508,7 +1506,7 @@ this.$store
 store.state.user.isLogin
 ```
 
-##### 映射 mapState()/mapMutation()/mapAction()
+#### 映射 mapState()/mapMutation()/mapAction()
 
 -   通过这些映射方法可以让大家少敲几个字，避免对$store直接访问。
 
@@ -1535,7 +1533,7 @@ methods: {
 },
 ```
 
-##### 派生状态 Getters
+#### 派生状态 Getters
 
 > 可以使用getters从store的state中派生出一些状态
 
@@ -1602,7 +1600,7 @@ export default {
 
 ```
 
-##### 严格模式
+#### 严格模式
 
 > 严格模式下，无论何时发生了状态变更且不是由 mutation 函数引起的，将会抛出错误。这能保证所有 的状态变更都能被调试工具跟踪到。
 
@@ -1639,9 +1637,9 @@ export default (store) => {
 
 ```
 
-## Typescript
+# Typescript
 
-### TS开发环境搭建
+## TS开发环境搭建
 
 -   安装typescript并初始化配置
 
@@ -1651,7 +1649,7 @@ tsc --init
 npm init -y
 ```
 
-### 工程化
+## 工程化
 
 -   安装webpack, webpack-cli, webpack-dev-server
 
@@ -1700,7 +1698,7 @@ module.exports = {
 }
 ```
 
-### TS特点
+## TS特点
 
 -   类型注解、类型检测
 -   类
@@ -1709,7 +1707,7 @@ module.exports = {
 -   装饰器
 -   类型声明
 
-#### 类型注解
+### 类型注解
 
 ```typescript
 // ts-test.ts
@@ -1767,7 +1765,7 @@ type Prop = {prop: number}
 function fn3(o:Prop) {} // 等同于 fn2
 ```
 
-#### 类型断言
+### 类型断言
 
 > 某些情况下用户会比编译器更确定某个变量的具体类型，可用类型断言as
 
@@ -1776,7 +1774,7 @@ const someValue: any = "this is a string";
 const strLength = (someValue as string).length; // 通常类型断言会将一种更范的类型断言为更具体的类型
 ```
 
-#### 联合类型
+### 联合类型
 
 > 希望某个变量或参数的类型是多种类型其中之一
 
@@ -1786,7 +1784,7 @@ union = '1'; // ok
 union = 1; // ok
 ```
 
-#### 交叉类型(扩展类型)
+### 交叉类型(扩展类型)
 
 > 想要定义某种由多种类型合并而成的类型使用交叉类型
 
@@ -1799,7 +1797,7 @@ function fn3(param: FirstAndSecond): FirstAndSecond {
 }
 ```
 
-#### 函数
+### 函数
 
 -   必填参：参数一旦声明，就要求传递，且类型需符合
 -   默认值：`age = 22`
@@ -1811,7 +1809,7 @@ function greeting(person: string, age = 22, msg?: string): string {
 }
 ```
 
-##### 函数重载：以参数数量或类型区分多个同名函数
+#### 函数重载：以参数数量或类型区分多个同名函数
 
 ```typescript
 // 重载1
@@ -1828,7 +1826,7 @@ function watch(cb1: () => void, cb2?: (v1: any, v2: any) => void) {
 }
 ```
 
-#### class的特性
+### class的特性
 
 ts中的类和es6中大体相同，这里重点关注ts带来的访问控制等特性
 
@@ -1917,7 +1915,7 @@ export default class App extends Vue {}
 </script>
 ```
 
-#### 接口
+### 接口
 
 >接口仅约束结构，不要求实现，使用更简单
 
@@ -1971,7 +1969,7 @@ export default class Hello extends Vue {
 </script>
 ```
 
-#### 泛型
+### 泛型
 
 -   泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。以此增加代码通用性。
 
@@ -2050,7 +2048,7 @@ export default class Hello extends Vue {
 }
 ```
 
-#### 声明文件
+### 声明文件
 
 >使用ts开发时如果要使用第三方js库的同时还想利用ts诸如类型检查等特性就需要声明文件，类似 xx.d.ts 同时，vue项目中还可以在shims-vue.d.ts中编写声明，从而扩展模块，这个特性叫模块补充
 
@@ -2091,11 +2089,11 @@ declare module "vue/types/options" {
 }
 ```
 
-#### 装饰器
+### 装饰器
 
 > 装饰器用于扩展类或者它的属性和方法。@xxx就是装饰器的写法
 
-##### 属性声明：@Prop
+#### 属性声明：@Prop
 
 > 除了在@Component中声明，还可以采用@Prop的方式声明组件属性
 
