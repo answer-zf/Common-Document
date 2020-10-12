@@ -1639,5 +1639,474 @@ export default (store) => {
 
 ```
 
-## 组件化
+## Typescript
+
+### TS开发环境搭建
+
+-   安装typescript并初始化配置
+
+```bash
+npm i typescript -g
+tsc --init
+npm init -y
+```
+
+### 工程化
+
+-   安装webpack, webpack-cli, webpack-dev-server
+
+```bash
+npm i webpack webpack-cli webpack-dev-server ts-loader typescript html-webpack-plugin -D
+```
+
+-   配置文件：build/webpack.config.js
+
+```js
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+    entry: './src/index.ts',
+    output: {
+        filename: 'app.js'
+    },
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx']
+    },
+    devtool: 'cheap-module-eval-source-map',
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/i,
+                use: [{
+                    loader: 'ts-loader'
+                }],
+                exclude: /node_modules/
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './public/index.html'
+        })
+    ]
+}
+```
+
+-   添加开发脚本，package.json
+
+```json
+"scripts": {
+    "dev": "webpack-dev-server --config ./build/webpack.config.js"
+}
+```
+
+### TS特点
+
+-   类型注解、类型检测
+-   类
+-   接口
+-   泛型
+-   装饰器
+-   类型声明
+
+#### 类型注解
+
+```typescript
+// ts-test.ts
+let var1: string; // 类型注解
+var1 = "zzz"; // 正确
+var1 = 4; // 错误
+
+// 类型推论： 编译器类型推断可省略这个语法
+let var2 = true;
+// 常见原始类型: string,number,boolean,undefined,null,symbol
+
+// 联合类型
+let var3: string | undefined;
+```
+
+-   其他类型
+
+```typescript
+// 类型数组
+let arr: string[]
+arr = ['xx']
+
+// 任意类型 any
+let varAny: any
+varAny = 'xx'
+varAny = 33
+
+// any 用于数组
+let arrAny: ang[]
+arrAny = [1, true, 'free']
+aryAny[1] = 100
+
+// 函数类型约束
+function greet(person: string):string {
+    return 'hello,' + person
+}
+const msg = greet('zf')
+
+// void类型，常用于没有返回值的函数
+function warn(): viod{}
+
+// 对象object: 不是原始类型就是对象类型
+function fn1(o:object) {}
+fn1({prop:0}) // ok
+fn1(1) // error
+fn1('string') //error
+
+// 更好的约束方式
+function fn2(o: { prop: number }) {}
+fn2({ prop: 0 }) // OK
+fn2({ prop: 'zf'}) // error
+
+// 类型别名 type:自定义类型
+type Prop = {prop: number}
+function fn3(o:Prop) {} // 等同于 fn2
+```
+
+#### 类型断言
+
+> 某些情况下用户会比编译器更确定某个变量的具体类型，可用类型断言as
+
+```typescript
+const someValue: any = "this is a string";
+const strLength = (someValue as string).length; // 通常类型断言会将一种更范的类型断言为更具体的类型
+```
+
+#### 联合类型
+
+> 希望某个变量或参数的类型是多种类型其中之一
+
+```typescript
+let union: string | number;
+union = '1'; // ok
+union = 1; // ok
+```
+
+#### 交叉类型(扩展类型)
+
+> 想要定义某种由多种类型合并而成的类型使用交叉类型
+
+```typescript
+type First = {first: number};
+type Second = {second: number};
+type FirstAndSecond = First & Second;
+function fn3(param: FirstAndSecond): FirstAndSecond {
+    return {first:1, second:2}
+}
+```
+
+#### 函数
+
+-   必填参：参数一旦声明，就要求传递，且类型需符合
+-   默认值：`age = 22`
+-   可选参数：参数名后面加上问号，变成可选参数,必须放在参数最后
+
+```typescript
+function greeting(person: string, age = 22, msg?: string): string {
+	return 'Hello, ' + person
+}
+```
+
+##### 函数重载：以参数数量或类型区分多个同名函数
+
+```typescript
+// 重载1
+function watch(cb1: () => void): void;
+// 重载2
+function watch(cb1: () => void, cb2: (v1: any, v2: any) => void): void;
+// 实现
+function watch(cb1: () => void, cb2?: (v1: any, v2: any) => void) {
+    if (cb1 && cb2) {
+        console.log('执行watch重载2');
+    } else {
+        console.log('执行watch重载1');
+    }
+}
+```
+
+#### class的特性
+
+ts中的类和es6中大体相同，这里重点关注ts带来的访问控制等特性
+
+```typescript
+class Parent {
+    private _foo = "foo"; // 私有属性，不能在类的外部访问
+    protected bar = "bar"; // 保护属性，可以在子类中访问
+    
+    // 参数属性：构造函数参数加修饰符，能够定义为成员属性
+    constructor(public tua = "tua") {}
+    
+    // 方法也有修饰符
+    private someMethod() {}
+    
+    // 存取器：属性方式访问，可添加额外逻辑，控制读写性
+    get foo() {
+        return this._foo;
+    }
+    set foo(val) {
+        this._foo = val;
+    }
+}
+
+```
+
+-   vue示例
+
+```html
+<!-- components/Hello.vue -->
+<template>
+	<div>
+		<p><input type="text" @keydown.enter="addFeature" /></p>
+		<ul>
+			<li v-for="feature in features" :key="feature">{{ feature }}</li>
+			<li>{{ count }}</li>
+		</ul>
+	</div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component
+export default class Hello extends Vue {
+	// 属性就是data
+	features: string[] = []
+
+	// 函数直接作为回调
+	addFeature(e: KeyboardEvent) {
+		const inp = e.target as HTMLInputElement
+		this.features.push(inp.value)
+		inp.value = ''
+	}
+
+	// 如果和生命周期钩子同名，就是生命周期
+	created() {
+		this.features = ['类型注解', '编译型语言']
+	}
+
+    // 存取器用于计算属性
+	get count() {
+		return this.features.length
+	}
+}
+</script>
+```
+
+```vue
+// app.vue
+<template>
+	<div id="app">
+		<Hello></Hello>
+	</div>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import Hello from './components/Hello.vue'
+
+@Component({
+	components: {
+		Hello,
+	},
+})
+export default class App extends Vue {}
+</script>
+```
+
+#### 接口
+
+>接口仅约束结构，不要求实现，使用更简单
+
+```typescript
+// Person接口定义了解构
+interface Person {
+firstName: string;
+lastName: string;
+}
+// greeting函数通过Person接口约束参数解构
+function greeting(person: Person) {
+return 'Hello, ' + person.firstName + ' ' + person.lastName;
+}
+greeting({firstName: 'Jane', lastName: 'User'}); // 正确
+greeting({firstName: 'Jane'}); // 错误
+
+```
+
+-   vue 示例
+
+```typescript
+// @/types/index.ts
+export interface Feature {
+	id: number
+	name: string
+}
+```
+
+```html
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Feature } from '@/types'
+
+@Component
+export default class Hello extends Vue {
+	// 属性就是data
+	features: Feature[] = []
+
+	// 函数直接作为回调
+	addFeature(e: KeyboardEvent) {
+		const inp = e.target as HTMLInputElement
+		this.features.push({ id: this.features.length + 1, name: inp.value })
+		inp.value = ''
+	}
+
+	// 如果和生命周期钩子同名，就是生命周期
+	created() {
+		this.features = [{ id: 1, name: '类型注解' }]
+	}
+}
+</script>
+```
+
+#### 泛型
+
+-   泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。以此增加代码通用性。
+
+```typescript
+// 不用泛型
+// interface Result {
+// ok: 0 | 1;
+// data: Feature[];
+// }
+// 使用泛型
+interface Result<T> {
+ok: 0 | 1;
+data: T;
+}
+// 泛型方法
+function getResult<T>(data: T): Result<T> {
+    return {ok:1, data};
+}
+// 用尖括号方式指定T为string
+getResult<string>('hello')
+// 用类型推断指定T为number
+getResult(1)
+```
+
+-   泛型优点：
+    -   函数和类可以支持多种类型，更加通用
+    -   不必编写多条重载，冗长联合类型，可读性好
+    -   灵活控制类型约束
+-   不仅通用且能灵活控制，泛型被广泛用于通用库的编写。
+
+-   实战
+
+```javascript
+// vue.config.js
+module.exports = {
+	devServer: {
+		before(app) {
+			app.get('/api/list', (req, res) => {
+				res.json([
+					{ id: 1, name: '类型注解' },
+					{ id: 2, name: '编译型语言' },
+				])
+			})
+		},
+	},
+}
+```
+
+```typescript
+// @/api/feature.ts
+import axios from 'axios'
+import { Feature } from '@/types'
+
+export function getFeatures() {
+	return axios.get<Feature[]>('/api/list')
+}
+```
+
+```typescript
+// Hello.vue
+import { Component, Vue } from 'vue-property-decorator'
+import { Feature } from '@/types'
+import { getFeatures } from '@/api/feature'
+
+@Component
+export default class Hello extends Vue {
+	// 属性就是data
+	features: Feature[] = []
+
+	// 如果和生命周期钩子同名，就是生命周期
+	created() {
+		getFeatures().then((res) => {
+			this.features = res.data
+		})
+	}
+}
+```
+
+#### 声明文件
+
+>使用ts开发时如果要使用第三方js库的同时还想利用ts诸如类型检查等特性就需要声明文件，类似 xx.d.ts 同时，vue项目中还可以在shims-vue.d.ts中编写声明，从而扩展模块，这个特性叫模块补充
+
+-   挂载$axios到vue原型上在组件里面直接用
+
+```typescript
+// shims-vue.d.ts
+import Vue from "vue";
+import { AxiosInstance } from "axios";
+
+// 声明后缀 .vue 文件处理
+declare module '*.vue' {
+	export default Vue
+}
+
+// 模块扩展 vue
+declare module "vue/types/vue" {
+    interface Vue {
+        $axios: AxiosInstance;
+    }
+}
+
+// 在 入口模块 main.js 挂在 axios 
+import axios from 'axios'
+Vue.prototype.$axios = axios;
+```
+
+```typescript
+// shims-vue.d.ts
+// 扩展 ComponentOptions
+import VueRouter from "vue-router";
+import { Store } from "vuex";
+declare module "vue/types/options" {
+    interface ComponentOptions<V extends Vue> {
+        router?: VueRouter;
+        store?: Store<any>;
+    }
+}
+```
+
+#### 装饰器
+
+> 装饰器用于扩展类或者它的属性和方法。@xxx就是装饰器的写法
+
+##### 属性声明：@Prop
+
+> 除了在@Component中声明，还可以采用@Prop的方式声明组件属性
+
+```typescript
+export default class HelloWorld extends Vue {
+    // Props()参数是为vue提供属性选项
+    // !称为明确赋值断言，它是提供给ts的
+    @Prop({type: String, required: true})
+    private msg!: string;
+}
+```
+
+父组件向子组件传递属性时直接 使用。
 
