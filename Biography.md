@@ -51,7 +51,7 @@
 
 [海鲜时间](http://www.haixianshijian.com/) 
 
-[御厨传奇](http://www.yuchuchuanqi.cn/)/
+[御厨传奇](http://www.yuchuchuanqi.cn/)
 
 ### 只负责前端的项目部分列举
 
@@ -81,7 +81,7 @@
 
 [海囧](http://www.haijiongmeat.com/)
 
-[美食记](http://www.shiguomeishiji.com/)/
+[美食记](http://www.shiguomeishiji.com/)
 
 
 ## 小彩蛋 python
