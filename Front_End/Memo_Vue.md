@@ -2,6 +2,15 @@
 
 ## Vue
 
+### Vuex
+
+-   mapState,mapMutations... (vuex 映射)
+
+    -   `...mapMutations('user', ['updateIsAdmin']),`
+    -   'user': modules/user.js
+    -   'updateIsAdmin': 模块中 mutations项中的方法名
+    -   mapState 同理
+
 ### dialog
 
 -   resetField 的坑
@@ -27,6 +36,10 @@ body .el-table colgroup.gutter{
 ```
 
 ## JS
+
+### 判断类型
+
+`Object.prototype.toString.call(value)`
 
 ### 数组
 

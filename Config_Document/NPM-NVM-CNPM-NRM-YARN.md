@@ -37,6 +37,7 @@ npm install --global npm     ## 升级npm
     -   npm i -S 包名
 -   npm install 包名 --save-dev
     -   下载并保存依赖项（ package.json 文件中的 devDependencies 选项 ，对应上文的 --production）
+    -   npm i -D 包名
 -   npm uninstall 包名
     -   只删除，如果有依赖项会依然保存
     -   npm un 包名
