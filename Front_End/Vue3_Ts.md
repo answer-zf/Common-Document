@@ -1411,3 +1411,170 @@ interface FullName {
   let db = new MysqlDb();
   db.add(u);
 ```
+
+-   使用泛型动态约束入参类型
+
+```ts
+  // 操作数据库的泛型类
+  class MysqlDb<T> {
+  	add(info: T): boolean {
+  		console.log(info);
+  		return true;
+  	}
+  	update(info: T, id: number): boolean {
+  		console.log(info, id);
+  		return true;
+  	}
+  }
+
+  class User {
+  	username: String | undefined;
+  	password: String | undefined;
+  }
+
+  let u = new User();
+  u.username = 'zf';
+  u.password = '111';
+
+  // 去除重复代码，对不特定类型进行数据校验
+  let db = new MysqlDb<User>();
+  db.add(u);
+
+  class ArticleCate {
+  	title: String | undefined;
+  	dec: String | undefined;
+  	status: number | undefined;
+  	constructor(params: {
+  		title: String | undefined;
+  		dec: String | undefined;
+  		status?: number | undefined;
+  	}) {
+  		this.title = params.title;
+  		this.dec = params.dec;
+  		this.status = params.status;
+  	}
+  }
+
+  let a = new ArticleCate({ title: 'title', dec: 'dev' });
+  a.status = 1;
+  let adb = new MysqlDb<ArticleCate>();
+  adb.add(a);
+  adb.update(a, 1);
+```
+
+### 泛型接口 、泛型类应用
+
+```ts
+  interface DBI<T> {
+  	add(info: T): boolean;
+  	update(info: T, id: number): boolean;
+  	delete(id: number): boolean;
+  	get(id: number): any[];
+  }
+
+  // 实现泛型接口，类也应该是泛型类
+  class MysqlDb<T> implements DBI<T> {
+  	constructor() {
+  		console.log('connect ...');
+  	}
+  	add(info: T): boolean {
+  		console.log(info);
+  		return true;
+  	}
+  	update(info: T, id: number): boolean {
+  		throw new Error('Method not implemented.');
+  	}
+  	delete(id: number): boolean {
+  		throw new Error('Method not implemented.');
+  	}
+  	get(id: number): any[] {
+  		throw new Error('Method not implemented.');
+  	}
+  }
+
+  class User {
+  	username: string | undefined;
+  	password: string | undefined;
+  }
+
+  let u = new User();
+  u.username = 'zf';
+  u.password = 'zf';
+
+  let m = new MysqlDb<User>();
+  m.add(u);
+```
+
+## 模块
+
+> TypeScript 1.5 以后 术语名已经发生了变化
+> 模块分为 内部模块（现在叫"命名空间"）、 外部模块（现在简称"模块"）
+>
+> 模块：公共模块的抽离
+
+```ts
+let dbUrl = 'xx';
+function getDate(): any[] {
+	console.log('getDate');
+	return [1];
+}
+export { dbUrl, getDate };
+
+// import { dbUrl, getDate } from './models/db'; 外部引入
+```
+
+### 命名空间
+
+> 作用: **组织代码避免命名冲突**
+
+-   基本使用
+
+```ts
+  namespace A {
+  	export class Zf { // 需要暴露出去
+  		constructor() {
+  			console.log('A');
+  		}
+  	}
+  }
+  namespace B {
+  	export class Zf {
+  		constructor() {
+  			console.log('B');
+  		}
+  	}
+  }
+  let az = new A.Zf();
+  let bz = new B.Zf();
+```
+
+-   模块抽离
+
+```ts
+  export namespace A { // 模块抽离出来后 使用 export 暴露出去
+  	export class Zf {
+  		constructor() {
+  			console.log('A');
+  		}
+  	}
+  }
+  export namespace B {
+  	export class Zf {
+  		constructor() {
+  			console.log('B');
+  		}
+  	}
+  }
+
+  // ---- 外部 引入
+  import { A, B } from './models/db';
+
+  let az = new A.Zf();
+  let bz = new B.Zf();
+```
+
+## 装饰器
+
+> 装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。
+
+-   装饰器就是一个方法，可以注入到类、方法、属性参数上来扩展类、属性、方法、参数的功能。
