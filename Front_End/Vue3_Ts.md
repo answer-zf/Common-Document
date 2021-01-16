@@ -1578,3 +1578,215 @@ export { dbUrl, getDate };
 > 装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。
 
 -   装饰器就是一个方法，可以注入到类、方法、属性参数上来扩展类、属性、方法、参数的功能。
+
+### 类装饰器
+
+-   普通装饰器（无法传参）
+
+```ts
+  function logClass(params: any) {
+  	console.log(params);
+  	// params 就是当前类
+  	// 扩展 当前类属性、方法
+  	params.prototype.apiUrl = 'xxx';
+  	params.prototype.run = () => {
+  		console.log('this. is run');
+  	};
+  }
+
+  @logClass
+  class HttpClient {
+  	constructor() {}
+  	getDate() {}
+  }
+
+  let h: any = new HttpClient();
+  console.log(h.apiUrl); // （在不修改类的前提下）动态扩展的属性
+  h.run();
+```
+
+-   装饰器工厂（可传参）
+
+```ts
+  function logClass(params: string) {
+  	return function (target: any) {
+  		console.log(target);
+  		console.log(params);
+  		target.prototype.apiUrl = params;
+  	};
+  }
+
+  @logClass('xxxx')
+  class HttpClient {
+  	constructor() {}
+  	getDate() {}
+  }
+
+  let h: any = new HttpClient();
+  console.log(h.apiUrl);
+```
+
+-   类装饰器重载构造函数
+
+```ts
+  // 类装饰器表达式会在运行时当作函数被调用，类的构造函数作为其唯一的参数。
+  // 如果类装饰器返回一个值，它会使用提供的构造函数来替换类的声明。
+  function logClass(target: any) {
+  	console.log(target);
+  	return class extends target {
+  		// 构造函数的重载
+  		apiUrl: any = 'this .is change aipUrl';
+  		getDate() {
+  			console.log(this.apiUrl + ' ----------');
+  		}
+  	};
+  }
+
+  @logClass
+  class HttpClient {
+  	public apiUrl: string | undefined;
+  	constructor() {
+  		this.apiUrl = 'this is HttpClient constructor apiUrl';
+  	}
+  	getDate() {
+  		console.log(this.apiUrl);
+  	}
+  }
+
+  let h = new HttpClient();
+  h.getDate();
+```
+
+### 属性装饰器
+
+-   属性装饰器表达式会在运行时当作函数被调用，传入下列2个参数：
+    1.  对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。
+    2.  成员的名字。
+
+```ts
+  // 属性装饰器
+  function logProperty(params: any) {
+  	return function (target: any, attr: any) {
+  		console.log(target);
+  		console.log(attr);
+  		target[attr] = params;
+  	};
+  }
+
+  class HttpClient {
+  	@logProperty('zzzzzzzzzzzzzz')
+  	public url: any | undefined;
+  	constructor() {}
+  	getDate() {}
+  }
+  let h = new HttpClient();
+  console.log(h.url);
+```
+
+### 方法装饰器
+
+> 它会被应用到方法的 属性描述符上，可以用来监视，修改或者替换方法定义。
+
+-   参数装饰器表达式会在运行时当作函数被调用，传入下列3个参数
+
+    1.  对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。
+    2.  成员的名字。
+    3.  成员的属性描述符。
+
+```ts
+  function logMethod(params: any) {
+  	return function (target: any, methodName: any, methodDesc: any) {
+  		console.log(target);
+  		console.log(methodName);
+  		console.log(methodDesc.value); // 当前的方法
+  		target.apiUrl = 'zz.zzz.z'; // 扩展属性
+  		// 扩展方法
+  		target.run = function () {
+  			console.log('this. is ...');
+  		};
+  		// 修改装饰器的方法
+  		// 1. 保存当前的方法
+  		let oMethod = methodDesc.value;
+  		methodDesc.value = function (...args: any[]) {
+  			args = args.map((value) => {
+  				return String(value);
+  			});
+  			console.log(args);
+  			// ---------- 以上代码是替换目标方法
+  			oMethod.apply(this, args); // 使用 对象冒充 起到方法的代码同样执行的目的
+  		};
+  	};
+  }
+  class HttpClient {
+  	public url: any | undefined;
+  	constructor() {}
+  	@logMethod('xx.xx.xx')
+  	getData() {
+  		console.log('this. is getData');
+  	}
+  }
+  let h: any = new HttpClient();
+  console.log(h.apiUrl);
+  h.run();
+  h.getData([12, 34, 'dd']);
+```
+
+-   方法参数装饰器（不常用）
+
+```ts
+  function logParams(params: any) {
+  	return function (target: any, methodName: any, paramsIndex: any) {
+  		console.log(target);
+  		console.log(methodName);
+  		console.log(paramsIndex); // 参数在 函数函数列表中的 索引
+  		target.apiUrl = params;
+  	};
+  }
+  class HttpClient {
+  	public url: any | undefined;
+  	constructor() {}
+  	getData(@logParams('xxx') uuid: any) {
+  		console.log(uuid);
+  	}
+  }
+  let h: any = new HttpClient();
+  console.log(h.apiUrl);
+  h.getData(12);
+```
+
+### 装饰器执行顺序
+
+-   属性>方法>方法参数>类
+
+-   如果有多个同样的装饰器，它会先执行后面的（就近原则）
+
+```ts
+  @logClass1('zz')
+  @logClass2('ff')
+  class HttpClient {
+  	@logAttribute1()
+  	@logAttribute2()
+  	public apiUrl: string | undefined;
+  	constructor() {}
+
+  	@logMethod1()
+  	@logMethod2()
+  	getData() {
+  		return true;
+  	}
+
+  	setData(@logParams1() attr1: any, @logParams2() attr2: any) {}
+  }
+
+  var http: any = new HttpClient();
+
+  // console.log =>
+  // 属性装饰器2
+  // 属性装饰器1
+  // 方法装饰器2
+  // 方法装饰器1
+  // 方法参数装饰器2
+  // 方法参数装饰器1
+  // 类装饰器2
+  // 类装饰器1
+```
