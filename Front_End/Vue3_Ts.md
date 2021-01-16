@@ -1790,3 +1790,79 @@ export { dbUrl, getDate };
   // 类装饰器2
   // 类装饰器1
 ```
+
+# Vue3 + Ts
+
+## 基本使用
+
+### ts项目基础
+
+```ts
+  // 父组件 导入时 必须把 .vue后缀名带上
+  import { defineComponent } from 'vue';
+
+  let title: string = 'this. is home';
+
+  export default defineComponent({
+  	data() {
+  		return {
+  			title,
+  			userinfo: {
+  				username: 'zf',
+  			},
+  			age: 20,
+  			sex: 'gender',
+  		};
+  	},
+  	methods: {
+  		setTitle(): void {
+  			this.title = 'dd';
+  		},
+  	},
+  });
+```
+
+### 使用接口做条件约束
+
+```ts
+  import { defineComponent } from 'vue';
+
+  // data 数据接口
+  interface News {
+  	title: string;
+  	description: string;
+  	count: number | string;
+  	content?: string;
+  }
+
+  // let newsData: News = {
+  // 	title: 'this is title',
+  // 	description: 'this .is description',
+  // 	count: 23,
+  // };
+
+  let newsData = {
+  	title: 'this is title',
+  	description: 'this .is description',
+  	count: 23,
+  } as News;
+
+  export default defineComponent({
+  	data() {
+  		return newsData;
+  	},
+  	methods: {
+  		setTitle(title: string): void {
+  			this.title = title;
+  		},
+  	},
+  	computed: {
+  		revTitle(): string {
+  			return this.title
+  				.split('')
+  				.reverse()
+  				.join('');
+  		},
+  	},
+  });
+```
