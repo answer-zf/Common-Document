@@ -781,6 +781,184 @@ setup() {
 },
 ```
 
+## vuex
+
+### 基本使用
+
+```js
+  import { createStore } from 'vuex';
+
+  const store = createStore({
+  	// 定义状态（数据）
+  	state() {
+  		return {
+  			count: 1, // 组件内获取值：this.$store.state.count
+  			list: ['zf', 'fd'],
+  			msg: 'this is store',
+  		};
+  	},
+  	// 定义方法（改变state中的数据）
+  	mutations: {
+  		incCount(state) {
+  			state.count++; // 组件内调用：this.$store.commit('incCount');
+  		},
+  		setCount(state, num) {
+  			state.count = num; // 组件内调用：this.$store.commit('setCount', 14);
+  		},
+  	},
+  	// 等价于计算属性
+  	getters: {
+  		revMsg(state) {
+  			// 组件内获取getters中的数据：this.$store.getters.revMsg
+  			// 通过 mutations 改变 state 中的msg 的数据，getters 同步更新（重新计算）
+  			return state.msg
+  				.split('')
+  				.reverse()
+  				.join('');
+  		},
+  		num(state) {
+  			return state.count + 10;
+  		},
+  	},
+  	// 触发 mutations 里面的方法，作用：可以在 actions 中做异步操作
+  	actions: {
+  		incCount(context) {
+  			// this.$store.dispatch('incCount')
+  			context.commit('incCount'); // 执行 mutations 中的 incCount
+  		},
+  		// 第一个参数使用解构解析做简化,第二个参数为传参
+  		setCount({ commit }, num) {
+  			// this.$store.dispatch('setCount')
+  			setTimeout(() => {
+  				commit('setCount', num);
+  			}, 1000);
+  		},
+  	},
+  });
+
+  export default store;
+
+  // --- main.js
+  import App from './App.vue';
+  import store from './vuex/store';
+
+  let app = createApp(App);
+
+  app.use(store);
+  app.mount('#app');
+```
+
+### 通过 mapState 获取 state
+
+```js
+  import { mapState } from 'vuex';
+  export default {
+  	computed: {
+      //  当 state 中的变量与组件所需映射的变量一样时
+      // 直接传入一个数组，将需要映射的 state 传入即可
+  		...mapState(['count', 'list']),
+      //  当 state 中的变量与组件所需映射的变量不一样时，使用下面的方式做映射
+      ...mapState({
+        num: (state) => state.count,
+        mylist: (state) => state.list,
+      }),
+      // 使用模块时的映射方式 eg. app 模块
+      ...mapState('app', ['count','list']),
+  	},
+  };
+```
+
+### 通过 mapGetters 获取 getters
+
+```js
+  computed: {
+    ...mapGetters(['revMsg']), // 变量名相同
+    ...mapGetters({ // 变量名不同
+      myMsg: 'revMsg',
+    }),
+  },
+```
+
+### 通过 mapMutations 获取 mutations
+
+-   mapActions的映射同理
+
+```js
+  methods: {
+    ...mapMutations([
+      'incCount', // 将 `this.incCount()` 映射为 `this.$store.commit('incCount')`
+      // `mapMutations` 也支持传参：
+      'setCount' // 将 `this.setCount(num)` 映射为 `this.$store.commit('setCount', num)`
+    ]),
+    ...mapMutations({
+      add: 'incCount' // 将 `this.add()` 映射为 `this.$store.commit('incCount')`
+    }),
+    // 使用模块时的映射方式 eg. app 模块
+    ...mapMutations('app', ['incCount','setCount']),
+  }
+```
+
+### Modules
+
+将 vuex 做模块化抽离，便于后期维护
+
+```js
+const moduleA = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... },
+  getters: { ... }
+}
+
+const moduleB = {
+  state: () => ({ ... }),
+  mutations: { ... },
+  actions: { ... }
+}
+
+const store = createStore({
+  modules: {
+    a: moduleA,
+    b: moduleB
+  }
+})
+
+this.$store.state.a // -> `moduleA`'s state
+this.$store.state.b // -> `moduleB`'s state
+```
+
+### 在 组合式（composition）api 使用 vuex
+
+-   组合式api中没有this.$store，可以使用useStore来替代
+
+```js
+  import { computed } from 'vue';
+
+  import { useStore } from 'vuex';
+  export default {
+  	setup() {
+  		const store = useStore();
+  		return {
+  			count: computed(() => {
+  				return store.state.count;
+  			}),
+  			num: computed(() => {
+  				return store.getters.num;
+  			}),
+  			incCount: () => {
+  				store.commit('incCount');
+  			},
+  			incAction: () => {
+  				store.dispatch('incCount');
+  			},
+  			setAction: (num) => {
+  				store.dispatch('setCount', num);
+  			},
+  		};
+  	},
+  }
+```
+
 # Ts
 
 ## 数据类型
@@ -1865,4 +2043,449 @@ export { dbUrl, getDate };
   		},
   	},
   });
+```
+
+### 组合式API + Ts
+
+```html
+  <template>
+  	<div>
+  		User
+  		<p>username --- {{ username }}</p>
+  		<p>{{ getUserName() }}</p>
+  		<p>{{ count }}</p>
+  		<p>{{ revUsername }}</p>
+  		<button @click="setUserName('XYZ')">click</button>
+  	</div>
+  </template>
+
+  <script lang="ts">
+  import { computed, defineComponent, reactive, ref, toRefs } from 'vue';
+
+  interface User {
+  	username: string;
+  	age: number | string;
+  	setUserName(username: string): void;
+  	getUserName(): string;
+  }
+
+  export default defineComponent({
+  	setup() {
+  		// // 接口的 第一种写法
+  		// // let user: User = reactive({
+  		// // 接口的 第二种写法(源码中 reactive方法 使用 使用泛型做约束)
+  		// let user = reactive<User>({
+  		// 	username: 'zf',
+  		// 	age: 33,
+  		// 	setUserName(username) {
+  		// 		this.username = username;
+  		// 	},
+  		// 	getUserName() {
+  		// 		return this.username;
+  		// 	},
+  		// });
+  		// 接口的第三中写法
+  		let user = reactive({
+  			username: 'abcdefg',
+  			age: 33,
+  			setUserName(username) {
+  				this.username = username;
+  			},
+  			getUserName(): string {
+  				return this.username;
+  			},
+  		}) as User;
+
+  		let count = ref<number | string>('2');
+  		// let count: number = ref(2); // 错误
+  		let revUsername = computed((): string => {
+  			return user.username
+  				.split('')
+  				.reverse()
+  				.join('');
+  		});
+  		return {
+  			...toRefs(user),
+  			count,
+  			revUsername,
+  		};
+  	},
+  });
+  </script>
+```
+
+## 路由
+
+### 基本使用
+
+-   根目录下配置路由
+
+```ts
+  // /routes.ts
+  import { createRouter, createWebHashHistory } from 'vue-router';
+
+  // 引入组件
+  import Home from './components/Home.vue';
+  import News from './components/News.vue';
+  import User from './components/User.vue';
+
+  // 配置路由
+  const router = createRouter({
+  	history: createWebHashHistory(),
+  	routes: [
+  		{ path: '/', component: Home },
+  		{ path: '/news', component: News },
+  		{ path: '/user', component: User },
+  	],
+  });
+
+  export default router;
+```
+
+-   入口文件配置
+
+```ts
+  import { createApp } from 'vue';
+  import App from './App.vue';
+  import router from './routes';
+
+  // createApp(App).mount('#app');
+  let app = createApp(App);
+  // 挂载路由
+  app.use(router);
+  app.mount('#app');
+```
+
+-   根组件渲染
+
+```html
+  <template>
+  	<ul>
+  		<li><router-link to="/">index</router-link></li>
+  		<li><router-link to="/user">user page</router-link></li>
+  		<li><router-link to="/news">news page</router-link></li>
+  	</ul>
+  	<router-view />
+  </template>
+
+  <script lang="ts">
+  import { defineComponent } from 'vue';
+
+  export default defineComponent({ name: 'App' });
+  </script>
+```
+
+### 动态路由
+
+-   配置
+
+```ts
+import NewsContent from './components/NewsContent.vue';
+
+const router = createRouter({
+	history: createWebHashHistory(),
+	routes: [
+    ...,
+		{ path: '/newscontent/:aid', component: NewsContent },
+	],
+});
+```
+
+-   使用
+
+```html
+  <!-- News.vue -->
+  <template>
+  	<div>news</div>
+  	<ul>
+  		<li v-for="(item, index) in list" :key="index">
+  			<router-link :to="`/newscontent/${index}`">{{ item }}</router-link>
+  		</li>
+  	</ul>
+  </template>
+
+  <script lang="ts">
+  import { defineComponent } from 'vue';
+
+  interface News {
+  	list: string[];
+  }
+
+  export default defineComponent({
+  	data() {
+  		return {
+  			list: [],
+  		} as News;
+  	},
+  	mounted() {
+  		for (let i = 0; i < 10; i++) {
+  			this.list.push(`this is NO.${i} News Content`);
+  		}
+  	},
+  });
+  </script>
+```
+
+```html
+  <!-- NewsContent.vue -->
+  <template>
+  	<div>NewsContent</div>
+  	<p>NewsContent ------ {{ aid }}</p>
+  </template>
+
+  <script lang="ts">
+  import { defineComponent } from 'vue';
+
+  interface Data {
+  	aid: string | string[];
+  }
+
+  export default defineComponent({
+  	data() {
+  		return {
+  			aid: '',
+  		} as Data;
+  	},
+  	mounted() {
+  		console.log(this.$route.params);
+  		this.aid = this.$route.params.aid;
+  	},
+  });
+  </script>
+```
+
+### get 传值
+
+-   配置
+
+```ts
+{ path: '/newscontent', component: NewsContent }
+```
+
+-   使用
+
+```html
+<router-link :to="`/newscontent?aid=${index}`">{{ item }}</router-link>
+```
+
+-   获取
+
+```ts
+this.$route.params
+```
+
+### 编程式导航
+
+-   Js跳转路由(在 method 中使用) `this.$router.push({ path: '/home' });`
+
+```html
+  <!-- 直接使用-->
+  <button @click="this.$router.push({ path: '/news' })">----</button>
+  <!-- 使用get传值，配置第二个参数 query-->
+  <button @click="this.$router.push({ path: '/newscontent', query: { aid: 3 } })" > ++++ </button>
+  <!-- 使用动态路由-->
+  <button @click="this.$router.push({ path: '/newscontent/3' })">----</button>
+```
+
+### HTML5 History 模式和 hash 模式
+
+-   hash 模式
+
+    -   路由样例：`http://localhost:8080/#/user`
+
+```ts
+  import { createRouter, createWebHashHistory } from 'vue-router'
+
+  const router = createRouter({
+    history: createWebHashHistory(),
+    routes: [
+      //...
+    ],
+  })
+```
+
+-   HTML5 History 模式
+
+    -   路由样例：`http://localhost:8080/user`
+
+    -   **注意：**开启Html5 History模式后，发布到服务器需要配置伪静态：
+        -   `https://router.vuejs.org/zh/guide/essentials/history-mode.html`
+
+```ts
+  import { createRouter, createWebHistory } from 'vue-router'
+
+  const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+      //...
+    ]
+  })
+```
+
+### 命名路由
+
+-   配置时给路由配置名称，跳转可用该命名做跳转
+
+```ts
+  const router = new VueRouter({
+    routes: [
+      {
+        path: '/user/:userId',
+        name: 'user',
+        component: User
+      }
+    ]
+  })
+```
+
+-   跳转
+
+```html
+  <router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
+  <script>
+    this.$router.push({ name: 'user', params: { userId: 123 }})//  以上 两种 均为 动态路由 设置方式：/user/123
+
+    this.$router.push({name:'content',query:{aid:222}}) //  get 传值
+  </script>
+```
+
+### 路由重定向
+
+-   路由重定向
+
+    -   重定向是指用户访问时`/home`，URL将被替换`/`，然后与匹配`/`
+    -   `const routes = [{ path: '/home', redirect: '/' }]`
+
+-   命名路由重定向
+
+    -   `const routes = [{ path: '/home', redirect: { name: 'homepage' } }]`
+
+-   使用函数进行动态重定向
+
+    ```ts
+      const routes = [{
+          path: '/search/:searchText',
+          redirect: to => {
+            return { path: '/search', query: { q: to.params.searchText } }
+          },
+      }]
+    ```
+
+### 路由别名
+
+-   别名`/`as`/home`表示用户访问时`/home`，URL保持不变`/home`，但将被匹配，就像用户正在访问时一样`/`。
+
+    -   `const routes = [{ path: '/', component: Homepage, alias: '/home' }]`
+
+-   多个别名 可使用数组包裹：`alias:['/home','/list']`
+-   动态路由：`const routes = [{ path: '/home/:id', component: Homepage, alias: '/h/:id' }]`
+
+### 嵌套路由
+
+```ts
+  const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+          { path: '/', component: Home, alias: '/home' },
+          {
+              path: '/news', component: News,
+              children: [  //子路由
+                  { path: '', redirect:"/news/add"},
+                  { path: 'add', component: NewsAdd },
+                  { path: 'edit', component: NewsEdit },
+              ]
+          },
+          { path: '/user', component: User },
+      ],
+  })
+```
+
+## vuex
+
+### 非 composition API 中的使用
+
+-   在做好 vuex 支持 ts 的配置，即可使用，使用方法如 js
+
+-   mapState 、mapMutations 均可使用
+
+```ts
+  import { ComponentCustomProperties } from 'vue';
+  import { createStore, Store } from 'vuex';
+
+  //配置让Vuex支持ts
+  declare module '@vue/runtime-core' {
+  	// state中定义的数据都需要在此声明
+  	interface State {
+  		count: number;
+  		list: string[];
+  		msg: string;
+  	}
+
+  	interface ComponentCustomProperties {
+  		$store: Store<State>;
+  	}
+  }
+
+  const store = createStore({
+  	state() {
+  		return {
+  			count: 1,
+  			list: ['zf', 'fd'],
+  			msg: 'this is store',
+  		};
+  	},
+
+  	mutations: {
+  		incCount(state: any) {
+  			state.count++;
+  		},
+  		setCount(state: any, num: number) {
+  			state.count = num;
+  		},
+  		setMsg(state: any, msg: string) {
+  			state.msg = msg;
+  		},
+  	},
+  	getters: {
+  		revMsg(state: any) {
+  			return state.msg
+  				.split('')
+  				.reverse()
+  				.join('');
+  		},
+  		num(state: any) {
+  			return state.count + 10;
+  		},
+  	},
+  	actions: {
+  		incCount(context) {
+  			context.commit('incCount');
+  		},
+  		setCount({ commit }, num) {
+  			setTimeout(() => {
+  				commit('setCount', num);
+  			}, 1000);
+  		},
+  	},
+  });
+
+  export default store;
+```
+
+### composition API 中的使用
+
+-   使用方式 同 js 中 使用 composition api
+
+```ts
+setup() {
+  const store = useStore();
+  return {
+    msg: computed(() => {
+      return store.state.msg;
+    }),
+    setMsg: (): void => {
+      store.commit('setMsg', '-- msg');
+    },
+  };
+},
 ```
