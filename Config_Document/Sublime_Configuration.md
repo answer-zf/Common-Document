@@ -5,14 +5,10 @@
 ## 汉化插件
 $ Localization
 
-## 格式化代码插件
-$ JSFormat							## js  格式化代码    shift+alt+j
-$ HTML-CSS-JS Prettify				## html格式化代码	shift+alt+h
-$ CodeFormatter						## 通用格式化代码	   shift+alt+f 
-			   ---------------------
-									## sublime 只支持php5.6-php7.2的php版本
-									## 更改配置信息：
-									## "php_path": "C:/Develop/php-7.1.31/php.exe",
+## 主题插件 
+
+$ Material Theme 
+
 									
 ## 侧边栏优化插件
 $ SideBarEnhancements				## 具体配置见注释
@@ -32,6 +28,10 @@ $ Bracket Highlighter
 ## 快捷文件名输入插件：
 $ AutoFileName
 
+## markdown 表格快捷写法
+
+$ TableEditor                       ## 开启 Table Editor: Enable for current syntax
+
 ## 等号对其插件：
 $ Alignment							## 快捷键：alt+shift+e
 
@@ -41,6 +41,15 @@ $ ConvertToUTF8
 ## 头部注释插件：
 $ FILE HEADER                       ## 自定义创建头部注释（详情配置见备注）
 
+## 格式化代码插件
+$ JSFormat                          ## js  格式化代码    shift+alt+j
+$ HTML-CSS-JS Prettify              ## html格式化代码    shift+alt+h
+$ CodeFormatter                     ## 通用格式化代码     shift+alt+f 
+               ---------------------
+                                    ## sublime 只支持php5.6-php7.2的php版本
+                                    ## 更改配置信息：
+                                    ## "php_path": "C:/Develop/php-7.1.31/php.exe",
+
 ## 语法错误检测插件
 $ sublimelinter 					## 错误日志视图快捷键： ctrl+k,ctrl+e
 
@@ -48,25 +57,9 @@ $ sublimelinter-php 				## 具体见备注
 $ SublimeLinter-jshint
 $ SublimeLinter-csslint
 
-## PHP调试插件
-$ Xdebug Client
-
 ## 主题预览插件
 $ colorsublime
 ```
-
-
-
-# 主题
-
-``` shell
-
-## 配色:			Dracula
-## 主题:			Materialize
-
-```
-
-
 
 # 首选项配置
 
@@ -76,8 +69,6 @@ $ colorsublime
 $ "show_encoding":true
 
 ```
-
-
 
 ## 备注
 
@@ -103,7 +94,6 @@ $ csslint --version				   ##   命令行输出："v1.0.4"
 
 ------php检测  	 ## 配置环境
 
-​```json
 
     "lint_mode": "save only",
 
@@ -222,9 +212,47 @@ $ csslint --version				   ##   命令行输出："v1.0.4"
 //连体字符设置
 "font_face": "Fira Code"
 
-## 常用编程字体：
--- Consolas
--- Fira Code
--- Source Code Pro
 ```
+
+## 使用
+
+1.  host
+
+    ``` shell
+      # sublimetext　
+      127.0.0.1 www.sublimetext.com
+      127.0.0.1 sublimetext.com
+      127.0.0.1 sublimehq.com
+      127.0.0.1 telemetry.sublimehq.com
+      127.0.0.1 license.sublimehq.com
+      127.0.0.1 45.55.255.55
+      127.0.0.1 45.55.41.223
+    ```
+
+2.  sublime_text.exe文件复制到桌面。
+
+3.  用FlexHEX打开sublime_text.exe文件，搜索97 94，你将会看到97 94 0D的字样，修改为00 00 00，保存退出。
+
+4.  将修改好的sublime_text.exe文件拖入原目录，替换原文件。
+
+5.  打开Sublime Text 3，点击右上角的help，再点击Enter Lisence，粘贴下面的代码，再点击Use Lisence
+
+    ```shell
+    ----- BEGIN LICENSE -----
+    TwitterInc
+    200 User License
+    EA7E-890007
+    1D77F72E 390CDD93 4DCBA022 FAF60790
+    61AA12C0 A37081C5 D0316412 4584D136
+    94D7F7D4 95BC8C1C 527DA828 560BB037
+    D1EDDD8C AE7B379F 50C9D69D B35179EF
+    2FE898C4 8E4277A8 555CE714 E1FB0E43
+    D5D52613 C3D12E98 BC49967F 7652EED2
+    9D2D2E61 67610860 6D338B72 5CF95C69
+    E36B85CC 84991F19 7575D828 470A92AB
+    ------ END LICENSE ------
+    ```
+
+6.  软件提示 Thanks for Purchase ok
+
 
