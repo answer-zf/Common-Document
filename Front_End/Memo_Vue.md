@@ -1,29 +1,29 @@
+[TOC]
+
 # Vue 相关 备忘
 
 ## Vue
 
 ### Vuex
 
--   mapState,mapMutations... (vuex 映射)
+- mapState,mapMutations... (vuex 映射)
 
-    -   `...mapMutations('user', ['updateIsAdmin']),`
-    -   'user': modules/user.js
-    -   'updateIsAdmin': 模块中 mutations项中的方法名
-    -   mapState 同理
+  - `...mapMutations('user', ['updateIsAdmin']),`
+  - 'user': modules/user.js
+  - 'updateIsAdmin': 模块中 mutations项中的方法名
+  - mapState 同理
 
 ### dialog
 
--   resetField 的坑
+- resetField 的坑
 
-    -   问题：重置到最近一次提交，快速连续提交会出问题(连点)
-
-    -   解决：在 dialog 上加 `destroy-on-close` 属性，用于重置验证信息，或者使用 v-if
-
-    -   `destroy-on-close` 关闭时销毁 Dialog 中的元素
+  - 问题：重置到最近一次提交，快速连续提交会出问题(连点)
+  - 解决：在 dialog 上加 `destroy-on-close` 属性，用于重置验证信息，或者使用 v-if
+  - `destroy-on-close` 关闭时销毁 Dialog 中的元素
 
 ### table
 
--   表头与内容错位
+- 表头与内容错位
 
 ```css
 body .el-table th.gutter{
@@ -45,50 +45,50 @@ body .el-table colgroup.gutter{
 
 #### ES 5
 
--   filter()
+- filter()
 
-    -   创建一个新数组，新数组中的元素是通过检查指定数组中符合条件的所有元素(过滤)
+  - 创建一个新数组，新数组中的元素是通过检查指定数组中符合条件的所有元素(过滤)
 
--   map()
+- map()
 
-    -   创建一个新数组，新数组中的元素是调用一次提供的函数后的返回（对每个元素的操作后的返回）
+  - 创建一个新数组，新数组中的元素是调用一次提供的函数后的返回（对每个元素的操作后的返回）
 
--   判断 数组的所有成员是否满足指定的条件
+- 判断 数组的所有成员是否满足指定的条件
 
-    -   some() 只要其中一个为true，就会返回true `一真即真`
-    -   every() 必须所有都返回true才会返回true `一假即假`
+  - some() 只要其中一个为true，就会返回true `一真即真`
+  - every() 必须所有都返回true才会返回true `一假即假`
 
 #### 数组扁平化(ES10)
 
 > 将嵌套的数组变成一维数组的过程
 
--   `arr.flat()`
+- `arr.flat()`
 
 ### 字符串
 
 #### ES 7
 
--   padStart(len,str)
+- padStart(len,str)
 
-    -   向左填充 str 字符串，使操作字符串长度等于 len
+  - 向左填充 str 字符串，使操作字符串长度等于 len
 
-    -   应用 补 0
+  - 应用 补 0
 
-        -   str1.padStart(2,'0')  // str1 = '5' => '05'
+    - str1.padStart(2,'0')  // str1 = '5' => '05'
 
--   padEnd(len,str)
+- padEnd(len,str)
 
-    -   反之，向右
+  - 反之，向右
 
 ### 异步相关
 
--   Promise.all() 方法用于将多个Promise实例，包装成一个新的Promise实例。
+> 内部执行顺序同步执行，由异步方法，与微任务、宏任务执行方式一样，会在等待队列中做相应的优先处理
 
-    -   接受一个数组作为参数，数组内的成员 需要是 Promise对象的实例
-    -   所有成员状态都为 成功，返回 所有成员的返回值组成的一个数组（同步），传递给该实例的回调函数
-    -   若有一个成员被 rejected，则返回 第一个被reject的实例的返回值，传递给该实例的回调函数
+Promise.all() 方法用于将多个Promise实例，包装成一个新的Promise实例。
 
-_内部执行顺序同步执行，由异步方法，与微任务、宏任务执行方式一样，会在等待队列中做相应的优先处理_
+- 接受一个数组作为参数，数组内的成员 需要是 Promise对象的实例
+- 所有成员状态都为 成功，返回 所有成员的返回值组成的一个数组（同步），传递给该实例的回调函数
+- 若有一个成员被 rejected，则返回 第一个被reject的实例的返回值，传递给该实例的回调函数
 
 #### 微任务、宏任务
 
@@ -98,25 +98,25 @@ _内部执行顺序同步执行，由异步方法，与微任务、宏任务执�
 >
 > 事件循环: 首先浏览器会把主任务队列中的同步任务挨个全部执行完，然后再去等待任务队列中看哪个任务可以执行了，然后把该执行的任务放到主任务队列中去执行，等这个任务执行完，再去等待任务中看谁可以执行了，再把这个任务放到主任务队列中执行... 如此循环
 
--   宏任务和微任务是等待任务队列中的异步任务的处理机制
--   微任务的优先级比宏任务的要高（在第一次宏任务执行后，将所有微任务执行完，在执行第二个宏任务）
+- 宏任务和微任务是等待任务队列中的异步任务的处理机制
+- 微任务的优先级比宏任务的要高（在第一次宏任务执行后，将所有微任务执行完，在执行第二个宏任务）
 
--   微任务（由JS引擎发起）：
+- 微任务（由JS引擎发起）：
 
-    1.  Promise的then的回调函数
-    2.  async 函数await下面的代码
+  1. Promise的then的回调函数
+  2. async 函数await下面的代码
 
--   宏任务（由宿主{Node、浏览器}发起）：
+- 宏任务（由宿主{Node、浏览器}发起）：
 
-    -   定时器：setTimeout/setInterval
-    -   script（即第一个同步任务就是第一个宏任务）
+  - 定时器：setTimeout/setInterval
+  - script（即第一个同步任务就是第一个宏任务）
 
 #### async、await(ES7)
 
--   提交成功后，立即渲染页面时，不要分在两个函数中写，有异步的问题
+- 提交成功后，立即渲染页面时，不要分在两个函数中写，有异步的问题
 
--   带有 async 关键字的函数，返回的是一个promise，即成功 、 失败的结果
--   await 关键字 所等待的是 返回结果，函数内代码依旧执行
+- 带有 async 关键字的函数，返回的是一个promise，即成功 、 失败的结果
+- await 关键字 所等待的是 返回结果，函数内代码依旧执行
 
 ```js
 // 示例
@@ -170,11 +170,16 @@ div{
 }
 ```
 
+### 垂直对齐调整
+
+- ` vertical-align `
+  - 默认
+
 ## 项目优化
 
 ### 生产阶段 移除 console
 
--   使用 `babel-plugin-transform-remove-console` babel插件解决
+- 使用 `babel-plugin-transform-remove-console` babel插件解决
 
 ```js
 // 项目发布阶段需要用到的 插件数组

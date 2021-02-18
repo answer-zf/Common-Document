@@ -9,6 +9,11 @@ $ Localization
 
 $ Material Theme 
 
+## md 插件
+
+$ Markdown Editing
+$ Markdown Preview                  ## ctrl b 生成 html 网页 
+                                    ## 头部加 [TOC]自动生成目录
 									
 ## 侧边栏优化插件
 $ SideBarEnhancements				## 具体配置见注释
