@@ -1,19 +1,47 @@
--   文件搜索：Listary/ Everything
+# Software migration
 
--   FTP：FileZilla
+## 必备软件
 
--   截图：Snipaste / FSCapture
+- 代码：
+  - 主力 vscode
+  - 辅助 sublime
+  - app HBuilderX
 
--   看图：QuickLock
+- 快捷预览：QuickLock
 
--   思维导图：Xmind
+- 截图：
 
--   流程图：draw.io
+  - Snipaste（巨大优势贴图）
+  - FSCapture（唯一的优势网站滚动截图）
 
--   接口调试：postman
+- 服务器连接
 
--   命令行：cmder
+  - Xshell6
 
--   有道词典
+- 数据库
+  - MySQLWorkbench
 
--   VPN：Shadowsocks
+- 文件搜索：Everything
+
+- 接口调试：postman
+
+- 有道词典
+
+- VPN：Shadowsocks
+
+- 命令行：cmder
+
+- 下载：
+  - Internet Download Manager（IDM）
+  - 迅雷
+
+- 卸载：
+  - Uninstall Tool
+
+## 可选
+
+- 思维导图：Xmind
+
+- 流程图：draw.io
+
+- windows 工具： PowerToys (Preview)

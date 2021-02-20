@@ -1,5 +1,3 @@
-[TOC]
-
 # Vue 相关 备忘
 
 ## Vue
@@ -34,6 +32,13 @@ body .el-table colgroup.gutter{
   display: table-cell!important;
 }
 ```
+
+### 国际化相关
+
+**使用 vue-i18n 的方案做项目的国际化的注意事项：**
+
+- 当使用 element 表格组件进行二次封装时，若 i18n 不更新，需要在表头添加`:header-cell-style="{}"`
+  - 使用自定义表头样式 覆盖原有样式，实现国际化组件的实时更新
 
 ## JS
 
@@ -172,8 +177,11 @@ div{
 
 ### 垂直对齐调整
 
-- ` vertical-align `
-  - 默认
+vertical-align
+
+- 默认与父元素基线对齐(baseline)
+- 当垂直对齐方式出现异常时可使用该属性
+  - 比如父元素由于浮动等其他原因导致子元素对齐出现问题时 使用 text-top (把元素的顶端与父元素字体的顶端对齐)
 
 ## 项目优化
 
