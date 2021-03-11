@@ -12,6 +12,7 @@
 6. 括号匹配插件： Bracket Highlighter
 7. 快捷文件名输入插件： AutoFileName
 8. md 插件： Markdown Editing
+9. md 生成 html (ctrl b):　MarkdownPreview
 
 ## 首选项配置
 

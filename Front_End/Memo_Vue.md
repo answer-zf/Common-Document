@@ -40,7 +40,27 @@ body .el-table colgroup.gutter{
 - 当使用 element 表格组件进行二次封装时，若 i18n 不更新，需要在表头添加`:header-cell-style="{}"`
   - 使用自定义表头样式 覆盖原有样式，实现国际化组件的实时更新
 
+### import / require
+
+- url 包含变量时只能使用 require 做动态导入
+  - const lang = require(`./lang/${key}`) (√)
+- import / import() 的方式导入均报错
+  - import xx from `./lang/${key}` (x)
+  - const a = () => import(`./lang/${key}`)
+    - 不建议使用，在循环中使用 报错
+    - 但有文档显示 在 vue-router 中的 component 中可以使用，但未测试
+
 ## JS
+
+### undefined null ''
+
+[参考文档](https://blog.csdn.net/cauyahui/article/details/86569573)
+
+一般情况设置默认值如下
+
+- 数字：默认值 undefined
+- 字符串：默认值 ''
+- 对象：默认值 null
 
 ### 判断类型
 
