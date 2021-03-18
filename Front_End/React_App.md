@@ -25,7 +25,7 @@
 
     - `npm run eject`
 
-## JSX
+## 前提 JSX
 
 ```jsx
 import React from 'react';
@@ -76,7 +76,95 @@ const jsx = (
 ReactDOM.render(jsx, document.getElementById('root'));
 ```
 
-## 生命周期
+## react 基础
+
+### 组件
+
+#### class 组件
+
+- 在 class 组件中 有 state 状态，处理数据 类似于 vue 中的 data
+- 修改状态 需使用 this.setState() 做修改，传参为 需要修改的数据对象
+
+```jsx
+
+import React, { Component } from 'react'
+
+class ClassPage extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      zf: 'zzz',
+      date: new Date(),
+    }
+  }
+
+  // 组件 挂载完毕之后
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState({
+        date: new Date(),
+      })
+    }, 1000)
+  }
+
+  // 组件即将卸载时
+  componentWillUnmount() {
+    // 停止定时器
+    clearInterval(this.timer)
+  }
+
+  render() {
+    const { zf, date } = this.state
+    return (
+      <div style={{ width: '500px', margin: 'auto' }}>
+        <h4> this is class </h4>
+        <p>{zf}</p>
+        <p>{date.toLocaleTimeString()}</p>
+      </div>
+    )
+  }
+}
+
+export default ClassPage
+
+```
+
+#### function 组件
+
+- react v16.8后 使用 hook api 中的 useState() 做状态的保持
+- useState() 返回一个数组
+  - 数组的第一个成员：一个变量
+  - 数组的第二个成员：一个函数，用来更新状态。约定是set前缀加上状态的变量名
+
+- useEffect() 副作用
+  - 即 class 组件中的 componentDidMount
+  - useEffect() 第一个参数：一个函数，所需要执行的操作
+  - useEffect() 第二个参数：如果不希望useEffect()每次渲染都执行，使用它的第二个参数，使用一个数组指定副效应函数的依赖项，只有依赖项发生变化，才会重新渲染
+  - useEffect() 允许返回一个函数，在组件卸载时，执行该函数，清理副效应。如果不需要清理副效应，useEffect()就不用返回任何值。
+
+```jsx
+import React, { useEffect, useState } from 'react';
+
+function FunctionComponent(props) {
+  const [date, setDate] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <div>
+      <h3>FunctionComponent</h3>
+      <p>{date.toLocaleTimeString()}</p>
+    </div>
+  );
+}
+
+export default FunctionComponent;
+```
+
+### 生命周期
 
 - 已废除的三个生命周期
   - componentWillMount
