@@ -2,6 +2,12 @@
 
 ## Vue
 
+### Vue3
+
+#### 覆盖框架样式
+
+> 在 vue3 scss 中 覆盖框架样式 使用 ::v-deep 而 不使用 /deep/
+
 ### Vuex
 
 - mapState,mapMutations... (vuex 映射)
