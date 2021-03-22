@@ -6,7 +6,45 @@
 
 #### 覆盖框架样式
 
-> 在 vue3 scss 中 覆盖框架样式 使用 ::v-deep 而 不使用 /deep/
+> 在 vue3 scss 中 覆盖框架样式 使用 ::v-deep(...) 而 不使用 /deep/ ...
+
+#### dom 操作
+
+```typescript
+// <div ref="zf">cf</div>
+import { ref, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const zf = ref<any>(null)
+
+    onMounted(() => {
+      // 等价于 this.$refs.zf
+      console.dir(zf.value);
+    });
+
+    return {
+      zf,
+    }
+
+  },
+}
+```
+
+#### nextTick
+
+> 将回调推迟到下一个 DOM 更新周期之后执行。在更改了一些数据以等待 DOM 更新后立即使用它。
+
+```typescript
+nextTick(()=>{
+  ...
+})
+```
+
+#### ref / reactive
+
+- ref 定义基本数据类型 使用 变量名.value 获取 (watchEffect)
+- reactive 定义复杂的数据类型 直接获取 (watch)
 
 ### Vuex
 
