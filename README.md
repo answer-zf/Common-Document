@@ -2,8 +2,6 @@
 
 ## 前端部分
 
-> 前端部分只是我对知识点的补充没有系统的记录 基础，主要还是框架的系统笔记
-
 - [Vue3+Ts](/Front_End/Vue3_Ts.md)
 - [React+umi](/Front_End/React_App.md)
 - [项目问题备忘](/Front_End/Memo_Vue.md)
