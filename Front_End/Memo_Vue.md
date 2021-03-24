@@ -10,6 +10,8 @@
 
 #### dom 操作
 
+- 获取一个元素的DOM
+
 ```typescript
 // <div ref="zf">cf</div>
 import { ref, onMounted } from 'vue';
@@ -27,6 +29,34 @@ export default {
       zf,
     }
 
+  },
+}
+```
+
+- 获取多个dom元素
+
+```typescript
+// <div :ref="scrollRefs" v-for="(item, index) in arr" :key="index">{{ item }}</div>
+import { ref, nextTick } from 'vue';
+
+export default {
+  setup() {
+    const arr = ref([1, 2, 3])
+    // 使用数组获取多个DOM
+    const scrollRefsArr = ref([])
+    const scrollRefs = (el: unknown) => {
+      ;(scrollRefsArr.value as any[]).push(el)
+    }
+
+    nextTick(() => {
+      // 实例数组
+      console.dir(scrollRefsArr.value);
+    });
+
+    return {
+      arr,
+      scrollRefs,
+    }
   },
 }
 ```
