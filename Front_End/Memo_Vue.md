@@ -247,6 +247,24 @@ console.log('script end')
 // 原因：浏览器的Event loop是在HTML5中定义的规范，而node中则由libuv库实现
 ```
 
+### 原型链
+
+`prototype`（原型对象）是构造函数有的属性
+`__proto__`（隐式原型）是所有对象都有的属性
+
+> 实例对象的隐式原型 指向 构造函数的原型对象
+
+### localStorage sessionStorage
+
+- localStorage 里面存储的数据没有过期时间设置
+  - 可跨浏览器窗口和选项卡间共享。
+  - 多个浏览器窗口和标签页中共享数据，使用 LocalStorage
+- 存储在 sessionStorage 里面的数据在页面会话结束时会被清除
+  - 页面会话在浏览器打开期间一直保持，并且重新加载或恢复页面仍会保持原来的页面会话
+  - 打开多个相同的URL的Tabs页面，会创建各自的sessionStorage
+  - 关闭对应浏览器窗口（Window）/ tab，会清除对应的sessionStorage
+  - SessionStorage数据独立于其他选项卡和窗口。如果同时打开了两个选项卡，其中一个更新了SessionStorage，则在其他选项卡和窗口中不会反映出来
+
 ## CSS
 
 ### 溢出省略隐藏
